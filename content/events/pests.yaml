@@ -1,0 +1,175 @@
+# Pest events (§9). Threaten crops in the field and food in the store. Treat with labor
+# or Doc Bell's remedy (coin), or ignore and risk the spread. Monoculture draws them (§1).
+
+- id: aphids-on-the-wheat
+  title: "Aphids"
+  family: pests
+  severity: major
+  illustration: "a wheat-head crawling grey-green with aphids, a clone rubbing them off between finger and thumb"
+  setup: >
+    The wheat is crawling. Aphids, thick on the heads, come up overnight the way they do in
+    a close summer — and they don't stop at one field if you let them get a start.
+  weight: 12
+  conditions:
+    - season: [Summer, Fall]
+  on_ignore: worst
+  choices:
+    - id: treat-labor
+      text: "Set the hands to it."
+      cost: { labor: 2.0 }
+      result: "Two days of stoop-work and lye-water clears them off before they spread. Slow, sure, and it costs you the hands you needed elsewhere."
+    - id: doc-remedy
+      text: "Buy Doc Bell's remedy. (18 marks)"
+      cost: { coin: 18 }
+      result: "Bell's foul-smelling wash does in an afternoon what labor would take days to do. 'Don't ask what's in it,' he says. You don't."
+    - id: ignore-pests
+      text: "It's one field. Leave it."
+      result: "You leave it, and by week's end the near field is crawling too. One field's problem is the whole farm's, given a week of not minding it."
+      effects:
+        - crop: { field: this, blight: true }
+
+- id: cutworms
+  title: "Cutworms"
+  family: pests
+  severity: minor
+  illustration: "young seedlings toppled at the stem, a fat grey worm curled in the dirt beside one"
+  setup: >
+    The new seedlings are coming up cut off at the ground — cutworms, working by night, felling
+    a row a night if nothing stops them. A collar of ash round each stem turns them, if you've
+    the patience for it.
+  conditions:
+    - season: Spring
+  on_ignore: dismiss
+  choices:
+    - id: ash-collars
+      text: "Collar the stems with ash."
+      cost: { labor: 1.0 }
+      result: "A tedious evening's work saves the stand. The worms move on to a farm that didn't bother."
+    - id: replant
+      text: "Let them have their fill and replant the gaps."
+      cost: { seed: { crop: potato, amount: -4 } }
+      result: "You lose some seed and some time to the gaps. Cheaper than the ash-work, if you count only the hours and not the yield."
+
+- id: rats-in-the-granary
+  title: "Rats in the Granary"
+  family: pests
+  severity: minor
+  illustration: "chewed sacking, grain spilled in a dark corner, two red eyes at the edge of lamplight"
+  setup: >
+    There are rats in the granary. You hear them in the walls at night and find the sacking
+    chewed by morning. A store is only a store if the rats don't get to it first.
+  conditions:
+    - has_building: cellar
+  on_ignore: worst
+  choices:
+    - id: set-traps
+      text: "Trap them out."
+      cost: { coin: 4 }
+      result: "Traps and a barn cat and a week of grim mornings clear them. The store holds."
+    - id: leave-them
+      text: "A few rats never emptied a granary."
+      result: "A few rats become many. By the turn of the season you've fed more of your winter store to vermin than you'd like to admit."
+      effects:
+        - food: { amount: -10 }
+
+- id: the-rot-in-the-roots
+  title: "The Rot in the Roots"
+  family: pests
+  severity: major
+  illustration: "a lifted potato black and soft in the hand, the smell of it almost visible"
+  setup: >
+    You lift a potato to check the crop and it comes apart black and stinking in your hand.
+    Root-rot, down in the ground where you can't see it, taking the field from below. Lift
+    them now at a loss, or leave them and gamble the whole crop.
+  conditions:
+    - season: Fall
+  on_ignore: worst
+  choices:
+    - id: lift-early
+      text: "Lift the whole field now, sound and rotten together."
+      cost: { labor: 1.5 }
+      result: "You get the sound ones up before the rot takes them and cull the black by lamplight. A lean harvest, but a real one."
+    - id: gamble-it
+      text: "Leave them. Maybe it's only the low ground."
+      outcomes:
+        - odds: even
+          result: "It was only the low ground. The rest comes up sound, and you breathe again."
+        - odds: even
+          result: "It was not only the low ground. The rot runs the whole field, and you lift a harvest of black slime and regret."
+          effects:
+            - crop: { field: this, blight: true }
+            - food: { amount: -8 }
+
+- id: hornworms
+  title: "Hornworms"
+  family: pests
+  severity: minor
+  illustration: "a fat green hornworm the length of a finger on a stripped tobacco stalk"
+  setup: >
+    Hornworms are on the tobacco — great green things the length of your finger, stripping the
+    leaf you were counting on selling. They must be picked off by hand, one at a time, which
+    is exactly as pleasant as it sounds.
+  conditions:
+    - season: Summer
+  on_ignore: worst
+  choices:
+    - id: hand-pick
+      text: "Pick them off, leaf by leaf."
+      cost: { labor: 1.0 }
+      result: "A revolting day's work saves the leaf. The hands do not thank you for it, and the crop, at least, is whole."
+    - id: let-it-go
+      text: "Let them eat. It's only a corner."
+      result: "It is not only a corner for long. The worms work through the best of the leaf, and your cash crop is worth a good deal less at market than it was."
+      effects:
+        - crop: { field: this, blight: true }
+
+- id: the-same-blight
+  title: "The Same Field, the Same Blight"
+  family: pests
+  severity: minor
+  illustration: "a tired field, the soil pale and thin, a familiar sickness spreading in the same corner as last year"
+  setup: >
+    It's the same trouble as last year, in the same field, because you planted the same crop
+    in it again. Ground worked too hard breeds its own pests, the old-timers say. The old-timers,
+    as usual, are right.
+  conditions:
+    - field_taint: { min: 0.0 } # placeholder — engine fires this when a field is monocropped (§1)
+  on_ignore: dismiss
+  choices:
+    - id: rest-it
+      text: "Rest the field next season."
+      result: "You resolve to fallow it and rotate. The ground will thank you, in its slow way. The pests, denied their habit, thin out."
+    - id: push-it
+      text: "Plant it the same again. It's your best field."
+      result: "You push it once more, and the ground pushes back — a poorer crop, a worse infestation, the beginning of a field worked into the ground."
+      effects:
+        - crop: { field: this, blight: true }
+
+- id: a-cloud-on-the-wind
+  title: "A Cloud on the Wind"
+  family: pests
+  severity: major
+  illustration: "a brown shimmer on the horizon that isn't weather, a farmer shading his eyes at it"
+  setup: >
+    There's a cloud coming on the west wind that isn't a cloud — a shimmer, low and brown and
+    seething, that the older hands have seen before and gone quiet at. Locusts. There's an hour,
+    maybe, to do anything at all.
+  weight: 6
+  conditions:
+    - season: Summer
+  on_ignore: worst
+  choices:
+    - id: cut-early
+      text: "Cut everything ripe enough, right now."
+      cost: { labor: 1.5 }
+      result: "You scythe like the devil for an hour and get the best of it under cover before the cloud lands. They strip what's left to the stalk. You saved a third. It feels like a victory, which tells you how the day went."
+    - id: smoke-them
+      text: "Light smudge-fires and try to turn them."
+      outcomes:
+        - odds: unlikely
+          result: "The smoke turns them, just enough. They veer for the Sinks and your fields keep their green. You will burn a candle to your luck tonight."
+        - odds: likely
+          result: "The smoke does nothing. They come down over everything and rise an hour later off bare dirt. There is no crop this season. There is only next season, if you can reach it."
+          effects:
+            - crop: { field: this, blight: true }
+            - food: { amount: -12 }

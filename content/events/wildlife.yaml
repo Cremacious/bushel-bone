@@ -1,0 +1,151 @@
+# Wildlife events (§9). Threaten crops and stock. Fences (§8) cut the losses. One card
+# (something-in-the-night) sits on the seam between wildlife and the Reckoning by design.
+
+- id: crows-in-the-corn
+  title: "Crows in the Corn"
+  family: wildlife
+  severity: minor
+  illustration: "a black scatter of crows lifting off a corn-field, a leaning scarecrow they've plainly stopped fearing"
+  setup: >
+    The crows have found the corn and made a habit of it. Your scarecrow has stopped fooling
+    them; they perch on his arms now, which feels like a comment. An unfenced field is an open
+    invitation, and they've accepted.
+  conditions:
+    - not: { has_building: fences }
+  on_ignore: worst
+  choices:
+    - id: keep-a-boy-on-them
+      text: "Set a hand to scaring them off."
+      cost: { labor: 1.0 }
+      result: "A hand with a clapper and a long day keeps them thinned. It's a poor use of a pair of hands, but it's cheaper than the corn they'd take."
+    - id: string-fences
+      text: "Fence the field for good."
+      cost: { coin: 15, labor: 2.0 }
+      result: "You fence it proper — posts, wire, netting over the worst of it. The crows sulk on the line and find easier fields. It's done, and it stays done."
+      effects:
+        - unlock: { building: fences }
+    - id: let-them-feed
+      text: "Let them have their share."
+      result: "You leave the crows to it and lose a fifth of the field to them by harvest. A share, they'd call it. Robbery, you'd call it. The corn's gone either way."
+      effects:
+        - crop: { field: this, blight: true }
+
+- id: deer-at-dusk
+  title: "Deer at Dusk"
+  family: wildlife
+  severity: minor
+  illustration: "three deer stepping out of the cottonwood break into a field at last light, heads down"
+  setup: >
+    Deer come out of the cottonwood break at dusk and browse the young crop down to nothing,
+    dainty and unhurried, gone before you can get a shot off. A fence turns them. A dog turns
+    them. A hopeful nature does not.
+  on_ignore: dismiss
+  choices:
+    - id: sit-up-for-them
+      text: "Sit up with a rifle."
+      outcomes:
+        - odds: even
+          result: "You take a deer at dusk and hang it in the smokehouse — meat for the winter store, and the rest of the herd gone shy of your fields for a while."
+          effects:
+            - food: { amount: +10 }
+        - odds: even
+          result: "You sit the cold through and see nothing but your own breath. The deer, wiser than you, browse a different field. You're tired the next day for it."
+    - id: fence-them-out
+      text: "Fence the crop."
+      cost: { coin: 15, labor: 1.0 }
+      result: "A fence turns the deer to easier grazing. Money and a day, spent to keep what you grew."
+      effects:
+        - unlock: { building: fences }
+
+- id: wolves-at-the-fold
+  title: "Wolves at the Fold"
+  family: wildlife
+  severity: major
+  illustration: "grey shapes at the edge of lantern-light beyond the pen, the stock crowded to the far rail"
+  setup: >
+    There are wolves working the edge of the homestead — you hear the stock go frantic in the
+    night and find them crowded to the far rail by morning, and once, prints in the mud bigger
+    than your spread hand. They'll take a beast a week until something stops them.
+  conditions:
+    - has_building: barn
+  on_ignore: worst
+  choices:
+    - id: sit-up-armed
+      text: "Sit up nights until you get them."
+      cost: { labor: 1.0 }
+      result: "You lose sleep and a few nights' work, and you get one of the pack over the pen-rail. The others take the lesson and move on. The stock settles."
+    - id: pen-them-tight
+      text: "Bring the stock in tight and wait it out."
+      result: "You crowd the stock into the barn and bar it. Safer, but a beast smothers in the crush, and the wolves take another that strayed. You lose two either way — you just choose how."
+      effects:
+        - food: { amount: -8 }
+
+- id: fox-in-the-henhouse
+  title: "Fox in the Henhouse"
+  family: wildlife
+  severity: minor
+  illustration: "feathers scattered white across a coop floor at dawn, a low gap dug under the wall"
+  setup: >
+    A fox has been in the henhouse — feathers everywhere and two hens short, a neat hole dug
+    under the wall. It'll be back tomorrow night, and the night after, until the digging's
+    stopped.
+  on_ignore: worst
+  choices:
+    - id: mend-the-coop
+      text: "Sink the wall and mend the coop."
+      cost: { labor: 1.0 }
+      result: "You dig the wall in deep and wire the gaps. The fox tries once more, finds no way under, and goes to trouble a lazier neighbor."
+    - id: leave-it
+      text: "It's two hens. Leave it."
+      result: "Two hens becomes the whole coop, one clever night at a time. By the week's end you're short your eggs and your temper both."
+      effects:
+        - food: { amount: -4 }
+
+- id: the-stray-dog
+  title: "A Stray Dog"
+  family: wildlife
+  severity: minor
+  illustration: "a lean, wary dog at the edge of the yard, ribs showing, not quite willing to come or go"
+  setup: >
+    A stray dog has taken to hanging about the yard — lean and wary, no collar, keeping just
+    out of reach. It's another mouth. It's also, if it settles, a set of ears against the
+    crows and the fox and whatever else works the dark.
+  once: true
+  on_ignore: dismiss
+  choices:
+    - id: take-it-in
+      text: "Feed it and let it stay."
+      result: "A few scraps and a week of patience buy you a dog that sleeps in the barn and barks the wildlife off your fields. Cheap at the price of a bowl a day."
+      effects:
+        - item: { grant: farm_dog }
+        - morale: { target: household, amount: +1 }
+    - id: run-it-off
+      text: "Run it off. You've mouths enough."
+      result: "You send it down the road with a hard word. Sensible. The yard is quieter for it, in every sense, and the crows come back."
+
+- id: something-in-the-night
+  title: "Something in the Night"
+  family: wildlife
+  severity: minor
+  illustration: "torn ground at a field's edge and a single deep track that is not a deer's and not a wolf's"
+  setup: >
+    Something was in the field last night. The ground is torn at the far edge and there's a
+    track in the soft dirt — deep, and wrong, not a deer's and not a wolf's and not, if you're
+    honest with yourself, anything you can put a name to. Probably a wolf. Probably.
+  conditions:
+    - reckoning_tier: { min: warnings }
+  on_ignore: dismiss
+  choices:
+    - id: call-it-a-wolf
+      text: "Call it a wolf and set a trap."
+      cost: { coin: 4 }
+      result: "You set a trap for a wolf. In the morning the trap is sprung and empty and bent, and you do not set it there again."
+      effects:
+        - morale: { target: household, amount: -2 }
+    - id: ask-old-nan
+      text: "Take the track's measure to Old Nan."
+      requires:
+        - relationship: { npc: old_nan, min: warm }
+      result: "She looks at the shape you've scratched in the dirt for her a long moment. 'That's not a thing that eats crops,' she says. 'That's a thing that counts them. Mind what you've been growing, and how.'"
+      effects:
+        - morale: { target: household, amount: -1 }

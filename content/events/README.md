@@ -10,11 +10,11 @@ The ~120 MVP event cards (GitHub issue #16), authored against [`docs/content-sch
 | `reckoning` | ~20 | ✅ Batch 1 (14) |
 | `opportunities` | ~18 | ✅ Batch 2 (11) |
 | `town` | ~18 | ✅ Batch 2 (11) |
-| `pests` | ~15 | ⏳ Batch 3 |
-| `personal` | ~15 | ⏳ Batch 3 |
-| `wildlife` | ~12 | ⏳ Batch 3 |
+| `pests` | ~15 | ✅ Batch 3 (8) |
+| `personal` | ~15 | ✅ Batch 3 (9) |
+| `wildlife` | ~12 | ✅ Batch 3 (6) |
 
-*~48 of ~120 written.*
+***~71 of ~120 written — all 7 families and all severities now covered.*** The library is representative and code-ready (the event system can be built against it); the remaining ~50 are depth/volume per family, fillable incrementally (a natural live-ops content lane, Q-010).
 
 Severity mix within each family follows §9: ~30% flavor, ~45% minor, ~20% major, ~5% crisis (crises are `crisis_gate`d).
 

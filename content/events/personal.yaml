@@ -1,0 +1,237 @@
+# Personal events (§3/§5): the clones themselves — illness, quarrel, loyalty, despair,
+# death and its disposal. This is the moral engine at the human scale. The burial card is
+# the whole game in miniature; treat it with the restraint the style guide demands.
+
+- id: a-hand-takes-fever
+  title: "A Hand Takes Fever"
+  family: personal
+  severity: major
+  illustration: "a clone flushed and shivering on a cot, a damp cloth on the brow, the others watching from the door"
+  setup: >
+    One of the hands has taken a fever — flushed and shaking and no use in the field, and
+    getting worse. Doc Bell would come, for coin. Fevers pass, sometimes, left alone. In a
+    hard winter, sometimes they don't.
+  on_ignore: worst
+  choices:
+    - id: fetch-doc
+      text: "Fetch Doc Bell. (20 marks)"
+      cost: { coin: 20 }
+      result: "Bell comes, dry and unhurried, and does what can be done. 'Keep them warm and let them rest,' he says. 'The rest of it's between them and their luck.' The fever breaks by week's end."
+      effects:
+        - morale: { target: household, amount: +2 }
+    - id: rest-and-broth
+      text: "Rest and broth and hope."
+      outcomes:
+        - odds: likely
+          result: "A week of rest and thin broth and the fever passes on its own. You saved the twenty marks. You'll not always be so lucky."
+        - odds: unlikely
+          result: "The fever does not pass. It takes them in the night, quiet, and you are left with a cot to strip and a choice to make about the ground."
+          effects:
+            - clone: { kill: this, disposal: marked }
+    - id: work-them-anyway
+      text: "There's no time to be sick. Back to the field."
+      result: "You drive a sick hand into the field and the fever does what fevers do to a worn body. They're worse by morning, and the household watches you differently for it."
+      effects:
+        - morale: { target: household, amount: -6 }
+        - reckoning: +1
+
+- id: a-hand-is-gone
+  title: "A Hand is Gone"
+  family: personal
+  severity: major
+  illustration: "a still form under a blanket in the bunkhouse, the other hands standing back, hats in hand, waiting on you"
+  setup: >
+    One of them is dead — fever, or the cold, or the year simply catching up with a frail body.
+    The others have carried the still form to the barn and stand waiting, because the next part
+    is yours. The ground is soft in the east field. It is always soft, out here. What you do now,
+    the land remembers.
+  on_ignore: worst
+  choices:
+    - id: marked-grave
+      text: "A marked grave, and a stone."
+      cost: { labor: 1.0 }
+      result: "You dig a proper grave in dry ground and set a stone with a name on it. The others help without being asked. It costs a day and some timber and buys a household that knows what it's worth to you."
+      effects:
+        - morale: { target: household, amount: +2 }
+    - id: unmarked-field
+      text: "Bury them in the east field, unmarked. Save the day."
+      result: "You put them in the soft warm ground where the digging's easy and set no stone. The field takes them. The hands go quiet, and do not look at the east field the same again, and neither, in time, will you."
+      effects:
+        - reckoning: +6
+        - taint: { field: this, amount: +0.5 }
+        - ghost_roll: { add: this }
+        - morale: { target: household, amount: -10 }
+    - id: sell-to-vane
+      text: "Sell the body to Ambrose Vane. (15 marks)"
+      result: "Ambrose takes the body without a word about what for, and leaves fifteen marks that feel heavier than they are. He remembers. So, you find, do you."
+      effects:
+        - coin: +15
+        - reckoning: +3
+        - morale: { target: household, amount: -6 }
+    - id: feed-the-vat
+      text: "Feed them to the Vat."
+      requires:
+        - has_vat: true
+      result: "You put what was a person into the vat-liquor and tell yourself it's only what the trade does. The Vat will make something new of them. The ground has opinions about that. So, in the night, do you."
+      effects:
+        - reckoning: +6
+        - ghost_roll: { add: this }
+        - morale: { target: household, amount: -8 }
+    - id: full-funeral
+      text: "A full funeral — the preacher, the naming, the day."
+      cost: { coin: 40, rest_day: true }
+      result: "You send for Grange and give the whole day to it, and every hand stands and hears the name said proper into the cold. It costs you a working day and forty marks. It is the difference between a farm and a slaughterhouse, and the household knows you chose it."
+      effects:
+        - reckoning: -2
+        - morale: { target: household, amount: +10 }
+
+- id: bad-blood
+  title: "Bad Blood in the Bunkhouse"
+  family: personal
+  severity: minor
+  illustration: "two clones squared off in the bunkhouse doorway, the others watching, a spilled bowl between them"
+  setup: >
+    Two of the hands have come to hate each other — over a bunk, a chore, a word, nobody quite
+    knows anymore — and the whole bunkhouse is sour with it. Left to fester, it splits a
+    household right when you need it whole.
+  conditions:
+    - clones: { min: 3 }
+  on_ignore: dismiss
+  choices:
+    - id: sit-them-down
+      text: "Sit them down and settle it."
+      cost: { labor: 0.5 }
+      result: "You give an hour to hearing them both out and knocking two hard heads toward sense. It half-works, which is as much as these things ever do. The bunkhouse eases."
+      effects:
+        - morale: { target: household, amount: +2 }
+    - id: split-the-work
+      text: "Put them on opposite ends of the farm."
+      result: "You keep them apart and let the grudge cool on its own. Slower, and the work's a little clumsier for the shuffling, but the fists stay down."
+    - id: let-them-fight
+      text: "Let them settle it themselves."
+      result: "They settle it in the yard, bloody and brief, and one of them works sore for a week. The household picks sides, and the sourness lingers longer than the bruises."
+      effects:
+        - morale: { target: household, amount: -4 }
+
+- id: the-one-who-sees
+  title: "The One Who Sees"
+  family: personal
+  severity: minor
+  illustration: "a clone standing motionless at the edge of a field at dusk, head tilted, listening to nothing"
+  setup: >
+    One of the hands has started standing at the field's edge at dusk, head cocked, listening
+    to something the rest of you can't hear. She's no trouble by day. But she says the ground
+    talks in the low field, and lately she's begun to answer it, and the others have started
+    to keep their distance.
+  conditions:
+    - reckoning_tier: { min: warnings }
+  on_ignore: dismiss
+  choices:
+    - id: listen-to-her
+      text: "Ask her what the ground says."
+      result: "You ask, and she tells you, plain and unafraid, a thing about the low field you did not want to know and cannot now unknow. She may be mad. She may be the most useful hand you have. Out here the difference is thin."
+      effects:
+        - flag: { set: has-seer, to: true }
+    - id: work-her-hard
+      text: "Keep her too busy to listen."
+      result: "You load her days so full she's no time to stand and hear. It works, after a fashion. But a hand kept from what she sees is a hand you've made afraid of you, and the ground goes on talking whether she answers or not."
+      effects:
+        - morale: { target: household, amount: -2 }
+
+- id: worn-down
+  title: "Worn Down"
+  family: personal
+  severity: minor
+  illustration: "a clone moving stiff and slow at the row's end, a hand pressed to the back, grey in the face"
+  setup: >
+    You've been driving the hands hard — a hard year asks it — and it's begun to show. One of
+    them moves like an old man now, stiff and grey, slower every week. Worked bodies wear out,
+    the same as tools, and mend slower.
+  conditions:
+    - clones: { min: 2 }
+  on_ignore: dismiss
+  choices:
+    - id: ease-off
+      text: "Ease off. Let them mend."
+      result: "You lighten the load and the worn hand comes back to themselves over a few weeks. You lose a little labor now against losing a hand entire later. It's arithmetic, but it's also a kindness, and both are true."
+      effects:
+        - morale: { target: household, amount: +2 }
+    - id: drive-on
+      text: "The work won't wait. Drive on."
+      result: "You keep the pace. The body keeps failing. There's a limit to what a worn hand will give before it gives out, and you are teaching yourself exactly where it lies."
+      effects:
+        - morale: { target: household, amount: -3 }
+
+- id: the-empty-cot
+  title: "The Empty Cot"
+  family: personal
+  severity: major
+  illustration: "a made cot at dawn, unslept-in, the bunkhouse door ajar on grey light"
+  setup: >
+    A cot is made and empty this morning — not taken, not dead, just gone, walked off into the
+    dark rather than face another day of your farm. A household worked to the bone and never
+    eased loses its hands to the road, one quiet dawn at a time.
+  crisis_gate:
+    - clones: { min: 1 }
+  on_ignore: worst
+  choices:
+    - id: go-after-them
+      text: "Ride out and bring them back."
+      cost: { labor: 1.0 }
+      result: "You find them on the Dray road, footsore and half-regretting it already, and you ride back beside them saying little. Something is mended by the going after. The others mark that you went."
+      effects:
+        - morale: { target: household, amount: +4 }
+    - id: let-them-go
+      text: "Let them go. A hand who'd run is no use."
+      result: "You let them go. Maybe it's true that a runner's no use. But an empty cot in the bunkhouse asks a question of every hand who sleeps near it, and the answers, over a hard winter, tend to empty more cots."
+      effects:
+        - morale: { target: household, amount: -4 }
+
+- id: a-hand-asks
+  title: "A Hand Asks"
+  family: personal
+  severity: minor
+  illustration: "a clone standing cap in hand at the porch step, working up to a question, the farmer in the doorway"
+  setup: >
+    One of the hands comes to the porch of an evening, cap in hand, and takes a while working
+    up to it. They'd like a name of their own, they finally say — not the one the Vat gave, a
+    real one, one they picked. It's a small thing to ask. It's not a small thing to be asked.
+  on_ignore: dismiss
+  choices:
+    - id: grant-it
+      text: "Let them have their name."
+      result: "You tell them to choose, and they do, careful, like a man handling something breakable. From that day they answer to it and work the harder for it, and something in the whole household stands a little straighter."
+      effects:
+        - morale: { target: household, amount: +3 }
+    - id: refuse-it
+      text: "A vessel keeps the name it's given."
+      result: "You tell them the name they have will do. They say 'yes, sir' and go back to the bunkhouse, and the asking is never repeated, by them or by any of the others, who heard how it went."
+      effects:
+        - morale: { target: household, amount: -3 }
+
+- id: pulled-from-the-cold
+  title: "Pulled from the Cold"
+  family: personal
+  severity: minor
+  illustration: "a clone hauling a half-frozen farmer through the snow toward the lit house, both of them near done"
+  setup: >
+    You went out in the blizzard after a strayed beast and the cold near had you — and it was
+    one of the hands who came out into it, roped to the porch, and hauled you back through the
+    white to the fire. You'd not be here to reckon the accounts if she hadn't. She says nothing
+    of it. But it happened.
+  conditions:
+    - season: Winter
+    - clones: { min: 1 }
+  once: true
+  on_ignore: dismiss
+  choices:
+    - id: acknowledge-it
+      text: "Thank her, plainly, before the others."
+      result: "You say it out loud, in front of the household, what she did and what it cost her to do it. She goes red and waves it off. But a farm where the hands would go into a blizzard for the man who owns them is a farm that will survive most things, and everyone in the room understands why."
+      effects:
+        - morale: { target: household, amount: +5 }
+    - id: say-nothing
+      text: "Say nothing. It's a hand's job to serve."
+      result: "You let it pass without a word, as though being hauled from death were a chore like any other. She learns what her life was worth to you in that silence. So do the rest of them."
+      effects:
+        - morale: { target: household, amount: -4 }
