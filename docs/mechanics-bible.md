@@ -56,6 +56,12 @@ For each system:
 14. **Meta-Progression (Vigils, unlocks)** — ✅ done (see below)
 15. **Ascension Stacking** — ✅ done (see below)
 
+**Supplementary systems (issue #8):**
+16. **Livestock & Manure** — ✅ done (see below)
+17. **Festival Interactions** — ✅ done (see below)
+18. **Building Upgrade Trees** — ✅ done (see below)
+19. **Vane-Mystery Mechanics** — ✅ done (see below)
+
 ---
 
 # 1. Crop Economics
@@ -1889,3 +1895,184 @@ All 15 systems are drafted to the §1 template — hard numbers throughout, each
 3. **Paper prototype playtest** — validate the core day loop and the moral-tension feel that numbers can't confirm.
 
 The verified-counter claims scattered through §1–§15 are the Balance Model's test suite. Extracting them into a single checklist would be a good first task of the modeling phase.
+
+---
+
+# Supplementary Systems (issue #8)
+
+Four systems referenced by the core 15 but not previously spec'd to the §1 template. Same format, hard numbers, four-failure-mode audit, verified counters. Numbers consistent with the ratified set (D-032/D-034).
+
+---
+
+# 16. Livestock & Manure
+
+## Recap
+
+Livestock (chickens, pigs, cows) turn fodder and labor into a slow, steady stream of **food, fertility (manure), and winter insurance (slaughter)**. They are a resilience and sustainability play — not a food printer — that competes with food crops for the land and labor that feed them. Requires a Barn (§8).
+
+## Numbers & formulas
+
+| Animal | Buy | Fodder/day | Ongoing product | Slaughter (food) | Breeds |
+|---|---|---|---|---|---|
+| Chicken | 3 | 0.1 | 0.5 food/season (eggs) | 3 | fast (~1/season/pair) |
+| Pig | 15 | 0.4 | — | 15 | ~1 piglet/year/pair |
+| Cow | 30 | 0.5 | 1.5 food/season (milk) + **0.25 manure/season** | 25 | ~1 calf/2 years/pair |
+
+- **Barn cap:** 8 animals (Big Barn upgrade → 16, §18).
+- **Fodder:** grown (a field of oats/corn diverted to fodder, or the stubble after harvest) or bought at ~1 coin/unit. A cow eats **0.5 fodder/day = 10/season = 40/year**.
+- **Manure → fertility:** applied to a field, **+20% fertility per unit** (§1). 4 cows ≈ 1 unit/season (§1's "1 per 4/season"). Manure is the *sustainable* fertility restore — it lets a field stay in production without the season-long fallow (+30%, §1). *(This is the main reason to keep cows: with the tight ratified food economy, D-032, sustained fertility is worth more than the milk.)*
+- **Slaughter:** one-time food (winter emergency lever, §4). Meat spoils in 2 seasons without a Smokehouse (§8).
+
+## Intended experience
+
+A few chickens and a cow should feel like *the homestead breathing* — a low, reliable hum of eggs and milk and dung under the drama of the crops, and a pig in the sty that is this winter's insurance if the harvest fails.
+
+## Four failure modes checked
+
+**Too easy** — a big herd as free food + fertility. Defense: fodder competes with food crops for land and labor; the Barn cap (8); slow breeding; modest manure (4 cows → 1 unit). **Verified counter:** *a herd's fodder cost should roughly offset its food output, so livestock nets out as a fertility + winter-insurance play, not a food surplus engine.*
+
+**Too hard** — a fiddly drain. Defense: chickens are cheap and near-free to keep (0.1 fodder, eggs); manure is genuinely valuable in the tight economy; slaughter is a real safety net.
+
+**Boring** — buy animals, collect food. Defense: the fodder-vs-food-crop land tradeoff, slaughter timing (hold the pig or eat it), manure allocation (which exhausted field), breeding.
+
+**Exploitable** — livestock-as-food-battery (breed a herd, ignore crops; §4 named exploit). Defense: fodder land + labor + slow breeding cap the yield. **Verified counter:** *a livestock-only food strategy should underperform mixed farming — the fodder land it needs, grown as food instead, feeds more mouths than the herd does.*
+
+## Balancing levers
+
+Buy prices; fodder rates; product yields (eggs/milk); manure rate (0.25/cow/season) and fertility value (+20%/unit); slaughter food values; breeding rates; Barn cap (8/16); meat spoilage (2 seasons).
+
+## Sample scenarios
+
+- **Normal:** a Year-3 farm keeps 4 chickens and 2 cows. The eggs and milk are a modest food trickle; the real value is a manure unit each season that keeps the two best fields off the fallow rotation. A pig fattens in the sty against a bad winter.
+- **Edge/exploit:** a player breeds a 12-pig herd as a food battery, diverting two fields to fodder. The fodder land, slow breeding, and Barn overflow mean the herd feeds fewer mouths than those two fields in potatoes would have — the battery underperforms, as the counter predicts.
+
+---
+
+# 17. Festival Interactions
+
+## Recap
+
+The four annual festivals (§12) are not just attend/skip toggles — each is a small **mini-loop** with its own payload: seed swaps and blessings (First Furrow), a hot market (High Market), a crop competition and feast (Harvest Home), and the Vigil rite (Long Vigil). Attendance costs real time; the payoff is soft goods (reputation, morale, contracts, atonement) rather than raw output.
+
+## Numbers & formulas
+
+| Festival | Season | Attend cost | Mini-loop payload |
+|---|---|---|---|
+| First Furrow | Spring | ½–1 rest day | Discounted seed (−25%); Grange field blessing (**−1 Reckoning, +5% fertility one field**); a civic contract offer |
+| High Market | Summer | 1 rest day | Market runs hot (**+0.3 venue price, 1 season**); extra contract offer; gossip (a demand-shock preview) |
+| Harvest Home | Fall | ½–1 rest day (lands in crunch) | **Crop competition** (below); feast (**+6 morale**) |
+| Long Vigil | Winter | 1 rest day | Vigil participation (**−2 Reckoning**); Midwinter feast (**+8 morale**); the Vigil's health is a Reckoning readout |
+
+- **Skip penalty:** −2 to −4 reputation (§12).
+- **Reputation gain is capped at +2/season from festivals** (§5) — attending all four in a season doesn't stack past the cap.
+- **Crop competition (Harvest Home):** enter your best crop; scored on `units × freshness × luck(±15%)`. Tiers: no place (participation, +1 rep) · third (10 coin) · second (20 coin) · first (40 coin + **+2 rep, permanent town renown flag**).
+
+## Intended experience
+
+Festivals should feel like the year's punctuation — the town gathering to trade, judge, feast, and watch the dark — and each should present one real *decision*, not a formality (chiefly: is a festival day worth more than a field day, right now?).
+
+## Four failure modes checked
+
+**Too easy** — free rep/morale, always attend. Defense: attendance costs a rest day in the tight economy (D-032); rep capped (+2/season); Harvest Home lands mid-crunch. **Verified counter:** *attending every festival should net-negative on pure output (lost labor) and net-positive on soft goods (rep, morale, contracts) — a genuine trade, never free.*
+
+**Too hard** — a mandatory tax. Defense: soft-required (skippable at a bounded rep cost); the payload scales with participation, not perfection.
+
+**Boring** — click "attend." Defense: the mini-loops (seed swap, competition, blessing, the Vigil stakes); festivals land at loaded moments; NPC beats fire here (Part 3B).
+
+**Exploitable** — festival-farm rep; farm the competition prize. Defense: rep cap + diminishing (§12); the prize needs a genuinely superior crop (the `units × freshness` score), which costs a field's worth of good management. **Verified counter:** *competition prize income should be less than the value of the field-management effort that wins it — a bonus for good farming, not a strategy.*
+
+## Balancing levers
+
+Attend costs (½–1 day); skip penalties (−2 to −4 rep); rep cap (+2/season); seed discount (25%); blessing relief (−1) & fertility (+5%); High Market price bump (+0.3) & duration; feast morale (+6/+8); Vigil relief (−2); competition score formula and prize tiers.
+
+## Sample scenarios
+
+- **Normal:** Harvest Home falls mid-crunch; the player sends half the household (partial rep + feast) and enters a prize pumpkin from a well-tended field, taking second (20 coin, +1 rep). A real allocation choice, honestly costed.
+- **Edge/exploit:** a rep-farmer attends all four festivals every year expecting to climb to Pillar fast; the +2/season cap and the lost labor days mean they gain standing slowly and fall behind on the fields — the cap doing its job.
+
+---
+
+# 18. Building Upgrade Trees (beyond MVP)
+
+## Recap
+
+The §8 core buildings sit at the base of **upgrade trees** — each structure can be climbed one tier at a time, at escalating cost, for stronger effects. The tree a player climbs (labor / storage / water / atonement / cruelty) expresses their strategy. Some tiers are post-MVP (D-033).
+
+## Numbers & formulas
+
+| Tree | Tier 1 | Tier 2 | Tier 3 (post-MVP) |
+|---|---|---|---|
+| **Housing** | Bunkhouse (80c, houses 5, −0.5 winter fuel) | Longhouse (200c+15 stone, houses 10, −1.0 fuel) | Barracks (400c, houses 16) |
+| **Storage** | Cellar I (60c, +50% life) | Cellar II (140c, +100% life) | Ice House (260c, +150% life, meat keeps) |
+| **Water** | Well (90c, drought 0.70→0.90) | Cistern (160c, →0.95 + a water reserve vs one drought/yr) | — |
+| **Atonement** | Shrine (50c, −1/season Reckoning) | Chapel (180c, −2/season + can host cleansings on-site) | — |
+| **Livestock** | Barn (120c, cap 8) | Big Barn (240c, cap 16, +manure eff.) | — |
+| **Cruelty** | Vat (300c, grow clones) | Vat II (250c, faster grow / better quality) | — |
+
+- Each upgrade requires the prior tier + coin + materials + clone-days, and **cannot be built in Winter** (§8).
+- **Demolition recovers 25% materials, no coin** (§8) — no refund loop.
+
+## Intended experience
+
+The homestead should visibly *become* something over a lifetime — and the shape it takes (a Longhouse-and-Vat labor factory, a Cellar-and-Cistern market operation, a Shrine-and-Barn humble holding) should read at a glance as the story of how the player chose to survive.
+
+## Four failure modes checked
+
+**Too easy** — rush upgrades and snowball. Defense: escalating costs; no-winter-building; the §8 opportunity-cost counters. **Verified counter:** *each upgrade tier should pay back over multiple seasons, not immediately — no tier is a Year-1 rush, and the Vat tree carries the §6 Reckoning drip (D-034).*
+
+**Too hard** — upgrades unaffordable, farm stalls. Defense: upgrades are optional accelerators; the cheap first tiers (Shrine 50, Cellar I 60) give incremental wins.
+
+**Boring** — spend-and-wait. Defense: *which tree to climb* is the strategy; limited warm-season build-days force prioritizing one tree per year.
+
+**Exploitable** — build-then-demolish refund; overbuild storage to hoard-arbitrage. Defense: 25% recovery / no coin (no loop); storage caps + storage life + tied-up capital bound hoarding (§2 H-05). **Verified counter:** *no build/demolish cycle is coin-positive, and storage upgrades never make warehouse arbitrage beat replanting (H-05).*
+
+## Balancing levers
+
+The full tier cost/effect table; prerequisite chains; the no-winter rule; demolition recovery (25%); the Vat-tree Reckoning drip (D-034).
+
+## Sample scenarios
+
+- **Normal:** a Year-4 market-focused farm climbs the storage tree (Cellar II) and the water tree (Cistern), timing sales to the Winter peak and shrugging off the Summer drought. A coherent build identity.
+- **Edge/exploit:** a player builds and demolishes a Cellar repeatedly hoping to recoup materials; each cycle loses 75% of the timber and all the labor — the anti-refund number holding.
+
+---
+
+# 19. Vane-Mystery Mechanics
+
+## Recap
+
+The narrative three-truth mystery (Part 3, D-014) runs on a hidden mechanical spine: a seeded **truth**, a hidden **clue meter** the player fills by investing in the Vanes, **reveal thresholds** tied to relationship tiers, and **payoff branches** (kind/cruel) that hook into the market, clone stock, and the season arcs. It is optional content with a real cost of entry and a real reward.
+
+## Numbers & formulas
+
+- **Seeding:** at lineage start the PRNG (D-021) fixes one truth (`spy` / `third_vane` / `vessel`). Immutable for the lineage; recorded in the Codex on reveal (D-015).
+- **Clue meter (hidden, 0–100):** filled by — befriending a Vane (**+10 per relationship tier gained**, Meredith or Ambrose), the shared-surface clue events (**+8 each**, §16-family cards), an Old Nan or Doc Bell reveal (**+20**), and triggers (the Rail arc, a Reckoning-tier crossing: **+15**).
+- **Reveal thresholds:** at **Warm** relationship *or* clue ≥ 40 → the player learns *there is a secret* (the surface). At **Bonded** *or* clue ≥ 80 → the active truth resolves.
+- **Payoff hooks:** **kind branch** → improved Ambrose clone stock/prices (§3, −10%), deeper Meredith Black-Market access (§2), a defended town (blunts the Cawdor/Cassius endgame). **cruel branch** → a coin/power windfall now (blackmail, sale, alliance) at a **−reputation and +Reckoning** cost, and a worse town endgame. Resolutions fire through the Year-5 and Year-8 arcs (§13/Part 4).
+
+## Intended experience
+
+The mystery should feel like something you *earn by paying attention to people* — years of small investments in two guarded siblings, resolving into a secret that recolors everything and hands you a genuine, weighty choice.
+
+## Four failure modes checked
+
+**Too easy** — the mystery is a free reward. Defense: the clue meter requires sustained relationship investment (time, festival attendance, coin) and engagement with events; the payoff has a real cost branch. **Verified counter:** *uncovering a truth requires investment across multiple in-game years (≥2 relationship tiers + several clue events) — never a single lucky roll.*
+
+**Too hard** — the mystery never surfaces / is opaque. Defense: the surface clues fire systemically once you engage the Vanes; Old Nan and Doc Bell offer guided reveals (+20); the Codex teaches returning players what the clues meant.
+
+**Boring** — a fetch quest. Defense: the three truths are distinct and reactive; the ambiguity (which truth?) holds until Bonded; the choices carry real moral and mechanical weight (esp. Truth C).
+
+**Exploitable** — save-scum to learn or re-roll the truth. Defense: seeded and immutable per lineage (D-021) — reloading reveals nothing and cannot change the truth. Ignoring the mystery entirely is a valid choice, not an exploit (it forgoes the payoff).
+
+## Balancing levers
+
+Clue-meter fill rates (tier +10, event +8, oracle +20, trigger +15); reveal thresholds (40 / 80, or Warm / Bonded); payoff magnitudes (Ambrose −10%, Black-Market access, cruel windfall vs. its rep/Reckoning cost).
+
+## Sample scenarios
+
+- **Normal:** over Years 2–5 the player drinks at Meredith's, does her small favors, and pieces together the clues; at Bonded the truth lands (Truth A, the spy), and they spend the Year-5 Auction arc helping her break the Cawdor Mill's hold — earning both Vanes and a town that holds.
+- **Edge/exploit:** a player reloads the day they hit Bonded hoping for a different (juicier) truth; the seed is fixed, the truth doesn't change, and they learn the mystery is theirs to uncover, not to shop for.
+
+---
+
+*Supplementary systems §16–§19 complete (issue #8). The Mechanics Bible now covers all core and supplementary systems; every mechanic referenced by the game is spec'd to the template with hard numbers and verified counters.*
