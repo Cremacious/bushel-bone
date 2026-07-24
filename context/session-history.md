@@ -31,15 +31,25 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 **Hypotheses checklist (done this session):** extracted all ~40 verified-counter claims into `docs/balance-model/hypotheses.md` — the Balance Model's test suite. Each has a stable ID (H-01…H-40), a falsifiable pass criterion, a failure-mode tag (DOMINANT / CRUELTY-DEBT / ECON / PACING / UX), a priority tier (P0/P1/P2), and its source §. P0 foundational set: H-01, H-09, H-10, H-11, H-12, H-16, H-17, H-28, H-30, H-32, H-37, H-39, H-40.
 
+**Decisions promoted (done this session):** D-024–D-028 written to `decisions-log.md` (labor-primary-constraint, cash-crops-zero-food, two-way reputation, hidden/25%-inherited Reckoning, content-not-power).
+
+**Git (done this session):** repo initialized on branch `main`; initial commit `83be5b1` captured everything through the consistency pass + hypotheses checklist (13 files). The balance-model code below is NOT yet committed (uncommitted working tree at session end).
+
+**Balance Model v0.1 (done this session — BUILT, NOT RUN):** wrote a stdlib-only Python simulation in `docs/balance-model/`. No Python is installed on the authoring Windows machine, so it was written and manually reviewed but **not executed** — run it in the web chat / a Python env. Season-stepped engine models the economic + moral core (crops/fertility/taint §1, clone food economy + morale deaths §3, winter survival §4, market + glut §2, Reckoning meter + tiers + run-end §6, mortgage §13). Tests 9 hypotheses (H-01, H-02, H-03, H-05, H-09, H-12, H-16, H-29, H-32); the other ~31 report NOT MODELED with reasons (events/contracts/Vat/construction/festivals/arcs/meta/ascension deferred). Two v0.1 findings are already expected: **H-02** (bone-root raw margin far exceeds the 1.5–2× target — relies on H-01 risk to offset) and **H-05** (arbitrage intent holds but the <+20% threshold is exceeded). Also flagged in-code: the food economy may be tight (year-round consumption vs. starting-plot yields) — a real balance question to confirm on first run.
+
 **Artifacts changed:**
-- `docs/mechanics-bible.md` — full draft of all 15 systems (was outline + §1); status line + "Systems covered" checklist all ✅; four consistency fixes applied.
-- `docs/balance-model/hypotheses.md` — **NEW**: 40-hypothesis test suite for the Balance Model.
+- `docs/mechanics-bible.md` — full draft of all 15 systems; four consistency fixes applied.
+- `docs/balance-model/hypotheses.md` — 40-hypothesis test suite.
+- `docs/balance-model/{config,model,strategies,hypotheses,run}.py` — **NEW**: the v0.1 simulation (stdlib-only, Python 3.8+).
+- `docs/balance-model/README.md` — updated from stub to reflect the built v0.1, how to run, scope, and expected findings.
+- `context/decisions-log.md` — D-024–D-028.
 - `context/session-history.md` — this entry.
 
 **Next up:**
-1. **Build the Balance Model** (Python, `docs/balance-model/`): encode the §1–§15 numbers, run seeded headless campaigns, and tag each of H-01…H-40 Confirmed / Refuted / Untested with seed count + result. Prioritize P0 hypotheses. NOTE: user flagged this Python work may be done in the web chat where code can execute and charts render.
-2. Optionally: promote the D-024+ cross-system commitments to `decisions-log.md` (still awaiting user's call — see below).
-3. Later: paper prototype playtest (for the feel that numbers can't confirm); then code scaffold (still deferred).
+1. **Run the Balance Model** in a Python env (`python run.py`, or `compare` / `sim`). Act on the report: confirm/tune the expected H-02, H-05, and food-economy findings; record verdicts.
+2. **Extend the engine** to the NOT MODELED systems (events §9, contracts §7, Vat/overwork cruelty loops §3, ascension §15) to unlock the remaining ~31 hypotheses — especially the P0/CRUELTY-DEBT set.
+3. **Commit** the balance-model code (uncommitted at session end).
+4. Later: paper prototype playtest (for the feel numbers can't confirm); then code scaffold (still deferred).
 
 **Open decisions for the user:**
 - Promote the five cross-system commitments above to `decisions-log.md` as D-024+? (Asked; not yet answered.) Recommendation: yes for at least "labor is the primary constraint" and "cash crops = zero food value," as the Balance Model leans on both.
