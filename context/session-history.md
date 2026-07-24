@@ -45,11 +45,18 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 - `context/decisions-log.md` — D-024–D-028.
 - `context/session-history.md` — this entry.
 
+**Balance Model RUN + CALIBRATED (done this session):** installed Python 3.12 via winget; ran the suite. First run starved ~90% of runs by Year 2 (all strategies). Ran a 6-round calibration pass (commits `e2805f5`, `e147257`) to a stable, testable economy. After calibration (40 seeds): **CONFIRMED** H-03, H-16, H-32; **INVARIANT** H-12; **PARTIAL** H-05, H-09, H-29; **REFUTED** H-01, H-02; 31 NOT MODELED. Config changes are flagged in-code as *proposals*, NOT ratified Mechanics-Bible edits. Full calibration log + findings in `docs/balance-model/README.md`.
+
+**DESIGN DECISIONS NOW PENDING (from the model's findings — need the user):**
+1. **Food economy (headline):** §1/§3/§4 never closed on ANNUAL balance — farmer+1 ate ~125 food/yr vs a starter plot's ~60–90/yr. The model closed it by cutting consumption (clone 0.5→0.4, winter 0.75→0.6, farmer 1.0→0.8). DECISION: lower consumption, raise yields, or enlarge the starter plot? (Squarely inside open Q-003.)
+2. **Mortgage grace:** 150/yr is unpayable in establishment years — model added a 2-year grace. Ratify as a §13 addition?
+3. **Bone-root price (H-02):** raw margin ~15.7× wheat (target 1.5–2×); it's the top in-sim earner. Lower `bone_root` price/yield, or restate the target as risk-adjusted?
+4. **H-01 timeline/accrual & H-32 peak-at-n=1** (clones not worth their food → labor not binding, tension w/ D-024) and **H-09 tension** (consumption cut removed intended Year-1 scarcity) — all need a numbers pass.
+
 **Next up:**
-1. **Run the Balance Model** in a Python env (`python run.py`, or `compare` / `sim`). Act on the report: confirm/tune the expected H-02, H-05, and food-economy findings; record verdicts.
-2. **Extend the engine** to the NOT MODELED systems (events §9, contracts §7, Vat/overwork cruelty loops §3, ascension §15) to unlock the remaining ~31 hypotheses — especially the P0/CRUELTY-DEBT set.
-3. **Commit** the balance-model code (uncommitted at session end).
-4. Later: paper prototype playtest (for the feel numbers can't confirm); then code scaffold (still deferred).
+1. **Resolve the design decisions above** (esp. the food economy), then re-run to reconverge; if ratified, back-port the accepted numbers into the Mechanics Bible §1/§3/§4/§13 and resolve/advance Q-003.
+2. **Extend the engine** to NOT MODELED systems (events §9, contracts §7, Vat/overwork loops §3, ascension §15) + a sustained-cruelty bot (to test H-01 properly) to unlock the remaining hypotheses.
+3. Later: paper prototype playtest; then code scaffold (still deferred).
 
 **Open decisions for the user:**
 - Promote the five cross-system commitments above to `decisions-log.md` as D-024+? (Asked; not yet answered.) Recommendation: yes for at least "labor is the primary constraint" and "cash crops = zero food value," as the Balance Model leans on both.
