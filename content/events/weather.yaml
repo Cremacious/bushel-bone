@@ -258,3 +258,80 @@
       result: "You keep the household warm and lose what's outside it. When the snow clears there is less standing than there was."
       effects:
         - food: { amount: -8 }
+
+- id: a-late-frost
+  title: "A Late Frost"
+  family: weather
+  severity: minor
+  illustration: "frost silvering the young spring shoots at dawn, a farmer's breath smoking over the ruined green"
+  setup: >
+    Winter's not done with the Sull. A late frost comes down in the night, well after it had any right
+    to, and silvers the young shoots that were the whole of your spring hope. Cover what you can before
+    the sun makes it worse; some of it will pull through, and some of it won't.
+  conditions:
+    - season: Spring
+  on_ignore: worst
+  choices:
+    - id: cover-the-beds
+      text: "Cover the tenderest beds with sacking."
+      cost: { labor: 0.5 }
+      result: "You're out before dawn throwing sacking over the tenderest rows, and it saves them — most of them. The rest you'll resow, and curse the sky, and plant on regardless, because that's the work."
+    - id: let-it-take-what-it-takes
+      text: "Let the frost take what it takes."
+      result: "You leave the frost to its work and take the loss. Half the young stand is blackened by noon. A late frost is the sky reminding a newcomer that the calendar is a suggestion out here, not a promise."
+      effects:
+        - crop: { field: this, blight: true }
+
+- id: the-thaw
+  title: "The Thaw"
+  family: weather
+  severity: flavor
+  illustration: "snow going to grey slush across the yard, water dripping from every eave, the first bare ground showing"
+  setup: >
+    The thaw comes at last — the snow going to grey slush, water off every eave, the first bare ground
+    showing black and wet at the field edges. The worst of the year is behind you. Everyone stands in
+    the yard a moment, breathing the mud-and-meltwater smell of having survived another winter.
+  conditions:
+    - season: Winter
+  on_ignore: dismiss
+
+- id: the-dust-comes
+  title: "The Dust Comes"
+  family: weather
+  severity: minor
+  illustration: "a brown wall of dust rolling across the flats, the sun going copper, a hand pulling a kerchief up"
+  setup: >
+    A dry wind's been blowing a week, and now it's picked up the topsoil and turned it into weather — a
+    brown haze that gets into the food, the eyes, the lungs, and scours the tender growth off the exposed
+    fields. Ground worked bare blows away. The old-timers with their windbreaks and their fallow watch
+    the dust roll and say nothing, which is its own kind of saying.
+  conditions:
+    - season: [Summer, Fall]
+  on_ignore: dismiss
+  choices:
+    - id: shelter-and-wait
+      text: "Shelter the stock and stores; wait it out."
+      cost: { labor: 0.5 }
+      result: "You get the stock in and the stores covered and wait behind shut doors while the wind scours the yard. You lose some tender growth and gain a resolve to plant a windbreak, which the old-timers could have told you, and did, in their way."
+      effects:
+        - morale: { target: household, amount: -1 }
+
+- id: a-fine-day-for-it
+  title: "A Fine Day for It"
+  family: weather
+  severity: flavor
+  illustration: "a clear high autumn sky, gold light across a ripe field, the whole household out cutting with a will"
+  setup: >
+    Now and then the Sull hands you a perfect one — a clear high sky, gold light lying long across the
+    ripe fields, the air just cool enough to work in all day and never tire. The whole household's out
+    cutting with a will, and for a few golden hours the ground feels less like a creditor and more like
+    a gift. You'll take it. Out here you learn to take the good days whole.
+  conditions:
+    - season: Fall
+  on_ignore: dismiss
+  choices:
+    - id: work-with-a-will
+      text: "Make the most of it."
+      result: "You work the fine day for all it's worth, and the harvest comes in clean and the household comes in tired and glad, and nobody speaks of the ground or the debt or the winter coming. A good day, banked against the hard ones. There are always hard ones."
+      effects:
+        - morale: { target: household, amount: +2 }

@@ -6,15 +6,15 @@ The ~120 MVP event cards (GitHub issue #16), authored against [`docs/content-sch
 
 | Family | Target | Status |
 |---|---|---|
-| `weather` | ~15 | 12 |
-| `reckoning` | ~20 | 14 |
-| `opportunities` | ~18 | ✅ **19** |
-| `town` | ~18 | ✅ **19** |
-| `pests` | ~15 | ✅ **15** |
-| `personal` | ~15 | 9 |
-| `wildlife` | ~12 | ✅ **12** |
+| `weather` | ~15 | ✅ 16 |
+| `reckoning` | ~20 | ✅ 21 |
+| `opportunities` | ~18 | ✅ 20 |
+| `town` | ~18 | ✅ 18 |
+| `pests` | ~15 | ✅ 14 |
+| `personal` | ~15 | ✅ 16 |
+| `wildlife` | ~12 | ✅ 12 |
 
-***~100 of ~120 written.*** Filling to the full MVP target. Remaining: +6 reckoning, +6 personal, +3 weather.
+***✅ 117 of ~120 — the MVP event library is COMPLETE.*** All 7 families, all severities. Validated: every file parses (pyyaml), no duplicate IDs, all required schema fields present. Additional cards beyond this are post-launch free content (D-035).
 
 Severity mix within each family follows §9: ~30% flavor, ~45% minor, ~20% major, ~5% crisis (crises are `crisis_gate`d).
 

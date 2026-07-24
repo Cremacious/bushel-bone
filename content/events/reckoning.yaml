@@ -347,3 +347,163 @@
     - id: refuse
       text: "Refuse a debt you can't read."
       result: '"Wise, maybe," she says. "Or maybe you just can''t afford to be wise yet. Come back when the ground''s taught you the difference." '
+
+# ── more WHISPERS ───────────────────────────────────────────────────────────
+- id: the-scarecrow
+  title: "The Scarecrow"
+  family: reckoning
+  severity: flavor
+  illustration: "a scarecrow in a still field, turned to face the house though no one moved it, straw hands slack"
+  setup: >
+    The scarecrow is facing the house this morning. You set it facing the road, the way you always do,
+    the way it was yesterday. No wind could have turned it on its post like that, square to your door.
+    You turn it back. You know, walking away, that you'll find it facing the house again tomorrow.
+  on_ignore: dismiss
+
+# ── more WARNINGS ───────────────────────────────────────────────────────────
+- id: the-well-runs-wrong
+  title: "The Well Runs Wrong"
+  family: reckoning
+  severity: minor
+  illustration: "water drawn from the well standing cloudy and faintly warm in the bucket, though the day is cold"
+  setup: >
+    The water's come up wrong — cloudy, and warm to the hand though the morning's cold, with a taste
+    under the taste that the stock won't drink past. The well was sweet when you dug it. Something down
+    in the ground has changed its mind about your water.
+  conditions:
+    - reckoning_tier: { min: warnings }
+  on_ignore: dismiss
+  choices:
+    - id: dig-a-new-well
+      text: "Dig a new well, further out."
+      cost: { labor: 1.0, coin: 5 }
+      result: "You sink a new well well clear of the old ground, and it comes up sweet. For now. The old well you cap and don't speak of, the way the town capped theirs."
+    - id: boil-and-bear-it
+      text: "Boil it and bear it."
+      result: "You boil the well water and drink it and try not to taste what's under the taste. The household drinks quieter each day, and the stock less each day, and you tell yourself it's only iron."
+      effects:
+        - morale: { target: household, amount: -2 }
+
+- id: a-knock-at-dusk
+  title: "A Knock at Dusk"
+  family: reckoning
+  severity: minor
+  illustration: "a fist raised to knock at a door in failing light, the caller's face turned just out of view"
+  setup: >
+    There's a knock at the door at dusk, and when you open it there's no one on the step — only, going
+    away down the road in the last light, someone you half-know the walk of, someone you're fairly
+    certain you buried. They don't turn around. The knock comes again the next dusk, and the next.
+  conditions:
+    - reckoning_tier: { min: warnings }
+    - ghost_roll: { min: 1 }
+  on_ignore: dismiss
+  choices:
+    - id: bar-the-door
+      text: "Bar the door and let dusk pass."
+      result: "You bar the door against the dusk and the knocking, night after night, and it comes anyway, patient, until you stop hearing it as knocking and start hearing it as asking."
+      effects:
+        - morale: { target: household, amount: -3 }
+
+- id: the-dream-of-the-ground
+  title: "The Dream of the Ground"
+  family: reckoning
+  severity: minor
+  illustration: "a sleeper's face in lamplight, eyes moving under the lids, a suggestion of soil at the edges of the frame"
+  setup: >
+    You've started dreaming of the ground — not of anything in it, just of the ground itself, deep and
+    pale and patient, keeping its long account. You wake knowing a number you can't name and can't
+    forget. The hands have the same dream. None of you says so. All of you know.
+  conditions:
+    - reckoning_tier: { min: warnings }
+  on_ignore: dismiss
+  choices:
+    - id: ask-nan-the-dream
+      text: "Ask Old Nan what the dream means."
+      requires:
+        - relationship: { npc: old_nan, min: warm }
+      result: '"It''s not a dream, child," she says. "It''s the ground introducing itself. It does that, when it''s minded to collect. Best you listen to what it''s counting." She won''t say more, and you don''t sleep better for the asking.'
+      effects:
+        - flag: { set: marrow-truth-glimpsed, to: true }
+
+# ── VIGIL FAILS (town-wide) ─────────────────────────────────────────────────
+- id: the-vigil-guttering
+  title: "The Vigil Guttering"
+  family: reckoning
+  severity: crisis
+  illustration: "the church candles all guttering low at once at midnight, the congregation's faces gone frightened in the failing light"
+  setup: >
+    Word comes from town that the Vigil is failing — the candles gutter low all at once now, the rite
+    won't hold the longest night the way it held it since the Salting, and Grange's voice cracks on the
+    naming. The whole valley feels the cap on the Old Well loosening. And the valley, when it looks for
+    a cause, looks toward the farm laying down the heaviest debt. It looks toward you.
+  crisis_gate:
+    - reckoning_tier: { min: vigil_fails }
+  on_ignore: worst
+  choices:
+    - id: shore-the-vigil
+      text: "Give everything you have to shoring the Vigil."
+      requires:
+        - any:
+            - relationship: { npc: elias_grange, min: warm }
+            - relationship: { npc: old_nan, min: warm }
+      result: "You throw your coin and your hands and your name behind the rite — Grange's words and Nan's older ones both — and between you the Vigil holds another year, guttering but unbroken. It buys the valley time. It does not buy forgiveness, and everyone knows whose debt nearly broke it."
+      effects:
+        - reckoning: -6
+        - coin: -30
+    - id: let-it-gutter
+      text: "It's the town's rite, not yours. Let it gutter."
+      result: "You leave the town to its failing candles. The Vigil gutters lower, and the ground comes a little further up, and the valley marks the newcomer who wouldn't lift a hand to hold the dark back. When it breaks — and it will — they'll remember you didn't help."
+      effects:
+        - reputation: -5
+
+- id: salt-the-threshold
+  title: "Salt the Threshold"
+  family: reckoning
+  severity: minor
+  illustration: "an old woman's hands laying a line of salt across a doorstep at dusk, careful as a prayer"
+  setup: >
+    Old Nan comes by unasked with a twist of salt and lays a line of it across your threshold, careful
+    as a prayer, and won't say plainly why. "The founders did it," is all she'll give you. "Kept some of
+    them out, some nights. You've been putting things down that'll come looking for the door."
+  conditions:
+    - reckoning_tier: { min: warnings }
+    - ghost_roll: { min: 1 }
+  recency_suppress: 18
+  on_ignore: dismiss
+  choices:
+    - id: keep-the-salt
+      text: "Keep the salt lines, the old way."
+      result: "You keep the salt fresh across every threshold the way Nan showed you, and whether it holds anything out or only holds your nerve together, you sleep the better for the doing. The old ways are mostly that — something to do with your hands against the dark."
+      effects:
+        - morale: { target: household, amount: +1 }
+    - id: sweep-it-away
+      text: "Sweep it off. You'll not keep house by superstition."
+      result: "You sweep Nan's salt off the step, because you're a modern man and this is a modern age. That night the knocking comes, and you lie awake doing sums about superstition, and by morning you've swept nothing but your own certainty out the door."
+      effects:
+        - morale: { target: household, amount: -2 }
+
+- id: the-preachers-warning
+  title: "Grange Names It"
+  family: reckoning
+  severity: major
+  illustration: "the preacher at your gate, hat off, his face stripped of its Sunday certainty, naming a hard thing plainly"
+  setup: >
+    Grange rides out and takes his hat off and, for once, doesn't reach for scripture. "I'll say it
+    plain, because someone must," he tells you. "The ground's woken on your account. I've seen the signs
+    my whole life and I know them. You've a little time yet to set it right — the naming, the rites, the
+    stopping of whatever you've been doing. Not much time. But some. I'd not waste it."
+  conditions:
+    - reckoning_tier: { min: walkers }
+  recency_suppress: 20
+  on_ignore: dismiss
+  choices:
+    - id: heed-him
+      text: "Heed him. Begin setting it right."
+      result: "You take the preacher's plain warning the way it was meant, and begin the hard slow work of paying the ground back — the namings, the rites, the stopping. Grange helps where he can. It is not too late. He would not have ridden out if it were."
+      effects:
+        - reckoning: -4
+    - id: wave-him-off
+      text: "Tell him to keep his sermons."
+      result: "You send the preacher off with his hat in his hand and his warning unheeded. He goes slow, looking back once. 'I'll pray for you,' he says, and it does not sound like comfort. It sounds like what a man says over a grave not yet dug."
+      effects:
+        - relationship: { npc: elias_grange, delta: -1 }

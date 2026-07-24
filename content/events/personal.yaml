@@ -235,3 +235,201 @@
       result: "You let it pass without a word, as though being hauled from death were a chore like any other. She learns what her life was worth to you in that silence. So do the rest of them."
       effects:
         - morale: { target: household, amount: -4 }
+
+- id: the-two-of-them
+  title: "The Two of Them"
+  family: personal
+  severity: minor
+  illustration: "two clones sitting close on the bunkhouse step at dusk, shoulders touching, not talking, just being near"
+  setup: >
+    Two of the hands have taken to each other — you see them on the step at dusk, close, not saying
+    much, just being near. The Vat gave them no leave to love anybody. They've gone and done it anyway,
+    which tells you something about what you're really growing out there.
+  conditions:
+    - clones: { min: 3 }
+  once: true
+  on_ignore: dismiss
+  choices:
+    - id: leave-them-be
+      text: "Leave them be. Let them have it."
+      result: "You say nothing and let the two of them have their dusks on the step. A farm where the hands have something to hold onto is a farm that holds together. They work the better for it, and so, somehow, do you."
+      effects:
+        - morale: { target: household, amount: +3 }
+    - id: split-them-up
+      text: "Split them across the work. No place for it."
+      result: "You put them on opposite ends of the farm, because sentiment slows a crew, or so you tell yourself. They obey. The dusks on the step end. So does something in the whole household's face when it looks at you."
+      effects:
+        - morale: { target: household, amount: -4 }
+
+- id: wont
+  title: "Won't"
+  family: personal
+  severity: major
+  illustration: "a clone standing stock-still in a field, tools down, meeting the farmer's eye and not moving"
+  setup: >
+    One of the hands has stopped. Not tired — stopped. Stands in the field with the tools down and
+    meets your eye and won't move, won't say why, won't be shouted back to work. A hand that defies you
+    in front of the others is a crack in the whole crew, and every one of them is watching to see what
+    you do with a crack.
+  conditions:
+    - clones: { min: 2 }
+  on_ignore: worst
+  choices:
+    - id: hear-them-out
+      text: "Ask, plainly, what's wrong."
+      result: "You put your own tools down and ask. It takes a while, but it comes out — a grievance, a fear, a small hard thing you can actually fix. You fix it. The crew watches a man listen to a hand, and works the harder for having seen it."
+      effects:
+        - morale: { target: household, amount: +2 }
+    - id: make-an-example
+      text: "Make an example. The others are watching."
+      result: "You break the defiance hard, in front of them all, because a crew must know who holds the whip. It works — the hand goes back to the field. And every other hand learns, watching, exactly what you are, and files it where the ground can read it later."
+      effects:
+        - morale: { target: household, amount: -8 }
+        - reckoning: +1
+
+- id: old-hands
+  title: "Old Hands"
+  family: personal
+  severity: minor
+  illustration: "a long-serving clone moving stiff at first light, grey at the temples, slower than the young ones but sure"
+  setup: >
+    One of your hands is getting old — grey at the temple now, slow to start of a cold morning, not the
+    worker he was. He knows it. He works twice as careful to make up for what he's lost in speed, and
+    watches your face for the day you decide he's not worth his feed.
+  conditions:
+    - clones: { min: 2 }
+  on_ignore: dismiss
+  choices:
+    - id: keep-him-on
+      text: "Keep him on. He's earned it."
+      result: "You put him to the work that wants care over speed — the seed, the tending, the young ones' teaching — and he does it better than any of them. A farm that keeps its old hands is a farm the young ones will stay to grow old on."
+      effects:
+        - morale: { target: household, amount: +2 }
+    - id: sell-him-on
+      text: "Sell him to Vane while he's worth anything."
+      result: "You sell the old hand to Ambrose before age takes the last of his value. He goes without a word — he saw it coming. The young ones watch him go and do the arithmetic on their own futures, and the doing of it costs you more than the old man's slowing ever did."
+      effects:
+        - coin: +20
+        - morale: { target: household, amount: -6 }
+        - reckoning: +2
+
+- id: grief-in-the-bunkhouse
+  title: "Grief in the Bunkhouse"
+  family: personal
+  severity: minor
+  illustration: "the hands gathered quiet around an empty cot, one of them holding a dead friend's tin cup"
+  setup: >
+    One of them died this winter, and the ones left are grieving — quiet, around the empty cot, one of
+    them turning a dead friend's tin cup over and over. The Vat grew them to work, not to mourn. They
+    mourn anyway. How you meet it tells them whether their own dying will be marked or forgotten.
+  conditions:
+    - ghost_roll: { min: 1 }
+  on_ignore: dismiss
+  choices:
+    - id: grieve-with-them
+      text: "Stop the work. Grieve with them a while."
+      result: "You call a halt and stand with them a while at the empty cot, and say the dead one's name, and let the grieving be grief and not weakness. It costs an afternoon. It buys a crew that knows their names will be said too, when it's their turn, and there is no loyalty deeper than that."
+      effects:
+        - morale: { target: household, amount: +4 }
+    - id: back-to-work
+      text: "Grief won't bring the harvest in. Back to work."
+      result: "You send them back to the field with the cup still warm from a dead hand's grip. They go. They work. And a small door closes behind their eyes that you will never get open again."
+      effects:
+        - morale: { target: household, amount: -5 }
+
+- id: the-broken-plough
+  title: "The Broken Plough"
+  family: personal
+  severity: major
+  illustration: "a snapped plough-blade in the mud, a clone standing over it stricken, the farmer's shadow falling across both"
+  setup: >
+    A hand has broken the plough — carelessness, or bad iron, or plain hard luck, but it's broken, and
+    it's a season's mending or a purse of marks to replace, and the hand who did it stands over the
+    wreck of it white-faced, waiting to learn what kind of man you are when a thing goes wrong.
+  conditions:
+    - clones: { min: 1 }
+  on_ignore: dismiss
+  choices:
+    - id: let-it-go
+      text: "It's iron. Iron breaks. Say so and move on."
+      result: "'It's iron,' you say. 'Iron breaks.' The hand looks at you like you've handed him something, which you have. A crew that isn't afraid of you for an honest accident is a crew that tells you the truth when it matters."
+      effects:
+        - morale: { target: household, amount: +2 }
+    - id: take-it-out-of-him
+      text: "Take it out of his hide, hard."
+      result: "You make the hand pay for the iron in a way he'll remember, in front of the others, because a farm can't afford careless hands. He remembers. So does the ground, which does not distinguish as finely as you do between discipline and cruelty, and keeps its own accounts."
+      effects:
+        - morale: { target: household, amount: -6 }
+        - reckoning: +2
+
+- id: a-small-gift
+  title: "A Small Gift"
+  family: personal
+  severity: flavor
+  illustration: "a rough-carved wooden bird set on the farmhouse windowsill, a hand walking away not looking back"
+  setup: >
+    There's a thing on the windowsill this morning — a little bird, rough-carved out of a scrap of
+    cottonwood, set there by one of the hands and no note and no name. It's not much. It's the kind of
+    not-much a person only makes for someone they've decided is worth the whittling.
+  conditions:
+    - clones: { min: 1 }
+  once: true
+  on_ignore: dismiss
+  choices:
+    - id: keep-it
+      text: "Keep it on the sill."
+      result: "You leave the little bird on the sill where you can see it, and you never say who gave it and neither do they, and it sits there through every hard season as a small stubborn fact: that on this cruel ground, one grown soul thought another worth the carving."
+      effects:
+        - morale: { target: household, amount: +2 }
+
+- id: first-day
+  title: "First Day"
+  family: personal
+  severity: minor
+  illustration: "a new hand standing awkward in the yard on a first morning, not knowing where to put himself or his hands"
+  setup: >
+    The new hand stands awkward in the yard his first morning, not knowing where to stand or what to do
+    with his hands, watching you the way a dog watches a man it hasn't decided about yet. What you make
+    of this first day, he'll carry the shape of for as long as he's yours.
+  conditions:
+    - clones: { min: 2 }
+  once: true
+  on_ignore: dismiss
+  choices:
+    - id: welcome-him
+      text: "Show him the place; give him his feet."
+      result: "You walk him the farm, name the fields and the other hands, and let him find his feet before you find him fault. He starts the day a wary stranger and ends it a hand, and the difference is a morning of your time and a lifetime of his loyalty."
+      effects:
+        - morale: { target: household, amount: +2 }
+    - id: work-him-cold
+      text: "Straight to the field. He'll learn by doing."
+      result: "You put him to the hardest work cold, no welcome, and he does it because he must and learns the farm is a thing done to him, not a place he's part of. He'll work. He'll never quite belong. Some part of you meant it that way, and the ground makes note of the meaning."
+      effects:
+        - morale: { target: household, amount: -2 }
+
+- id: the-hand-who-wont-eat
+  title: "The Hand Who Won't Eat"
+  family: personal
+  severity: major
+  illustration: "a full bowl untouched on a bunkhouse table, a hollow-eyed clone turned to the wall, the others exchanging looks"
+  setup: >
+    One of the hands has stopped eating — turns his bowl away, turns to the wall, wastes to shadow while
+    the others watch and don't know what to do. It isn't sickness Doc Bell can name. It's the kind of
+    giving-up that takes a soul the Vat grew for work and never taught a reason to keep going. He's
+    slipping, and quiet, and quick.
+  conditions:
+    - clones: { min: 2 }
+  on_ignore: worst
+  choices:
+    - id: give-him-reason
+      text: "Sit with him. Find him a reason to stay."
+      cost: { labor: 0.5 }
+      result: "You sit with him in the dark of the bunkhouse and don't leave until he's talking, and it's slow and it's hard and it works — you find him a small reason, a task that's his, a name said kind, a place. He eats. He stays. It cost you a day and it saved a life, and you'd not have called those a fair trade before you came to the Sull."
+      effects:
+        - morale: { target: household, amount: +3 }
+    - id: let-him-go
+      text: "You can't nurse a hand who won't be nursed."
+      result: "You tell yourself you can't force a soul to want its own life, and you let him slip, and one grey morning the bowl's still full and the cot's cold. You bury him. The others watched you let it happen, and each of them privately reckons how much fight they'd have in them, the day the Sull comes for their own reason to stay."
+      effects:
+        - clone: { kill: this, disposal: marked }
+        - morale: { target: household, amount: -4 }

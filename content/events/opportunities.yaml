@@ -447,3 +447,45 @@
       result: "You carry it to Meredith unread. She takes it, reads your face for whether you looked, and decides — you'll never be sure rightly — to believe you didn't. 'Obliged,' she says, and it costs her something to say."
       effects:
         - relationship: { npc: meredith_vane, delta: +1 }
+
+- id: a-breeding-pair
+  title: "A Breeding Pair"
+  family: opportunities
+  severity: minor
+  illustration: "two young pigs in a slatted crate on a wagon-bed, a farmer looking them over, a deal in the offing"
+  setup: >
+    A farmer breaking up his stock offers you a breeding pair of pigs, cheap and sound. A pair like
+    this is a herd in a year or two, and a herd is meat, and manure, and a hedge against a bad harvest —
+    if you've the fodder and the barn to carry them.
+  conditions:
+    - has_building: barn
+  recency_suppress: 18
+  on_ignore: dismiss
+  choices:
+    - id: buy-the-pair
+      text: "Buy the pair. (25 marks)"
+      cost: { coin: 25 }
+      result: "You buy the pigs and set them to the business of making more pigs, which they undertake with enthusiasm. In a year you'll have a herd, and manure for the tired fields, and a winter that scares you a little less."
+      effects:
+        - flag: { set: has-livestock, to: true }
+    - id: pass-on-pigs
+      text: "Pass. You've mouths enough."
+      result: "You let the pigs go to another barn. A herd's a fine thing, but it's fodder and work and one more thing to keep alive through a Sull winter, and you've enough of those already."
+
+- id: the-corn-factor
+  title: "The Corn Factor"
+  family: opportunities
+  severity: minor
+  illustration: "a buyer testing a handful of corn kernels between his teeth, a full wagon behind him, coin ready"
+  setup: >
+    A factor's come up the road buying corn for a distillery east of Ledbury, and paying well for it —
+    a bushel of corn's worth more turned to drink than to bread, it seems, which tells you something
+    about the country. If you've corn to sell, his purse is open.
+  recency_suppress: 15
+  on_ignore: dismiss
+  choices:
+    - id: sell-to-factor
+      text: "Sell the factor your corn."
+      result: "You sell into the distillery trade and do well by it. What becomes of the corn after — and of the men who drink it — is between them and their own accounts, not yours. You've marks in hand and a factor who'll be back."
+      effects:
+        - market: { crop: corn, shock: +0.4, seasons: 1 }
