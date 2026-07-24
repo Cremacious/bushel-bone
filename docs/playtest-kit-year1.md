@@ -54,11 +54,13 @@ Year 1 runs as **4 seasons** (Spring → Summer → Fall → Winter). Each seaso
 | Cotton (cash) | 10 | 2 seasons | 5 | 0 | 12 | **needs 2 hands to harvest** |
 
 *Yield is for full Fertility. Each harvest drops that field's Fertility one dot (●●●→●●). Leaving a field empty a season (fallow) restores one dot.*
+*Planting cost is the seed price: **spend your starting 20 seed first** (1 seed = 1 unit of cost), then pay the rest in marks.*
 
 ### Food & fuel
-- **Food needed each season:** ~**30** (farmer + Reuben). **Winter: ~35.**
+- **Food needed each season:** ~**30** (farmer + Reuben). **Winter: ~35.** Each **extra hand** adds **~10/season** (**~15 in winter**) — a second mouth is a real winter burden.
 - Convert crops to food at harvest or when eating (Food each, above). Cash crops feed no one.
-- **Winter fuel needed:** ~**45.** Chop wood: Reuben on "Chop" = **16 wood/season**. Buy coal: 3 marks each, 1 coal = 2 fuel.
+- **Winter fuel needed:** ~**45** (**+10 in a cold snap**). Chop wood: a hand on "Chop" = **16 wood/season**. Buy coal: 3 marks each, 1 coal = 2 fuel.
+- **Falling short (winter):** if **fuel** < need, the **frailest clone freezes** (give a marked grave). If **food** < need, clones go **hungry first** (lose a Morale dot each) — the farmer eats last, so the run only ends if there isn't enough for *you*. (Emergency levers: Sister Ruth's basket if you're short, slaughter a beast, or fire-sale stored crops for coal.)
 
 ### Labor (Reuben = 1 hand)
 - One job per season. Tending a field it's planted in = **+2 yield** on that field. Cotton needs **2 hands** at harvest — with one hand you bring in **half**.
