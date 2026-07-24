@@ -316,3 +316,166 @@
       result: "You catch the fear under the arithmetic and name it. He goes still. 'The stories,' he says at last, very quiet. 'I believe the stories. God help me, out here I've started to.' It is the most honest thing a banker has ever said to you, and you will use it."
       effects:
         - flag: { set: silas-afraid, to: true }
+
+- id: old-nan-in-the-square
+  title: "Old Nan in the Square"
+  family: town
+  severity: minor
+  illustration: "the old woman crossing the market square, the crowd parting around her without seeming to, no one meeting her eye"
+  setup: >
+    Old Nan comes into town, which she rarely does, and the square parts around her like water round a
+    stone — nobody quite looking, nobody quite in her way. She stops at your stall. "You," she says.
+    "The ground's been talking about your east field. Thought you'd want telling."
+  conditions:
+    - relationship: { npc: old_nan, min: neutral }
+  recency_suppress: 18
+  on_ignore: dismiss
+  choices:
+    - id: hear-her
+      text: "Step aside with her and listen."
+      result: "You take her word away from the crowd's ears. What she tells you is half-riddle and wholly true, and worth more than a day's takings. The town watches you talk to the witch, and files it away."
+      effects:
+        - relationship: { npc: old_nan, delta: +1 }
+    - id: not-here
+      text: "Not here, not in front of the town."
+      result: '"Ashamed to be seen with me," she says, not unkindly. "They all are, till the ground comes calling. Then it''s Nan they send for." She moves on, and the square breathes again.'
+      effects:
+        - relationship: { npc: old_nan, delta: -1 }
+
+- id: sunday
+  title: "Sunday"
+  family: town
+  severity: flavor
+  illustration: "the congregation filing out of the whitewashed church into hard light, the preacher shaking hands at the door"
+  setup: >
+    Grange preaches the Vigil on Sunday, as he always does — the world old and hungry underneath, the
+    living owing a debt of watching. Today his certainty has a crack in it you can hear if you listen,
+    and once or twice his eyes go to the back of the room, where the ground is, and lose the thread.
+  conditions:
+    - relationship: { npc: elias_grange, min: neutral }
+  on_ignore: dismiss
+
+- id: the-water-rights
+  title: "The Water Rights"
+  family: town
+  severity: major
+  illustration: "two farmers and a dry ditch, the town gathered on the bank to see which way the mayor rules"
+  setup: >
+    A quarrel over the creek has split the valley — upstream and down, whose fields drink first in a dry
+    year. Halloway means to settle it, and both sides are counting who stands where. Your voice carries;
+    you'll have to spend it on one side or the other, or make an enemy of both by staying out.
+  weight: 8
+  recency_suppress: 20
+  on_ignore: dismiss
+  choices:
+    - id: side-upstream
+      text: "Side with the upstream men."
+      result: "You back the upstream farms, and the ditch runs their way. You've made friends up the creek and cool neighbors down it. That's the arithmetic of taking a side; there was never a way to please the whole valley."
+      effects:
+        - reputation: +1
+    - id: side-downstream
+      text: "Side with the downstream men."
+      result: "You back the downstream farms — the smaller holdings, the ones a dry year ruins. It costs you the upstream men's regard and buys you the gratitude of the desperate, which is worth more than it looks come a hard season."
+      effects:
+        - reputation: +1
+    - id: stay-out
+      text: "Stay out of it entirely."
+      result: "You keep your voice to yourself and your hands clean. Both sides mark you for a man who wouldn't stand up when the valley needed standing. Clean hands, in the Sull, are just hands nobody trusts."
+      effects:
+        - reputation: -2
+
+- id: what-doc-bell-heard
+  title: "What Doc Bell Heard"
+  family: town
+  severity: minor
+  illustration: "the doctor leaning in a doorway, dry and unhurried, a bottle in one hand, watching the street"
+  setup: >
+    Doc Bell knows everyone's ailments and half their secrets, and dispenses both with the same dry care.
+    Today they've a rumor for you — for a favor, or a bottle, or just because you treat your hands
+    decent and they've noticed. "Heard something," Bell says. "Might be worth your knowing."
+  conditions:
+    - relationship: { npc: doc_bell, min: warm }
+  recency_suppress: 14
+  on_ignore: dismiss
+  choices:
+    - id: hear-the-rumor
+      text: "Hear it out."
+      result: "Bell tells you a thing about a neighbor, or the market, or the Vanes — dry, precise, and useful. Information is the one crop that never rots. You file it away and stand them a drink."
+      effects:
+        - flag: { set: heard-rumor, to: true }
+    - id: not-my-business
+      text: "Other men's business isn't yours."
+      result: "'Suit yourself,' Bell says, unbothered. 'Ignorance keeps some men sleeping better. Not out here, but some men.' They go back to watching the street."
+
+- id: a-wedding
+  title: "A Wedding at the Church"
+  family: town
+  severity: minor
+  illustration: "a country wedding on the church green, plain flowers, the whole town turned out, one genuinely happy day"
+  setup: >
+    There's a wedding at the church — a rare wholly-glad day in a country that doesn't hand them out
+    freely. The whole town turns out. For an afternoon nobody talks of blight or debt or the ground,
+    and the fiddle plays, and it is almost enough to make a man forget where he is.
+  recency_suppress: 20
+  on_ignore: dismiss
+  choices:
+    - id: go-and-be-glad
+      text: "Go, and be glad with them."
+      result: "You take the afternoon and give it over to being glad, which is harder work out here than it sounds and worth every hour. The household comes home lighter than it went."
+      effects:
+        - morale: { target: household, amount: +4 }
+        - reputation: +1
+    - id: work-the-day
+      text: "A wedding won't weed the fields."
+      result: "You work while the fiddle plays across the valley. The weeds are gone and so is the afternoon, and the town noticed the one farm that didn't come."
+      effects:
+        - reputation: -1
+
+- id: the-charters-due
+  title: "The Charter's Due"
+  family: town
+  severity: major
+  illustration: "a charter-company agent with a levy book, a badge of office, a line of grim farmers waiting to pay"
+  setup: >
+    The charter company sends a man to collect its due — a levy on every homestead, for the roads and
+    the law and the privilege of scratching a living off ground the company owns on paper. Small enough.
+    Regular as the frost, and about as welcome.
+  conditions:
+    - year: { min: 2 }
+  recency_suppress: 24
+  on_ignore: worst
+  choices:
+    - id: pay-the-levy
+      text: "Pay the levy."
+      cost: { coin: 20 }
+      result: "You pay, because the alternative is a note in the company's book beside your name, and company books have long memories and longer arms."
+    - id: plead-poverty
+      text: "Plead a hard year."
+      result: "You plead poverty, which is half true and wholly futile. He marks your name for next season's collection, with interest, and tips his hat. The company always collects. It only ever chooses when."
+      effects:
+        - flag: { set: levy-owed, to: true }
+
+- id: the-blessing
+  title: "The Blessing of the Fields"
+  family: town
+  severity: minor
+  illustration: "the preacher walking a field's edge with his book, the household following, a hand cupped over new seed"
+  setup: >
+    Grange offers to walk your fields and say the old words over them — a blessing on the ground and
+    the growing. The hardline Church calls it half-pagan. Grange says a man does what mercy he can and
+    argues the doctrine later. He's offering it to you now, book in hand.
+  conditions:
+    - relationship: { npc: elias_grange, min: warm }
+    - season: Spring
+  recency_suppress: 16
+  on_ignore: dismiss
+  choices:
+    - id: accept-blessing
+      text: "Let him bless the ground."
+      result: "Grange walks your fields saying words older than the town and newer than his doubt, and whether it's God or habit or the ground itself listening, the season goes a little kinder for it. The land, for once, feels asked-after rather than taken-from."
+      effects:
+        - reckoning: -1
+        - flag: { set: fields-blessed, to: true }
+    - id: decline-blessing
+      text: "Decline, politely."
+      result: '"No matter," Grange says, closing the book. "The offer stands. The ground''s patient, and so, mostly, am I." He rides off, and you wonder if you''ve just refused something you''ll wish you hadn''t.'

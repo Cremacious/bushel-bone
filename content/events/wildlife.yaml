@@ -149,3 +149,121 @@
       result: "She looks at the shape you've scratched in the dirt for her a long moment. 'That's not a thing that eats crops,' she says. 'That's a thing that counts them. Mind what you've been growing, and how.'"
       effects:
         - morale: { target: household, amount: -1 }
+
+- id: rabbits-in-the-garden
+  title: "Rabbits"
+  family: wildlife
+  severity: minor
+  illustration: "neat-nibbled rows of young greens at dawn, a rabbit sitting up unbothered among them"
+  setup: >
+    Rabbits have found the young greens and made a nightly habit of them — neat little nibbles down
+    every row, and the culprits sitting up bold as brass at dawn. They breed faster than you can shoot,
+    and multiply the trouble by the week.
+  on_ignore: dismiss
+  choices:
+    - id: snare-them
+      text: "Set snares along the runs."
+      cost: { coin: 3 }
+      result: "Wire snares along the rabbit-runs thin them out and put a little meat in the pot besides. A fair exchange, from the rabbits' side of it or yours."
+      effects:
+        - food: { amount: +3 }
+    - id: let-them-nibble
+      text: "It's a few greens. Let them be."
+      result: "A few greens becomes most of a row, then two, as the rabbits breed to the size of the free meal. You'll wish you'd set the snares when you had the fewer of them to catch."
+
+- id: the-bear
+  title: "The Bear"
+  family: wildlife
+  severity: major
+  illustration: "a great dark bear standing at the treeline at dusk, the stock gone silent, everything very still"
+  setup: >
+    A bear has come down out of the high ground — a big one, drawn by the stock or the stores or the
+    smell of a hard winter coming. It stands at the treeline at dusk and watches the farm, and the
+    animals have gone silent, and everything is very still. A bear is not a thing you shoo.
+  weight: 5
+  conditions:
+    - season: [Summer, Fall]
+  on_ignore: worst
+  choices:
+    - id: drive-it-off
+      text: "Light fires and drive it off with noise."
+      cost: { labor: 0.5 }
+      result: "You ring the yard with fire and racket and stand your ground through a long night, and by morning the bear has thought better of it and gone back to the high ground. You do not sleep for a week."
+    - id: give-it-a-beast
+      text: "Stake out a beast and let it take that."
+      result: "You give the bear an old pig staked at the treeline, and it takes the offering and leaves the rest. It's a beast you couldn't spare and a lesson in what the wild costs. Better the pig than a hand."
+      effects:
+        - food: { amount: -8 }
+
+- id: birds-on-the-new-seed
+  title: "Birds on the New Seed"
+  family: wildlife
+  severity: minor
+  illustration: "a flock of small birds working a just-sown field, dust rising where they scratch"
+  setup: >
+    You've barely sown before the birds are on it — a whole flock working the field, scratching up the
+    new seed faster than it can bed in. Seed on the ground is a bird's breakfast until it's under it.
+  conditions:
+    - season: Spring
+  on_ignore: worst
+  choices:
+    - id: harrow-it-under
+      text: "Harrow the seed under quick."
+      cost: { labor: 0.5 }
+      result: "You harrow the seed deeper than the birds will dig and lose only what was already lost. Quick work, and it saves the sowing."
+    - id: resow
+      text: "Let them feed; sow again over the gaps."
+      cost: { seed: { crop: potato, amount: -4 } }
+      result: "You let the birds take their fill and sow again into the bare patches. It costs you seed and a second sowing, and the birds are back for that too, but the field fills in eventually."
+
+- id: wild-dogs-at-the-line
+  title: "Wild Dogs at the Line"
+  family: wildlife
+  severity: minor
+  illustration: "a lean pack of feral dogs slinking along the fence line at grey dawn, ribs and wariness"
+  setup: >
+    A pack of feral dogs works the fence line at dawn — gone wild off some failed farm, lean and
+    wary and getting bolder. They'll worry the stock and worse, given the run of the place. A pack
+    that learns a farm is easy comes back to it.
+  on_ignore: worst
+  choices:
+    - id: drive-off-dogs
+      text: "Run them off hard, so they learn."
+      cost: { labor: 0.5 }
+      result: "You go at them with noise and a rifle fired over their heads, and they learn your farm is the wrong kind of easy. They slink off to trouble a softer neighbor."
+    - id: ignore-dogs
+      text: "They're only dogs. Leave them."
+      result: "The dogs take a hen, then a lamb, then grow bold enough for worse, because a pack that meets no answer keeps coming back for more of the same nothing."
+      effects:
+        - food: { amount: -5 }
+
+- id: the-diggers
+  title: "The Diggers"
+  family: wildlife
+  severity: flavor
+  illustration: "a scatter of fresh earth-mounds across a field, a run of collapsed furrow, no culprit in sight"
+  setup: >
+    Something's tunneling the low field — moles, or gophers, or the ground just settling in its own way
+    the way the old-timers say Sull ground does. Mounds of fresh earth, a run of collapsed furrow, and
+    never a digger to be seen. Probably moles. Probably.
+  on_ignore: dismiss
+
+- id: the-hawk
+  title: "The Hawk"
+  family: wildlife
+  severity: flavor
+  illustration: "a red-tailed hawk riding the wind high over the fields, a hush across the whole farm beneath it"
+  setup: >
+    A hawk has taken to hunting over your fields — a big red-tailed thing that rides the wind for hours,
+    and where it hunts the mice and the rabbits and the small thieves go still and scarce. Some farmers
+    shoot them. Wiser ones leave the hawk to keep the vermin honest.
+  on_ignore: dismiss
+  choices:
+    - id: leave-the-hawk
+      text: "Leave the hawk to its work."
+      result: "You leave the hawk be, and it earns its keep — the field's the quieter of mice and rabbits for its patrols. The best hired hand you never paid."
+      effects:
+        - morale: { target: household, amount: +1 }
+    - id: shoot-the-hawk
+      text: "Shoot it off your stock."
+      result: "You take a shot at the hawk to keep it off the chickens, and it lifts away and doesn't return. The chickens are safer. The mice, you'll find by harvest, are not, and there are a great many more of them than there were hawks."

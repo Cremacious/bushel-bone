@@ -173,3 +173,154 @@
           effects:
             - crop: { field: this, blight: true }
             - food: { amount: -12 }
+
+- id: weevils
+  title: "Weevils"
+  family: pests
+  severity: minor
+  illustration: "a scoop of seed grain shot through with tiny holes, a weevil crawling free of one"
+  setup: >
+    There are weevils in the seed grain — the holed kernels sift out light and worthless. A stored
+    seed-crop is only worth what still sprouts, and less of yours does than did last week.
+  conditions:
+    - season: [Fall, Winter]
+  on_ignore: worst
+  choices:
+    - id: sift-and-dry
+      text: "Sift and dry the seed in the sun."
+      cost: { labor: 0.5 }
+      result: "A cold afternoon of sifting saves most of the seed. Tedious, thankless, and cheaper than buying seed come spring."
+    - id: leave-it
+      text: "Leave it. Buy fresh in spring."
+      result: "You let the weevils have their fill and resolve to buy seed later. It's more marks than the sifting would have cost you, but it's marks in spring, not sweat now, and that's a trade a tired man makes."
+      effects:
+        - seed: { crop: wheat, amount: -6 }
+
+- id: grey-mold
+  title: "Grey Mold"
+  family: pests
+  severity: minor
+  illustration: "a soft grey fur creeping over stored roots in a dim cellar, spreading faster than mold should"
+  setup: >
+    A grey mold has got into the cellar and it is spreading faster than any honest damp should — over
+    the roots, up the walls, toward the seed. Doc Bell would name the spore. Old Nan would name the
+    field it came off. You'd rather not ask either just yet.
+  conditions:
+    - reckoning_tier: { min: warnings }
+    - has_building: cellar
+  on_ignore: worst
+  choices:
+    - id: cull-the-mold
+      text: "Cull everything it's touched and scrub the walls."
+      cost: { labor: 1.0 }
+      result: "You throw out the fouled stores and scour the cellar with lye. The mold retreats. You try not to notice that it came up thickest from the roots grown on the east field."
+      effects:
+        - food: { amount: -6 }
+    - id: scrape-and-hope
+      text: "Scrape the worst off and hope it slows."
+      result: "You scrape and you hope, and it does not slow. By week's end it has the cellar, and you've lost more than culling early would have cost you — and the smell of it stays in the walls."
+      effects:
+        - food: { amount: -14 }
+
+- id: potato-beetles
+  title: "Beetles"
+  family: pests
+  severity: minor
+  illustration: "striped beetles clustered thick on a potato leaf stripped to the veins"
+  setup: >
+    Striped beetles have found the potatoes and set to stripping the leaf to lace. Left alone they'll
+    have the whole patch and lay eggs for next year besides. Picked and drowned, one bucket at a time,
+    they can be stopped.
+  conditions:
+    - season: Summer
+  on_ignore: worst
+  choices:
+    - id: bucket-them
+      text: "Pick them into a bucket, plant by plant."
+      cost: { labor: 1.0 }
+      result: "A long stooped day and a bucket of drowned beetles saves the patch and thins next year's brood. Nobody grows up dreaming of this work. Everybody who farms out here does it."
+    - id: let-them-lace
+      text: "Let them have the leaf."
+      result: "You leave the beetles to it. The plants soldier on half-eaten and the potatoes come up small and few, and next spring there are twice the beetles waiting."
+      effects:
+        - crop: { field: this, blight: true }
+
+- id: smut-in-the-grain
+  title: "Smut in the Grain"
+  family: pests
+  severity: minor
+  illustration: "a wheat-head swollen black and burst, a smear of sooty spore on a farmer's thumb"
+  setup: >
+    Smut has got into the wheat — heads swollen black and bursting to soot at a touch, and the wind
+    carrying the spore field to field. A crop can look sound at a glance and thresh out half ruin.
+  conditions:
+    - season: [Summer, Fall]
+  on_ignore: worst
+  choices:
+    - id: rogue-it-out
+      text: "Walk the field and pull every smutted head."
+      cost: { labor: 1.0 }
+      result: "You walk every row pulling the black heads before they burst, hands sooty to the elbow. You save the sound grain and starve the spore. It is the least glamorous salvation there is."
+    - id: thresh-and-see
+      text: "Thresh it and see what you've got."
+      result: "You thresh and find out — half of what looked like a wheat crop is soot and hollow husk. The wind's already carried the rest to next year. You'll be pulling black heads a long time."
+      effects:
+        - crop: { field: this, blight: true }
+
+- id: mildew
+  title: "Mildew"
+  family: pests
+  severity: flavor
+  illustration: "a downy white bloom on the underside of green leaves after a run of wet mornings"
+  setup: >
+    A run of wet mornings has brought mildew up on the leaves — a downy white bloom on the undersides.
+    It's no crisis, this early. A dry spell would burn it off. A wet one would make it your problem.
+  conditions:
+    - season: [Spring, Summer]
+  on_ignore: dismiss
+
+- id: borers
+  title: "Borers"
+  family: pests
+  severity: minor
+  illustration: "a corn-stalk split to show the tunneled pith, a pale grub curled inside it"
+  setup: >
+    Something's boring into the corn-stalks — split one and you find the tunnel and the grub that made
+    it. The stalks snap in a wind, and the ears come small on the ones still standing. There's no easy
+    remedy; there's only cutting out the worst and burning the stubble come fall.
+  conditions:
+    - season: Summer
+  on_ignore: worst
+  choices:
+    - id: cut-and-burn
+      text: "Cut the worst stalks and burn the stubble."
+      cost: { labor: 0.5 }
+      result: "You cut the tunneled stalks for the beasts and mark the field for a hard burning after harvest. It saves what can be saved and thins the brood. Farming is mostly this — small losses, managed."
+    - id: ignore-borers
+      text: "A few borers won't empty a field."
+      result: "A few borers become a field of snapped stalks and small ears. The corn comes in light, and next year's brood is already tunneling in the stubble you didn't burn."
+      effects:
+        - crop: { field: this, blight: true }
+
+- id: what-grows-in-tainted-ground
+  title: "What Grows in Tainted Ground"
+  family: pests
+  severity: minor
+  illustration: "pale, wrong-colored shoots pushing up in a field's tainted corner where nothing was planted"
+  setup: >
+    Something is coming up in the tainted corner of the east field — pale, wrong-jointed shoots you
+    never sowed, in ground where you buried what you buried. It isn't a weed you know. It isn't a weed
+    anyone knows. It grows where the ground remembers, and it grows toward the house.
+  conditions:
+    - field_taint: { min: 0.4 }
+  on_ignore: worst
+  choices:
+    - id: burn-it-out
+      text: "Burn it out and salt the corner."
+      cost: { labor: 0.5 }
+      result: "You burn the pale shoots and salt the ground the old way, and it stops — for now. Old Nan, when she hears, only asks what you put down there. You do not much like answering."
+    - id: let-it-grow
+      text: "Leave it. It's only a weed."
+      result: "You tell yourself it's only a weed and leave it be. It spreads. By season's end the whole corner is pale and wrong and warm to the touch, and nothing you plant near it will take. The ground has decided what grows there now, and it isn't yours to say."
+      effects:
+        - taint: { field: this, amount: +0.1 }

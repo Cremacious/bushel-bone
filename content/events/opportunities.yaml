@@ -287,3 +287,163 @@
       result: '"Everything is for sale, Mr. Farmer," he says, standing, unhurried. "It is only a question of the year." He leaves his card. You do not throw it away, which troubles you.'
       effects:
         - flag: { set: cawdor-refused, to: true }
+
+- id: the-depot-opens
+  title: "The Depot Opens"
+  family: opportunities
+  severity: minor
+  illustration: "a new-built rail depot, a scale and a chalkboard of prices, a clerk in sleeve-garters"
+  setup: >
+    The Rail Depot is open for trade at last. The eastern prices posted on its board make the
+    Marrow's Cross market look like a church raffle — but the freight man takes his cut, and it's
+    a wagon-day to haul a load out there.
+  conditions:
+    - flag: { name: rail-came, is: true }
+  recency_suppress: 20
+  on_ignore: dismiss
+  choices:
+    - id: haul-to-depot
+      text: "Haul a big load out to the Depot."
+      cost: { labor: 1.0 }
+      result: "You lose a day and a wagon to the freight run, and come back with more coin than the local market has ever paid you. Worth it — for a load big enough to bother."
+      effects:
+        - market: { crop: wheat, shock: +0.25, seasons: 1 }
+    - id: stay-local
+      text: "The local market's good enough for a small load."
+      result: "You keep your day and sell at home. The Depot's for men with more to move than you have — this season, anyhow."
+
+- id: a-standing-order
+  title: "A Standing Order"
+  family: opportunities
+  severity: major
+  illustration: "a factor with a leather book of recurring accounts, a fountain pen poised, a firm handshake offered"
+  setup: >
+    A Ledbury house offers a standing order — the same crop, the same quantity, every season for a
+    year, at a fixed price. Steady money you can plan a life around. Money you're chained to, if the
+    ground has a bad year.
+  conditions:
+    - year: { min: 3 }
+  recency_suppress: 24
+  on_ignore: dismiss
+  choices:
+    - id: take-standing
+      text: "Sign the standing order."
+      result: "You lock in a year of certain sales. The market can do what it likes now — and so can the weather, which worries you more."
+      effects:
+        - contract: { offer: crop_supply }
+    - id: stay-free
+      text: "Season by season suits you better."
+      result: "You'd rather answer to the market than to a Ledbury ledger. He shrugs — there's no shortage of farms hungrier than yours."
+
+- id: under-the-right-moon
+  title: "Under the Right Moon"
+  family: opportunities
+  severity: major
+  illustration: "moon barley seed pale in an open palm under a full moon, the field silver behind"
+  setup: >
+    Old Nan sends word — or the pedlar does, or you simply feel it — that the moon is right for
+    barley of the other kind. Moon barley pays like nothing else at the Black Market. It also grows
+    where honest grain won't, and men who plant it tend to be men with reasons.
+  conditions:
+    - reckoning_tier: { min: warnings }
+  recency_suppress: 20
+  on_ignore: dismiss
+  choices:
+    - id: plant-it
+      text: "Plant moon barley while the moon holds."
+      requires:
+        - has_item: moon_barley_seed
+      result: "You put the pale seed down under the full moon the way you were told, and try not to think about why the instructions were so particular. It'll pay. That's what you'll tell yourself."
+      effects:
+        - reckoning: +1
+    - id: not-this-moon
+      text: "Let the moon pass."
+      result: "You let it be. There'll be another moon, and another temptation, and the same reasons not to."
+
+- id: the-auction-wagon
+  title: "The Auction Wagon"
+  family: opportunities
+  severity: minor
+  illustration: "a dead man's tools laid out on a wagon-bed for sale — a good plough, a scythe, a churn"
+  setup: >
+    A farm up the valley failed, and its tools are on the block cheap — a good plough, a scythe with
+    life left in it, a churn. One man's ruin outfits another's start. That's the Sull.
+  recency_suppress: 16
+  on_ignore: dismiss
+  choices:
+    - id: buy-tools
+      text: "Buy what you need, cheap."
+      cost: { coin: 12 }
+      result: "You outfit yourself off a broken man's estate for a fraction of new. You do not ask what became of him. Nobody at the auction does."
+      effects:
+        - item: { grant: good_tools }
+    - id: leave-it
+      text: "Leave the dead man's tools be."
+      result: "You let others pick the bones. Sentiment, maybe. Or just a feeling you can't put a name to about profiting off a failed farm in a country like this one."
+
+- id: blight-in-the-south
+  title: "Blight in the South Counties"
+  family: opportunities
+  severity: minor
+  illustration: "a newspaper column read by lamplight, the word BLIGHT in heavy type, a farmer's grim satisfaction"
+  setup: >
+    The paper says blight has taken the potato in the south counties — whole harvests lost. Hard on
+    them. And every sound potato in the Sull is worth more this week for it. A man feels a little low,
+    profiting off another county's ruin, and counts the coin anyway.
+  recency_suppress: 15
+  on_ignore: dismiss
+  choices:
+    - id: ride-the-shortage
+      text: "Sell your roots while the price is up."
+      result: "You sell into the shortage and do well by another county's misfortune. That's farming. That's the market. You've stopped pretending it's anything kinder."
+      effects:
+        - market: { crop: potato, shock: +0.5, seasons: 2 }
+
+- id: ridleys-offer
+  title: "Ridley's Offer"
+  family: opportunities
+  severity: major
+  illustration: "the banker across a table with a loan paper, precise and bloodless, a pen turned toward you"
+  setup: >
+    Silas Ridley, of all people, offers you money — a loan against next year's harvest, to see you
+    through a lean patch. His terms are fair, for a banker. His terms are also a hook, and you both
+    know which end of it you're on.
+  conditions:
+    - coin: { max: 30 }
+  recency_suppress: 20
+  on_ignore: dismiss
+  choices:
+    - id: take-loan
+      text: "Take the loan. You need it."
+      result: "You take Ridley's money and his hook with it. It'll see you through. It'll also want feeding, come the harvest, whether the harvest comes or not."
+      effects:
+        - coin: +50
+        - flag: { set: owe-ridley, to: true }
+    - id: refuse-loan
+      text: "Refuse it. You'll not owe two masters."
+      result: '"As you like," Silas says, gathering his paper. "The offer keeps. Debt has a way of finding a man out here whether he goes looking or no." He is not wrong, and you both know it.'
+
+- id: a-letter-from-the-east
+  title: "A Letter from the East"
+  family: opportunities
+  severity: minor
+  illustration: "a travel-worn letter with an eastern postmark, delivered to the wrong farm, the wax seal already cracked"
+  setup: >
+    A letter comes up on the mail wagon, eastern-postmarked, meant for the Vanes but left at your gate
+    by a careless rider. The seal is already broken. What's in it is none of your affair — which has
+    never yet stopped a curious man in a slow country.
+  conditions:
+    - relationship: { npc: meredith_vane, min: neutral }
+  once: true
+  on_ignore: dismiss
+  choices:
+    - id: read-it
+      text: "Read it before you hand it over."
+      result: "You read what wasn't meant for you — a few careful lines, a name you don't know, a sum of money. It means nothing to you yet. It will. You reseal it as best you can and think about what you've seen."
+      effects:
+        - flag: { set: vane-clue, to: true }
+    - id: deliver-it
+      text: "Deliver it unread, sealed as you can."
+      result: "You carry it to Meredith unread. She takes it, reads your face for whether you looked, and decides — you'll never be sure rightly — to believe you didn't. 'Obliged,' she says, and it costs her something to say."
+      effects:
+        - relationship: { npc: meredith_vane, delta: +1 }
