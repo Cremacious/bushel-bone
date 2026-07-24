@@ -244,7 +244,7 @@ def _grow_and_harvest(farm, strat):
             if farm.rng.random() < C.HAIL_CHANCE_PER_CASH_HARVEST:
                 weather *= (1.0 - C.HAIL_LOSS)
         y = (base * C.fertility_factor(fl.fertility) * tend * tier_mult
-             * taint_mult * weather * labor_factor)
+             * taint_mult * weather * labor_factor * C.QUICK_GROUND_YIELD)
         y = max(0.0, y)
         farm.storage[fl.crop] = farm.storage.get(fl.crop, 0.0) + y
         if fl.crop == "bone_root" and y > 0:
@@ -472,6 +472,22 @@ def _clamp_morale(farm):
 
 
 # ── Season step & campaign ───────────────────────────────────────────────────
+def _provision_winter_food(farm, strat):
+    """Fall: a solvent farm lays in food for the coming winter (not just emergency buys)."""
+    if not strat.will_buy_food(farm):
+        return
+    winter_need = (C.FOOD_PER_FARMER_DAY + C.FOOD_PER_CLONE_DAY_WINTER * len(farm.alive_clones)) * C.DAYS_PER_SEASON
+    have = _available_food(farm)
+    if have >= winter_need:
+        return
+    ppf = food_price_per_unit(farm)
+    affordable = farm.coin / ppf if ppf > 0 else 0
+    buy = min(winter_need - have, affordable)
+    if buy > 0:
+        farm.coin -= buy * ppf
+        farm.storage["_bought_food"] = farm.storage.get("_bought_food", 0.0) + buy
+
+
 def _clear_fields(farm, strat):
     n = strat.clear_fields(farm)
     for _ in range(n):
@@ -496,9 +512,10 @@ def step_season(farm, strat):
         if fl.crop is None:
             fl.fertility = min(C.FERTILITY_CEILING, fl.fertility + C.FERTILITY_FALLOW_RESTORE)
             fl.taint = max(0.0, fl.taint - 0.05)
-    # Fall: chop/provision fuel for the coming winter
+    # Fall: chop/provision fuel AND lay in winter food
     if farm.season == "Fall":
         strat.provision_winter(farm)
+        _provision_winter_food(farm, strat)
     _sell(farm, strat)
     _merchant(farm, strat)
     _consume(farm, strat)

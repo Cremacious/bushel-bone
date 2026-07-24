@@ -4,9 +4,8 @@ Design decisions that are still open. When resolved, move the entry to `decision
 
 ## High priority — blockers for later work
 
-### Q-001. MVP scope cut list
-What ships at 1.0 vs. what's deferred to post-launch content? Recommended lens from GDD §19.1: ship core loop (farming + market + clones + reckoning + one town + one Season Arc + ~120 events) and defer the Vat, Black Market, Rail Depot, and 4+ archetypes.
-**Blocks:** milestone planning, art budget, timeline commitment.
+### Q-001. MVP scope cut list — ✅ RESOLVED (Session 3, → D-033)
+Answered in `docs/scope-mvp.md`: ship the full core loop over a 4-year first lifetime; defer the Vat, Ascension, Black Market, Rail Depot, fancy contracts, Season Arcs 5–10, and the deep unlock catalog.
 
 ### Q-002. Monetization model
 Four options: premium paid ($4–8), free demo + full unlock, F2P cosmetics/DLC, or full F2P (rejected — the design bends around it).
@@ -14,10 +13,10 @@ Four options: premium paid ($4–8), free demo + full unlock, F2P cosmetics/DLC,
 
 ## Medium priority — needed for deep design
 
-### Q-003. Full numerical balance
-Every economic value (crop yields, seed costs, clone prices, coal/food winter requirements, contract terms) needs actual numbers, then validation via headless simulation.
-**Owned by:** Mechanics Bible + Balance Model.
-**Status:** Mechanics Bible in progress.
+### Q-003. Full numerical balance — 🔄 ADVANCED (not closed)
+Every economic value has actual numbers (Mechanics Bible) and a first calibration pass is **ratified** (D-032, `docs/balance-model/config.py`). 9/40 hypotheses validated in the model.
+**Remaining before close:** the exploit/Ascension hypotheses (#6, #9, #10 — smarter/adversarial bots), the long-game ceiling, and the paper playtest (#11).
+**Owned by:** Balance Model + playtest.
 
 ### Q-004. NPC quest arcs — full outlines
 Every named NPC has 3–5 quest hooks alluded to but not written. Each needs beat-by-beat outline including reactions to player cruelty state.

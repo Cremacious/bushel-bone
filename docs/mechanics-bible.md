@@ -1,6 +1,12 @@
 # Bushel & Bone — Mechanics Bible
 
-**Status: IN PROGRESS.** Session 1 established the outline and produced the first worked system (Crop Economics) as a template. Session 2 added Market Pricing (§2), Clone Economics (§3), and Winter Survival (§4) — the core economic loop — then The Cruelty Ledger (§5) and The Reckoning Meter (§6), the moral engine, then the Contract System (§7) and Building & Construction (§8), then Events & Probability (§9) and the Weather System (§10), then Roster Scaling & Housing (§11) and Festivals & Town Reputation (§12), and finally Season Arcs (§13), Meta-Progression (§14), and Ascension Stacking (§15). **All 15 systems are now drafted to the §1 template.** Next: a cross-system numerical consistency pass, then the Balance Model (Python) to validate the verified-counter claims.
+**Status: IN PROGRESS.** Session 1 established the outline and produced the first worked system (Crop Economics) as a template. Session 2 added Market Pricing (§2), Clone Economics (§3), and Winter Survival (§4) — the core economic loop — then The Cruelty Ledger (§5) and The Reckoning Meter (§6), the moral engine, then the Contract System (§7) and Building & Construction (§8), then Events & Probability (§9) and the Weather System (§10), then Roster Scaling & Housing (§11) and Festivals & Town Reputation (§12), and finally Season Arcs (§13), Meta-Progression (§14), and Ascension Stacking (§15). **All 15 systems are now drafted to the §1 template.**
+
+> **Balance-ratified adjustments (Session 3, GitHub issue #2 → decisions-log D-032).** The Balance Model surfaced that the numbers didn't close; these changes are now ratified and reflected in `docs/balance-model/config.py` (the live tuned source of truth):
+> - **Food economy — "protect the survival weight":** consumption stays at the committed §3/§4 values (people eat heavily; food is a real burden). The annual gap is closed on the *production* side instead — the starter plot is **4 small fields** (was 3) and the Sull's *quick ground* gives a **+10% yield** bump (D-029). Roots fertility decay softened to **0.18** (was 0.25) for food sustainability.
+> - **Mortgage (§13):** a **2-year establishment grace** before the 150/yr payment begins.
+> - **Bone-root (§1/§6):** base price **30 → 4** (to hit the 1.5–2× wheat target; H-02 now CONFIRMED) and its Reckoning-per-harvest **4 → 6** (the land minds it more).
+> - **Still open:** the long-game ceiling (can a masterful player last 10+ years?) and Year-1 feeding scarcity (H-09) need the smarter/adversarial bots (#6) and the paper playtest (#11). Full log: `docs/balance-model/README.md`.
 
 ---
 
@@ -72,7 +78,7 @@ The player plants seed in fields. Crops grow over N days, subject to season, wea
 | Cotton | Cash | 45 | 10 | 8 | 12 | Summer | 3.0 clone-days | 10 seasons |
 | Hops | Cash | 30 | 8 | 6 | 10 | Summer | 1.2 clone-days | 4 seasons |
 | Moon Barley | Weird | 20 | 15 (rare) | 4 (variable ±50%) | 25 | Any (moon-gated) | 1.0 clone-days | 4 seasons |
-| Bone-root | Weird | 25 | 10 (rare) | 6 | 30 | Any (tainted field required) | 1.5 clone-days | 8 seasons |
+| Bone-root | Weird | 25 | 10 (rare) | 6 | 4 | Any (tainted field required) | 1.5 clone-days | 8 seasons |
 | Whisper Wheat | Weird | 30 | 20 (very rare) | 8 | 20 | Summer | 1.5 clone-days | 6 seasons |
 
 *Yields above are for a **Medium field** at 100% fertility, ideal weather, no tending bonus. Small = 0.5x, Large = 2.0x.*
@@ -1659,7 +1665,7 @@ Each year of a lifetime carries one named **Season Arc** — a scripted spine of
 
 ### The mortgage (the run-clock under every arc)
 
-The homestead is mortgaged to Silas Ridley (§12). A payment of **150 coin is due at year-end (Winter Day 80)**, every year, until the principal is bought out.
+The homestead is mortgaged to Silas Ridley (§12). A payment of **150 coin is due at year-end (Winter Day 80)** until the principal is bought out — but the **first two years are grace** (the establishment period, "The Newcomer"; balance-ratified, issue #2), so the first payment falls due at the end of Year 3.
 
 - **Miss one payment:** a warning year (Ridley relationship −, a Crisis-gated foreclosure notice, §9). 
 - **Miss two consecutive:** foreclosure → land-loss → run ends (D-007).

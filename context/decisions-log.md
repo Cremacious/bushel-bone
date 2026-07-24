@@ -149,6 +149,17 @@ Foundational narrative decisions. Full write-up in `docs/narrative-bible.md` Par
 **Chosen:** A fictional 1800s-analog charter-republic and its frontier, with invented names, geography, faith, and vessel-trade. The Sull is genuinely unpeopled wildland; the only prior claim on it belongs to the ground (the Marrow), not to any displaced people.
 **Rationale:** Matches D-002's "freedom to invent," and sidesteps the D-018 cultural-care trap entirely by making the land's grievance geological, not ethnic.
 
+### D-032. Balance calibration ratified (issue #2).
+**Chosen (from the Balance Model's findings):**
+- **Food economy — protect the survival weight:** keep the committed §3/§4 consumption (food stays a heavy ongoing burden); close the annual gap on the *production* side — starter plot **4 small fields** (was 3), a **+10% quick-ground yield** (D-029), roots fertility decay softened to **0.18** (was 0.25).
+- **Mortgage:** a **2-year establishment grace** before the 150/yr payment begins (§13).
+- **Bone-root:** base price **30 → 4** (hits the 1.5–2× wheat target; H-02 CONFIRMED) and Reckoning-per-harvest **4 → 6**.
+**Rationale:** Preserves the survival-horror weight of "mouths to feed" and the winter crunch while making the economy solvable; removes bone-root's runaway raw margin without relying solely on unproven risk. Live tuned source: `docs/balance-model/config.py`. **Still open (Q-003):** the long-game ceiling and Year-1 feeding scarcity need the smarter/adversarial bots (#6) and the paper playtest (#11).
+
+### D-033. MVP scope ratified (issue #1).
+**Chosen:** Ship the full moral-survival core loop over a 4-year first lifetime — all 10 NPCs, 4 festivals, ~120 events, the full reckoning arc, the lineage meta — with the market, clones, contracts, building, roster, arcs, and meta shipped in *simplified* form. **Defer to post-launch:** the Vat, Ascension, Black Market + Rail Depot venues, fancy contract types, Season Arcs 5–10, the deep unlock catalog, and Longhouse-tier roster. Full table in `docs/scope-mvp.md`.
+**Rationale:** Ship *safe* (the Vat and Ascension are the most exploit-prone, least-validated systems — defer until the model proves them) and *complete* (the 1.0 loop is a whole game, not a demo). Deferred systems form a clean post-launch content roadmap. Resolves Q-001.
+
 ---
 
 *Add new decisions below with the next session number.*

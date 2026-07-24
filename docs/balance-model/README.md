@@ -97,6 +97,12 @@ The first real run starved ~90% of all runs by Year 2, masking every deeper hypo
 
 *(Re-run `python run.py` to reproduce; `compare` for the strategy table.)*
 
+### Pass 2 — ratified (issue #2)
+
+The user's decisions (issue #2) reversed the direction of the food fix: **protect the survival weight** rather than lighten it. Consumption was restored to the committed §3/§4 values; the gap is now closed on the production side (4 starting fields + a +10% quick-ground yield). The 2-year mortgage grace was ratified; bone-root was fixed (price 30→4, Reckoning 4→6). A proactive winter-food buy and a food-first Balanced bot were added.
+
+**State after ratification (40 seeds):** no dominant strategy — cashcrop earns most (568) but dies fastest (3.1y); subsistence survives the food economy (0% early starvation) but forecloses (too poor to pay the mortgage); **balanced is the competent survivor** (443 earn, 4.1y, 15% early death); boneroot is now a modest niche. **H-02 → CONFIRMED.** **Still open:** the long-game ceiling (no bot yet lasts 10+ years — needs a masterful/adversarial bot, #6) and Year-1 feeding scarcity (H-09, softened by the production boost). These are the natural next targets for #6 and the paper playtest (#11).
+
 ## Deferred to code
 
 This is a validation tool, not the game engine. Its output is *decisions about numbers*, not files that ship. When the real game is scaffolded, the tuned formulas in `config.py` port into the TypeScript game logic (the balance model stays Python, per the tech-stack decision).

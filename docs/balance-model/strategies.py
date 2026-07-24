@@ -172,16 +172,27 @@ class BoneRootCruel(BaseStrategy):
 
 
 class Balanced(BaseStrategy):
+    """The competent archetype: secure food first, cash on the remainder, sell the surplus."""
     name = "balanced"
     target_clones = 3
     fuel_mode = "wood"
-    ROTATION = ["potato", "wheat", "cotton", "turnip", "tobacco", "corn"]
+    FOOD = ["potato", "corn", "wheat", "turnip"]
+    CASH = ["cotton", "tobacco", "hops"]
 
     def _pick(self, farm, fl, i):
-        for crop in self.ROTATION[i % len(self.ROTATION):] + self.ROTATION:
-            if farm.season in C.CROPS[crop]["grow_seasons"] and farm.coin >= C.CROPS[crop]["seed"]:
-                return crop
+        # every third field is cash; the rest are food (food security comes first)
+        pools = ([self.CASH, self.FOOD] if i % 3 == 2 else [self.FOOD, self.CASH])
+        for pool in pools:
+            for crop in pool:
+                if farm.season in C.CROPS[crop]["grow_seasons"] and farm.coin >= C.CROPS[crop]["seed"]:
+                    return crop
         return "fallow"
+
+    def sell(self, farm, crop, units):
+        if C.CROPS[crop]["family"] == "cash":
+            return 1.0, "regional"
+        # sell only a food surplus, keep a reserve
+        return (0.5, "regional") if units > 20 else (0.0, "regional")
 
 
 class RosterFixed(Balanced):
