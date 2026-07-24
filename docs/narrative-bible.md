@@ -1,6 +1,6 @@
 # Bushel & Bone — Narrative & World Bible
 
-**Status: IN PROGRESS.** Part 1 — The World (issue #3) and Part 2 — The Cast interiority (issue #4) are written. Remaining: full NPC quest arcs (#13), the Vane family biographies + three truths (#14), Season Arcs Years 5–10 (#15), sample event cards (part of #16), and the voice guide (#5).
+**Status: IN PROGRESS.** Part 1 — The World (issue #3) and Part 2 — The Cast interiority (issue #4) are written. The voice guide (#5) is written as [`docs/style-guide.md`](style-guide.md). Remaining: full NPC quest arcs (#13), the Vane family biographies + three truths (#14), Season Arcs Years 5–10 (#15), and sample event cards (part of #16).
 
 This bible fleshes out the story, the world, the NPCs, and the tone of Bushel & Bone in the depth required to actually write dialogue, event cards, and quest arcs without holes.
 
@@ -268,12 +268,9 @@ Working list (Year 1–4 sketched in GDD; expand and add 5–10):
 
 30–40 fully written event cards as reference for the event writing team. Cover all seven event families and all five Reckoning tiers. Each shows the card's illustration prompt, prose, choices, and effects.
 
-### Part 6 — Voice Guide
+### Part 6 — Voice Guide  *(written — issue #5)*
 
-- **Prose voice.** Alt-1800s but readable. No period-perfect pastiche.
-- **Named tics.** Specific words and phrases the game uses. Words the game does NOT use (no "okay," no "cool," no "hey").
-- **NPC-specific voice.** Preacher speaks in scripture. Doc Bell in wry deflection. Old Nan in fragments. Etc.
-- **Card-writing guide.** How to write an event card: setup, sensory detail, choice framing, consequence prose.
+**→ Moved to its own document: [`docs/style-guide.md`](style-guide.md).** It covers the register, the do/don't rules, the world's diction vs. the forbidden words, rhythm & punctuation, the five prose principles, the 10 NPC voice tics, the event-card grammar, five reference cards (across tones), and a worked four-tier dialogue example. It is the writers' contract and **blocks #16** (the event library) until signed off.
 
 ---
 
