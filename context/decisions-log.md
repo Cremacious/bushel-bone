@@ -132,4 +132,23 @@ These five were promoted from the Mechanics Bible (`docs/mechanics-bible.md`) be
 
 ---
 
+## Session 3 — World & Lore foundation (GitHub issue #3)
+
+Foundational narrative decisions. Full write-up in `docs/narrative-bible.md` Part 1. Resolves open questions Q-007 and Q-008.
+
+### D-029. The Reckoning's true source is the Marrow — the land keeps the ledger.
+**Options considered:** a living God's judgment; the dead's own revenant imprint; an eldritch thing the Vats woke; the land itself keeping accounts.
+**Chosen:** The land. Beneath the Sull runs *the Marrow*, an old pale seam that remembers the wronged dead and returns them by name when the account tips. Not a god; a reckoning that balances itself. Cruelty is a debt; rite is payment. The player may never be told outright — we hold the truth.
+**Rationale:** Tightest fit for D-004/D-005 ("the land remembers," clones as moral engine) and the title. Un-gameable, poetic, and it explains every §6 mechanic (tiers, atonement, Ghost Roll, Vat drip) from one root.
+
+### D-030. Whether making vessels is itself a sin is a permanently unsettled doctrinal dispute.
+**Chosen:** The Church of the Long Vigil preaches the Vat is blasphemy ("quickening what the earth would not"); Old Nan says the land only counts cruelty. The hidden truth leans Nan's way — but the Marrow *does* register a faint stain at vessels (the §6 baseline/Vat drip), so the Church isn't baseless. Neither is wholly right, and no one alive can prove it. The game never fully answers.
+**Rationale:** Gives the moral system a genuine argument and keeps the horror ambiguous without being arbitrary — the dispute is grounded in a real, hidden fact and maps directly to the mechanics.
+
+### D-031. Setting: an invented frontier nation — the Commonwealth of Ostrey, western territory the Sull.
+**Chosen:** A fictional 1800s-analog charter-republic and its frontier, with invented names, geography, faith, and vessel-trade. The Sull is genuinely unpeopled wildland; the only prior claim on it belongs to the ground (the Marrow), not to any displaced people.
+**Rationale:** Matches D-002's "freedom to invent," and sidesteps the D-018 cultural-care trap entirely by making the land's grievance geological, not ethnic.
+
+---
+
 *Add new decisions below with the next session number.*

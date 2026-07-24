@@ -31,13 +31,11 @@ GDD names Year 1 (The Newcomer), Year 2 (The Preacher's Sickness), Year 3 (The R
 Each of the three possible truths (Meredith is a spy / a third Vane exists / Meredith is a vessel) needs a complete backstory, quest chain, and payoff. Currently only one-line sketches exist.
 **Owned by:** Narrative & World Bible.
 
-### Q-007. World geography and lore
-What nation is this? What year? What's the state of clone-tech in the wider world? Where does the Rail go? What's the theology of the Church of the Long Vigil? Where does the Reckoning come from cosmologically?
-**Owned by:** Narrative & World Bible (world setting section).
+### Q-007. World geography and lore — ✅ RESOLVED (Session 3, → D-029/D-030/D-031)
+Answered in `docs/narrative-bible.md` Part 1: the Commonwealth of Ostrey / the Sull; vessel-trade; the Church of the Long Vigil; the Marrow as the Reckoning's source.
 
-### Q-008. Ancient / pre-play history of Marrow's Cross
-Why is it called that? What's under it? Ties directly to "The Old Well" late-game unlock and "The Long Vigil" church rite. The town needs a bury-your-secrets history.
-**Owned by:** Narrative & World Bible.
+### Q-008. Ancient / pre-play history of Marrow's Cross — ✅ RESOLVED (Session 3, → D-029)
+Answered in `docs/narrative-bible.md` Part 1.5: the Salting (founding sin), the naming, the Old Well.
 
 ## Lower priority — needed before ship
 

@@ -7,6 +7,24 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 3 — 2026-07-24 — Pre-code issue tracking + World & Lore foundation
+
+**Worked on:** Set up GitHub issue tracking for all remaining pre-code design work, then resolved the first issue (#3, World & Lore).
+
+**GitHub tracking (done):** Repo `Cremacious/bushel-bone` is live and **PUBLIC** (design docs + issues are world-visible — flagged for the user). Created **17 issues** under the **"Ready to Code" milestone** — when all are closed, the docs are complete enough to code confidently. Labeled by track (mechanics/narrative/content/scope/validation) and priority (P0/P1/P2). Recommended resolution order captured in the final report: Phase 1 foundations (#1 scope, #2 calibration ratify, #3 world, #5 voice) → Phase 2 depth (#4 NPC interiority, #6 exploit bots, #8 mechanics, #12 schema) → Phase 3 breadth (#13/#14/#15 narrative, #9/#10 model, #16 events) → Phase 4 converge (#7 vertical slice → #11 playtest → #17 monetization) → code.
+
+**Issue #3 — World & Lore foundation (DONE, resolves Q-007 + Q-008):** Wrote `docs/narrative-bible.md` Part 1. Three foundational forks locked with the user (→ decisions-log D-029/D-030/D-031):
+- **D-029** The Reckoning is real; the land keeps the ledger — *the Marrow*, an old seam under the Sull that returns the wronged dead by name. Cruelty = debt, rite = payment.
+- **D-030** Whether making vessels is itself a sin is a *permanently unsettled doctrinal dispute* (Church of the Long Vigil vs. Old Nan) — grounded in the hidden truth + the §6 Vat drip.
+- **D-031** Invented frontier nation — Commonwealth of Ostrey / the Sull — sidesteps the D-018 trap (land's grievance is geological, not ethnic).
+- Also written: vesselry origins (Dr. Sabine Orrell, "quick ground"), Marrow's Cross history (the Salting = founding sin, the Old Well), a region map sketch, and a mechanics-mapping section.
+
+**Artifacts changed:** `docs/narrative-bible.md` (Part 1 written), `context/decisions-log.md` (D-029–D-031), `context/open-questions.md` (Q-007/Q-008 resolved), this file. GitHub issues #1–#17 created.
+
+**Next up (per recommended order):** the Phase-1 decisions still owned by the user — **#1 (MVP scope)** and **#2 (calibration levers: food economy / mortgage / bone-root price)** — then **#5 (prose voice)** and **#4 (NPC interiority, now unblocked by #3)**.
+
+---
+
 ## Session 2 — 2026-07-24 — Mechanics Bible full draft (§2–§15)
 
 **Worked on:** Completed the Mechanics Bible from its §1 template (Crop Economics, written Session 1) to a full 15-system draft.
