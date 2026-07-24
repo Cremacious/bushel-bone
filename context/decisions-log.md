@@ -160,6 +160,14 @@ Foundational narrative decisions. Full write-up in `docs/narrative-bible.md` Par
 **Chosen:** Ship the full moral-survival core loop over a 4-year first lifetime — all 10 NPCs, 4 festivals, ~120 events, the full reckoning arc, the lineage meta — with the market, clones, contracts, building, roster, arcs, and meta shipped in *simplified* form. **Defer to post-launch:** the Vat, Ascension, Black Market + Rail Depot venues, fancy contract types, Season Arcs 5–10, the deep unlock catalog, and Longhouse-tier roster. Full table in `docs/scope-mvp.md`.
 **Rationale:** Ship *safe* (the Vat and Ascension are the most exploit-prone, least-validated systems — defer until the model proves them) and *complete* (the 1.0 loop is a whole game, not a demo). Deferred systems form a clean post-launch content roadmap. Resolves Q-001.
 
+### D-034. Exploit-hardening ratified (issue #6).
+**Chosen (from adversarial-bot validation):** hardened the cruelty-debt counters so cruelty provably self-terminates —
+- **Morale now drives labor** (§3 bands, per clone: content +5%, unrest −25%, revolt −70%). Previously low morale only caused desertion, so overwork was "free."
+- Overwork Morale cost −8→−12, plus a −10 household witness penalty on a worked-to-death clone.
+- **Walker-tier teeth** (§6): at Walkers+ the dead blight fields (45%) and take clones (22%), and the Reckoning **accelerates +6/season** — cruelty spirals to the Reckoning Proper instead of plateauing. A narrow road back still exists for a player who stops and atones (H-19).
+- **Vat drip 0.5→1.0/day** — running a Vat is the land's deepest offense (D-030), a self-terminating Faustian bargain.
+**Rationale:** the model caught two real would-be exploits (overwork and the Vat baron topped the leaderboard); these fixes make the moral thesis TRUE, not just asserted. Result: H-01/H-10/H-11/H-18/H-20 all CONFIRMED — cruelty always costs more than it gives. Live source: `docs/balance-model/config.py`.
+
 ---
 
 *Add new decisions below with the next session number.*

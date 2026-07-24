@@ -6,7 +6,8 @@
 > - **Food economy — "protect the survival weight":** consumption stays at the committed §3/§4 values (people eat heavily; food is a real burden). The annual gap is closed on the *production* side instead — the starter plot is **4 small fields** (was 3) and the Sull's *quick ground* gives a **+10% yield** bump (D-029). Roots fertility decay softened to **0.18** (was 0.25) for food sustainability.
 > - **Mortgage (§13):** a **2-year establishment grace** before the 150/yr payment begins.
 > - **Bone-root (§1/§6):** base price **30 → 4** (to hit the 1.5–2× wheat target; H-02 now CONFIRMED) and its Reckoning-per-harvest **4 → 6** (the land minds it more).
-> - **Still open:** the long-game ceiling (can a masterful player last 10+ years?) and Year-1 feeding scarcity (H-09) need the smarter/adversarial bots (#6) and the paper playtest (#11). Full log: `docs/balance-model/README.md`.
+> - **Exploit-hardening (issue #6 → decisions-log D-034):** validated the cruelty-debt cluster with adversarial bots and hardened the counters — **low Morale now cuts labor** (§3 bands: unrest −25%, revolt −70%, per clone), overwork Morale cost −8→−12 plus a −10 household witness penalty, **Walker-tier teeth** (the dead blight fields & take clones, and the Reckoning *accelerates* +6/season at Walkers+, §6), and the **Vat drip 0.5→1.0/day** (the Vat is the land's deepest offense, D-030). Result: H-01/H-10/H-11/H-18/H-20 all CONFIRMED — *cruelty always costs more than it gives*.
+> - **Still open:** the long-game ceiling (can a masterful player last 10+ years?) and Year-1 feeding scarcity (H-09) need the paper playtest (#11) and the remaining systems (contracts #10, Ascension, succession). Full log: `docs/balance-model/README.md`.
 
 ---
 

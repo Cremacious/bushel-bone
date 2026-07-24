@@ -59,8 +59,20 @@ class BaseStrategy:
                 return crop
         return "fallow"
 
-    # -- cruelty --
+    # -- cruelty / exploit hooks --
     def cruelty_sacrifices(self, farm):
+        return 0
+
+    def overwork(self, farm):
+        return False
+
+    def build_vat(self, farm):
+        return False
+
+    def want_vat_grow(self, farm):
+        return False
+
+    def atone(self, farm):
         return 0
 
     # -- labor / clones --
@@ -202,4 +214,75 @@ class RosterFixed(Balanced):
         self.name = f"roster_{n}"
 
 
+# ── Adversarial bots (issue #6) — these actively try to cheat the cruelty debt ──
+
+class VatBaron(BoneRootCruel):
+    """Exploit H-10: build the Vat, overwork the crew, feed the dead back, grow cheap replacements."""
+    name = "vat_baron"
+    target_clones = 8
+    fuel_mode = "coal"
+    CASH = ["cotton", "tobacco", "hops"]
+    FOOD = ["potato", "corn", "wheat"]
+
+    def build_vat(self, farm):
+        return not farm.has_vat and farm.coin >= C.VAT_BUILD_COST
+
+    def want_vat_grow(self, farm):
+        return len(farm.alive_clones) < self.target_clones
+
+    def overwork(self, farm):
+        return True
+
+    def disposal(self, farm):
+        return "vat"                     # feed the dead back into the Vat
+
+    def cruelty_sacrifices(self, farm):
+        return 0                          # the Vat + overwork supply the corpses, not field-sacrifice
+
+    def buy_clone(self, farm):
+        return not farm.has_vat and len(farm.alive_clones) < 3 and farm.coin > 130
+
+    def _pick(self, farm, fl, i):
+        pool = self.CASH if i % 2 == 0 else self.FOOD
+        for crop in pool:
+            if farm.season in C.CROPS[crop]["grow_seasons"] and farm.coin >= C.CROPS[crop]["seed"]:
+                return crop
+        return "fallow"
+
+
+class Overworker(BaseStrategy):
+    """Exploit H-11: work clones to death for +50% labor, rebuy fresh — no Vat, no reckoning tricks."""
+    name = "overworker"
+    target_clones = 5
+    fuel_mode = "coal"
+    humane = False
+    CASH = ["cotton", "tobacco"]
+    FOOD = ["potato", "corn", "wheat"]
+
+    def overwork(self, farm):
+        return True
+
+    def disposal(self, farm):
+        return "marked"                   # isolate the labor/morale economics — no extra Reckoning
+
+    def buy_clone(self, farm):
+        return len(farm.alive_clones) < self.target_clones and farm.coin > 130
+
+    def _pick(self, farm, fl, i):
+        pool = self.CASH if i % 2 == 0 else self.FOOD
+        for crop in pool:
+            if farm.season in C.CROPS[crop]["grow_seasons"] and farm.coin >= C.CROPS[crop]["seed"]:
+                return crop
+        return "fallow"
+
+
+class SinAndConfess(BoneRootCruel):
+    """Exploit H-18/H-20: run bone-root cruelty, then buy cleansings to wipe the Reckoning, repeat."""
+    name = "sin_and_confess"
+
+    def atone(self, farm):
+        return 3 if farm.reckoning > 25 else 0     # confess hard whenever the land stirs
+
+
 ALL_STRATEGIES = [Subsistence, CashCrop, BoneRootCruel, Balanced]
+ADVERSARIAL = [VatBaron, Overworker, SinAndConfess]

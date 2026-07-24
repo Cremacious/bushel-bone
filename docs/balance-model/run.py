@@ -31,6 +31,9 @@ STRATS = {
     "cashcrop": S.CashCrop,
     "boneroot": S.BoneRootCruel,
     "balanced": S.Balanced,
+    "vat_baron": S.VatBaron,
+    "overworker": S.Overworker,
+    "sin_confess": S.SinAndConfess,
 }
 
 

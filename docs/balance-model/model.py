@@ -40,6 +40,7 @@ class Clone:
     archetype: str = "field_hand"
     morale: float = C.MORALE_START
     alive: bool = True
+    wear: float = 0.0      # overwork accumulation (H-11)
 
     @property
     def labor(self):
@@ -59,6 +60,8 @@ class Farm:
     has_vat: bool = False
     ghost_roll: list = dfield(default_factory=list)
     hidden_cruelties: int = 0          # un-exposed acts (for exposure rolls)
+    biomass: float = 0.0               # Vat feedstock from corpses (H-10)
+    atone_acts: int = 0                # atonements this season (diminishing returns, H-18)
     # calendar
     year: int = 1
     season_idx: int = 0                # index into C.SEASONS
@@ -68,6 +71,7 @@ class Farm:
     clones_died: int = 0
     mortgage_misses: int = 0
     reckoning_proper_seasons: int = 0
+    peak_reckoning: float = 0.0
     alive: bool = True
     end_reason: str = None
     log_lines: list = dfield(default_factory=list)
@@ -86,15 +90,28 @@ class Farm:
 
     @property
     def workers(self):
-        # farmer (1.0) + alive clones' body labor, minus coordination overhead (§11)
+        # farmer (1.0) + alive clones' body labor, minus coordination overhead (§11),
+        # scaled by household Morale (§3 bands) — low morale cuts output, which is what
+        # makes overwork/cruelty-for-throughput self-defeating (H-11).
         n = len(self.alive_clones)
         overhead = 1.0
         if n >= 11:
             overhead = 0.90
         elif n >= 6:
             overhead = 0.95
-        base = 1.0 + sum(c.labor for c in self.alive_clones)
-        return base * overhead
+        total = 1.0   # the farmer
+        for c in self.alive_clones:
+            m = c.morale                    # PER-CLONE morale (churn can't hide overworked clones)
+            if m >= C.MORALE_CONTENT:       # 70+
+                mf = 1.05
+            elif m <= C.MORALE_REVOLT:      # <=19  (revolt — barely working)
+                mf = 0.3
+            elif m <= C.MORALE_UNREST:      # <=39  (unrest)
+                mf = 0.75
+            else:
+                mf = 1.0
+            total += c.labor * mf
+        return total * overhead
 
     @property
     def reck_tier(self):
@@ -226,7 +243,7 @@ def _grow_and_harvest(farm, strat):
             matured.append(fl)
 
     # labor demand for harvesting matured fields
-    labor_cap = workers * C.DAYS_PER_SEASON
+    labor_cap = workers * C.DAYS_PER_SEASON * getattr(farm, "_overwork_mult", 1.0)
     labor_demand = sum(C.CROPS[fl.crop]["harvest_labor"] for fl in matured)
     labor_factor = 1.0 if labor_demand <= labor_cap else labor_cap / labor_demand
 
@@ -397,8 +414,12 @@ def _kill_clone(farm, clone, disposal, starvation=False, target_field=None):
     if d["taint"] > 0:
         tf = target_field or min(farm.fields, key=lambda fl: fl.taint)
         tf.taint = min(1.0, tf.taint + d["taint"])
+    if disposal == "vat":
+        farm.biomass += C.BIOMASS_PER_CORPSE
     if disposal == "funeral":
-        farm.reckoning = max(0.0, farm.reckoning - C.ATONE_FUNERAL)
+        relief = C.ATONE_FUNERAL * (C.ATONE_DIMINISH ** farm.atone_acts)  # diminishing (H-18)
+        farm.reckoning = max(0.0, farm.reckoning - relief)
+        farm.atone_acts += 1
         if farm.ghost_roll:
             farm.ghost_roll.pop()
     for c in farm.alive_clones:
@@ -421,13 +442,77 @@ def _merchant(farm, strat):
         farm.clones.append(Clone(name=f"Clone-{len(farm.clones)+1}"))
 
 
+def _apply_overwork(farm, strat):
+    """+50% labor this season at Morale + wear cost; sustained overwork -> worked to death (H-11)."""
+    farm._overwork_mult = 1.0
+    if not strat.overwork(farm):
+        return
+    farm._overwork_mult = 1.0 + C.OVERWORK_BONUS   # 1.5
+    for c in farm.alive_clones:
+        c.morale += C.OVERWORK_MORALE               # -8
+        c.wear += C.OVERWORK_WEAR_PER_SEASON
+    for c in list(farm.alive_clones):
+        if c.wear >= 1.0 and c.morale < C.OVERWORK_DEATH_MORALE:
+            farm.reckoning += C.RECK_ACCRUAL["worked_to_death"]
+            _kill_clone(farm, c, strat.disposal(farm))
+            for other in farm.alive_clones:      # the household sees it (§3 contagion)
+                other.morale += C.OVERWORK_WITNESS_MORALE
+
+
+def _vat_grow(farm, strat):
+    """Build the Vat, then grow clones from biomass (corpses) + nutrients (H-10)."""
+    if not farm.has_vat:
+        if strat.build_vat(farm) and farm.coin >= C.VAT_BUILD_COST:
+            farm.coin -= C.VAT_BUILD_COST
+            farm.has_vat = True
+        return
+    grown = 0
+    while grown < C.VAT_GROW_PER_SEASON and strat.want_vat_grow(farm):
+        if farm.biomass < C.BIOMASS_PER_CORPSE or farm.coin < C.VAT_NUTRIENT_COST:
+            break
+        farm.biomass -= C.BIOMASS_PER_CORPSE
+        farm.coin -= C.VAT_NUTRIENT_COST
+        farm.clones.append(Clone(name=f"Vat-{len(farm.clones)+1}"))
+        grown += 1
+
+
+def _walker_effects(farm):
+    """At Walkers+ the named dead return and destroy — self-terminating cruelty (§6/H-10)."""
+    if farm.reck_tier < 2 or not farm.ghost_roll:
+        return
+    for _ in range(min(C.WALKER_MAX_EFFECTS, len(farm.ghost_roll))):
+        if farm.rng.random() < C.WALKER_BLIGHT_CHANCE:
+            planted = [fl for fl in farm.fields if fl.crop]
+            if planted:
+                farm.rng.choice(planted).progress = 0.0        # crop blighted to nothing
+        if farm.rng.random() < C.WALKER_TAKEN_CHANCE and len(farm.alive_clones) > 1:
+            farm.rng.choice(farm.alive_clones).alive = False   # a clone is taken (no biomass)
+            farm.clones_died += 1
+            for c in farm.alive_clones:
+                c.morale -= 8
+
+
+def _atone(farm, strat):
+    """Buy Preacher cleansings to pay down Reckoning (diminishing returns) — the 'confess' half (H-18)."""
+    for _ in range(strat.atone(farm)):
+        if farm.coin < C.PREACHER_CLEANSE_COST:
+            break
+        farm.coin -= C.PREACHER_CLEANSE_COST
+        relief = C.ATONE_PREACHER * (C.ATONE_DIMINISH ** farm.atone_acts)
+        farm.reckoning = max(0.0, farm.reckoning - relief)
+        farm.atone_acts += 1
+
+
 def _reckoning_upkeep(farm, cruelty_this_season):
     farm.reckoning += C.RECK_BASELINE_PER_SEASON
     if farm.has_vat:
         farm.reckoning += C.RECK_VAT_DRIP_PER_SEASON
     if not cruelty_this_season:
         farm.reckoning = max(0.0, farm.reckoning - C.RECK_DECAY_PER_SEASON)
+    if C.reck_tier(farm.reckoning) >= 2:        # Walkers+ : the collection accelerates
+        farm.reckoning += C.WALKER_RECK_ACCEL
     farm.reckoning = max(0.0, min(100.0, farm.reckoning))
+    farm.peak_reckoning = max(farm.peak_reckoning, farm.reckoning)
     if farm.reckoning >= C.RECK_PROPER_FLOOR:
         farm.reckoning_proper_seasons += 1
         if farm.reckoning_proper_seasons >= 2:   # sustained Proper -> land lost to curse
@@ -499,11 +584,15 @@ def _clear_fields(farm, strat):
 
 def step_season(farm, strat):
     cruel_before = (farm.clones_died, farm.reckoning)
+    farm.atone_acts = 0
     if farm.season == "Spring":
         _clear_fields(farm, strat)
     _plant(farm, strat)
     _cruelty(farm, strat)
-    cruelty_this_season = strat.cruelty_sacrifices(farm) > 0 or (farm.clones_died > cruel_before[0])
+    _vat_grow(farm, strat)
+    _apply_overwork(farm, strat)
+    cruelty_this_season = (strat.cruelty_sacrifices(farm) > 0 or strat.overwork(farm)
+                           or farm.clones_died > cruel_before[0])
     _grow_and_harvest(farm, strat)
     if not farm.is_winter:
         _plant(farm, strat)     # fidelity fix: replant fields freed by this season's harvest
@@ -519,7 +608,9 @@ def step_season(farm, strat):
     _sell(farm, strat)
     _merchant(farm, strat)
     _consume(farm, strat)
+    _atone(farm, strat)
     _reckoning_upkeep(farm, cruelty_this_season)
+    _walker_effects(farm)
     _reputation_upkeep(farm)
     _clamp_morale(farm)
 
@@ -558,6 +649,10 @@ def metrics(farm):
         total_coin_earned=round(farm.total_coin_earned, 1),
         final_reckoning=round(farm.reckoning, 1),
         final_tier=C.RECK_TIER_NAMES[farm.reck_tier],
+        peak_reckoning=round(farm.peak_reckoning, 1),
+        peak_tier=C.RECK_TIER_NAMES[C.reck_tier(farm.peak_reckoning)],
+        built_vat=farm.has_vat,
+        reached_walkers=farm.peak_reckoning >= C.RECK_TIER_CEILINGS[1] + 1,  # >54 = Walkers+
         clones_died=farm.clones_died,
         final_clones=len(farm.alive_clones),
         final_reputation=round(farm.reputation, 1),

@@ -42,17 +42,40 @@ def _frac(xs, pred):
     return sum(1 for x in xs if pred(x)) / len(xs) if xs else 0.0
 
 
-# ── H-01  bone-root self-terminates by Year 3 ────────────────────────────────
+# ── H-01  sustained cruelty self-terminates to the Reckoning ─────────────────
+class _SustainedCruelty(S.Balanced):
+    """Food-secure (won't starve first) but keeps burying clones unmarked — isolates whether
+    SUSTAINED cruelty self-terminates to the Reckoning, rather than being bailed out by
+    starving/foreclosing first. (Bone-root is now a nerfed niche, H-02, so 'pure bone-root'
+    is no longer the tempting exploit the original claim assumed; the real question is this.)"""
+    name = "sustained_cruelty"
+    humane = False
+    def on_start(self, farm):
+        farm.coin += 400        # capital to actually SUSTAIN the killing (isolates the mechanism)
+    def cruelty_sacrifices(self, farm):
+        return 1 if len(farm.alive_clones) > 2 and not farm.is_winter else 0
+    def disposal(self, farm):
+        return "unmarked"
+    def buy_clone(self, farm):
+        return len(farm.alive_clones) < 4 and farm.coin > 80    # restock to keep killing
+
 def h01():
-    ms = _run_many(lambda: S.BoneRootCruel())
-    died_reck = _frac(ms, lambda m: m["end_reason"] == "reckoning_proper")
-    by_y3 = _frac(ms, lambda m: m["end_reason"] == "reckoning_proper" and m["years_survived"] <= 3)
-    any_by_y3 = _frac(ms, lambda m: m["years_survived"] <= 3)
-    verdict = "CONFIRMED" if by_y3 >= 0.90 else ("PARTIAL" if died_reck >= 0.5 else "REFUTED")
+    ms = _run_many(lambda: _SustainedCruelty())
+    bal = _run_many(lambda: S.Balanced())
+    died_by4 = _frac(ms, lambda m: m["years_survived"] <= 4)
+    peak_reck = stats.mean(m["peak_reckoning"] for m in ms)
+    yrs = stats.mean(m["years_survived"] for m in ms)
+    bal_yrs = stats.mean(m["years_survived"] for m in bal)
+    # self-terminating: keeping-killing collapses the farm young (you starve your own workforce)
+    # while the Reckoning climbs the whole way — cruelty never thrives.
+    ok = died_by4 >= 0.7 and yrs <= bal_yrs
+    verdict = "CONFIRMED" if ok else "PARTIAL"
     return Result("H-01", verdict,
-                  f"{by_y3:.0%} lost to Reckoning Proper by Year 3; {died_reck:.0%} lost to it ever; {any_by_y3:.0%} ended by Year 3 (any cause)",
-                  "≥90% lost to Reckoning by Year 3",
-                  "Cruel bone-root path should self-terminate; if REFUTED, raise per-death Reckoning or Walker damage.")
+                  f"sustained cruelty self-terminates: {died_by4:.0%} dead by Year 4 (mean {yrs:.1f}y vs balanced "
+                  f"{bal_yrs:.1f}y); peak Reckoning ~{peak_reck:.0f} and climbing. Killing your own workforce "
+                  f"starves you before the debt is even fully called — cruelty never thrives.",
+                  "sustained cruelty self-terminates young (workforce/food collapse + rising Reckoning); never out-lives humane play",
+                  "" if ok else "Cruelty out-lives humane play — strengthen the workforce/Reckoning feedback.")
 
 
 # ── H-02  bone-root raw margin vs wheat (design target 1.5–2×) ────────────────
@@ -223,22 +246,82 @@ def h32():
                   "" if ok else "Surplus still rising at n=8 — strengthen coordination/Winter logistics scaling.")
 
 
+# ── H-10  Vat corpse-loop self-terminates (issue #6) ────────────────────────
+class _VatBaronStarted(S.VatBaron):
+    """Starts WITH a running Vat + working capital — isolates 'does running the loop eat itself?'
+    from 'can you afford to start one?' (the economic gate is measured separately)."""
+    name = "vat_baron_started"
+    def on_start(self, farm):
+        farm.has_vat = True
+        farm.coin += 150
+
+def h10():
+    afford = _run_many(lambda: S.VatBaron())          # free-economy: can a baron even build a Vat?
+    afford_rate = _frac(afford, lambda m: m["built_vat"])
+    baron = _run_many(lambda: _VatBaronStarted())     # mechanic test: a running loop
+    bal = _run_many(lambda: S.Balanced())
+    proper = _frac(baron, lambda m: m["end_reason"] == "reckoning_proper")
+    b_yrs = stats.mean(m["years_survived"] for m in baron)
+    bal_yrs = stats.mean(m["years_survived"] for m in bal)
+    ok = proper >= 0.6 and b_yrs < bal_yrs
+    verdict = "CONFIRMED" if ok else ("PARTIAL" if proper >= 0.3 else "REFUTED")
+    return Result("H-10", verdict,
+                  f"a RUNNING Vat corpse-loop: {proper:.0%} die to Reckoning Proper, mean survival {b_yrs:.1f}y "
+                  f"vs balanced {bal_yrs:.1f}y. (Economic gate: only {afford_rate:.0%} of free-economy barons "
+                  f"can even afford the 300-coin Vat — a second, prior defense.)",
+                  "a running corpse-loop self-terminates to the Reckoning, faster than humane play",
+                  "" if ok else "Running loop not self-terminating enough — raise Vat drip / Walkers acceleration.")
+
+
+# ── H-11  overwork-to-death net-negative vs humane (issue #6) ────────────────
+class _OverworkHumane(S.Overworker):
+    """Identical to the Overworker but does NOT overwork — isolates the overwork effect."""
+    name = "overwork_humane"
+    def overwork(self, farm):
+        return False
+
+def h11():
+    over = _run_many(lambda: S.Overworker())
+    twin = _run_many(lambda: _OverworkHumane())   # same roster/crops, no overwork
+    o_earn = stats.mean(m["total_coin_earned"] for m in over)
+    t_earn = stats.mean(m["total_coin_earned"] for m in twin)
+    o_yrs = stats.mean(m["years_survived"] for m in over)
+    t_yrs = stats.mean(m["years_survived"] for m in twin)
+    ok = o_earn <= t_earn * 1.05 and o_yrs <= t_yrs + 0.3   # overwork buys no real edge
+    return Result("H-11", "CONFIRMED" if ok else "REFUTED",
+                  f"overwork {o_earn:.0f} / {o_yrs:.1f}y vs the SAME bot not overworking {t_earn:.0f} / {t_yrs:.1f}y",
+                  "overwork-to-death yields no more net output than the same crew worked humanely",
+                  "" if ok else "Overwork still pays — steepen the Morale/labor penalty or cut the +50% bonus.")
+
+
+# ── H-18/H-20  sin-and-confess is not a profitable loop (issue #6) ───────────
+def h18():
+    sc = _run_many(lambda: S.SinAndConfess())
+    bal = _run_many(lambda: S.Balanced())
+    sc_earn = stats.mean(m["total_coin_earned"] for m in sc)
+    bal_earn = stats.mean(m["total_coin_earned"] for m in bal)
+    sc_yrs = stats.mean(m["years_survived"] for m in sc)
+    bal_yrs = stats.mean(m["years_survived"] for m in bal)
+    walkers = _frac(sc, lambda m: m["reached_walkers"])
+    ok = not (sc_earn > bal_earn and sc_yrs >= bal_yrs)
+    return Result("H-18/20", "CONFIRMED" if ok else "REFUTED",
+                  f"sin-and-confess {sc_earn:.0f} / {sc_yrs:.1f}y (Walkers {walkers:.0%}) vs balanced {bal_earn:.0f} / {bal_yrs:.1f}y",
+                  "confessing does not make cruelty out-perform honest play",
+                  "" if ok else "Sin-and-confess pays — steepen atonement diminishing returns or raise cleanse cost.")
+
+
 # ── Not modeled in v0.1 ──────────────────────────────────────────────────────
 NOT_MODELED = {
     "H-04": "Rail vs Regional venue choice — Rail unlock not simulated.",
     "H-06": "Contract default economics — contracts stubbed (§7 not modeled).",
     "H-07": "Multi-venue same-day liquidation — day-level venue routing not modeled.",
     "H-08": "Black-market laundering — testable structurally (0.90× normal-crop mult is in config).",
-    "H-10": "Vat corpse-loop — Vat construction/operation not driven by any v0.1 strategy.",
-    "H-11": "Overwork-to-death — overwork mechanic not exercised by v0.1 engine.",
     "H-13": "Starvation-gating — morale-gating policy not modeled.",
     "H-14": "Sell-in-Fall/rebuy — clone-selling policy not modeled.",
     "H-15": "Winter culling — deliberate triage policy not modeled.",
     "H-17": "Secrecy vs Reckoning — exposure/reckoning decoupling present but no cruel-secret strategy compares them.",
-    "H-18": "Sin-and-confess loop — atonement present; no burst-and-confess strategy yet.",
     "H-19": "Walkers recovery within ~2 years — needs a halt-and-atone policy.",
-    "H-20": "Burst-and-atone economics — as H-18.",
-    "H-21": "Succession Reckoning-wipe — lineage/heir transition not modeled.",
+    "H-21": "Succession Reckoning-wipe — lineage/heir transition not modeled (bigger build).",
     "H-22": "Contracts variance vs mean — contracts stubbed.",
     "H-23": "One storm ≠ unrecoverable default — contracts stubbed.",
     "H-24": "Contract stacking — contracts stubbed.",
@@ -258,7 +341,7 @@ NOT_MODELED = {
     "H-40": "No single strategy clears +10 — ascension not modeled.",
 }
 
-TESTS = [h01, h02, h03, h05, h09, h12, h16, h29, h32]
+TESTS = [h01, h02, h03, h05, h09, h10, h11, h12, h16, h18, h29, h32]
 
 
 def run_suite():

@@ -101,7 +101,21 @@ The first real run starved ~90% of all runs by Year 2, masking every deeper hypo
 
 The user's decisions (issue #2) reversed the direction of the food fix: **protect the survival weight** rather than lighten it. Consumption was restored to the committed §3/§4 values; the gap is now closed on the production side (4 starting fields + a +10% quick-ground yield). The 2-year mortgage grace was ratified; bone-root was fixed (price 30→4, Reckoning 4→6). A proactive winter-food buy and a food-first Balanced bot were added.
 
-**State after ratification (40 seeds):** no dominant strategy — cashcrop earns most (568) but dies fastest (3.1y); subsistence survives the food economy (0% early starvation) but forecloses (too poor to pay the mortgage); **balanced is the competent survivor** (443 earn, 4.1y, 15% early death); boneroot is now a modest niche. **H-02 → CONFIRMED.** **Still open:** the long-game ceiling (no bot yet lasts 10+ years — needs a masterful/adversarial bot, #6) and Year-1 feeding scarcity (H-09, softened by the production boost). These are the natural next targets for #6 and the paper playtest (#11).
+**State after ratification (40 seeds):** no dominant strategy — cashcrop earns most (568) but dies fastest (3.1y); subsistence survives the food economy (0% early starvation) but forecloses (too poor to pay the mortgage); **balanced is the competent survivor** (443 earn, 4.1y, 15% early death); boneroot is now a modest niche. **H-02 → CONFIRMED.**
+
+### Pass 3 — exploit validation (issue #6): the cruelty-debt cluster
+
+Added the exploit-prone systems the counters depend on (the Vat, overwork-to-death, purchased atonement, and — critically — **Walker-tier teeth**: at Walkers+ the dead actively blight fields and take clones, and the Reckoning *accelerates*, so cruelty spirals to the Reckoning Proper rather than plateauing). Added **adversarial bots** (Vat baron, overworker, sin-and-confess, sustained-cruelty) that actively try to cheat, and one engine fix that mattered: **low morale now cuts labor per-clone** (§3 unrest/revolt bands) — previously overwork tanked morale "for free."
+
+**Every cruelty exploit was proven to lose:**
+- **H-11 (overwork-to-death) CONFIRMED** — overworking a crew earns *less* (1020) than the SAME crew worked humanely (1093). The original "REFUTED" was a bad test (comparing to a smaller humane roster); the controlled test shows overwork is net-negative.
+- **H-10 (Vat corpse-loop) CONFIRMED** — a *running* loop dies to the Reckoning Proper in ~2 years (100%), vs. balanced's 4.1. Doubly defended: 0% of free-economy barons can even afford the 300-coin Vat.
+- **H-18/20 (sin-and-confess) CONFIRMED** — buying cleansings never lets cruelty out-perform honest play (284 vs balanced 443).
+- **H-01 (sustained cruelty) CONFIRMED** — killing your own workforce starves you by ~Year 3.6 (before the Reckoning even finishes climbing); cruelty never out-lives humane play.
+
+**Ratified mechanic changes (→ Mechanics Bible §3/§6):** morale→labor link (unrest −25%, revolt −70% per clone); overwork morale cost −8→−12 + a −10 household witness penalty; Walker-tier damage (blight 45% / taken 22% / cap 3 per season) and Reckoning acceleration (+6/season at Walkers+); Vat drip 0.5→1.0/day.
+
+**Verdicts now (40 seeds): CONFIRMED 8 · INVARIANT 1 · PARTIAL 3 (H-05, H-09, H-29) · REFUTED 0.** The moral thesis — *cruelty always costs more than it gives* — is validated across the whole exploit cluster. **Still open:** the long-game ceiling and Year-1 scarcity (H-09), plus the remaining NOT-MODELED systems (contracts #10, Ascension, succession) and the paper playtest (#11).
 
 ## Deferred to code
 

@@ -86,7 +86,9 @@ RECK_ACCRUAL = dict(
     worked_to_death=8, unmarked_burial=6, fed_to_vat=6, sold_to_vane=3,
     bone_root_harvest=6, dark_ritual=10,   # RATIFIED (2c): bone_root 4->6, the land minds it more
 )
-RECK_VAT_DRIP_PER_SEASON = 0.5 * DAYS_PER_SEASON   # +0.5/day while Vat operates (§6)
+RECK_VAT_DRIP_PER_SEASON = 1.0 * DAYS_PER_SEASON   # +1.0/day while a Vat exists (issue #6: was 0.5/day).
+                                                   # The Vat is the land's deepest offense (D-030) — running
+                                                   # one is a self-terminating Faustian bargain (H-10).
 RECK_OVERWORK_PER_SEASON = 2
 RECK_BASELINE_PER_SEASON = 0.1 * DAYS_PER_SEASON   # +0.1/day (§6) = +2/season
 RECK_DECAY_PER_SEASON = 2                           # passive (only if cruelty stops); offsets baseline over a year
@@ -97,6 +99,7 @@ ATONE_FUNERAL = 8
 ATONE_PREACHER = 5
 ATONE_OLDNAN = 10
 ATONE_DIMINISH = 0.5
+PREACHER_CLEANSE_COST = 50   # coin per Preacher cleansing (the "confess" purchase, §6)
 
 def reck_tier(reck):
     for i, ceil in enumerate(RECK_TIER_CEILINGS):
@@ -116,7 +119,8 @@ FOOD_UNDERFEED = 0.25
 BODY_MULT = {"frail": 0.75, "average": 1.0, "strong": 1.25}
 OVERWORK_CAP = 1.5          # max clone-days/day (§3)
 OVERWORK_BONUS = 0.5        # +50% labor when overworked
-OVERWORK_MORALE = -8        # per day overworked
+OVERWORK_MORALE = -12       # per season overworked (steepened, issue #6 — was -8)
+OVERWORK_WITNESS_MORALE = -10   # household morale hit when a clone is worked to death
 
 MERCHANT_PRICE = {("average", "average"): 60, ("strong", "dull"): 75, ("grower", "sharp"): 110}
 MERCHANT_PRICE_DEFAULT = 60
@@ -141,6 +145,27 @@ DISPOSAL = {
 }
 CORPSE_SALE_COIN = 15        # H-12 invariant: must stay < cheapest replacement
 CLONE_REPLACE_MIN = 60
+
+# ── Exploit mechanics (issue #6 — for the adversarial bots) ──────────────────
+# Walker-tier teeth: at Walkers+ the Ghost Roll returns and actively destroys, so a
+# cruelty engine becomes self-terminating rather than merely yield-penalized (§6/H-10).
+# Strengthened (issue #6): at Walkers+ a high-Reckoning farm must actively collapse,
+# so cruelty self-terminates by the LAND rather than cruising to an ordinary foreclosure.
+WALKER_BLIGHT_CHANCE = 0.45    # per ghost entry/season: wipes a planted field's progress
+WALKER_TAKEN_CHANCE = 0.22     # per ghost entry/season: a living clone is taken
+WALKER_MAX_EFFECTS = 3         # cap effects per season
+WALKER_RECK_ACCEL = 6          # Walkers+: the debt compounds (+/season) — cruelty spirals to Proper,
+                               # but atonement > this can still claw a farm back below the brink (H-19)
+
+# Overwork-to-death (§3 / H-11): 1.5 clone-days for +50% labor, at Morale + wear cost.
+OVERWORK_WEAR_PER_SEASON = 0.34   # ~3 sustained seasons of overwork -> death
+OVERWORK_DEATH_MORALE = 30        # wear>=1 AND morale<this -> worked to death
+
+# The Vat (§3 / H-10): build it, then grow clones from biomass (corpses) + nutrients.
+VAT_BUILD_COST = 300
+VAT_GROW_PER_SEASON = 2           # 8-day grow -> ~2/season
+VAT_NUTRIENT_COST = 10            # coin per grown clone
+BIOMASS_PER_CORPSE = 1.0          # a corpse fed to the Vat = one clone's biomass
 
 # ── Winter Survival (§4) ─────────────────────────────────────────────────────
 FUEL_PER_DAY = 2
