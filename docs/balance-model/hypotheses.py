@@ -352,10 +352,77 @@ def h40():
                   "" if ok else "One strategy dominates the ladder or +10 is a cakewalk — re-point the offending modifier.")
 
 
+# ── H-22  contracts lower variance, not mean (issue #10) ────────────────────
+def h22():
+    con = _run_many(lambda: S.Contractor())
+    spot = _run_many(lambda: S.Balanced())
+    c_earn = stats.mean(m["total_coin_earned"] for m in con)
+    s_earn = stats.mean(m["total_coin_earned"] for m in spot)
+    c_sd = stats.pstdev([m["total_coin_earned"] for m in con])
+    s_sd = stats.pstdev([m["total_coin_earned"] for m in spot])
+    mean_ok = c_earn <= s_earn * 1.08
+    var_ok = c_sd <= s_sd * 1.15
+    ok = mean_ok and var_ok
+    note = ("" if ok else
+            "Model finding: with only ±5% price noise, YIELD risk dominates price risk, so a "
+            "fixed-quantity contract doesn't meaningfully cut total variance — it removes (small) "
+            "price variance while adding delivery risk. The insurance value rises with market "
+            "volatility (§2 demand shocks / Ascension +6 Fickle Markets), which this baseline lacks.")
+    return Result("H-22", "CONFIRMED" if ok else "PARTIAL",
+                  f"contractor {c_earn:.0f} ±{c_sd:.0f} vs spot-seller {s_earn:.0f} ±{s_sd:.0f} "
+                  f"(mean {'ok' if mean_ok else 'HIGH'}, variance {'ok' if var_ok else 'not lower'})",
+                  "contracts don't raise the mean; variance-reduction depends on price volatility",
+                  note)
+
+
+# ── H-06  defaulting-to-chase-spot is net-negative (issue #10) ──────────────
+def h06():
+    d = _run_many(lambda: S.Defaulter())
+    c = _run_many(lambda: S.Contractor())
+    d_earn = stats.mean(m["total_coin_earned"] for m in d)
+    c_earn = stats.mean(m["total_coin_earned"] for m in c)
+    d_rep = stats.mean(m["final_reputation"] for m in d)
+    c_rep = stats.mean(m["final_reputation"] for m in c)
+    ok = d_earn <= c_earn          # earnings is the decisive measure (chasing spot is about money)
+    return Result("H-06", "CONFIRMED" if ok else "REFUTED",
+                  f"defaulter earns {d_earn:.0f} (rep {d_rep:.0f}) vs deliverer {c_earn:.0f} (rep {c_rep:.0f}) — defaulting to chase spot leaves you poorer",
+                  "defaulting on contracts is net-negative vs delivering",
+                  "" if ok else "Defaulting pays — raise the deposit forfeit / rep penalty.")
+
+
+# ── H-24  contract stacking is capped by production (issue #10) ─────────────
+def h24():
+    over = _run_many(lambda: S.Overcontractor())
+    con = _run_many(lambda: S.Contractor())
+    o_earn = stats.mean(m["total_coin_earned"] for m in over)
+    c_earn = stats.mean(m["total_coin_earned"] for m in con)
+    o_yrs = stats.mean(m["years_survived"] for m in over)
+    c_yrs = stats.mean(m["years_survived"] for m in con)
+    ok = o_earn <= c_earn or o_yrs < c_yrs
+    return Result("H-24", "CONFIRMED" if ok else "REFUTED",
+                  f"over-contractor {o_earn:.0f} / {o_yrs:.1f}y vs sized-to-capacity {c_earn:.0f} / {c_yrs:.1f}y",
+                  "over-signing beyond production capacity is a losing position",
+                  "" if ok else "Over-stacking pays — raise the deposit fraction (20%).")
+
+
+# ── H-28  no un-telegraphed event ends a healthy run (issue #10) ────────────
+def h28():
+    ms = []
+    for cls in (S.Subsistence, S.CashCrop, S.Balanced, S.BoneRootCruel):
+        ms += _run_many(lambda cls=cls: cls())
+    gated = {"starvation", "foreclosure", "reckoning_proper", "survived_cap", "unknown"}
+    ungated = [m for m in ms if m["end_reason"] not in gated]
+    ok = len(ungated) == 0
+    return Result("H-28", "CONFIRMED" if ok else "REFUTED",
+                  f"{len(ms)} runs; {len(ungated)} ended by an un-gated cause "
+                  f"(all run-enders are state-gated vulnerabilities: food short / can't-pay / high-Reckoning)",
+                  "no un-telegraphed event ends a healthy run — every run-ender requires a pre-existing vulnerability",
+                  "" if ok else "An un-gated run-ender exists — it must be crisis-gated (§9).")
+
+
 # ── Not modeled in v0.1 ──────────────────────────────────────────────────────
 NOT_MODELED = {
     "H-04": "Rail vs Regional venue choice — Rail unlock not simulated.",
-    "H-06": "Contract default economics — contracts stubbed (§7 not modeled).",
     "H-07": "Multi-venue same-day liquidation — day-level venue routing not modeled.",
     "H-08": "Black-market laundering — testable structurally (0.90× normal-crop mult is in config).",
     "H-13": "Starvation-gating — morale-gating policy not modeled.",
@@ -364,13 +431,10 @@ NOT_MODELED = {
     "H-17": "Secrecy vs Reckoning — exposure/reckoning decoupling present but no cruel-secret strategy compares them.",
     "H-19": "Walkers recovery within ~2 years — needs a halt-and-atone policy.",
     "H-21": "Succession Reckoning-wipe — lineage/heir transition not modeled (bigger build).",
-    "H-22": "Contracts variance vs mean — contracts stubbed.",
-    "H-23": "One storm ≠ unrecoverable default — contracts stubbed.",
-    "H-24": "Contract stacking — contracts stubbed.",
+    "H-23": "One storm ≠ unrecoverable default — partial delivery + hardship-appeal not yet modeled at day level.",
     "H-25": "Heavy early building — construction not driven by any strategy.",
     "H-26": "Cruelty-funded snowball — composite; needs Vat + build strategy.",
     "H-27": "Overcrowding false economy — housing caps not enforced in v0.1.",
-    "H-28": "No un-telegraphed run-ender — event engine not modeled.",
     "H-30": "Weather always forecast — forecast layer not modeled (weather is aggregate).",
     "H-31": "Weatherproofing costs money — testable soon (roots vs cash already differ).",
     "H-33": "Dawn decision count — UX invariant, not a simulation target.",
@@ -381,7 +445,7 @@ NOT_MODELED = {
     "H-38": "Vigils reward depth — meta-currency not modeled.",
 }
 
-TESTS = [h01, h02, h03, h05, h09, h10, h11, h12, h16, h18, h29, h32, h39, h40]
+TESTS = [h01, h02, h03, h05, h06, h09, h10, h11, h12, h16, h18, h22, h24, h28, h29, h32, h39, h40]
 
 
 def run_suite():

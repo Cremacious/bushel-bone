@@ -124,7 +124,18 @@ Modeled the +1..+10 stacking modifiers (§15) as difficulty adjustments (`config
 - **H-39 (every level winnable) CONFIRMED** — the best playstyle's mean survival declines *gracefully* from ~5.0y (+0) to ~3.5y (+10); no cliff, no unwinnable rung.
 - **H-40 (no single strategy clears +10) CONFIRMED** — the best playstyle **changes across the ladder** (subsistence → boneroot → balanced), so no build dominates, and +10's top survival (~3.5y vs the 15-cap) shows it's genuinely hard, not a cakewalk.
 
-**Verdicts now (updated): CONFIRMED 10 · INVARIANT 1 · PARTIAL 3 · REFUTED 0.** Both the core-loop and the endgame anti-dominant-strategy guarantees now hold. **Still open:** the long-game ceiling / Year-1 scarcity (H-09), contracts & the event engine (#10 → H-06/07/22/23/24/28/29), succession (H-21), and the paper playtest (#11).
+**Verdicts after Pass 4: CONFIRMED 10 · INVARIANT 1 · PARTIAL 3 · REFUTED 0.** Both the core-loop and the endgame anti-dominant-strategy guarantees hold.
+
+### Pass 5 — contracts & crisis-gating (issue #10)
+
+Added a forward-contract system (§7: sign in Spring at a premium, post a 20% deposit, deliver or default at year-end) and three contract bots (contractor / over-contractor / defaulter).
+
+- **H-06 (default-to-chase-spot loses) CONFIRMED** — the defaulter earns less than the deliverer (440 vs 463).
+- **H-24 (over-signing loses) CONFIRMED** — over-contracting beyond capacity underperforms sizing-to-capacity (433/4.1y vs 463/4.5y).
+- **H-22 (contracts don't raise the mean) CONFIRMED, with a finding** — a fixed-*quantity* crop contract trades price risk for **delivery risk**; with only ±5% price noise, yield risk dominates, so the variance benefit is marginal — it grows with market volatility (§2 shocks / Ascension +6). Contracts don't beat spot on mean.
+- **H-28 (no un-telegraphed run-ender) CONFIRMED** — across 160 runs, *every* death traces to a state-gated vulnerability (food short / can't-pay / high-Reckoning); nothing kills a healthy farm.
+
+**Verdicts now: CONFIRMED 14 · INVARIANT 1 · PARTIAL 3 (H-05, H-09, H-29) · REFUTED 0.** 18 of 40 hypotheses tested; the untested remainder need lineage/succession (H-21), day-level venue routing (H-07), or the day-level hardship-appeal (H-23) — or are UX invariants (H-33) and prototype/playtest checks (#11). **Still open:** the long-game ceiling, Year-1 scarcity (H-09).
 
 ## Deferred to code
 

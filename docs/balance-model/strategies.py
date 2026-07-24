@@ -75,6 +75,13 @@ class BaseStrategy:
     def atone(self, farm):
         return 0
 
+    # -- contracts (§7) --
+    def sign_contracts(self, farm):
+        return []
+
+    def default_contract(self, farm, contract):
+        return False
+
     # -- labor / clones --
     def buy_clone(self, farm):
         return len(farm.alive_clones) < self.target_clones and farm.coin > 130
@@ -284,5 +291,49 @@ class SinAndConfess(BoneRootCruel):
         return 3 if farm.reckoning > 25 else 0     # confess hard whenever the land stirs
 
 
+# ── Contract strategies (issue #10) ─────────────────────────────────────────
+
+class Contractor(Balanced):
+    """Locks a cotton contract each year — trades market upside for certainty (H-22).
+    Holds the contracted crop for delivery instead of spot-selling it."""
+    name = "contractor"
+    CONTRACT_CROP = "cotton"
+    CONTRACT_QTY = 5     # conservative — well under reliable capacity, so quota is met even in a bad year
+
+    def sign_contracts(self, farm):
+        if farm.year <= 1:                       # establish before committing
+            return []
+        return [(self.CONTRACT_CROP, self.CONTRACT_QTY)]
+
+    def sell(self, farm, crop, units):
+        owed = sum(c["qty"] for c in farm.contracts if c["crop"] == crop)
+        if owed > 0 and units > 0:               # hold ONLY the contracted amount; sell the surplus
+            keep = min(units, owed)
+            return max(0.0, (units - keep) / units), "regional"
+        return Balanced.sell(self, farm, crop, units)
+
+
+class Overcontractor(Contractor):
+    """Exploit H-24: over-sign far beyond capacity — deposits starve capital, shortfalls default."""
+    name = "overcontractor"
+
+    def sign_contracts(self, farm):
+        if farm.year <= 1:
+            return []
+        return [("cotton", 20), ("tobacco", 18), ("wheat", 20)]   # well beyond what the farm can grow
+
+
+class Defaulter(Contractor):
+    """Exploit H-06: sign for the lock, then spot-sell everything and walk away from the contract."""
+    name = "defaulter"
+
+    def sell(self, farm, crop, units):
+        return Balanced.sell(self, farm, crop, units)   # spot-sell everything (don't hold)
+
+    def default_contract(self, farm, contract):
+        return True                                      # always walk away (chase spot)
+
+
 ALL_STRATEGIES = [Subsistence, CashCrop, BoneRootCruel, Balanced]
 ADVERSARIAL = [VatBaron, Overworker, SinAndConfess]
+CONTRACT_STRATS = [Contractor, Overcontractor, Defaulter]

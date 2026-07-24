@@ -78,6 +78,8 @@ class Farm:
     hidden_cruelties: int = 0          # un-exposed acts (for exposure rolls)
     biomass: float = 0.0               # Vat feedstock from corpses (H-10)
     atone_acts: int = 0                # atonements this season (diminishing returns, H-18)
+    contracts: list = dfield(default_factory=list)   # forward contracts (§7)
+    contract_income: float = 0.0
     # calendar
     year: int = 1
     season_idx: int = 0                # index into C.SEASONS
@@ -604,6 +606,40 @@ def _provision_winter_food(farm, strat):
         farm.storage["_bought_food"] = farm.storage.get("_bought_food", 0.0) + buy
 
 
+def _sign_contracts(farm, strat):
+    """Spring: sign forward contracts (§7). Lock a premium price now, post a 20% deposit."""
+    premium = (C.CONTRACT_PREMIUM[0] + C.CONTRACT_PREMIUM[1]) / 2
+    for crop, qty in strat.sign_contracts(farm):
+        price = market_price(farm, crop, "regional") * premium
+        deposit = C.CONTRACT_DEPOSIT * qty * price
+        if farm.coin < deposit:
+            continue
+        farm.coin -= deposit
+        farm.contracts.append({"crop": crop, "qty": qty, "price": price, "year": farm.year, "deposit": deposit})
+
+
+def _resolve_contracts(farm, strat):
+    """Year-end: deliver (or default on) contracts due this year (§7)."""
+    for c in [c for c in farm.contracts if c["year"] == farm.year]:
+        have = farm.storage.get(c["crop"], 0.0)
+        if strat.default_contract(farm, c):                  # walk away — deposit forfeit + rep hit
+            farm.reputation = max(0, farm.reputation + C.CONTRACT_DEFAULT_REP)
+            continue
+        delivered = min(c["qty"], have)
+        farm.storage[c["crop"]] = have - delivered
+        revenue = delivered * c["price"]
+        farm.coin += revenue
+        farm.contract_income += revenue
+        farm.total_coin_earned += revenue
+        if delivered >= c["qty"] - 1e-9:
+            farm.coin += c["deposit"]                         # full delivery -> deposit refunded
+        else:
+            short = 1.0 - delivered / c["qty"]
+            farm.coin += c["deposit"] * (1.0 - short)         # partial refund
+            farm.reputation = max(0, farm.reputation + C.CONTRACT_DEFAULT_REP * short)
+    farm.contracts = [c for c in farm.contracts if c["year"] != farm.year]
+
+
 def _clear_fields(farm, strat):
     n = strat.clear_fields(farm)
     for _ in range(n):
@@ -618,6 +654,7 @@ def step_season(farm, strat):
     farm.atone_acts = 0
     if farm.season == "Spring":
         _clear_fields(farm, strat)
+        _sign_contracts(farm, strat)
     _plant(farm, strat)
     _cruelty(farm, strat)
     _vat_grow(farm, strat)
@@ -651,6 +688,7 @@ def step_season(farm, strat):
     farm.season_idx += 1
     if farm.season_idx >= len(C.SEASONS):
         farm.season_idx = 0
+        _resolve_contracts(farm, strat)
         _year_end_mortgage(farm)
         farm.year += 1
 
