@@ -1,6 +1,6 @@
 # Bushel & Bone — Narrative & World Bible
 
-**Status: IN PROGRESS.** Part 1 — The World (issue #3) and Part 2 — The Cast interiority (issue #4) are written. The voice guide (#5) is written as [`docs/style-guide.md`](style-guide.md). Remaining: full NPC quest arcs (#13), the Vane family biographies + three truths (#14), Season Arcs Years 5–10 (#15), and sample event cards (part of #16).
+**Status: IN PROGRESS.** Part 1 — The World (#3), Part 2 — The Cast interiority (#4), and Part 3 — The Vane Family / the three-truth mystery (#14) are written. The voice guide (#5) is written as [`docs/style-guide.md`](style-guide.md). Remaining: full NPC quest arcs (#13), Season Arcs Years 5–10 (#15), and sample event cards (part of #16).
 
 This bible fleshes out the story, the world, the NPCs, and the tone of Bushel & Bone in the depth required to actually write dialogue, event cards, and quest arcs without holes.
 
@@ -232,16 +232,113 @@ Each of the ten canon NPCs (CLAUDE.md §4 — no new NPCs) gets: **Public** (how
 
 *Full quest arcs (3–5 per NPC, branching on the ledger) → issue #13. Complete dialogue sets at Cold/Neutral/Warm/Bonded → the voice guide, issue #5. The Vane biographies and the three truths → issue #14.*
 
-### Part 3 — The Vane Family
+## PART 3 — THE VANE FAMILY  *(written — issue #14)*
 
-- **Ambrose's full biography.** Training, teachers, first vessel, why he came west.
-- **Meredith's full biography.** Growing up in his shadow, the batch that broke her, the years between fleeing and arriving in Marrow's Cross.
-- **The three possible truths.** Each written as a complete standalone backstory:
-  1. Meredith as slow-burning spy — who employs her, what she reports, the endgame.
-  2. The third Vane — who they are, where they live, why neither Vane will move first.
-  3. Meredith as vessel — the imprint process, what the real Meredith remembered, what Ambrose knows but will not say.
-- **Reveal pacing.** Which beats surface in Warm relationship, which in Bonded, which only after specific in-story triggers.
-- **Payoff.** What the player can DO with the truth once uncovered.
+The campaign-randomized central mystery (D-014). One of three truths is seeded per lineage; the Codex records which a lineage uncovered, so across campaigns the player meets all three (the replay hook, D-015). The design trick: **all three share one ambiguous surface** — guarded siblings, secret eastern correspondence, Old Nan's unease, an unspoken "Corvantine incident" — so the player cannot tell early which truth is live. The same clues recolor three ways. Resolves Q-006.
+
+### 3.1 The constant (identical in all three truths)
+
+**Ambrose Vane.** Corvantine-born and Corvantine-trained, a genuine talent of the vessel-trade under the second generation of Dr. Sabine Orrell's students (§1.4). Cultured, warm, persuasive — a man who can make the monstrous sound kind. He believes, sincerely, that vessels can be raised *well*, which makes him either the game's most humane clone-source or its most seductive corruptor. He fled Corvantine some years back after **the incident** (its nature differs by truth) and came west to the Sull for the quick ground and the thin law. He loves his sister past reason and is afraid — the object of the fear is the mystery.
+
+**Meredith Vane.** Sharp, teasing, transactional; runs the best house in the Sull and brokers its information and its Black Market. Came west when Ambrose did (or *because* he did). The years before Marrow's Cross are the one thing she never sells. Between the siblings: public warmth over a private, specific dread, and neither will name it.
+
+**The shared surface (what every player sees, regardless of truth):**
+- The two circle each other warily; a stranger would take it for ordinary sibling friction.
+- Money moves that the saloon's takings don't explain; letters go east and come back.
+- **Old Nan looks at Meredith with an unsettling half-recognition** and won't say why.
+- **Doc Bell** (a lapsed vesselwright, Part 2 §3) sometimes looks at the pair like a man reading a chart he doesn't like.
+- **Sheriff Coldwater** watches Ambrose and can never prove a thing.
+- The word "Corvantine" makes them both go still.
+
+**The Corvantine incident (the shared wound, content hidden):** something went wrong in the trade, in the east, that ruined or scattered the family and drove Ambrose west. *What* it was is the mystery.
+
+### 3.2 How it's seeded
+
+At lineage start the seeded PRNG (D-021) picks Truth A, B, or C. The clues in §3.6 are **shared**; only the *resolution* differs. A lineage that never befriends the Vanes never learns which truth was live — and that's allowed. The Codex logs the uncovered truth; a later lineage rolls fresh.
+
+---
+
+### 3.3 TRUTH A — The Spy
+
+**The truth:** Meredith is Ambrose's real blood sister — and she has been turned. She reports on Ambrose, and on the Sull's quick ground, to an eastern power: the **Cawdor Mill**, a Corvantine vessel-mill syndicate that wants to seize and industrialize the Sull's quick ground and needs Ambrose's survey knowledge and a hold over him. She is not a villain; she is **owned**. In Corvantine, to get them both out after the incident, she took on a debt (or a crime) the Mill now holds over her. She spies to keep them both alive, feeding the Mill controlled, minimal truths, and she hates every letter.
+
+**The dread between them:** Ambrose half-suspects she's watched and reporting, and is protective, not accusing — he thinks the watching is *on* her, not *by* her. Meredith protects him by keeping her handling small and by never letting him learn how deep it goes; she fears the day he finds out will break him, and the day the Mill decides Ambrose is worth more seized than surveyed.
+
+**Clues (the spy-coloring of the shared surface):** a courier who isn't a customer; coin that arrives on a schedule; a coded ledger under the bar; her stillness when a Cawdor name is dropped; a Mill agent arriving in town (a town/opportunity event) asking careful questions.
+**Red herrings:** the secret correspondence reads like a hidden third sibling (Truth B); her guardedness reads like she doesn't know what she is (Truth C).
+
+**Reveal beats:** Warm — the player catches a courier / the coded ledger and learns Meredith answers to someone east. Bonded — she confesses the Mill's hold and what it wants (the quick ground, and Ambrose). Trigger — the Rail's coming (Year-3 arc) is the Mill's road in; a Cawdor agent's arrival forces the endgame.
+
+**Payoff (what the player can DO):**
+- **Kind/ally:** help her break the Mill's hold — pay or void the debt, expose the agent to Coldwater, feed the Mill false surveys, warn Ambrose *with* her rather than behind her. Frees Meredith; earns both Vanes; the Mill's move on the Sull can be blunted.
+- **Cruel/exploit:** blackmail her with what you know; sell her secret to Ambrose, to Coldwater, or *to the Mill* (side with Cawdor for the quick-ground money — a devil's bargain that brings the mills west).
+- **Endgame:** unresolved, the Cawdor Mill comes for the Sull (a late arc), buying land and law. The player helped arm the town, or profited from its sale.
+
+**Cruelty-state reactivity:** a cruel, low-rep player is exactly who the Mill would rather deal with; Meredith trusts them least and the Cawdor branch opens widest. A kind player is who she dares confide in.
+
+---
+
+### 3.4 TRUTH B — The Third Vane
+
+**The truth:** there is a third sibling neither Vane will name — **Cassius Vane**, the eldest and the real prodigy, the family's first and finest vesselwright. Cassius *is* the Corvantine incident: he grew what should not be grown (a wave of vessels that "woke wrong" — conscious, and suffering, and his) and the trade and the law came down on the Vanes. Ambrose and Meredith fled and covered it; Cassius was ruined — taken, or vanished. Now he is **alive and coming west**, drawn to the Sull because it is the quickest ground he has ever heard of, to resume the work that damned him. He does not forgive his siblings for running.
+
+**Why neither will move first:** Ambrose knows Cassius is coming and will not tell Meredith, to spare her. Meredith suspects and will not confront Ambrose, to spare him. Each waits, dreading, each certain the other would side with Cassius if forced to choose — a standoff of love and fear.
+
+**Clues (the third-Vane coloring):** a third name never spoken; a portrait folded away; both siblings reacting to a description of a tall, courteous stranger; old Corvantine trade records (**Doc Bell** may recognize the Vane name from the scandal); **Old Nan** saying "three of a blood, and one of them the ground already knows."
+**Red herrings:** the hidden correspondence reads as spying (A); "a third who isn't quite right" reads as the vessel (C).
+
+**Reveal beats:** Warm — the player learns there *was* a third Vane, disgraced, presumed gone. Bonded — one sibling breaks and admits Cassius lives and is coming. Trigger — Cassius arrives (a late arc), courteous and terrible, and makes his offer.
+
+**Payoff:**
+- **Kind/ally-the-family:** help the Vanes face Cassius together — talk him down, stop his work, or hand him to the law; the act can reconcile the siblings or cost one of them.
+- **Cruel/ally-Cassius:** Cassius offers *mastery* — the Vat, bone-root and Weird-crop secrets, the deepest vesselry — in exchange for the quick ground and a free hand at the Old Well. A Faustian branch that supercharges the cruel path and endangers the whole town (and, cosmologically, the Marrow).
+- **Endgame:** a confrontation at the homestead or the Old Well; Cassius understands the Marrow better than anyone alive, which makes him the most dangerous man to let near the seam.
+
+**Cruelty-state reactivity:** a cruel player is who Cassius courts (a kindred hand); a high-Reckoning farm is a lure that draws him faster (the ground is already stirring). A kind player is who the frightened siblings turn to.
+
+---
+
+### 3.5 TRUTH C — The Vessel
+
+**The truth:** the real Meredith Vane **died** in Corvantine — she *was* the incident, or its cost (lost to the batch that woke wrong, or to the ruin that followed). Ambrose, unable to bear it and unable to let her be simply gone, did the unforgivable thing he is best at: he **grew her.** The Meredith who runs the saloon is a vessel — an imprint of the dead woman, seeded from what Ambrose could preserve (her tissue, her letters, her turns of phrase), the finest work of his life and the deepest sin of it. She is real enough to love, to broker secrets, to be afraid — and she is not sure she is real. Memories arrive that aren't quite hers; there are gaps; there is the uncanny knowledge of being a copy of someone she is grieved for and cannot name.
+
+**Why the siblings circle:** Ambrose knows what she is and will die before he says it. Meredith suspects and is terrified to ask. The love is genuine; it is built on the deepest possible lie. And **the Marrow may have a claim on her** — she is grown from its own seam (§1.4), and the reckoning does not forget what is made from it. This is why **Old Nan half-reads her** (Nan can sense a vessel) and why, at higher Reckoning, the land begins to *reach* for her.
+
+**Clues (the vessel-coloring):** Meredith's memory gaps and the phrases that aren't hers; Old Nan's recognition; a grave in the east marked with a worn "M.V." and a death-date that makes no sense; Ambrose's grief that runs deeper than a man with a living sister should carry; **Doc Bell** noticing something medically impossible (a scar that healed wrong, a pulse that isn't quite right); the faint vat-liquor note no perfume covers.
+**Red herrings:** her guardedness reads as spying (A); "the real Meredith" reads as a hidden third Vane (B).
+
+**Reveal beats:** Warm — the player collects the impossible details (the grave, the gaps, Nan's certainty) and begins to doubt she's who she seems. Bonded — the truth, from Ambrose in a broken confession, or from Meredith's own dawning terror, or from Old Nan laying it plain. Trigger — a Reckoning tier crossing (the Marrow stirring toward her) forces it; or Doc Bell, dying-honest, tells the player what he's known.
+
+**Payoff (the hardest choices in the game):**
+- **Kind:** carry the secret; help her become *herself* rather than the dead woman's copy (she chooses her own name, her own life); shield her from the Church and the Marrow both. If the reckoning reaches for her, the player and Ambrose may be able to *keep* her — at a cost.
+- **Cruel:** tell the town she's a husk (the Church would destroy her; Coldwater would have to act); use Ambrose's secret against him; or the worst — feed her to the Vat or the Marrow, or let the land take her and profit from the quiet after.
+- **Endgame:** at high Reckoning the Marrow calls her home. Can she be kept? What will Ambrose do to keep her? The reckoning-state reactivity is strongest of the three truths here.
+
+**Cruelty-state reactivity:** a player who has built a Vat / done vessel-cruelty meets this truth with terrible resonance — she is what your husks are. A high-Reckoning lineage endangers her directly (the land reaches for its own). A kind player is offered the game's most quietly devastating rescue.
+
+---
+
+### 3.6 Reveal pacing (shared framework)
+
+| Tier / trigger | What surfaces |
+|---|---|
+| Cold / Neutral | Nothing — only the wary warmth and the stillness at "Corvantine." |
+| **Warm** (with Meredith **or** Ambrose) | The player learns there IS a secret, and gathers the shared-surface clues (correspondence, Old Nan's unease, the Corvantine wound). Cannot yet tell which truth. |
+| **Bonded** | The active truth resolves — a confession, a discovery, or Old Nan laying it plain. |
+| **Triggers that accelerate** | The Rail's coming (Year 3, eastern connections); a Reckoning tier crossing (esp. Truth C); Old Nan's reading (if befriended); Doc Bell's deathbed honesty; a stranger from the east arriving. |
+
+Guardrail: the *surface* clues must stay identical across truths through Warm, so the ambiguity holds. Only at Bonded / trigger does the coloring commit.
+
+### 3.7 Payoff & mechanical hooks (summary)
+
+Whichever truth is live, uncovering it opens a **kind branch** (help/free/shelter the Vanes — earns loyalty, better clone stock and Black-Market terms, a defended town) and a **cruel branch** (exploit/blackmail/sell/side-with-the-threat — coin and power now, at a cost the ledger and the town collect later). Each truth ties to existing systems: **Meredith** = Black Market access + information (§2/§12); **Ambrose** = clone stock, prices, and the Vat/Weird-crop knowledge (§3); the endgame arcs slot beside the Year-3 Rail arc and the late Old Well arc (§13, Q-005). *(Full quest-chain beats belong with the season/NPC arcs, #13/#15.)*
+
+### 3.8 Cross-cast & cosmology links
+
+- **Old Nan** is the mystery's oracle in every truth (she half-reads a vessel, she senses "three of a blood," she knows the Mill's kind). Befriending her is the surest early thread (ties her arc, Part 2 §7, to this).
+- **Doc Bell**, the lapsed vesselwright, is the medical/historical witness — he can name the Corvantine scandal and, in Truth C, what Meredith is.
+- **Sheriff Coldwater** is the law the cruel branches route through (exposure, arrest) and the ally the kind branches can enlist.
+- **Truth C binds the mystery to the cosmology (D-029/D-030):** a vessel grown from the Marrow's own seam is exactly the thing the Church fears and the land may reclaim — the campaign's most personal expression of the whole game's bargain.
 
 ### Part 4 — The Season Arcs
 

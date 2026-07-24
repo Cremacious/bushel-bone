@@ -26,9 +26,8 @@ Every named NPC has 3–5 quest hooks alluded to but not written. Each needs bea
 GDD names Year 1 (The Newcomer), Year 2 (The Preacher's Sickness), Year 3 (The Rail Comes), Year 4 (The Vigil Breaks). Need full outlines for 5–10 additional years, plus branch logic for reacting to player state.
 **Owned by:** Narrative & World Bible.
 
-### Q-006. The three Vane truths — full backstories
-Each of the three possible truths (Meredith is a spy / a third Vane exists / Meredith is a vessel) needs a complete backstory, quest chain, and payoff. Currently only one-line sketches exist.
-**Owned by:** Narrative & World Bible.
+### Q-006. The three Vane truths — full backstories — ✅ RESOLVED (Session 3, issue #14)
+Written in `docs/narrative-bible.md` Part 3 (elaborates D-014): the shared surface + Corvantine wound; **Truth A** (spy for the Cawdor Mill), **Truth B** (the third Vane, Cassius), **Truth C** (Meredith is a vessel of the dead Meredith) — each with clues, red herrings, reveal pacing, payoff (kind/cruel branches), and cruelty-state reactivity. Full quest-chain beats slot into #13/#15.
 
 ### Q-007. World geography and lore — ✅ RESOLVED (Session 3, → D-029/D-030/D-031)
 Answered in `docs/narrative-bible.md` Part 1: the Commonwealth of Ostrey / the Sull; vessel-trade; the Church of the Long Vigil; the Marrow as the Reckoning's source.
