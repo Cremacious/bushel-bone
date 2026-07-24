@@ -1,6 +1,6 @@
 # Bushel & Bone — Narrative & World Bible
 
-**Status: IN PROGRESS.** Part 1 — The World (#3), Part 2 — The Cast interiority (#4), and Part 3 — The Vane Family / the three-truth mystery (#14) are written. The voice guide (#5) is written as [`docs/style-guide.md`](style-guide.md). Remaining: full NPC quest arcs (#13), Season Arcs Years 5–10 (#15), and sample event cards (part of #16).
+**Status: IN PROGRESS.** Part 1 — The World (#3), Part 2 — The Cast interiority (#4), Part 3 — The Vane Family / three-truth mystery (#14), and Part 3B — NPC Quest Arcs (#13) are written. The voice guide (#5) is written as [`docs/style-guide.md`](style-guide.md). Remaining: Season Arcs Years 5–10 (#15) and sample event cards (part of #16).
 
 This bible fleshes out the story, the world, the NPCs, and the tone of Bushel & Bone in the depth required to actually write dialogue, event cards, and quest arcs without holes.
 
@@ -339,6 +339,66 @@ Whichever truth is live, uncovering it opens a **kind branch** (help/free/shelte
 - **Doc Bell**, the lapsed vesselwright, is the medical/historical witness — he can name the Corvantine scandal and, in Truth C, what Meredith is.
 - **Sheriff Coldwater** is the law the cruel branches route through (exposure, arrest) and the ally the kind branches can enlist.
 - **Truth C binds the mystery to the cosmology (D-029/D-030):** a vessel grown from the Marrow's own seam is exactly the thing the Church fears and the land may reclaim — the campaign's most personal expression of the whole game's bargain.
+
+## PART 3B — NPC QUEST ARCS  *(written — issue #13)*
+
+3–5 arcs per NPC, each grown from the wound established in Part 2 and branching on the player's **cruelty / reputation / Reckoning** state. Format: **Arc — Title** *(gate/trigger)* → Hook → beats → **branches** by player state. These are outlines; card-level prose is #16. The Vanes' arcs live in Part 3 (the mystery); their non-mystery beats are noted. Resolves Q-004.
+
+*Design rule: every arc offers a kind branch and a cruel branch, and at least one arc per NPC turns on the player's Reckoning/cruelty state so the town's stories react to who the player has become.*
+
+### 1. Mayor Cyrus Halloway — the man burying the past under progress
+- **Arc — The Rail Vote** *(Year 3, §13)* → Halloway needs the town's backing (and coin) to bring the Rail. → He courts the player as the model prosperous farmer; asks them to sway the vote and fund the subscription. → **Kind/high-rep:** back him → the Rail comes (Depot unlocks, §2), Halloway indebted. **Oppose/cruel:** the Rail stalls or comes on worse terms; Halloway turns cold. **Wildcard:** back it *for* a price (a permanent favor, land, Bess).
+- **Arc — The Founding Lie** *(befriend Old Nan or Bess)* → the player learns Halloway's family were the Salting's "strong." → confront him. → **Kind:** hold the secret; he becomes a quiet ally, tries to make it right. **Cruel/low-rep:** blackmail him for coin/contracts/land — a lever over the town, at a rep-and-Reckoning cost if it gets out.
+- **Arc — A Match for Bess** *(high-rep)* → Halloway steers Bess toward the player (or a Silas-backed rival). → intersects Bess's arcs; a kind, honest player wins his blessing, a cruel one wins only his money.
+
+### 2. Preacher Elias Grange — the shepherd losing his doctrine
+- **Arc — The Preacher's Sickness** *(Year 2, §13)* → Grange falls ill; the church's blessings/cleansings (Reckoning relief, §6) go dark. → **Kind/fund his care:** services restored, Grange devoted to the player. **Let it lapse:** atonement stays costly all year — brutal for a cruel player who leans on it.
+- **Arc — The Heresy of Mercy** *(mid-game)* → hardline Church authorities ride out to censure Grange for baptizing vessels. → **Defend him** (testify, sway the town): the moderate church survives, vessels stay named. **Side with the hardliners / cruel:** Grange is broken or driven out; the church turns Abstinent (no more vessel-rites — a colder town).
+- **Arc — What Watches Back** *(Bonded)* → Grange confides his doubt that the Vigil is theater and Old Nan is right. → **Push him to the truth** (via Old Nan): he finds a terrible peace, or shatters. **Shore up his faith:** he keeps the Vigil, comforted by a lie. *(Reckoning-reactive: at high Reckoning his doubt curdles to dread.)*
+
+### 3. Doc Bell — the physician who used to grow people
+- **Arc — The Corvantine Door** *(Warm)* → a detail (a tool, a name) cracks Bell's past as a vesselwright. → earn the story of the batch that woke wrong. → **Kind:** Bell shares real vesselry knowledge (better clone health/treatment, §3/§4); a lasting ally. **Expose/cruel:** Bell shuts the door for good; rumors (exposure, §5) turn against *you*.
+- **Arc — Do No Harm** *(cruelty trigger)* → a cruel player (or a rival farmer) asks Bell to quietly dispose of / experiment on a vessel. → **Refuse-with-Bell / kind:** the two of you shelter it (ties Sister Ruth). **Coerce Bell / cruel:** Bell complies, hating you, and it costs them a piece of themselves — and feeds your exposure.
+- **Arc — The Untreatable** *(high Reckoning)* → a "sickness" no medicine touches spreads. → Bell, out of their depth, is the one who names it: this is the land, not a fever. A turning-point beat toward the reckoning endgame.
+
+### 4. Meredith Vane
+- Her arcs are the **mystery (Part 3)**. Non-mystery beat — **The House** *(low-rep / Black-Market use)*: heat comes down on the saloon's contraband trade (Coldwater, a rival fence); the player can protect her operation (deeper Black-Market access, §2) or let it burn.
+
+### 5. Silas Ridley — the drowning man with the ledger
+- **Arc — The Bank's Patience** *(mortgage pressure, §13)* → Silas, squeezed by the charter company, moves to call in Sull loans early. → **Kind/prosperous:** help steady the town's paper (or your own) → he eases up, grateful. **Struggling:** the relentless arithmetic; the grace, then the axe.
+- **Arc — Cursed Paper** *(learn he consults Old Nan)* → the player discovers Silas secretly believes the Sull is cursed and wants out before the Rail exposes his book. → **Help him get clear** (buy his stake, take on paper): leverage and land. **Exploit his fear / high-Reckoning:** feed his dread; he flees, dumping the town's mortgages to the Cawdor Mill (ties Vane Truth A) or to you.
+- **Arc — The Ledger** *(bonded/coin)* → a look at every debt in Marrow's Cross. → quiet power over the town: forgive, buy, or foreclose on your neighbors.
+
+### 6. Bess Halloway — the moral mirror
+- **Arc — The Match** *(high-rep)* → courtship that is really a test of the player's honesty. → **Kind:** a true partnership; the marriage/heir line (D-007) opens honestly. **Cruel/rich-but-false:** she sees it; the match sours no matter the coin; her disappointment is the game's plainest verdict.
+- **Arc — The Papers** *(with Bess)* → she and the player uncover the founding lie together. → **Face it honestly:** they try to make the town own its past (vs. her father's arc). **Bury it / cruel:** complicity; Bess grows cold or leaves.
+- **Arc — The Rail East** *(Year 3+)* → Bess's choice: stay and hold the town honest, or take the Rail east. → a kind, honest player can be the reason she stays (heir on the land); a cruel one is the reason she runs.
+
+### 7. Old Nan — the last of the Salting, keeper of the true vigil
+- **Arc — The Reading** *(kind, land-respecting)* → earn her trust; she begins to read the land for you (Reckoning intel, §6; folk-cleansing, §1). The surest early thread into the Vane mystery (§3.8).
+- **Arc — What She Is** *(Bonded)* → the player learns Nan is a turned-out Salting child who did not quite die — living proof of the Marrow's ledger and the true founding story.
+- **Arc — The Long Watch** *(late; ties the Old Well, Year 7, Q-005)* → aging Nan seeks someone to carry the real vigil. → **Kind:** the player becomes her heir in knowledge (a meta/Codex thread, §14); the Old Well's secret. **Refuse / cruel:** she dies with it, and the land loses its last honest watcher — the Vigil weakens for everyone.
+
+### 8. Sheriff Nathaniel Coldwater — justice as penance
+- **Arc — Soft Ground** *(cruelty/exposure trigger, §5)* → Coldwater investigates the player's fields and missing hands. → **Nothing to hide / kind:** an ally and bulwark. **Cruel:** escalating investigations, fines, raids; a cat-and-mouse the player can lose (rep collapse) or win (out-maneuver the law).
+- **Arc — The Thing He Did** *(Warm)* → the player uncovers Coldwater's buried crime — why his justice is really self-punishment. → **Kind:** help him toward peace; he softens, becomes fairer. **Cruel:** use it to blackmail or break him — a corrupt, pliable sheriff, and a town with no law.
+- **Arc — When Law Means Nothing** *(high Reckoning)* → the Walkers come and Coldwater cannot arrest the dead. → his order unravels; he either finds a harder faith or falls apart. A reckoning-endgame beat.
+
+### 9. Dr. Ambrose Vane
+- His arcs are the **mystery (Part 3)**. Non-mystery beat — **The Trade** *(clone dealings, §3)*: as the player buys from him, Ambrose either **mentors** a kind player in raising vessels *well* (better clones, a humane path) or, for a cruel one, becomes a smiling **enabler** — the two faces of the same man, gated by how the player treats what he sells.
+
+### 10. Sister Ruth Grange — the mercy that acts
+- **Arc — The Underground** *(discover her secret)* → the player learns Ruth shelters mistreated vessels and runs a quiet network. → **Kind:** become part of it (a moral counter-economy; foundlings, §3). **Ignore:** neutral. **Expose / cruel:** betray it to the Church or Coldwater — vessels lost, Ruth broken; a deep Reckoning/rep cost.
+- **Arc — A Foundling's Keeper** *(foundling event, §3)* → a specific vessel Ruth is protecting needs a home the town won't question. → **Kind:** the player shelters it (labor + a bond). **Cruel:** the player is the farm she was hiding it *from* — a direct confrontation; she may take a clone *from* the player (Part 2 §10).
+- **Arc — When Mercy Isn't Enough** *(hard winter / high cruelty)* → a crisis outstrips charity — a cruel farmer, a failing town, the Marrow stirring. → the player stands with Ruth's mercy or against it; the last kind soul in Marrow's Cross either finds an ally or stands alone as the land turns.
+
+### Arc web (how they cross)
+- **The Founding Lie** links Halloway, Bess, and Old Nan (three custodians of the same buried truth).
+- **The mercy underground** links Ruth, Doc Bell, and a kind player against the hardline Church and cruel farmers.
+- **Cursed Paper / The Cawdor Mill** links Silas to Vane Truth A — the eastern money that wants the Sull.
+- **The reckoning-endgame beats** (Grange's dread, Bell's untreatable, Coldwater's unmooring, Nan's Long Watch, Ruth's last stand) converge as a high-Reckoning lineage approaches the Vigil breaking (Year 4, §13) and the Old Well (Year 7, Q-005).
+
+*Full beat-by-beat scripting and the card prose belong with the Season Arcs (#15) and the event library (#16); these outlines are the spine.*
 
 ### Part 4 — The Season Arcs
 

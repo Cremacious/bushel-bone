@@ -18,9 +18,8 @@ Every economic value has actual numbers (Mechanics Bible) and a first calibratio
 **Remaining before close:** the exploit/Ascension hypotheses (#6, #9, #10 — smarter/adversarial bots), the long-game ceiling, and the paper playtest (#11).
 **Owned by:** Balance Model + playtest.
 
-### Q-004. NPC quest arcs — full outlines
-Every named NPC has 3–5 quest hooks alluded to but not written. Each needs beat-by-beat outline including reactions to player cruelty state.
-**Owned by:** Narrative & World Bible.
+### Q-004. NPC quest arcs — full outlines — ✅ RESOLVED (Session 3, issue #13)
+Written in `docs/narrative-bible.md` Part 3B: 3 arcs per NPC (Vanes' in Part 3), each with hook, beats, and branches by cruelty/reputation/Reckoning state, plus an arc-web showing how they cross. Card-level scripting slots into #15/#16.
 
 ### Q-005. Season Arcs — Years 1 through 10
 GDD names Year 1 (The Newcomer), Year 2 (The Preacher's Sickness), Year 3 (The Rail Comes), Year 4 (The Vigil Breaks). Need full outlines for 5–10 additional years, plus branch logic for reacting to player state.
