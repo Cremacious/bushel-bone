@@ -7,6 +7,31 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 4 — 2026-07-24 — First playable: Year-1 browser prototype ("The Newcomer")
+
+**Worked on:** With the "Ready to Code" milestone complete (17/17 issues), began the code phase by building the first **playable** thing — a self-contained browser prototype of the Year-1 vertical slice.
+
+**Delivered — `prototype/year1.html`:** a single-file, dependency-free HTML/CSS/JS game that plays the whole Year-1 loop end to end (Morning Brief → Play → Dusk, four 20-day seasons → "I survived another year"). Faithful to spec:
+- **All six scripted beats** — Silas's Welcome, First Furrow, Vane's Wagon, the Cotton/Harvest moral fork, Harvest Home, the Long Vigil — in the `style-guide.md` voice, plus a rotating systemic-event pool per season (Soft Rain, Crows, A Name of His Own, Hot Wind, Pedlar, Rats, Foundling, Cabin Fever, etc.).
+- **Real numbers** from `docs/vertical-slice-year1.md` / `balance-model/config.py`: 100 marks / 4 small fields / Reuben / 80 food / 20 seed start; the crop table (turnip/potato/wheat/corn/cotton); seasonal market multipliers + glut soft-cap; d6 weather ladder; winter food+fuel consumption; the 2-year mortgage grace (no Y1 foreclosure).
+- **The hidden Reckoning is never a number** — it surfaces only as *omens* (per the voice guide's hidden-axis rule). Cruelty (refusing a name, turning out a foundling) raises it; the pointed "Sour" whisper fires only if it climbs; the Vigil eases it.
+- **Seeded PRNG** (mulberry32, seed stored in state and shown in the colophon), state as one plain object — matching the D-021 code conventions so logic ports cleanly to the Next.js build.
+
+**Design/art:** "The Illustrated Almanac" made playable — foxed-paper ground (CSS-generated, not the flat-cream cliché), one bookish old-style face, a **seasonal accent that turns with the year** (sap-green → wheat-amber → oxblood → cold-slate), day/night themes. Portrait-primary, per the locked UI direction.
+
+**Validated headlessly (jsdom, 8+ seeds, auto-played):** zero runtime crashes; the full year always resolves to a win/lose screen. **Balance confirms D-032's target:** a cautious food-first player who declines the second mouth **survives every run**; a player who buys a second hand without securing winter food **loses** to starvation — the "Della" beat lands and Year 1 is tense but fair.
+
+**Also published** as a private claude.ai Artifact for instant mobile play (URL in chat; user can share from the artifact page).
+
+**Next up:**
+1. User playtests the prototype for *feel* — does the loop teach itself, does the Summer fork make you hesitate, does the Vigil land? (Feed findings back per the playtest-kit questions.)
+2. Iterate loop feel / numbers from playtest.
+3. Scaffold the production **Next.js 15** app (D-021) and port the logic into pure `(state, action) => newState` modules, loading `content/events/*.yaml` through the `content-schema.md` contract.
+
+**Blockers/notes:** In-app Browser pane was unresponsive this session (navigate timed out) — validated via jsdom + Node syntax-check instead. Watch: several prose strings needed typographic apostrophes (’) to avoid JS single-quote-delimiter breaks; keep that in mind when authoring inline content.
+
+---
+
 ## Session 3 — 2026-07-24 — Pre-code issue tracking + World & Lore foundation
 
 **Worked on:** Set up GitHub issue tracking for all remaining pre-code design work, then resolved the first issue (#3, World & Lore).

@@ -1,0 +1,1087 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Bushel & Bone — Year One: The Newcomer</title>
+</head>
+<body>
+<style>
+  /* ==== BUSHEL & BONE — Year One: "The Newcomer" ==== */
+  /* The Illustrated Almanac, made playable. Self-contained; no external assets. */
+
+  :root{
+    color-scheme: light dark;
+    /* --- neutrals: foxed almanac paper, iron-gall ink (light/day) --- */
+    --paper:   #e7dcc2;
+    --paper-2: #ddd0b1;
+    --paper-3: #d3c4a1;
+    --ink:     #2a2216;
+    --ink-soft:#5f5138;
+    --ink-faint:#8a795a;
+    --rule:    #a3906c;
+    --rule-fine:#bcab86;
+    --edge:    rgba(42,34,22,.18);
+    /* --- semantic (independent of the seasonal accent) --- */
+    --good:  #5f7a34;
+    --warn:  #a9791f;
+    --bad:   #99381f;
+    --omen:  #6f5c86;
+    /* --- seasonal accent, overridden by [data-season] --- */
+    --accent: #6f8a3f;
+    --accent-ink: #40501f;
+    --shadow: rgba(30,22,10,.22);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:   #17130d;
+      --paper-2: #1f1a12;
+      --paper-3: #271f15;
+      --ink:     #e9dcbe;
+      --ink-soft:#c3b087;
+      --ink-faint:#8f7e5c;
+      --rule:    #4b3f2b;
+      --rule-fine:#38301f;
+      --edge:    rgba(233,220,190,.14);
+      --good:  #9fb262;
+      --warn:  #d0a54a;
+      --bad:   #cf6a4e;
+      --omen:  #a892c4;
+      --accent-ink: #cdd89a;
+      --shadow: rgba(0,0,0,.5);
+    }
+  }
+  /* explicit theme overrides win in both directions */
+  :root[data-theme="light"]{
+    --paper:#e7dcc2;--paper-2:#ddd0b1;--paper-3:#d3c4a1;--ink:#2a2216;--ink-soft:#5f5138;--ink-faint:#8a795a;--rule:#a3906c;--rule-fine:#bcab86;--edge:rgba(42,34,22,.18);--good:#5f7a34;--warn:#a9791f;--bad:#99381f;--omen:#6f5c86;--accent-ink:#40501f;--shadow:rgba(30,22,10,.22);
+  }
+  :root[data-theme="dark"]{
+    --paper:#17130d;--paper-2:#1f1a12;--paper-3:#271f15;--ink:#e9dcbe;--ink-soft:#c3b087;--ink-faint:#8f7e5c;--rule:#4b3f2b;--rule-fine:#38301f;--edge:rgba(233,220,190,.14);--good:#9fb262;--warn:#d0a54a;--bad:#cf6a4e;--omen:#a892c4;--accent-ink:#cdd89a;--shadow:rgba(0,0,0,.5);
+  }
+
+  /* seasonal accents — same hue in both themes; used on rules, labels, glyphs */
+  [data-season="Spring"]{ --accent:#6f8a3f; }
+  [data-season="Summer"]{ --accent:#c0892a; }
+  [data-season="Fall"]  { --accent:#a4482a; }
+  [data-season="Winter"]{ --accent:#5a7d99; }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua","Hoefler Text",Georgia,"Times New Roman",serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  /* the page sits on a darker desk; the almanac is a lit leaf */
+  #desk{
+    min-height:100vh;
+    display:flex; justify-content:center; align-items:flex-start;
+    padding:clamp(8px,3vw,32px);
+    background:
+      radial-gradient(120% 80% at 50% -10%, color-mix(in srgb,var(--paper) 82%, #000 4%), transparent 60%),
+      var(--paper);
+  }
+
+  #almanac{
+    width:100%; max-width:520px;
+    background:
+      /* foxing blooms */
+      radial-gradient(9px 7px at 18% 22%, rgba(120,90,40,.10), transparent 70%),
+      radial-gradient(7px 6px at 78% 14%, rgba(120,90,40,.09), transparent 70%),
+      radial-gradient(11px 9px at 66% 74%, rgba(120,90,40,.08), transparent 70%),
+      radial-gradient(8px 8px at 28% 88%, rgba(120,90,40,.07), transparent 70%),
+      /* page vignette */
+      radial-gradient(130% 120% at 50% 40%, transparent 62%, var(--edge) 100%),
+      /* fibre grain */
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.028 0'/></filter><rect width='120' height='120' filter='url(%23n)'/></svg>"),
+      var(--paper-2);
+    border:1px solid var(--rule);
+    box-shadow:0 2px 0 var(--rule), 0 18px 40px -18px var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  #almanac::before{ /* the accent spine */
+    content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
+    background:var(--accent); opacity:.85;
+  }
+
+  /* ---- masthead ---- */
+  .masthead{ padding:14px 20px 10px 22px; }
+  .masthead .brand{
+    font-size:11px; letter-spacing:.34em; text-transform:uppercase;
+    color:var(--ink-faint); font-weight:600;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .masthead .themetog{
+    all:unset; cursor:pointer; font-size:11px; letter-spacing:.2em;
+    color:var(--ink-faint); padding:2px 6px; border:1px solid var(--rule-fine); border-radius:2px;
+  }
+  .masthead .themetog:hover{ color:var(--ink); border-color:var(--rule); }
+  .masthead .plate{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
+    margin-top:8px; padding-bottom:10px;
+    border-bottom:3px double var(--rule);
+  }
+  .plate .season{
+    font-size:clamp(26px,7.5vw,34px); line-height:.95;
+    letter-spacing:.02em; color:var(--ink);
+    text-wrap:balance;
+  }
+  .plate .season small{
+    display:block; font-size:12px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--accent); margin-top:5px; font-variant:small-caps; font-weight:600;
+  }
+  .plate .weather{ text-align:right; color:var(--ink-soft); min-width:78px; }
+  .plate .weather svg{ display:block; margin-left:auto; }
+  .plate .weather .wlabel{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-top:3px; }
+
+  /* ---- ledger strip ---- */
+  .ledger{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    border-bottom:1px solid var(--rule);
+    background:color-mix(in srgb,var(--paper-3) 55%, transparent);
+  }
+  .ledger .cell{ padding:8px 6px 9px; text-align:center; border-right:1px solid var(--rule-fine); }
+  .ledger .cell:last-child{ border-right:0; }
+  .ledger .k{ font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-faint); }
+  .ledger .v{ font-size:20px; font-variant-numeric:tabular-nums; margin-top:2px; color:var(--ink); }
+  .ledger .v .u{ font-size:11px; color:var(--ink-faint); margin-left:2px; letter-spacing:.02em; }
+  .ledger .v.low{ color:var(--bad); }
+  .ledger .v.warn{ color:var(--warn); }
+
+  /* second readout row: household */
+  .household{
+    display:flex; gap:14px; align-items:center; flex-wrap:wrap;
+    padding:7px 20px; border-bottom:1px solid var(--rule);
+    font-size:12px; color:var(--ink-soft);
+  }
+  .household .lab{ font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-right:5px; }
+  .dots{ letter-spacing:2px; color:var(--accent); }
+  .dots .off{ color:var(--rule); }
+  .regard{ font-variant:small-caps; letter-spacing:.05em; }
+
+  /* ---- the leaf (stage) ---- */
+  #stage{ padding:20px 22px 8px; min-height:230px; }
+
+  .leaf{ animation:turn .42s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes turn{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:none; } }
+  @media (prefers-reduced-motion:reduce){ .leaf{ animation:none; } }
+
+  .eyebrow{ font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--accent); font-variant:small-caps; font-weight:600; margin-bottom:4px; }
+  .leaf h2{ margin:0 0 10px; font-size:23px; letter-spacing:.01em; text-wrap:balance; line-height:1.15; }
+  .stagedir{ color:var(--omen); font-style:italic; font-size:14.5px; margin:0 0 12px; line-height:1.45; }
+  .prose{ font-size:16px; color:var(--ink); }
+  .prose p{ margin:0 0 12px; }
+  .prose .dropcap::first-letter{
+    float:left; font-size:52px; line-height:.78; padding:4px 8px 0 0; color:var(--accent); font-weight:600;
+  }
+  .said{ color:var(--ink); }
+  .whisper{ color:var(--omen); font-style:italic; }
+
+  .hr-hatch{
+    height:9px; margin:14px 0; border:0;
+    background:repeating-linear-gradient(45deg, var(--rule) 0 1px, transparent 1px 5px);
+    opacity:.6;
+  }
+
+  /* choices */
+  .choices{ display:flex; flex-direction:column; gap:9px; margin-top:16px; }
+  .btn{
+    all:unset; cursor:pointer; display:block;
+    padding:11px 14px; border:1px solid var(--rule);
+    background:color-mix(in srgb,var(--paper) 60%, transparent);
+    color:var(--ink); border-radius:2px;
+    transition:background .14s, border-color .14s, transform .05s;
+  }
+  .btn:hover{ background:var(--paper); border-color:var(--accent); }
+  .btn:active{ transform:translateY(1px); }
+  .btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .btn .t{ font-size:16px; }
+  .btn .sub{ display:block; font-size:12.5px; color:var(--ink-faint); margin-top:3px; font-style:italic; letter-spacing:.01em; }
+  .btn.primary{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 15%, var(--paper)); }
+  .btn.primary:hover{ background:color-mix(in srgb,var(--accent) 26%, var(--paper)); }
+  .btn[disabled]{ opacity:.4; cursor:not-allowed; }
+  .btn[disabled]:hover{ border-color:var(--rule); background:color-mix(in srgb,var(--paper) 60%, transparent); }
+
+  /* report ledger lines */
+  .report{ font-size:15px; }
+  .report .line{ display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-bottom:1px dotted var(--rule-fine); }
+  .report .line:last-of-type{ border-bottom:0; }
+  .report .line .d{ color:var(--ink-soft); }
+  .report .line .n{ font-variant-numeric:tabular-nums; }
+  .n.up{ color:var(--good); } .n.down{ color:var(--bad); } .n.flat{ color:var(--ink-faint); }
+  .omenline{ margin-top:14px; padding:12px 14px; border-left:3px solid var(--omen); background:color-mix(in srgb,var(--omen) 8%, transparent); color:var(--omen); font-style:italic; font-size:15px; }
+
+  /* fields / planting */
+  .fields{ display:flex; flex-direction:column; gap:10px; }
+  .field-row{ border:1px solid var(--rule-fine); border-radius:2px; padding:10px 12px; background:color-mix(in srgb,var(--paper) 40%, transparent); }
+  .field-row .fh{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:2px; }
+  .field-row .fname{ font-variant:small-caps; letter-spacing:.06em; font-size:15px; }
+  .field-row .fmeta{ font-size:11.5px; color:var(--ink-faint); }
+  .fert{ letter-spacing:1px; }
+  .crop-picks{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .chip{ all:unset; cursor:pointer; font-size:13px; padding:5px 9px; border:1px solid var(--rule); border-radius:2px; color:var(--ink-soft); }
+  .chip:hover{ border-color:var(--accent); color:var(--ink); }
+  .chip.sel{ background:color-mix(in srgb,var(--accent) 20%, var(--paper)); border-color:var(--accent); color:var(--ink); }
+  .chip:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .chip .c{ color:var(--ink-faint); font-size:11px; margin-left:3px; }
+  .growing{ font-size:13px; color:var(--ink-soft); font-style:italic; }
+  .ripe{ color:var(--good); font-style:normal; }
+
+  /* provision / steppers */
+  .stepper{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px dotted var(--rule-fine); }
+  .stepper .lab{ font-size:14.5px; }
+  .stepper .lab small{ display:block; color:var(--ink-faint); font-size:12px; font-style:italic; }
+  .stepper .ctrls{ display:flex; align-items:center; gap:8px; }
+  .stepper button{ all:unset; cursor:pointer; width:28px; height:28px; text-align:center; line-height:26px; border:1px solid var(--rule); border-radius:2px; font-size:17px; color:var(--ink); }
+  .stepper button:hover{ border-color:var(--accent); }
+  .stepper button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .stepper .qty{ min-width:34px; text-align:center; font-variant-numeric:tabular-nums; font-size:16px; }
+  .needbar{ display:flex; justify-content:space-between; font-size:13px; padding:8px 0 2px; }
+  .needbar b{ font-variant-numeric:tabular-nums; }
+  .met{ color:var(--good); } .short{ color:var(--bad); }
+
+  .note{ font-size:13px; color:var(--ink-faint); font-style:italic; margin-top:10px; }
+
+  footer.colophon{
+    padding:9px 20px 13px; margin-top:6px;
+    border-top:1px solid var(--rule);
+    font-size:10.5px; letter-spacing:.06em; color:var(--ink-faint);
+    display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap;
+  }
+  footer .seed{ font-family:"Courier New",ui-monospace,monospace; }
+
+  /* end screen */
+  .end{ text-align:center; padding:8px 0 4px; }
+  .end .verdict{ font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--accent); }
+  .end h2{ font-size:28px; margin:8px 0 14px; }
+  .end .epi{ font-size:16px; color:var(--ink); font-style:italic; }
+  .tally{ text-align:left; margin:18px auto 0; max-width:340px; }
+</style>
+
+<div id="desk">
+  <div id="almanac" data-season="Spring">
+    <div class="masthead">
+      <div class="brand">
+        <span>Bushel &amp; Bone · The Newcomer</span>
+        <button class="themetog" id="themetog" aria-label="Toggle day and night">☾ night</button>
+      </div>
+      <div class="plate">
+        <div class="season" id="plate-season">Spring<small id="plate-when">Year One · Day 1</small></div>
+        <div class="weather" id="plate-weather"></div>
+      </div>
+    </div>
+
+    <div class="ledger" id="ledger"></div>
+    <div class="household" id="household"></div>
+
+    <main id="stage"></main>
+
+    <footer class="colophon">
+      <span>An Illustrated Almanac of the Sull</span>
+      <span class="seed" id="seedtag"></span>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- seeded PRNG (stored in save state) ---------------- */
+  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  let PRNG, SEED;
+  function rnd(){ return PRNG(); }
+  function ri(n){ return Math.floor(rnd()*n); }        // 0..n-1
+  function d6(){ return 1+ri(6); }
+  function pick(a){ return a[ri(a.length)]; }
+
+  /* ---------------- static data ---------------- */
+  const SEASONS = ["Spring","Summer","Fall","Winter"];
+  const CROPS = {
+    turnip:{name:"Turnip", seed:3,  seasons:1, yield:7,  food:1.5, base:2,  cash:false, tag:"fast root"},
+    potato:{name:"Potato", seed:6,  seasons:1, yield:10, food:2,   base:2,  cash:false, tag:"belly-filler"},
+    wheat: {name:"Wheat",  seed:4,  seasons:2, yield:8,  food:1.5, base:3,  cash:false, tag:"grain"},
+    corn:  {name:"Corn",   seed:5,  seasons:2, yield:9,  food:2,   base:4,  cash:false, tag:"grain"},
+    cotton:{name:"Cotton", seed:10, seasons:2, yield:5,  food:0,   base:12, cash:true,  twoHands:true, tag:"cash · 2 hands"},
+  };
+  const MULT = {
+    Spring:{crop:1.1, cash:0.9},  Summer:{crop:1.0, cash:1.2},
+    Fall:  {crop:0.8, cash:1.05}, Winter:{crop:1.25,cash:0.95},
+  };
+
+  /* ---------------- game state ---------------- */
+  let S;
+  function newGame(seed){
+    SEED = seed>>>0; PRNG = mulberry32(SEED);
+    S = {
+      year:1, si:0,                 // season index
+      marks:100, food:80, fuel:0, seed:20,
+      fields:[0,1,2,3].map(i=>({ id:i, crop:null, progress:0, fert:3 })),
+      reuben:{ name:"Reuben", morale:3, alive:true, ill:false },
+      hands:[],                     // extra clones {name,morale,alive}
+      regard:50, reckoning:0,
+      flags:{},
+      weather:null, coldsnap:false,
+      dead:[],                      // marked graves (names)
+      lost:[],                      // clones lost this winter
+      flow:[], fi:0, ended:false,
+    };
+    rollWeather();
+    buildSeason();
+  }
+
+  function season(){ return SEASONS[S.si]; }
+  function bodies(){ return 1 + livingHands(); }         // farmer + hands (reuben counts as a hand)
+  function livingHands(){ return (S.reuben.alive?1:0) + S.hands.filter(h=>h.alive).length; }
+  function extraHands(){ return Math.max(0, livingHands()-1); } // beyond Reuben
+  function allHands(){ const a=[]; if(S.reuben.alive)a.push(S.reuben); S.hands.forEach(h=>{if(h.alive)a.push(h);}); return a; }
+
+  /* ---------------- weather ---------------- */
+  function rollWeather(){
+    const r=d6(); S.coldsnap=false;
+    if(r===1) S.weather={key:"dry",  label:"Dry",   grow:-0.5, glyph:"sun"};
+    else if(r<=3) S.weather={key:"mild", label:"Mild", grow:0, glyph:"cloud"};
+    else if(r<=5) S.weather={key:"rain", label:"Good rain", grow:0.5, glyph:"rain"};
+    else { // 6 — rough
+      if(season()==="Winter"){ S.weather={key:"snap", label:"Cold snap", grow:0, glyph:"snow"}; S.coldsnap=true; }
+      else S.weather={key:"hail", label:"Rough sky", grow:0, glyph:"hail"};
+    }
+  }
+
+  /* ---------------- ledger / omen helpers ---------------- */
+  function reckBand(){ return S.reckoning>=55 ? "Walkers" : S.reckoning>=25 ? "Warnings" : "Whispers"; }
+  function regardWord(){ const r=S.regard; return r>=80?"Kin":r>=62?"Welcome":r>=44?"Known":r>=28?"Stranger":"Suspect"; }
+
+  const OMENS = {
+    Whispers:[
+      "Crows line the far fence at dusk and do not call. You count nine, then eight, though none fly off.",
+      "The dog will not go near the east field after dark, and cannot say why, being a dog.",
+      "You dream of a well you have never seen, and wake with the taste of iron.",
+      "A cold seam runs through the lean-to that the fire does not reach. By morning it is gone.",
+    ],
+    Warnings:[
+      "The milk turns though the cow is sound. Old Nan, asked, says you've laid something down the ground did not care for.",
+      "Reuben will not sleep. He sits up watching the door, and in the morning says only that the door was watching back.",
+      "A corner of the near field blights overnight in the shape of a hand. Nothing grows there again this year.",
+    ],
+    Walkers:[
+      "There are footprints in the frost that begin at the graves and end at your door, and do not turn back.",
+    ],
+  };
+  function drawOmen(){ return pick(OMENS[reckBand()]); }
+
+  /* ---------------- render: header & ledger ---------------- */
+  function wGlyph(g){
+    const c="var(--accent)";
+    const S1='stroke="'+c+'" stroke-width="1.4" fill="none" stroke-linecap="round"';
+    if(g==="sun")  return '<svg width="30" height="30" viewBox="0 0 30 30"><circle cx="15" cy="15" r="5.5" '+S1+'/><g '+S1+'>'+[0,45,90,135,180,225,270,315].map(a=>{const x=15+Math.cos(a*Math.PI/180)*9,y=15+Math.sin(a*Math.PI/180)*9,x2=15+Math.cos(a*Math.PI/180)*12.5,y2=15+Math.sin(a*Math.PI/180)*12.5;return '<line x1="'+x.toFixed(1)+'" y1="'+y.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"/>';}).join('')+'</g></svg>';
+    if(g==="cloud")return '<svg width="30" height="30" viewBox="0 0 30 30"><path d="M8 19 h13 a4 4 0 0 0 0-8 a5 5 0 0 0-9.5-1.5 A4 4 0 0 0 8 19 Z" '+S1+'/></svg>';
+    if(g==="rain") return '<svg width="30" height="30" viewBox="0 0 30 30"><path d="M8 15 h13 a4 4 0 0 0 0-8 a5 5 0 0 0-9.5-1.5 A4 4 0 0 0 8 15 Z" '+S1+'/><g '+S1+'><line x1="10" y1="19" x2="8.5" y2="24"/><line x1="15" y1="19" x2="13.5" y2="24"/><line x1="20" y1="19" x2="18.5" y2="24"/></g></svg>';
+    if(g==="hail") return '<svg width="30" height="30" viewBox="0 0 30 30"><path d="M8 15 h13 a4 4 0 0 0 0-8 a5 5 0 0 0-9.5-1.5 A4 4 0 0 0 8 15 Z" '+S1+'/><g '+S1+'><circle cx="10" cy="22" r="1.4"/><circle cx="16" cy="23" r="1.4"/><circle cx="21" cy="21" r="1.4"/></g></svg>';
+    if(g==="snow") return '<svg width="30" height="30" viewBox="0 0 30 30"><g '+S1+'><line x1="15" y1="6" x2="15" y2="24"/><line x1="7" y1="10.5" x2="23" y2="19.5"/><line x1="23" y1="10.5" x2="7" y2="19.5"/></g></svg>';
+    return "";
+  }
+  function renderHeader(){
+    const al=document.getElementById("almanac");
+    al.setAttribute("data-season", season());
+    document.getElementById("plate-season").firstChild.nodeValue = season();
+    document.getElementById("plate-when").textContent = "Year "+["One","Two"][S.year-1]+" · "+season();
+    const w=S.weather;
+    document.getElementById("plate-weather").innerHTML = wGlyph(w.glyph)+'<div class="wlabel">'+w.label+'</div>';
+  }
+  function cell(k,v,u,cls){ return '<div class="cell"><div class="k">'+k+'</div><div class="v '+(cls||'')+'">'+v+(u?'<span class="u">'+u+'</span>':'')+'</div></div>'; }
+  function renderLedger(){
+    const foodCls = S.food<=15?'low':S.food<=30?'warn':'';
+    const fuelCls = (season()==="Fall"||season()==="Winter") && S.fuel< winterFuelNeed() ? (S.fuel< winterFuelNeed()/2?'low':'warn') : '';
+    document.getElementById("ledger").innerHTML =
+      cell("Coin", S.marks, "m") +
+      cell("Larder", Math.floor(S.food), "", foodCls) +
+      cell("Fuel", S.fuel, "", fuelCls) +
+      cell("Seed", S.seed, "");
+    // household row
+    const dots = n => '<span class="dots">'+"●".repeat(Math.max(0,n))+'<span class="off">'+"●".repeat(Math.max(0,5-n))+'</span></span>';
+    let hh = '<span><span class="lab">Reuben</span>'+(S.reuben.alive?dots(S.reuben.morale):'<span style="color:var(--bad)">a marked grave</span>')+'</span>';
+    S.hands.forEach(h=>{ hh += '<span><span class="lab">'+h.name+'</span>'+(h.alive?dots(h.morale):'<span style="color:var(--bad)">lost</span>')+'</span>'; });
+    hh += '<span><span class="lab">Regard</span><span class="regard">'+regardWord()+'</span></span>';
+    document.getElementById("household").innerHTML = hh;
+  }
+  function refresh(){ renderHeader(); renderLedger(); document.getElementById("seedtag").textContent = "seed "+SEED.toString(16); }
+
+  /* ---------------- stage rendering ---------------- */
+  const stage = ()=>document.getElementById("stage");
+  function paint(html){ stage().innerHTML = '<div class="leaf">'+html+'</div>'; refresh(); }
+
+  function choiceHTML(list){
+    return '<div class="choices">'+list.map((c,i)=>
+      '<button class="btn '+(c.primary?'primary':'')+'" data-c="'+i+'"'+(c.disabled?' disabled':'')+'>'+
+        '<span class="t">'+c.t+'</span>'+(c.sub?'<span class="sub">'+c.sub+'</span>':'')+
+      '</button>').join('')+'</div>';
+  }
+  function wireChoices(list){
+    stage().querySelectorAll('.btn[data-c]').forEach(b=>{
+      b.addEventListener('click',()=>{ if(b.hasAttribute('disabled'))return; list[+b.dataset.c].go(); });
+    });
+  }
+  // a simple choice card
+  function card(spec){
+    let h="";
+    if(spec.eyebrow) h+='<div class="eyebrow">'+spec.eyebrow+'</div>';
+    if(spec.title)   h+='<h2>'+spec.title+'</h2>';
+    if(spec.dir)     h+='<p class="stagedir">'+spec.dir+'</p>';
+    if(spec.body)    h+='<div class="prose">'+spec.body+'</div>';
+    if(spec.choices) h+=choiceHTML(spec.choices);
+    paint(h);
+    if(spec.choices) wireChoices(spec.choices);
+  }
+  // apply a choice then show a short result, then continue
+  function resolve(effect, resultText){
+    effect && effect();
+    if(resultText){
+      card({ body:'<div class="prose"><p>'+resultText+'</p></div>',
+             choices:[{t:"Go on", primary:true, go:next}] });
+    } else next();
+  }
+
+  /* ---------------- season flow control ---------------- */
+  function buildSeason(){
+    const b = [];
+    const s = season();
+    if(s==="Spring") springFlow(b);
+    else if(s==="Summer") summerFlow(b);
+    else if(s==="Fall") fallFlow(b);
+    else winterFlow(b);
+    S.flow=b; S.fi=0;
+  }
+  function runStep(){
+    if(S.ended) return;
+    const step=S.flow[S.fi];
+    if(!step){ endSeason(); return; }
+    if(typeof step==="function"){ step(); return; }
+  }
+  function next(){ S.fi++; runStep(); }
+
+  function endSeason(){
+    // fallow restore + drift already handled per season; advance
+    S.si++;
+    if(S.si>3){
+      // year turns
+      S.year++; S.si=0;
+      winBeat(); return;
+    }
+    rollWeather();
+    buildSeason();
+    runStep();
+  }
+
+  /* ---------------- growth / harvest / market ---------------- */
+  function growStep(){
+    const w=S.weather;
+    S.fields.forEach(f=>{
+      if(f.crop){
+        let g = 1 + w.grow;
+        if(f.tended) g += 0.25;
+        f.progress += g;
+      }
+    });
+    next();
+  }
+  function ripe(f){ return f.crop && f.progress >= CROPS[f.crop].seasons; }
+
+  function harvestStep(){
+    // gather everything ripe; cotton needs 2 hands (half if only 1 available for the harvest)
+    const lots=[]; const handCount=livingHands();
+    S.fields.forEach(f=>{
+      if(ripe(f)){
+        const c=CROPS[f.crop];
+        let units = c.yield * (f.fert/3);
+        if(f.tended) units += 2;
+        if(c.twoHands && handCount<2) units = units/2;
+        units = Math.round(units);
+        lots.push({crop:f.crop, units, cash:c.cash});
+        // spend fertility, clear field
+        f.fert = Math.max(0, f.fert-1);
+        f.crop=null; f.progress=0; f.tended=false;
+      } else if(!f.crop){
+        // fallow field regains fertility
+        f.fert = Math.min(3, f.fert+1);
+      }
+    });
+    S.lots = lots;
+    if(lots.length===0){ next(); return; }
+    marketStep();
+  }
+
+  function sellValue(crop, units){
+    const c=CROPS[crop]; const m=MULT[season()][c.cash?"cash":"crop"];
+    let full = Math.min(units,10), glut = Math.max(0,units-10);
+    return Math.round((full*c.base*m) + (glut*c.base*m*0.7));
+  }
+  function marketStep(){
+    // per-lot decision: larder vs coin (cash crops auto-sell)
+    const choice = {}; // crop -> 'food'|'sell'
+    S.lots.forEach(l=> choice[l.crop] = l.cash?'sell':'food');
+    function draw(){
+      let rows = S.lots.map(l=>{
+        const c=CROPS[l.crop];
+        const coin=sellValue(l.crop,l.units), food=Math.round(l.units*c.food);
+        if(l.cash){
+          return '<div class="stepper"><div class="lab">'+l.name+'  '+l.units+' bales<small>a cash crop — feeds no one</small></div>'+
+                 '<div class="ctrls"><span class="regard" style="color:var(--good)">sell · +'+coin+'m</span></div></div>';
+        }
+        const sel = choice[l.crop];
+        return '<div class="stepper"><div class="lab">'+c.name+'  '+l.units+' units<small>'+
+                 (sel==='food'?('to the larder · +'+food+' food'):('to market · +'+coin+' m'))+'</small></div>'+
+               '<div class="ctrls">'+
+                 '<button data-t="'+l.crop+'" data-v="food" class="'+(sel==='food'?'sel':'')+'" style="width:auto;padding:0 9px">larder</button>'+
+                 '<button data-t="'+l.crop+'" data-v="sell" class="'+(sel==='sell'?'sel':'')+'" style="width:auto;padding:0 9px">sell</button>'+
+               '</div></div>';
+      }).join('');
+      card({ eyebrow:"The Market · "+season(), title:"What the fields gave up",
+             body:'<div class="prose"><p class="note">Grain and roots keep a belly through winter; coin buys coal and hands. Choose for each lot.</p><div style="margin-top:6px">'+rows+'</div></div>',
+             choices:[{t:"Close the day-book", primary:true, go:doSell}] });
+      stage().querySelectorAll('button[data-t]').forEach(btn=>{
+        btn.addEventListener('click',()=>{ choice[btn.dataset.t]=btn.dataset.v; draw(); });
+      });
+    }
+    function doSell(){
+      let coin=0, food=0;
+      S.lots.forEach(l=>{
+        const c=CROPS[l.crop];
+        if(l.cash || choice[l.crop]==='sell'){ coin += sellValue(l.crop,l.units); }
+        else { food += Math.round(l.units*c.food); }
+      });
+      S.marks += coin; S.food += food;
+      S._season_gain = {coin, food};
+      next();
+    }
+    draw();
+  }
+
+  /* ---------------- consumption / dusk ---------------- */
+  function seasonFoodNeed(){ // spring/summer/fall
+    return 30 + 10*extraHands();
+  }
+  function winterFoodNeed(){ return 35 + 15*extraHands(); }
+  function winterFuelNeed(){ return 45 + (S.coldsnap?10:0) + 8*extraHands(); }
+
+  function duskStep(){
+    // non-winter consumption + drift + omen
+    const need = seasonFoodNeed();
+    const before = S.food;
+    S.food -= need;
+    let hungerNote="";
+    if(S.food < 0){
+      // clones go hungry, farmer eats last (forgiving out of winter)
+      allHands().slice(1).forEach(h=>{ if(h.morale>0)h.morale--; });
+      if(S.reuben.alive && S.reuben.morale>0) S.reuben.morale--;
+      hungerNote = "The larder ran thin before the season turned; the hands went to bed hungry.";
+      S.food = 0;
+    }
+    // reckoning drift: down if clean, up slowly regardless of small cruelties
+    if(S.flags.crueltyThisSeason) S.reckoning += 2; else S.reckoning = Math.max(0, S.reckoning-2);
+    S.flags.crueltyThisSeason=false;
+
+    const g = S._season_gain||{coin:0,food:0};
+    let rows =
+      line("Weather", S.weather.label, "flat") +
+      line("Brought to market", (g.coin?("+"+g.coin+" m"):"—"), g.coin?"up":"flat") +
+      line("Into the larder", (g.food?("+"+g.food+" food"):"—"), g.food?"up":"flat") +
+      line("The household ate", "−"+need+" food", "down") +
+      line("Larder now", Math.floor(S.food)+" food", S.food<=25?"down":"flat");
+    S._season_gain=null;
+
+    let omen="";
+    // ambient whisper arrives by Fall for every run; pointed if warnings+
+    if(season()==="Fall" || reckBand()!=="Whispers"){
+      omen = '<div class="omenline">'+drawOmen()+'</div>';
+    }
+    card({ eyebrow:"Dusk · "+season(), title:"The day-book, closed",
+           body:'<div class="report">'+rows+'</div>'+(hungerNote?'<p class="note">'+hungerNote+'</p>':'')+omen,
+           choices:[{t: season()==="Fall" ? "Toward winter →" : "Turn the season →", primary:true, go:next}] });
+  }
+  function line(d,n,cls){ return '<div class="line"><span class="d">'+d+'</span><span class="n '+(cls||'')+'">'+n+'</span></div>'; }
+
+  /* ---------------- interactive: PLANT ---------------- */
+  function plantStep(){
+    const empties = S.fields.filter(f=>!f.crop);
+    if(empties.length===0){ next(); return; } // nothing to plant
+    const chosen = {}; // field id -> crop key
+    function affordable(cropKey, exceptField){
+      // seed used first (1 seed = 1 cost), then marks
+      let seedLeft=S.seed, marks=S.marks;
+      const spend=[];
+      S.fields.forEach(f=>{ const ck = (f.id===exceptField)?cropKey:chosen[f.id]; if(ck) spend.push(CROPS[ck].seed); });
+      spend.forEach(cost=>{ const fromSeed=Math.min(seedLeft,cost); seedLeft-=fromSeed; marks-=(cost-fromSeed); });
+      return marks>=0;
+    }
+    function draw(){
+      let rows = S.fields.map(f=>{
+        if(f.crop){
+          const c=CROPS[f.crop];
+          return '<div class="field-row"><div class="fh"><span class="fname">'+fieldName(f)+'</span>'+
+                 '<span class="fmeta">fert <span class="fert">'+"●".repeat(f.fert)+"○".repeat(3-f.fert)+'</span></span></div>'+
+                 '<div class="growing">'+c.name+' — '+(ripe(f)?'<span class="ripe">ripe this season</span>':('coming on ('+Math.min(100,Math.round(f.progress/c.seasons*100))+'%)'))+'</div></div>';
+        }
+        const sel = chosen[f.id];
+        const picks = Object.keys(CROPS).map(k=>{
+          const c=CROPS[k]; const can = affordable(k,f.id);
+          return '<button class="chip '+(sel===k?'sel':'')+'" data-f="'+f.id+'" data-k="'+k+'"'+(can||sel===k?'':' disabled style="opacity:.35"')+'>'+c.name+'<span class="c">'+c.seed+'</span></button>';
+        }).join('')+'<button class="chip '+(sel==null?'sel':'')+'" data-f="'+f.id+'" data-k="">fallow<span class="c">rest</span></button>';
+        return '<div class="field-row"><div class="fh"><span class="fname">'+fieldName(f)+'</span>'+
+               '<span class="fmeta">fert <span class="fert">'+"●".repeat(f.fert)+"○".repeat(3-f.fert)+'</span></span></div>'+
+               '<div class="crop-picks">'+picks+'</div></div>';
+      }).join('');
+      const nudge = (season()==="Spring" && !S.flags.plantedOnce)
+        ? '<p class="note">A newcomer plants his belly first — potato and turnip fill a larder; wheat and corn sell but take two seasons; cotton is all coin and no supper.</p>' : '';
+      card({ eyebrow:"Dawn · Planting", title:"Set the fields",
+             body:'<div class="fields">'+rows+'</div>'+nudge,
+             choices:[{t:"Sow it so", primary:true, go:commit}] });
+      stage().querySelectorAll('.chip[data-f]').forEach(ch=>{
+        ch.addEventListener('click',()=>{ if(ch.hasAttribute('disabled'))return;
+          const fid=+ch.dataset.f, k=ch.dataset.k;
+          if(k==="") delete chosen[fid]; else chosen[fid]=k;
+          draw();
+        });
+      });
+    }
+    function commit(){
+      // pay seed then marks; plant
+      Object.keys(chosen).forEach(fid=>{
+        const f=S.fields.find(x=>x.id==fid); const c=CROPS[chosen[fid]];
+        let cost=c.seed; const fromSeed=Math.min(S.seed,cost); S.seed-=fromSeed; cost-=fromSeed; S.marks-=cost;
+        f.crop=chosen[fid]; f.progress=0; f.tended=false;
+      });
+      S.flags.plantedOnce=true;
+      next();
+    }
+    draw();
+  }
+  function fieldName(f){ return ["The East Field","The River Strip","The Near Acre","The Stone Lot"][f.id]; }
+
+  /* ---------------- interactive: ASSIGN Reuben ---------------- */
+  function assignStep(opts){
+    // opts: array of {key,label,sub,apply}
+    const planted = S.fields.filter(f=>f.crop);
+    const list=[];
+    if(opts.includes("tend") && planted.length){
+      list.push({ t:"Set Reuben to tending", sub:"+2 to one field's yield, and it comes on faster", go:()=>{
+        // pick the most valuable planted field automatically (highest base×yield), or first
+        const f = planted.slice().sort((a,b)=> (CROPS[b.crop].base*CROPS[b.crop].yield)-(CROPS[a.crop].base*CROPS[a.crop].yield))[0];
+        f.tended=true;
+        resolve(null, "Reuben works "+fieldName(f).toLowerCase()+" from first light. It will give more for the minding.");
+      }});
+    }
+    if(opts.includes("chop")){
+      list.push({ t:"Send Reuben to the woodline", sub:"+16 fuel laid in for winter", go:()=>{
+        S.fuel+=16; resolve(null, "The axe rings all season. Sixteen measures of wood stack against the lean-to wall.");
+      }});
+    }
+    if(opts.includes("rest")){
+      list.push({ t:"Let Reuben rest the season", sub:"his spirits mend (+morale)", go:()=>{
+        if(S.reuben.morale<5)S.reuben.morale++; resolve(null, "You ask little of him. He mends a fence, sleeps sound, and looks at you differently for it.");
+      }});
+    }
+    card({ eyebrow:"Dawn · The hand", title:"What is Reuben's work?",
+           body:'<div class="prose"><p class="note">'+(planted.length?'':'Nothing is planted to tend. ')+'One hand, one task. The choosing of it is the whole game, in time.</p></div>',
+           choices:list });
+  }
+
+  /* ---------------- SEASON SCRIPTS ---------------- */
+
+  function markCruelty(){ S.flags.crueltyThisSeason=true; }
+
+  // ---- SPRING ----
+  function springFlow(b){
+    b.push(()=>card({ eyebrow:"Year One begins", title:"The charter, and the cold ground",
+      dir:"[a wagon-rutted road, four cleared fields, a lean-to, and a well capped in iron at the property's edge]",
+      body:'<div class="prose"><p class="dropcap">You have taken the charter on a homestead in the Sull — four small fields, a lean-to that sleeps two, a hundred marks, and one field hand named Reuben who came with the land as customs there require. It is Spring. The larder holds eighty measures against the year, and there is no fuel laid in at all.</p><p>They say the ground here keeps accounts. You will have a year to learn what that means.</p></div>',
+      choices:[{t:"Walk the fields", primary:true, go:next}] }));
+
+    // Silas's Welcome (scripted, Day 1)
+    b.push(()=>card({ eyebrow:"A caller · Day 1", title:"Silas's Welcome",
+      dir:"[a man in a good coat on a poor road, a ledger in his saddlebag, not dismounting]",
+      body:'<div class="prose"><p>Silas Ridley reins up at your gate and does not get down. <span class="said">“Ridley. I hold your charter.”</span> He says it the way another man might say the weather. <span class="said">“A hundred and fifty a year to the bank. Not this year, nor the next — the charter allows a new man his feet. After that, it minds its dates, and so will I.”</span> He looks a long moment at the soft ground by the east field, and something crosses his face he does not explain.</p></div>',
+      choices:[
+        {t:"“Obliged, Mr. Ridley.”", go:()=>resolve(()=>{S.flags.silas="civil";}, "He nods and rides off. You are, it seems, a man with a deadline — two years out.")},
+        {t:"“You believe the stories about this ground?”", go:()=>resolve(()=>{S.regard-=1;}, "He pauses. <span class=\"said\">“I believe in the ledger,”</span> he says. <span class=\"said\">“The stories are the ledger's business.”</span> He rides off faster than he came.")},
+      ] }));
+
+    b.push(plantStep);
+    b.push(()=>assignStep(["tend","rest"]));
+
+    // First Furrow festival
+    b.push(()=>card({ eyebrow:"The First Furrow · Spring Fair", title:"The town turns out",
+      dir:"[a green between a white church and a low saloon; the whole of Marrow's Cross gathered to bless the planting]",
+      body:'<div class="prose"><p>Mayor Halloway makes an expansive welcome and presses a small wheat contract on you — eight units, at a fair locked price, come the harvest. Preacher Grange walks the new man’s fields and says the old words over them. Meredith Vane watches from the saloon step; the Sheriff watches from the shade.</p><p>Attending costs you a working day of Reuben’s — but a newcomer is only new once.</p></div>',
+      choices:[
+        {t:"Attend the Fair", sub:"+regard, a blessed field, the wheat contract — but Reuben rests today", primary:true, go:()=>resolve(()=>{
+          S.regard+=6; S.flags.wheatContract=true; if(S.reuben.morale<5)S.reuben.morale++;
+          // a blessed field: nudge a planted field's progress
+          const f=S.fields.find(x=>x.crop); if(f)f.progress+=0.5;
+          // clearing Reuben's tend if he'd been tending (he's at the fair)
+          S.fields.forEach(x=>x.tended=false);
+        }, "You stand the day among them. Grange's blessing settles on the near ground like a light frost that does not bite. The town has seen your face now; that counts for something in the Sull.")},
+        {t:"Skip it and work", sub:"the town notes the newcomer who wouldn't come", go:()=>resolve(()=>{S.regard-=3;}, "You keep to your fields while the fiddles carry across the green. Marrow's Cross notices a man who will not sit with it. It always does.")},
+      ] }));
+
+    // one systemic spring event
+    b.push(()=>drawSystemic("spring"));
+
+    b.push(growStep);
+    b.push(harvestStep);
+    b.push(duskStep);
+  }
+
+  // ---- SUMMER ----
+  function summerFlow(b){
+    b.push(()=>card({ eyebrow:"Summer · the market opens", title:"The long light",
+      body:'<div class="prose"><p class="dropcap">The days stretch and the first crops come on. Word reaches you of Regional buyers who send a wagon for a real load, and of the saloon where Meredith Vane sells the one thing dearer than whiskey — knowing things. The heat sits heavy on the fields.</p></div>',
+      choices:[{t:"To work", primary:true, go:next}] }));
+
+    b.push(plantStep);
+    b.push(()=>assignStep(["tend","chop","rest"]));
+
+    // Vane's Wagon
+    b.push(()=>card({ eyebrow:"An opportunity · ~Day 25", title:"Vane's Wagon",
+      dir:"[a black wagon hung with lanterns, and a courteous man who does not quite meet the eye]",
+      body:'<div class="prose"><p>Dr. Ambrose Vane brings his wagon up the track. Behind the canvas, a shape that breathes. <span class="said">“A grower,”</span> he says, <span class="said">“strong in the ground, gentle with the seed. A hundred and ten marks, and cheap at it.”</span> He can see you counting. <span class="said">“Or a field hand, sixty — a plainer sort of help.”</span></p><p class="note">A second body is a second mouth. It must eat all winter, or it does not last the winter.</p></div>',
+      choices:[
+        {t:"Buy the Grower — 110 m", sub:"strong labor; a heavy winter mouth", disabled:S.marks<110, go:()=>resolve(()=>{S.marks-=110; S.hands.push({name:pick(["Della","Tace","Wick","Merrit"]),morale:3,alive:true});}, "The canvas comes back. She steps down slow, blinking at the light, and does not yet know your name or her own. You will have to feed her now, through everything.")},
+        {t:"Buy the Field Hand — 60 m", sub:"cheaper help; still a mouth to winter", disabled:S.marks<60, go:()=>resolve(()=>{S.marks-=60; S.hands.push({name:pick(["Amos","Pell","Bry","Cass"]),morale:3,alive:true});}, "Sixty marks, and a plain quiet worker climbs down from the wagon. Vane counts the coin twice and is gone before you can ask where such a one comes from.")},
+        {t:"Haggle", sub:"Vane likes to be liked", go:()=>resolve(()=>{
+          if(S.regard>=55 && S.marks>=100){ S.marks-=100; S.hands.push({name:pick(["Della","Tace","Wick"]),morale:3,alive:true}); S._hag="won"; }
+          else S._hag="lost";
+        }, S._hag==="won" ? "He sighs, charmed despite himself. <span class=\"said\">“A hundred, then, for a face I like.”</span> The grower steps down. Ten marks saved, and a mouth to feed." : "<span class=\"said\">“A hundred and ten is the kindness,”</span> he says, and the price does not move. You let the wagon go on.")},
+        {t:"Decline", sub:"one hand, one mouth — the safe winter", go:()=>resolve(null,"You let the wagon roll on toward the next homestead. One hand is a lean crew, but a lean crew is a fed crew.")},
+      ] }));
+
+    // The moral fork
+    b.push(()=>{
+      const ripeField = S.fields.find(f=>ripe(f)) || S.fields.find(f=>f.crop);
+      const isCotton = ripeField && ripeField.crop==="cotton";
+      card({ eyebrow:"The fork · late Summer", title: isCotton?"The Cotton Won't Wait":"The Harvest Won't Wait",
+        dir:"[a field standing full, a bruise of storm two days out on the horizon, and a hand swaying on his feet]",
+        body:'<div class="prose"><p>'+(ripeField?fieldName(ripeField):"A field")+' stands ready, and the forecast reads storm within two days. Reuben has been on his feet since before light and is grey with it. Push him through the night and you save the crop whole. Let him lie down and you lose a third of it to the weather.</p></div>',
+        choices:[
+          {t:"Work him through the night", sub:"save the crop · Reuben loses heart", primary:true, go:()=>resolve(()=>{
+            if(S.reuben.morale>0)S.reuben.morale--;
+            if(ripeField){ ripeField.tended=true; ripeField.progress=Math.max(ripeField.progress,CROPS[ripeField.crop].seasons); }
+            S.flags.overworked=true;
+          }, "The crop comes in whole under a black sky. Reuben does not speak for a day. <span class=\"whisper\">The land takes no notice of a hard day — not yet. A hard day is only a hard day.</span>")},
+          {t:"Let him rest", sub:"lose a third · Reuben mends", go:()=>resolve(()=>{
+            if(S.reuben.morale<5)S.reuben.morale++;
+            if(ripeField)ripeField.fert=Math.max(0,ripeField.fert-1);
+          }, "You send him to his cot. The storm takes what it takes. In the morning he works the wet field with something like loyalty, and you find you do not regret the third you lost.")},
+        ] });
+    });
+
+    b.push(()=>drawSystemic("summer"));
+    b.push(growStep);
+    b.push(harvestStep);
+    b.push(duskStep);
+  }
+
+  // ---- FALL ----
+  function fallFlow(b){
+    b.push(()=>card({ eyebrow:"Fall · the scramble", title:"Bring it in, and lay it by",
+      body:'<div class="prose"><p class="dropcap">The year tips over into taking-in. Every ripe field wants harvesting and the winter wants fuel, and both want the same short days. From here the almanac keeps a running count in the margin: larder against need, wood against the cold.</p></div>',
+      choices:[{t:"Begin", primary:true, go:next}] }));
+
+    b.push(plantStep);
+    // the scramble: tend vs chop
+    b.push(()=>assignStep(["tend","chop","rest"]));
+
+    // Harvest Home
+    b.push(()=>card({ eyebrow:"Harvest Home · the Fall feast", title:"The town lights the long tables",
+      dir:"[lanterns strung over the green, and Old Nan at the dark edge of it, watching the newcomer]",
+      body:'<div class="prose"><p>Harvest Home falls square in the crunch. Bess Halloway asks you one sharp, honest question and reads your face for the answer. Sister Ruth notes how your hands look — fed or not. The Sheriff offers a cool word about soft ground. To go is to lose a working day; to stay away is to be the man who wouldn’t.</p></div>',
+      choices:[
+        {t:"Go to the feast", sub:"+regard, +heart — a day not worked", primary:true, go:()=>resolve(()=>{S.regard+=5; if(S.reuben.morale<5)S.reuben.morale++; S.fields.forEach(x=>x.tended=false);}, "You sit at the long tables. Bess decides something about you; you cannot tell what. It is warm, and there is bread, and for an evening the ground keeps its accounts to itself.")},
+        {t:"Stay and bring in the crop", sub:"−regard; the work gets done", go:()=>resolve(()=>{S.regard-=3;}, "You work while the fiddles carry over the fields. The crop is safe and the town is a shade cooler to you. You can live on a safe crop; you cannot eat regard.")},
+      ] }));
+
+    b.push(()=>drawSystemic("fall"));
+
+    // Sour — only if reckoning has risen
+    b.push(()=>{
+      if(S.reckoning>=25){
+        card({ eyebrow:"An omen", title:"Sour",
+          body:'<div class="prose"><p class="whisper">The milk turns though the cow is sound and the pail was clean. It turns again the next morning, and the next. When you ask Old Nan she does not touch it. <span class="said">“You’ve laid something down,”</span> she says, <span class="said">“that the ground did not care for. It remembers the shape of it.”</span></p></div>',
+          choices:[{t:"Say nothing", primary:true, go:next}] });
+      } else next();
+    });
+
+    // Provisioning for winter
+    b.push(provisionStep);
+
+    b.push(growStep);
+    b.push(harvestStep);
+    b.push(duskStep);
+  }
+
+  // ---- WINTER ----
+  function winterFlow(b){
+    b.push(()=>card({ eyebrow:"Winter · the crucible", title:"The short days close in",
+      dir:"[frost on the well-cap; the whole valley gone quiet and white]",
+      body:'<div class="prose"><p class="dropcap">Winter in the Sull is the year’s true test. There is no planting now — only the larder, the woodpile, and the long dark between them. What you laid by is what you have.</p></div>'+
+        needBar(),
+      choices:[{t:"Face it", primary:true, go:next}] }));
+
+    b.push(()=>assignStep(["chop","rest"]));
+
+    // a chance at Sister Ruth's charity if short
+    b.push(()=>{
+      const short = S.food < winterFoodNeed() || S.fuel < winterFuelNeed();
+      if(short && !S.flags.tookCharity){
+        card({ eyebrow:"A knock at the door", title:"Sister Ruth's Basket",
+          dir:"[a plain woman with a covered basket and a look that misses nothing]",
+          body:'<div class="prose"><p>Sister Ruth Grange comes up the frozen track with a basket on her arm. <span class="said">“The church keeps a little back,”</span> she says, <span class="said">“for a hard first winter. It is not charity. It is what a town is for.”</span> Her eyes go once around your yard, counting mouths and measuring the fire.</p></div>',
+          choices:[
+            {t:"Accept the basket", sub:"+18 food, +14 fuel · a small debt of regard", primary:true, go:()=>resolve(()=>{S.food+=18;S.fuel+=14;S.flags.tookCharity=true;S.regard+=2;}, "She sets it down and will not stay for thanks. Bread, salt pork, a sack of coal. It is the difference, this year, between a grave and a spring.")},
+            {t:"“We'll manage, Sister.”", sub:"pride; the fire stays low", go:()=>resolve(()=>{S.regard+=1;}, "She looks at you a long moment, then nods once and takes the basket back down the track. <span class=\"said\">“The offer keeps,”</span> she says, without turning. You hope you will not need it.")},
+          ] });
+      } else next();
+    });
+
+    // The Long Vigil
+    b.push(()=>card({ eyebrow:"Midwinter · the longest night", title:"The Long Vigil",
+      dir:"[the whole town in the church at midnight, every candle lit, an old capped well-head through the open door]",
+      body:'<div class="prose"><p>On the longest night the town does not sleep. They fill the church and they watch, and near midnight Grange reads the names of everyone who died in the Sull this year — slow, one by one, so that none is forgotten and left to be. The liturgy does not say <em>taken.</em> Everyone hears it anyway. Outside, past the graves, the old well-head sits under its cap of iron and salt, and the watching is for it.</p></div>',
+      choices:[
+        {t:"Watch the night through with them", sub:"+regard; the ground eases its accounting", primary:true, go:()=>resolve(()=>{S.regard+=6; S.reckoning=Math.max(0,S.reckoning-4);}, "You watch. You do not know what you are watching for, and by dawn you understand no one else quite does either, and that they watch anyway. It is the truest thing you have seen in the Sull.")},
+        {t:"Go home to your fire", sub:"−regard; keep your own watch", go:()=>resolve(()=>{S.regard-=4;}, "You keep your own watch, alone, over your own ground. In the morning the town is a little colder to the man who wouldn't sit the Vigil.")},
+      ] }));
+
+    b.push(winterResolve);
+  }
+
+  function needBar(){
+    const fn=winterFoodNeed(), un=winterFuelNeed();
+    const fm=S.food>=fn, um=S.fuel>=un;
+    return '<div class="prose"><div class="needbar"><span>Larder for winter</span><span class="'+(fm?'met':'short')+'"><b>'+Math.floor(S.food)+'</b> / '+fn+' needed</span></div>'+
+           '<div class="needbar"><span>Fuel against the cold</span><span class="'+(um?'met':'short')+'"><b>'+S.fuel+'</b> / '+un+' needed'+(S.coldsnap?' (cold snap)':'')+'</span></div></div>';
+  }
+
+  function provisionStep(){
+    let coal=0, grain=0; // coal: 3m -> 2 fuel ; grain: 2m -> 1 food
+    function draw(){
+      const projFuel=S.fuel+coal*2, projFood=Math.floor(S.food)+grain;
+      const spend=coal*3+grain*2;
+      const fn=45+8*extraHands(), un=45+8*extraHands(); // planning figures (cold snap unknown yet)
+      card({ eyebrow:"The scramble · lay in stores", title:"Provision against winter",
+        body:'<div class="prose"><p class="note">Coal from town at 3 marks the measure (each gives 2 fuel). Grain at 2 marks the measure. Winter for '+bodies()+' will want roughly '+ (35+15*extraHands()) +' food and '+un+'–'+(un+10)+' fuel. You have '+S.marks+' marks.</p>'+
+          '<div class="stepper"><div class="lab">Coal<small>+2 fuel each · 3 m</small></div><div class="ctrls"><button data-a="coal-">–</button><span class="qty">'+coal+'</span><button data-a="coal+">+</button></div></div>'+
+          '<div class="stepper"><div class="lab">Grain<small>+1 food each · 2 m</small></div><div class="ctrls"><button data-a="grain-">–</button><span class="qty">'+grain+'</span><button data-a="grain+">+</button></div></div>'+
+          '<div class="needbar"><span>After buying — larder</span><span class="'+(projFood>=35+15*extraHands()?'met':'short')+'"><b>'+projFood+'</b> food</span></div>'+
+          '<div class="needbar"><span>After buying — fuel</span><span class="'+(projFuel>=un?'met':'short')+'"><b>'+projFuel+'</b> fuel</span></div>'+
+          '<div class="needbar"><span>Coin spent</span><span><b>'+spend+'</b> / '+S.marks+' m</span></div></div>',
+        choices:[{t:"Lay it in", primary:true, go:()=>{ S.marks-=spend; S.fuel+=coal*2; S.food+=grain; next(); }}] });
+      stage().querySelectorAll('button[data-a]').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          const spendNow=coal*3+grain*2;
+          const a=btn.dataset.a;
+          if(a==="coal+"&&S.marks-spendNow>=3)coal++;
+          if(a==="coal-"&&coal>0)coal--;
+          if(a==="grain+"&&S.marks-spendNow>=2)grain++;
+          if(a==="grain-"&&grain>0)grain--;
+          draw();
+        });
+      });
+    }
+    draw();
+  }
+
+  function winterResolve(){
+    const foodNeed=winterFoodNeed(), fuelNeed=winterFuelNeed();
+    const rep=[]; S.lost=[];
+    // ---- FUEL: bodies freeze frailest-first; farmer last ----
+    let fuel=S.fuel; let fuelShort = fuel < fuelNeed;
+    let survivors = allHands(); // includes reuben, farmer implicit
+    // farmer needs a base share; clones freeze first
+    if(fuelShort){
+      // remove frailest clones until need is met or only farmer remains
+      let clones = survivors.filter(h=>true).sort((a,b)=>a.morale-b.morale);
+      let need=fuelNeed;
+      while(fuel<need && clones.length>0){
+        const frail=clones.shift();
+        frail.alive=false; S.lost.push(frail.name+" (froze)");
+        need-=8; // one fewer body to warm
+      }
+      fuelShort = fuel<need;
+      if(fuelShort){ // even alone the farmer cannot keep warm
+        return doEnd(false, "froze", rep);
+      }
+    }
+    // ---- FOOD: farmer eats first (needs ~20 over winter); clones next ----
+    let food=S.food;
+    const farmerNeed=20;
+    if(food < farmerNeed){
+      return doEnd(false, "starved", rep);
+    }
+    food-=farmerNeed;
+    // feed remaining clones ~15 each; frailest served last starve
+    let clones = S.hands.filter(h=>h.alive).concat(S.reuben.alive?[S.reuben]:[]);
+    clones.sort((a,b)=>b.morale-a.morale); // strongest fed first
+    clones.forEach(h=>{
+      if(food>=15){ food-=15; }
+      else if(food>=7){ food-=food; if(h.morale>0)h.morale--; rep.push(h.name+" went hungry but held."); }
+      else { h.alive=false; S.lost.push(h.name+" (starved)"); }
+    });
+    S.food=Math.max(0,food);
+    S.fuel=Math.max(0,fuel-fuelNeed>0?fuel-fuelNeed:0);
+    doEnd(true, null, rep);
+  }
+
+  function doEnd(survived, cause, rep){
+    S.ended=true;
+    if(!survived){
+      renderHeader(); renderLedger();
+      const how = cause==="froze"
+        ? "The wood ran out in the black of February and the cold came in under the door and did not leave. They found the fire long dead."
+        : "The larder came up empty with weeks of winter still to run. A man can work a field he has not eaten from; he cannot do it long.";
+      paint('<div class="end"><div class="verdict" style="color:var(--bad)">The run ends</div>'+
+        '<h2>The Sull keeps the land</h2>'+
+        '<p class="epi">'+how+'</p>'+
+        (S.lost.length?'<p class="note">Lost this winter: '+S.lost.join(", ")+'.</p>':'')+
+        '<hr class="hr-hatch">'+
+        '<p class="prose">The charter passes back to Silas Ridley\'s ledger, and the fields go quiet under the snow, and the well keeps its cap. Another name for Grange to read, next Vigil.</p>'+
+        '<div class="choices" style="max-width:340px;margin:16px auto 0"><button class="btn primary" id="again"><span class="t">Take the charter again</span><span class="sub">a new newcomer, a new seed</span></button></div></div>');
+      document.getElementById("again").addEventListener("click",()=>newGame((Math.random()*1e9)>>>0),0);
+      return;
+    }
+    // survived → win beat (handled by endSeason→winBeat, but winter is terminal so call directly)
+    S._winterRep=rep; S._winterFood=S.food; S._winterFuel=S.fuel;
+    winBeat();
+  }
+
+  function winBeat(){
+    S.ended=true;
+    renderHeader(); renderLedger();
+    const lostLine = S.lost && S.lost.length ? '<p class="note">The winter took: '+S.lost.join(", ")+'. The graves are marked; the ground was given its due.</p>' : '<p class="note">The whole household woke to the thaw. Not everyone in the Sull can say the same.</p>';
+    const band=reckBand();
+    const groundLine = band==="Whispers"
+      ? "The ground kept its whispers to itself this year — crows and cold spots and nothing worse."
+      : band==="Warnings"
+        ? "The ground muttered more than whispers this year. It has your measure now, and a longer memory than you."
+        : "Something walked the frost this year that should not walk. The Sull will not forget it, and neither, now, will you.";
+    paint('<div class="end"><div class="verdict">Spring · Year Two · Day 1</div>'+
+      '<h2>“I survived another year.”</h2>'+
+      '<p class="epi">The frost breaks along the river first. The household wakes to a dripping eave and a thin bright sun, and the year turns over like a page. You made it. Not everyone does.</p>'+
+      '<hr class="hr-hatch">'+
+      lostLine+
+      '<p class="prose">'+groundLine+'</p>'+
+      '<div class="tally report">'+
+        line("Marks in hand", S.marks+" m","flat")+
+        line("Larder into spring", Math.floor(S.food)+" food","flat")+
+        line("The crew that lived", allHands().map(h=>h.name).join(", ")||"only you","flat")+
+        line("Standing in Marrow's Cross", regardWord(),"flat")+
+      '</div>'+
+      '<p class="note" style="margin-top:14px">A Vigil is entered in the Codex for the year you survived. Year Two would bring the market’s regional wagon, the Vat, the deeper reckoning — and, in three more years, Silas Ridley’s first collected debt.</p>'+
+      '<div class="choices" style="max-width:340px;margin:16px auto 0"><button class="btn primary" id="again"><span class="t">Play another first year</span><span class="sub">new seed, new weather, new choices</span></button></div></div>');
+    document.getElementById("again").addEventListener("click",()=>newGame((Math.random()*1e9)>>>0),0);
+  }
+
+  /* ---------------- systemic events ---------------- */
+  const SYSTEMIC = {
+    spring:[
+      ()=>card({eyebrow:"A growing rain",title:"A Soft Rain",
+        body:'<div class="prose"><p>Three days of soft, warm rain walk up the valley. The seed drinks it in and the fields come on a shade faster than the almanac promised.</p></div>',
+        choices:[{t:"Good.",primary:true,go:()=>resolve(()=>{S.fields.forEach(f=>{if(f.crop)f.progress+=0.5;});},"Everything planted takes a step toward ripe.")}]}),
+      ()=>card({eyebrow:"An unfenced field",title:"Crows in the Corn",
+        body:'<div class="prose"><p>A black congregation settles on one of your fields and sets to work with a will. There is no fence to turn them.</p></div>',
+        choices:[
+          {t:"Set Reuben to scaring them",sub:"a day's labor spent",go:()=>resolve(()=>{S.fields.forEach(x=>x.tended=false);},"Reuben spends the day waving and shouting. The crows leave insulted; the crop is whole.")},
+          {t:"Fence it — 15 m",sub:"lasting; costs coin",disabled:S.marks<15,go:()=>resolve(()=>{S.marks-=15;},"Posts and wire go up. The crows try it once, twice, and give it up. The fence will stand for years.")},
+          {t:"Let them feed",sub:"lose a share of that field",go:()=>resolve(()=>{const f=S.fields.find(x=>x.crop);if(f)f.fert=Math.max(0,f.fert-1);},"You let them have their tithe. It is only a share. You will remember the fence come next planting.")},
+        ]}),
+      ()=>card({eyebrow:"A hand asks",title:"A Name of His Own",
+        body:'<div class="prose"><p>Reuben stands at the door with his hat in his hands and asks, haltingly, whether he might have a name that is <em>his</em> — not the one that came stamped on the charter papers, but one you’d call him by.</p></div>',
+        choices:[
+          {t:"Grant it gladly",sub:"+heart; he works the harder for it",primary:true,go:()=>resolve(()=>{if(S.reuben.morale<5)S.reuben.morale++;S.regard+=1;},"He says the name over twice, quietly, like a thing he is afraid to drop. He works differently after — like a man, not a tool.")},
+          {t:"Refuse him",sub:"−heart; the asking never comes again",go:()=>resolve(()=>{if(S.reuben.morale>0)S.reuben.morale--;markCruelty();},"<span class=\"said\">“As you say,”</span> he answers, and goes back to the field. He does not ask again, and something in him closes for good. <span class=\"whisper\">The ground, somewhere, makes a small note of it.</span>")},
+        ]}),
+    ],
+    summer:[
+      ()=>card({eyebrow:"A dry heat",title:"The Hot Wind",
+        body:'<div class="prose"><p>A hot wind comes off the flats and sits on the valley for a week. The work is punishing under it.</p></div>',
+        choices:[
+          {t:"Rest the worst of it",sub:"+heart; a slow week",primary:true,go:()=>resolve(()=>{if(S.reuben.morale<5)S.reuben.morale++;},"You keep to the shade through the killing hours. The work waits; the crew keeps its strength.")},
+          {t:"Work straight through",sub:"the crop, but Reuben wilts",go:()=>resolve(()=>{if(S.reuben.morale>0)S.reuben.morale--;},"The rows get worked in the full glare. Reuben comes in each night hollow-eyed. The land, for now, takes no notice of a hard week.")},
+        ]}),
+      ()=>card({eyebrow:"A traveller",title:"The Pedlar",
+        body:'<div class="prose"><p>A pedlar with a swaybacked mule offers cheap seed by the roadside — and, when pressed, something else, wrapped in oilcloth, that he will not name and will not unwrap.</p></div>',
+        choices:[
+          {t:"Buy the seed — 8 m",sub:"+8 seed",disabled:S.marks<8,primary:true,go:()=>resolve(()=>{S.marks-=8;S.seed+=8;},"Good seed at a fair price. The oilcloth stays wrapped, and the pedlar goes on his way looking almost relieved.")},
+          {t:"Send him on",sub:"want nothing of it",go:()=>resolve(null,"You wave him past. The mule complains; the pedlar tips his hat; the oilcloth bundle rides on to trouble someone else.")},
+        ]}),
+      ()=>card({eyebrow:"In the granary",title:"Rats in the Stores",
+        body:'<div class="prose"><p>Something has been in the larder. You find the tell-tale spill of grain and the small dark droppings along the wall.</p></div>',
+        choices:[
+          {t:"Trap them — 4 m",sub:"stop the loss",disabled:S.marks<4,primary:true,go:()=>resolve(()=>{S.marks-=4;},"Traps and a barn cat borrowed from Doc Bell. The stores hold.")},
+          {t:"Ignore it",sub:"−food over the season",go:()=>resolve(()=>{S.food=Math.max(0,S.food-10);},"You let it ride. Ten measures of larder go down small throats before the season's out.")},
+        ]}),
+    ],
+    fall:[
+      ()=>card({eyebrow:"At the gate",title:"A Foundling",
+        dir:"[a thin figure at the fence-line at dusk, not quite a child, not quite not]",
+        body:'<div class="prose"><p>A stray hand stands at your gate as the light goes — one of the Sull’s foundlings, grown wild from no wagon and no vat anyone will own to. It watches you and does not speak.</p></div>',
+        choices:[
+          {t:"Take them in",sub:"free labor — and another winter mouth",primary:true,go:()=>resolve(()=>{S.hands.push({name:pick(["Wren","Cob","Lark","Fen"]),morale:2,alive:true});},"You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field — and one more belly to carry to spring.")},
+          {t:"Send them to Sister Ruth",sub:"+her regard",go:()=>resolve(()=>{S.regard+=3;},"You point the way to the church, where Ruth keeps a cot for such as these. She will remember that you sent them fed, not away.")},
+          {t:"Turn them out",sub:"the ground marks it",go:()=>resolve(()=>{S.reckoning+=1;markCruelty();},"You close the gate. The figure stands a while in the cold, then is not there. <span class=\"whisper\">Something in the ground turns over in its long sleep.</span>")},
+        ]}),
+      ()=>card({eyebrow:"A rumor at the saloon",title:"Doc Bell's Word",
+        body:'<div class="prose"><p>Doc Bell, dry as ever, lets fall over a glass that a Regional buyer will pay above the local price for grain this fall — if you have a wagon-load worth carrying, and the coin to wait for the wagon.</p></div>',
+        choices:[
+          {t:"Note it and thank him",sub:"good to know for Year Two",primary:true,go:()=>resolve(()=>{S.regard+=1;},"You file it away. The Regional wagon is a Year-Two concern — but the knowing of it is worth a drink, and Bell is worth cultivating.")},
+        ]}),
+      ()=>card({eyebrow:"An early frost",title:"Frost on the Low Ground",
+        body:'<div class="prose"><p>A hard frost comes a week early to the low fields. Anything ripe should come in now or risk the cold.</p></div>',
+        choices:[
+          {t:"Bring in what's ready",sub:"safe, but rushed",primary:true,go:()=>resolve(()=>{S.fields.forEach(f=>{if(ripe(f))f.tended=false;});},"You get the ripe fields in ahead of the white. It is rough work in the cold, but the harvest is safe under roof.")},
+        ]}),
+    ],
+    winter:[
+      ()=>card({eyebrow:"The long dark",title:"Cabin Fever",
+        body:'<div class="prose"><p>The snow shuts the valley in. Days pass without a face from town, and the household grows short-tempered in the close air of the lean-to.</p></div>',
+        choices:[
+          {t:"Keep them busy and fed",sub:"+heart if you can spare it",primary:true,go:()=>resolve(()=>{if(S.food>20&&S.reuben.morale<5)S.reuben.morale++;},"You ration out small comforts — a better supper, a task with an end to it. The crew holds together through the worst of the quiet.")},
+        ]}),
+    ],
+  };
+  function drawSystemic(seasonKey){
+    // pacing: mostly one event; occasionally quiet
+    const pool = SYSTEMIC[seasonKey];
+    if(!pool || !pool.length){ next(); return; }
+    // don't repeat within a run where avoidable
+    S.flags._seen = S.flags._seen||{};
+    let candidates = pool.filter((_,i)=>!S.flags._seen[seasonKey+i]);
+    if(!candidates.length){ candidates=pool; S.flags._seen={}; }
+    const idx = pool.indexOf(pick(candidates));
+    S.flags._seen[seasonKey+idx]=true;
+    pool[idx]();
+  }
+
+  /* ---------------- theme toggle ---------------- */
+  document.getElementById("themetog").addEventListener("click",function(){
+    const root=document.documentElement;
+    const cur=root.getAttribute("data-theme");
+    const dark = cur? cur==="dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    root.setAttribute("data-theme", dark?"light":"dark");
+    this.textContent = dark? "☾ night" : "☀ day";
+  });
+
+  /* ---------------- boot ---------------- */
+  newGame((Math.random()*1e9)>>>0);
+  runStep();
+})();
+</script>
+
+</body>
+</html>

@@ -24,8 +24,9 @@ If you (Claude) are reading this at the start of a new session: welcome back. Re
 - ⏳ **Mechanics Bible** — in progress. See `docs/mechanics-bible.md`.
 - ⏳ **Narrative & World Bible** — not started. Stub at `docs/narrative-bible.md`.
 - ⏳ **Balance Model** — not started. Stub at `docs/balance-model/README.md`.
-- ⏳ **Paper Prototype Playtest** — not started.
-- ⏳ **Code scaffold** — not started. Deferred until deep design pass is complete.
+- ✅ **Paper Prototype Playtest** — kit + worked playthrough done (`docs/playtest-kit-year1.md`, `docs/playtest-example-year1.md`).
+- ✅ **Playable Year-1 browser prototype** — `prototype/year1.html`. Single-file, dependency-free; plays the full Year-1 loop ("The Newcomer") with all six scripted beats, real numbers, hidden-Reckoning-as-omen, seeded PRNG. Validated headlessly (winnable via the cautious line, punishing via the greedy line). Also a private claude.ai Artifact.
+- ⏳ **Production code scaffold (Next.js 15)** — next. Port the prototype's pure logic into `(state, action) => newState` modules loading `content/events/*.yaml` via `docs/content-schema.md`.
 
 See `context/session-history.md` for full session-by-session log.
 
@@ -175,4 +176,4 @@ bushel-and-bone/
 
 ---
 
-*Last updated: end of Session 1 — Foundational GDD complete, Mechanics Bible started.*
+*Last updated: end of Session 4 — "Ready to Code" milestone complete; first playable Year-1 browser prototype built (`prototype/year1.html`). Next: production Next.js scaffold.*
