@@ -29,9 +29,11 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 - **#1 MVP scope (→ D-033):** wrote `docs/scope-mvp.md`. Ship the full core loop over a 4-year first lifetime (all 10 NPCs, 4 festivals, ~120 events, full reckoning arc, lineage meta); defer the Vat, Ascension, Black Market, Rail Depot, fancy contracts, Season Arcs 5–10, deep unlock catalog. Resolves Q-001.
 - **#2 calibration (→ D-032):** ratified — **protect the survival weight** (committed consumption; close the gap via production: 4 starter fields + +10% quick-ground yield + roots decay 0.18), **2-year mortgage grace**, **bone-root price 30→4 + Reckoning 4→6**. Re-ran the model: no dominant strategy (cashcrop earns most/dies fast, subsistence survives-but-forecloses, balanced = competent survivor), **H-02 now CONFIRMED**. Back-ported to Mechanics Bible §1/§6/§13 + a ratification note; README calibration Pass-2 logged. Q-003 advanced (not closed — long-game ceiling + Year-1 scarcity + exploit hypotheses pending #6/#11).
 
-**Milestone: 5/17 closed (#1, #2, #3, #4, #5).** Phase 1 complete.
+**Issue #7 — Year-1 vertical slice (DONE):** Wrote `docs/vertical-slice-year1.md` — the keystone. A complete, self-contained "The Newcomer" year: exact starting state, the Morning Brief→Play→Dusk loop, a season-by-season arc spine (Silas's welcome → First Furrow → Ambrose's wagon → the Summer moral fork → Harvest Home → the first Whisper → the Long Vigil), which of the 15 systems are active in Y1 and their limits, a curated ~18-card event set (two new cards written in full in-voice), the moral-fork + first-Whisper design, a paper-prototype kit, and a ratified-number cross-check. Year 1 is forgiving (no mortgage — grace; can't reach Walkers) but exercises the whole loop. Supports both a kind and a cruel first year.
 
-**Next up:** now that scope + numbers are fixed, **#7 (Year-1 vertical slice)** is unblocked (its deps #1/#2/#3/#4/#5 are all done) — the keystone that fuses one year of mechanics+events+narrative for the paper playtest (#11). Also open: **#6 (exploit/adversarial bots — the direct anti-loophole validation)**, and the narrative breadth (#13 quest arcs, #14 Vane, #15 arcs 5–10).
+**Milestone: 6/17 closed (#1–#5, #7).** Phase 1 done; the keystone of Phase 4 (the slice) is done early.
+
+**Next up:** **#11 (paper-prototype playtest)** is now unblocked (its dep #7 is done) — the only test for "is it fun / boring," which nothing else can answer. Also high-value: **#6 (exploit/adversarial bots — the direct anti-loophole validation)**. Narrative breadth: **#13 (quest arcs)**, **#14 (Vane mystery)**, **#15 (arcs 5–10)**. Remaining mechanics/schema: **#8**, **#12**.
 
 ---
 
