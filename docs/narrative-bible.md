@@ -1,6 +1,6 @@
 # Bushel & Bone — Narrative & World Bible
 
-**Status: IN PROGRESS.** Part 1 — The World is written (Session 3, GitHub issue #3). Parts 2–6 (Cast, Vane family, Season Arcs, sample events, voice guide) remain — tracked by issues #4, #5, #13, #14, #15, #16.
+**Status: IN PROGRESS.** Part 1 — The World (issue #3) and Part 2 — The Cast interiority (issue #4) are written. Remaining: full NPC quest arcs (#13), the Vane family biographies + three truths (#14), Season Arcs Years 5–10 (#15), sample event cards (part of #16), and the voice guide (#5).
 
 This bible fleshes out the story, the world, the NPCs, and the tone of Bushel & Bone in the depth required to actually write dialogue, event cards, and quest arcs without holes.
 
@@ -111,32 +111,126 @@ This bible fleshes out the story, the world, the NPCs, and the tone of Bushel & 
 
 ---
 
-### Part 2 — The Cast
+## PART 2 — THE CAST  *(interiority written — issue #4)*
 
-### Part 2 — The Cast
+Each of the ten canon NPCs (CLAUDE.md §4 — no new NPCs) gets: **Public** (how the town sees them), **Private truth** (the secret the player can uncover), **Background**, **Wants / Fears**, **Voice** (+ a signature line to fix the register), **Ties** (the relationship web), **Reaction to the player** (the required gradient across kind/cruel × low/high Reckoning × prosperous/failing), and an **Arc seed** pointing to the fuller quest work in issue #13 (or #14 for the Vanes).
 
-For each named NPC:
+*The core design rule for this cast (CLAUDE.md §5 #4 — no wallpaper): every one carries a genuine inner contradiction or wound, not just a role. The secrets below are now proposed canon — easy to adjust, but downstream arcs (#13/#14) will lean on them.*
 
-- **Public identity.** How the town sees them.
-- **Private truth.** What only the player can eventually learn.
-- **Background before the game.** Where they came from, why they're in Marrow's Cross.
-- **Motivations.** What they want. What they fear.
-- **Arc across a lineage.** 3–5 quest hooks with beats and endings.
-- **Sample dialogue** at Cold / Neutral / Warm / Bonded relationship tiers.
-- **Opinions on player state.** What they say when the player is kind vs. cruel; when Reckoning is low vs. high; when the player is prosperous vs. failing.
-- **Death / departure conditions.** How and when they can leave the story.
+---
 
-NPCs to write:
-1. Mayor Cyrus Halloway
-2. Preacher Elias Grange
-3. Doc Bell
-4. Meredith Vane
-5. Silas Ridley
-6. Bess Halloway
-7. Old Nan
-8. Sheriff Nathaniel Coldwater
-9. Dr. Ambrose Vane
-10. Sister Ruth Grange
+### 1. Mayor Cyrus Halloway — politics, civic contracts
+- **Public:** genial booster of Marrow's Cross, forever selling its future — the Rail, the boom, the town that finally makes good. Hands out the civic contracts (§7/§12).
+- **Private truth:** he's the grandson of one of the Salting's "strong" — the founding wealth that seats him was earned by turning out the weak to die (§1.5). He knows the true story and has spent a lifetime papering it over with progress. He wants the Rail so badly because he half-believes prosperity can finally bury the past.
+- **Background:** third-generation Marrow's Cross; never left; groomed for the office his grandfather bought.
+- **Wants:** legacy; the town's redemption through wealth; Bess married safe and high. **Fears:** the founding sin surfacing; the Vigil failing on his watch; being the mayor who let the town die.
+- **Voice:** warm, expansive, anecdotal; never says a plain *no.* Signature: *"Now, let's not borrow trouble from a field we haven't planted yet."*
+- **Ties:** leverage-partnership with Silas (needs the bank, resents its grip); publicly pious to Grange, privately thinks the Vigil is superstition holding the town back; dotes on Bess; wary of Coldwater's investigations (bad for trade); dislikes Old Nan (she remembers too much).
+- **Reaction to the player:** *prosperous & kind* → embraces them as the town's future, best contracts, floats Bess. *Cruel but rich* → courts the money, looks away from the cruelty — until the Reckoning threatens the town, then he turns fast. *Failing* → polite distance, quietly written off.
+- **Arc seed (→#13):** the Rail vote, and what he'll bury to win it.
+
+### 2. Preacher Elias Grange — the church, the moral weathervane
+- **Public:** keeper of the Long Vigil; a *moderate* who baptizes vessels and buries them named — which the hardline faithful and the distant Church resent (§1.3).
+- **Private truth:** he is quietly losing the doctrine. He has begun to suspect **Old Nan is right** — that the land counts cruelty, not creation — which would make his life's vigilance against the Vat a misdirected penance. He can't say it: the Vigil is what holds the town's fear in check. He performs a certainty he no longer feels.
+- **Background:** trained east, called west to a town that needed a Vigil kept; married Ruth, who lives the mercy he only preaches.
+- **Wants:** to keep the town from damning itself; to reconcile mercy with doctrine; secretly, to know the truth of the Marrow before he dies. **Fears:** that the Vigil is theater; that his mercy is heresy *or* his fear of the Vat is cruelty.
+- **Voice:** scripture and cadence, fraying under pressure into plain, tired human asides. Signature: *"The Vigil says the earth is owed our watching. …I have watched a long time, and I am no longer sure what watches back."*
+- **Ties:** loving, strained marriage with Ruth (his conscience and his rest); doctrinal rival and secret kindred to Old Nan; disapproves of Ambrose's trade but won't refuse a dying vessel; respects Coldwater's order, fears his zeal.
+- **Reaction to the player:** *kind* → a true ally; blessings and cleansings offered freely (§6). *Cruel* → grief and rising warning, not fire-and-brimstone; he pleads before he condemns, and at high Reckoning he's the one who *names* what's coming. *Vat-builder* → visible pain; the doctrinal wound made personal.
+- **Arc seed (→#13):** Year 2, "The Preacher's Sickness" — his crisis of faith literalized as illness.
+
+### 3. Doc Bell — medicine, rumors
+- **Public:** the town's physician; wry, unsentimental, treats anyone; a hub of rumor who knows every ailment and half the secrets.
+- **Private truth:** Bell is a **lapsed vesselwright** — trained in Corvantine among Orrell's students (§1.4), quit the trade after a batch "woke wrong" and a vessel suffered that shouldn't have. Came west to practice honest medicine as penance. Understands vessels better than anyone alive and is quietly sickened by the town treating them as livestock.
+- **Background:** eastern-trained, self-exiled; the Corvantine years are a closed door they'll open only late and only to the right player.
+- **Wants:** to do no harm; to be left alone with the work; to forget. **Fears:** being pulled back into vesselry; the day medicine can't touch what the Marrow does; that quitting never absolved them.
+- **Voice:** dry, deflecting, gallows humor; precise about bodies, allergic to sentiment. Signature: *"You want the long answer or the one that lets us both go to supper?"*
+- **Ties:** trades rumor with Meredith (the town's two information hubs); professional cordiality, private wariness, with Ambrose (old-trade recognition); skeptical of Old Nan's cures, has seen them work anyway; patches up whoever Coldwater bruises.
+- **Reaction to the player:** *kind to their clones* → thaws, shares real vesselry knowledge (mechanical: better clone health/treatment, §3/§4). *Cruel* → treats them coldly, and the rumors Bell lets slip raise the player's exposure (§5). *High Reckoning* → the one who says plainly, "This isn't a sickness I can treat."
+- **Arc seed (→#13):** the Corvantine thing, and whether the player earns it.
+- *Pronouns: they/them (canon leaves it open).*
+
+### 4. Meredith Vane — saloonkeeper, information hub, sister of Ambrose
+- **Public:** sharp, charming saloonkeeper; the town's information broker; the door to the Black Market (§2). Ambrose's sister.
+- **Private truth (THE central mystery, D-014 — one of three, randomized per campaign):** *(a) a slow-burning spy* for an eastern interest, reporting on Ambrose and the Sull's quick ground; *(b) the keeper of a third Vane* neither sibling will name; or *(c) a vessel herself* — an imprint of the real Meredith, grown by Ambrose, which is why the two circle each other so warily. Written so all three stay live: a woman performing ease over a deep, specific dread, and her brother is the fault line.
+- **Background:** came west with Ambrose (or was brought west *by* him); the years before are exactly what she sells least.
+- **Wants (surface):** to run the best house in the Sull and know everything. **(Deep, varies by truth):** freedom from Ambrose / to guard the secret / to be *real.* **Fears:** her brother; being found out.
+- **Voice:** quick, teasing, transactional warmth; never gives a thing away free; turns the personal aside with a pour. Signature: *"Everything in here has a price, sugar. The whiskey's the cheap part."*
+- **Ties:** the Vane fault line with Ambrose; trades with Doc Bell; sells the access Grange deplores; useful to and watched by Coldwater; Old Nan looks at her with an unsettling half-recognition.
+- **Reaction to the player:** transactional with everyone — warms with coin and repeat custom; her information is genuinely worth it. *Cruel players* get no judgment and better fence terms (§2). She is the one NPC whose warmth is **not** keyed to the cruelty ledger — her depths gate on the Vane arc.
+- **Arc seed (→#14):** the Vane mystery proper.
+
+### 5. Silas Ridley — banker, mortgages
+- **Public:** the mortgage-holder; correct, cold, patient; the man who can take your land (the mortgage clock, §13). Charter-company money.
+- **Private truth:** he is not greedy — he is **afraid.** Overextended and personally liable to the charter company for the Sull paper, every foreclosure is him saving himself from drowning. And he privately believes the folk stories: the Sull is cursed ground, and he means to get his money out *before the Rail reveals how bad the loans are.* He forecloses by a drowning man's arithmetic.
+- **Background:** sent west by the company to manage frontier lending; discovered too late what he'd staked his name on.
+- **Wants:** to get out solvent and go east; to never be the one turned out. **Fears:** the Marrow (more than he'll admit); ruin; being already too deep.
+- **Voice:** precise, bloodless, financial euphemism — until an omen makes the fear leak through. Signature: *"I don't hold your land, you understand. I hold a promise. The land is merely… what secures it."*
+- **Ties:** uneasy leverage with Halloway (mutual need, mutual resentment); despises the risk Ambrose's trade adds to his book; would foreclose on his own mother; *secretly pays Old Nan* for readings and tells no one.
+- **Reaction to the player:** *prosperous* → strictly fair, even offers the buy-out path (§13). *Struggling* → the grace, then the arithmetic; no gloating, just relentless. *High Reckoning* → genuinely frightened; may call the loan early to get clear of ground he's sure is damned.
+- **Arc seed (→#13):** Silas racing to get out before the Rail, and what he does to a farm he's decided is cursed.
+
+### 6. Bess Halloway — the mayor's daughter, spouse & heir source (D-007)
+- **Public:** the mayor's bright, marriageable daughter; the town's future; courted by every man with ambitions and Silas-money behind him.
+- **Private truth:** she refuses to be a prize. Sharper than her father, she's found her grandfather's papers and **knows the founding lie.** She's torn between escape (the Rail could carry her east) and duty (someone must hold the town honest). She isn't testing suitors for wealth — she's testing whether they're honest about *what they are.*
+- **Background:** raised to be married well; educated past what that life needs; quietly furious about it.
+- **Wants:** a real choice; a partner, not a match; to redeem the family's founding sin by living honestly on the land. **Fears:** becoming her father — all optimism, no truth; marrying into cruelty; inheriting the rot.
+- **Voice:** bright surface, sharp underneath; asks the question no one else will. Signature: *"Everyone tells me what the town could be. You're the first who's told me what it is."*
+- **Ties:** loves and is exasperated by Cyrus; quietly close to Sister Ruth (the mother-figure her station denies her); wary of the suitors money attracts; drawn to Old Nan's honesty and forbidden to visit.
+- **Reaction to the player — THE MORAL MIRROR:** *kind* → genuine warmth; the marriage/heir line opens honestly (D-007). *Cruel* → she sees it clearest of anyone, and her quiet disappointment is the game's plainest human verdict; the match sours even if you're rich. This makes marrying Bess a **moral** achievement, not a wealth one — and the heir she'd give you carries the land's inherited Reckoning (D-027).
+- **Arc seed (→#13):** Bess's choice — stay and hold the town honest, or take the Rail east.
+
+### 7. Old Nan — folk-magic, Reckoning intel; the counter-doctrine (D-030)
+- **Public:** the witch at the town's edge; feared, consulted in secret, keeper of the old rites the Church calls heresy.
+- **Private truth:** she is the last living link to the Salting — **one of the children turned out to die who did not quite die,** found in the spring not-quite-returned and not-quite-alive, and never wholly one thing since. She knows the Marrow better than anyone breathing and has kept the *real* vigil, quietly, for decades. She is tired, and looking for someone to carry it.
+- **Background:** older than the town's respectable memory; outlived everyone who could confirm what she is.
+- **Wants:** for someone to finally understand the land honestly; rest; to see the Church's fearful lie end before she goes. **Fears:** dying with the truth un-passed; the Old Well opening; being proven right too late.
+- **Voice:** fragments and indirection; speaks of the land as a person — *she remembers, she's hungry;* never a straight answer, always a true one. Signature: *"You asked after rain. I'll tell you instead what's under your east field, since that's what's asking after you."*
+- **Ties:** the town fears her; Silas secretly pays her; Grange is her rival and secret kindred; she watches Meredith Vane with recognition (she can half-read a vessel); she holds careless Ambrose in cold contempt.
+- **Reaction to the player:** *kind, land-respecting* → she opens, becomes the truest guide to the Reckoning (§6 reads, folk-cleansing). *Cruel* → no moralizing; a plain warning, then withdrawal — she's seen it all before. *High Reckoning* → the only one who can still help, and her help costs — *she notes what you did* (§1).
+- **Arc seed (→#13, and the Old Well, Year 7).**
+
+### 8. Sheriff Nathaniel Coldwater — the law, cruelty investigations (§5)
+- **Public:** the law in Marrow's Cross; hard, upright, hunts cruelty; feared and respected in equal measure.
+- **Private truth:** his zeal is not justice — it's **penance.** He did something terrible once, in a life before the badge, and rebuilt himself as the man who won't let cruelty pass. He's rigid because he doesn't trust his own mercy; he hunts cruelty in others because he cannot forgive it in himself.
+- **Background:** came west to be a different man than the one he left behind; tells no one which.
+- **Wants:** to be the just man he decided to become; to catch what he once failed to stop; order. **Fears:** his own capacity for what he punishes; that justice is only cruelty with a badge; the day the Marrow makes law meaningless.
+- **Voice:** clipped, plain, no euphemism (the opposite of Silas) — moral certainty stretched over a buried wound. Signature: *"I don't much care what a man believes. I care what I find in his west field."*
+- **Ties:** wary respect with Grange (two men keeping order two ways); friction with Halloway (business wants him blind); relies on and mistrusts Bell's rumors; tolerates Meredith's Black Market for the information it buys him; would jail Ambrose if he could ever prove a thing.
+- **Reaction to the player:** *kind* → an ally and a bulwark. *Cruel* → the primary human enforcer — investigations, fines, raids, escalating with exposure (§5). *High Reckoning* → even he can't arrest the land; watching order mean nothing against the Marrow unmoors him.
+- **Arc seed (→#13):** the thing he did, and whether the player learns it — and what they do with it.
+
+### 9. Dr. Ambrose Vane — clone merchant, brother of Meredith
+- **Public:** the affable, cultured vessel-merchant; the wagon that brings clones (§3); a lapsed Millwright playing frontier Gardener (§1.4). Meredith's brother.
+- **Private truth (the other half of D-014):** depending on the campaign's truth — he hides *what Meredith really is;* he fled Corvantine over *something* (a mill atrocity, Orrell's death); or he's *being hunted.* The constant: he loves his sister and is terrified — of her, for her, or of what he did to her. He performs cultured ease over guilt, and he genuinely believes vessels can be raised *well* — which makes him either the kindest clone-source in the game or its most seductive corruptor, depending entirely on how the player uses him.
+- **Background:** Corvantine polish, Orrell's lineage of students, a reason to be somewhere with thin law and quick ground.
+- **Wants:** absolution through doing the trade *right;* to keep Meredith; to not be what the Church says he is. **Fears:** the past; losing his sister; that the Church is right and he's spent his life damning people.
+- **Voice:** warm, persuasive, eastern polish out of place in the Sull; makes the monstrous sound reasonable and kind. Signature: *"Cruelty's not in the growing, friend. It's in the *raising.* Let me show you how it's done properly."*
+- **Ties:** the Vane fault line with Meredith; old-trade wariness with Bell; Grange's standing reproach; Coldwater's patient watch; Old Nan's contempt.
+- **Reaction to the player:** sells to anyone. *Kind* → a genuine mentor in raising vessels well (better clones, §3). *Cruel* → still sells, but the charm curdles into quiet complicity; his prices and stock react to reputation (§3). Like Meredith, his depths gate on the Vane arc, not the ledger.
+- **Arc seed (→#14):** the Vane mystery proper.
+
+### 10. Sister Ruth Grange — charity, foundlings; the preacher's wife
+- **Public:** the preacher's gentle wife; runs the town's charity; takes in foundlings, clone and human alike (§3). The town's mercy made visible.
+- **Private truth:** Ruth *lives* the mercy Elias only preaches — and quietly shelters vessels the hardline Church would condemn, baptizing foundling clones in secret and running a small underground for the mistreated (a husk smuggled off a cruel farm, a foundling passed hand to hand). Her faith is simpler and truer than her husband's: she doesn't need the doctrine settled, she just won't let a living thing suffer. She carries the marriage's real spiritual weight while he agonizes over the theory.
+- **Background:** married Elias young and followed his calling west; found her own, larger, on arrival.
+- **Wants:** to shelter the vulnerable; for Elias to find peace; to be believed that mercy needs no doctrine. **Fears:** the day mercy isn't enough; Elias breaking; the Church learning what she hides.
+- **Voice:** plain, warm, unshakeable — the least performative voice in town; speaks of people, never of doctrine. Signature: *"Elias worries whether it has a soul. I've fed it, and it was hungry. That was answer enough for me."*
+- **Ties:** the strained, loving marriage with Elias (his conscience and his rest); a mother's bond with Bess; a quiet understanding with Old Nan (two underestimated women doing the real work); the source of foundling clones and winter charity — a lifeline for a struggling player (§3/§4).
+- **Reaction to the player:** *kind* → a steady ally; foundlings and winter relief. *Cruel* → she does not condemn, she **intervenes** — she may *take a mistreated clone from you* (a real narrative/mechanical consequence), and her quiet disappointment is total. She's the one who'd shelter your victims. *High Reckoning* → keeps saving the innocent even as the land turns; the last mercy standing.
+- **Arc seed (→#13):** the underground, and what happens when the Church — or a cruel player — finds it.
+
+---
+
+### Cross-cast tensions (the web at a glance)
+- **The Vane fault line** (Meredith ↔ Ambrose) — the campaign's central mystery (#14).
+- **The doctrine triangle** (Grange ↔ Old Nan ↔ Ruth) — three answers to the same question: Grange preaches vigilance and doubts it, Nan knows the truer answer, Ruth acts without needing one.
+- **The power seam** (Halloway ↔ Silas) — mutual need and mutual contempt; the town's money and its ambition, both built on ground they fear.
+- **The order pair** (Coldwater ↔ Grange) — law and faith keeping the same town two ways, each fearing the other's excess.
+- **The two hubs** (Meredith ↔ Doc Bell) — the saloon and the surgery, where the town's secrets pool.
+- **The founding shadow** — Halloway (heir of the strong), Old Nan (survivor of the turned-out), and the Salting they both remember and never name.
+
+*Full quest arcs (3–5 per NPC, branching on the ledger) → issue #13. Complete dialogue sets at Cold/Neutral/Warm/Bonded → the voice guide, issue #5. The Vane biographies and the three truths → issue #14.*
 
 ### Part 3 — The Vane Family
 
