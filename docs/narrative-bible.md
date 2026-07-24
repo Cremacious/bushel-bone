@@ -1,6 +1,6 @@
 # Bushel & Bone — Narrative & World Bible
 
-**Status: IN PROGRESS.** Part 1 — The World (#3), Part 2 — The Cast interiority (#4), Part 3 — The Vane Family / three-truth mystery (#14), and Part 3B — NPC Quest Arcs (#13) are written. The voice guide (#5) is written as [`docs/style-guide.md`](style-guide.md). Remaining: Season Arcs Years 5–10 (#15) and sample event cards (part of #16).
+**Status: IN PROGRESS.** Part 1 — The World (#3), Part 2 — The Cast interiority (#4), Part 3 — The Vane Family / three-truth mystery (#14), Part 3B — NPC Quest Arcs (#13), and Part 4 — Season Arcs Years 5–10 (#15) are written. The voice guide (#5) is written as [`docs/style-guide.md`](style-guide.md). The narrative bible is now substantially complete; the last narrative-adjacent piece is the event-card library (#16), which is a content build atop the schema (#12).
 
 This bible fleshes out the story, the world, the NPCs, and the tone of Bushel & Bone in the depth required to actually write dialogue, event cards, and quest arcs without holes.
 
@@ -400,26 +400,69 @@ Whichever truth is live, uncovering it opens a **kind branch** (help/free/shelte
 
 *Full beat-by-beat scripting and the card prose belong with the Season Arcs (#15) and the event library (#16); these outlines are the spine.*
 
-### Part 4 — The Season Arcs
+## PART 4 — THE SEASON ARCS  *(Years 5–10 written — issue #15)*
 
-Full outlines for Years 1–10, with:
-- **Setup beats.** What kicks the arc off.
-- **Middle beats.** Escalations, choices, decisions.
-- **Endings.** Multiple, gated by player choice and state.
-- **State reactivity.** How the arc changes if the player's Reckoning is high, if they've been cruel, if they've allied with Old Nan vs. Preacher Grange, etc.
-- **Permanent town impact.** What each arc's resolution changes about Marrow's Cross for all future runs.
+Each year carries one Season Arc on the §13 anatomy — **Setup** (Spring) → **Escalation** (Summer–Fall) → **Climax** (late Fall/Winter) — riding over the mortgage clock (§13) and branching on the ledger (Reckoning tier, cruelty, reputation) and the active Vane truth (Part 3). Every arc leaves a **permanent mark on Marrow's Cross** that persists across campaigns (D-015). Resolves Q-005.
 
-Working list (Year 1–4 sketched in GDD; expand and add 5–10):
-- Year 1: **The Newcomer**
-- Year 2: **The Preacher's Sickness**
-- Year 3: **The Rail Comes**
-- Year 4: **The Vigil Breaks** (Reckoning-triggered)
-- Year 5: *TBD — proposed: The Auction (a distant buyer arrives with a devil's bargain)*
-- Year 6: *TBD — proposed: The Foundling War (competing farmers claim stray clones)*
-- Year 7: *TBD — proposed: The Old Well Opens*
-- Year 8: *TBD — proposed: The Third Vane (if that truth is active in the seed)*
-- Year 9: *TBD*
-- Year 10: *TBD — proposed: A capstone that recalls beats from the whole lineage*
+**Years 1–4 (established).** Year 1 **The Newcomer** is fully specified in `docs/vertical-slice-year1.md` (#7); Years 2–4 are set in §13 — Year 2 **The Preacher's Sickness** (atonement services go dark; ties Grange's arc), Year 3 **The Rail Comes** (unlocks the Rail Depot §2; eastern connections open — the Cawdor Mill's road in), Year 4 **The Vigil Breaks** (Reckoning-gated; a high-Reckoning lineage faces a town-wide Walkers surge). Full outlines below are for Years 5–10.
+
+---
+
+### Year 5 — The Auction  *(escalates if Year 3's Rail came; ties Vane Truth A)*
+*A distant buyer arrives with a devil's bargain for the whole valley.*
+- **Setup (Spring):** a polished eastern agent — the **Cawdor Mill** (a vessel-mill syndicate) — arrives on the new Rail, buying up Sull land and offering the player a fortune to sell, or a fat standing contract to supply vessels/crops at industrial scale.
+- **Escalation (Summer–Fall):** neighbors sell and leave (Kettle Bottom empties); the offer sweetens; the cost surfaces — the Mill means to strip-farm the quick ground and grow vessels by the thousand on it.
+- **Climax (Winter):** **Sell** (a fortune; the valley hollows and industrializes — a lasting Reckoning/land wound) · **Refuse and rally the town** (hold the Sull, a reputation high-water mark, the Mill becomes a standing enemy) · **Play both sides** (profit while the town burns).
+- **Branches:** *Vane Truth A* → this is the Mill's move and **Meredith's arc climaxes here** (spy exposed/freed). *Cruel/high-Reckoning* → the Mill courts you as a kindred industrialist. *Kind/high-rep* → you lead the resistance.
+- **Hooks:** Rail Depot (§2), standing contracts (§7), reputation (§12). **Town impact:** the valley holds, hollows, or industrializes — permanent.
+
+### Year 6 — The Foundling War  *(labor-and-mercy crisis)*
+*A flood of stray vessels, and every farmer wants them.*
+- **Setup (Spring):** a distant vessel-mill collapses (or a Mill wagon overturns), loosing a glut of **foundling vessels** into the Sull — free labor. **Sister Ruth** wants to shelter them; cruel farmers want to seize them.
+- **Escalation (Summer–Fall):** a scramble hardens into a feud; the town splits (Ruth's mercy faction vs. the exploiters); **Coldwater** strains to keep the peace; both sides court the player.
+- **Climax (Winter):** **Lead the humane resolution** (homes for the vessels via Ruth's underground — rep, morale, Reckoning ease) · **Seize them as cheap labor** (a labor windfall, a divided town, Reckoning + real violence — the "war") · **Broker/exploit the conflict** for profit.
+- **Branches:** *Kind* → **Ruth's arc climaxes**; the town's mercy is cemented. *Cruel* → a labor boom over a poisoned town. *High-Reckoning* → some foundlings "wake wrong" — a horror beat.
+- **Hooks:** foundlings & labor (§3), morale (§3), reputation (§12). **Town impact:** Marrow's Cross becomes known as a haven for vessels — or a slaughterhouse.
+
+### Year 7 — The Old Well Opens  *(Reckoning-gated — the buried throat)*
+*The cap on the town's oldest wound fails.*
+- **Setup (Spring):** the iron-and-salt cap on the **Old Well** — the town's throat to the Marrow (§1.5) — begins to fail, worse the more Reckoning the lineage has laid down. **Old Nan's Long Watch** arc climaxes: she alone knows what the Well is.
+- **Escalation (Summer–Fall):** the Marrow's presence intensifies — Walkers, blight, the returning dead (§6); the Church panics; the seam is closest to the surface it has been since the Salting.
+- **Climax (Winter):** **Re-seal it** (a great communal rite — the player + Old Nan + Grange, costly; needs low-enough Reckoning or a true sacrifice) · **Descend into it** (seek the truth of the Marrow — revelation and danger; ties **Cassius**/Truth B if active) · **Leave it open** (embrace the reckoning — the land begins to reclaim the Sull).
+- **Branches:** heavily Reckoning-gated. *Low Reckoning* → a manageable mystery. *High Reckoning* → a catastrophe; **a cruel lineage may end here** (Reckoning Proper, land-loss, D-007). *If Old Nan died un-heired* (her arc) → no one knows how to re-seal it; the town is helpless.
+- **Hooks:** the Reckoning meter (§6), Old Nan & Grange rites, the Codex/meta (§14). **Town impact:** the Well sealed, descended, or open — a defining lineage mark.
+
+### Year 8 — The Reckoning of the Vanes  *(adapts to the active Vane truth, Part 3)*
+*The family's secret comes due.*
+- **If Truth A (Spy):** the Cawdor Mill's full move (if not spent in Year 5) — Meredith broken or freed; the player defends the valley or sells it out.
+- **If Truth B (Third Vane):** **Cassius arrives** — courteous and terrible — for the quick ground and the Old Well (ties Year 7). Confront and stop him, hand him to the law, or **ally with him** (mastery of vesselry for a free hand at the seam — a Faustian, town-endangering branch).
+- **If Truth C (Vessel):** the **Marrow's claim on Meredith surfaces** (Reckoning-linked) — the land reaches for its own. Ambrose's final choice; can she be kept, freed to be herself, or is she taken. The game's most personal reckoning.
+- **If the player never pursued the mystery:** a quieter substitute personal arc (a hard season, a town event) fires instead.
+- **Setup/Escalation/Climax** run per truth; each has kind (help/free) and cruel (exploit/expose/ally-the-threat) branches. **Town impact:** the Vanes' fate — freed, destroyed, fled; Cassius stopped or unleashed.
+
+### Year 9 — The Lineage Turns  *(generational — D-007 succession)*
+*The founder ages; the land must pass down.*
+- **Setup (Spring):** the founding farmer's mortality presses (age, or a Reckoning-linked threat). The question sharpens: **who is the heir, and what do they inherit** — a loved, quiet land or a haunted, mortgaged one?
+- **Escalation (Summer–Fall):** preparing the succession — the heir's readiness (ties **Bess**/marriage, D-007), the town's view of what the lineage has become, and the debts that pass with the land: the mortgage, and **25% of the Reckoning** (D-027), and the Ghost Roll's names.
+- **Climax (Winter):** **A dignified passing** (the lineage continues; the heir inherits land + partial debt) · **Line-death** (no heir → the run ends, D-007) · **The farmer clings on** (refusing to pass — a darker, lonelier note).
+- **Branches:** *Kind lineage* → a hopeful heir on a loved land. *Cruel/high-Reckoning* → the heir inherits a cursed land and a heavy debt, or the line simply dies. **Hooks:** lineage/heir (D-007), Reckoning inheritance (§6/D-027), the Codex (§14), Bess (Part 3B). **Town impact:** the lineage's name is cemented in the town's memory and the graveyard.
+
+### Year 10 — The Long Vigil  *(capstone — recalls the whole lineage)*
+*A decade's accounts, all come due at once.*
+- **Setup (Spring):** a culminating year framed around a great **Long Vigil** — the anniversary rite that either holds or breaks on the weight of everything the lineage has done.
+- **Escalation (Summer–Fall):** the accumulated consequences converge — the allies and enemies made (Mill, Cassius, the Church, Old Nan), the land's state (the Old Well, the quick ground), the debts owed (mortgage, Reckoning, the named dead).
+- **Climax (Winter):** the lineage's verdict, fully state-dependent — **the redeemed decade** (a town at peace, the land quiet, the lineage secure — the "I survived, and I did it clean" ending) · **the Salting repeated** (the land reclaims the Sull; the lineage ends as the founders nearly did) · **the many shades between.**
+- **Branches:** reflects the *entire* lineage history (kind/cruel, Reckoning, town relationships, the Vane fate). This is the meta-narrative payoff — the persistent **Codex** and the evolved **Marrow's Cross** (D-015) carry the verdict into every future campaign.
+- **Town impact:** the definitive mark — the graveyard's shape, the NPCs' memory, the Old Well's fate, whether the town is remembered as saved or damned.
+
+---
+
+### Beyond Year 10, and how the arcs branch
+- **Runs don't end at Year 10** (D-007 — they end on line-death or land-loss). Years 11+ **remix** these frameworks with the lineage's history and **Ascension** modifiers (§15): a new founder on old ground meets a Marrow's Cross already shaped by what came before (and 25% of the old Reckoning, D-027).
+- **Arc selection isn't rigidly by year.** The named arcs are the *default spine*; the actual arc a given year fires is chosen by state — a high-Reckoning lineage may hit **The Old Well Opens** early; a Truth-B lineage gets **Cassius**; a peaceful, low-rep outlaw farm gets a different mix. The years above are the canonical order for a "typical" lineage.
+- **The reckoning-endgame convergence** (Part 3B): Grange's dread, Bell's untreatable, Coldwater's unmooring, Nan's Long Watch, and Ruth's last stand all feed Years 7–10 for a cruel lineage — the town's cast enacting the land's collection.
+
+*(Beat-by-beat card scripting for each arc → the event library, #16.)*
 
 ### Part 5 — Sample Event Cards
 

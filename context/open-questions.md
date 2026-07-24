@@ -21,7 +21,10 @@ Every economic value has actual numbers (Mechanics Bible) and a first calibratio
 ### Q-004. NPC quest arcs — full outlines — ✅ RESOLVED (Session 3, issue #13)
 Written in `docs/narrative-bible.md` Part 3B: 3 arcs per NPC (Vanes' in Part 3), each with hook, beats, and branches by cruelty/reputation/Reckoning state, plus an arc-web showing how they cross. Card-level scripting slots into #15/#16.
 
-### Q-005. Season Arcs — Years 1 through 10
+### Q-005. Season Arcs — Years 1 through 10 — ✅ RESOLVED (Session 3, issue #15)
+Years 1–4 set (§13 + the Year-1 vertical slice); Years 5–10 written in `docs/narrative-bible.md` Part 4 (The Auction, The Foundling War, The Old Well Opens, The Reckoning of the Vanes, The Lineage Turns, The Long Vigil) — each with setup/escalation/climax, ledger + Vane-truth branching, mechanical hooks, and permanent town impact. Beat-level card scripting → #16.
+
+*(original note:)*
 GDD names Year 1 (The Newcomer), Year 2 (The Preacher's Sickness), Year 3 (The Rail Comes), Year 4 (The Vigil Breaks). Need full outlines for 5–10 additional years, plus branch logic for reacting to player state.
 **Owned by:** Narrative & World Bible.
 
