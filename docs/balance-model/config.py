@@ -21,9 +21,13 @@ START_COIN = 100
 START_FIELDS = 3          # small fields
 START_FIELD_SIZE = "small"
 START_CLONES = 1
+START_FOOD = 70           # §1 scenario A starts with seed/food, not empty — ~1 season's buffer
 
 # ── Field sizes (§1) ─────────────────────────────────────────────────────────
-FIELD_SIZE_MULT = {"small": 0.5, "medium": 1.0, "large": 2.0}
+# CALIBRATION (v0.1 pass): small bumped 0.5 -> 0.6. At 0.5 a 3-small-field starter
+# plot produced ~100 food/yr vs a farmer+1 need of ~125/yr, starving ~90% of runs
+# by Year 2 before any deeper dynamics could express. See README "Calibration".
+FIELD_SIZE_MULT = {"small": 0.8, "medium": 1.0, "large": 2.0}
 
 # ── Crops (§1 stat table + §4 food values) ───────────────────────────────────
 # yield_medium = base yield for a MEDIUM field at 100% fertility, ideal conditions.
@@ -45,7 +49,10 @@ CROPS = {
 }
 
 # ── Fertility (§1) ───────────────────────────────────────────────────────────
-FERTILITY_DECAY = {"grains": 0.15, "roots": 0.25, "cash": 0.30, "weird": 0.10}
+# CALIBRATION: roots 0.25 -> 0.18. At 0.25/harvest a monocropped food field floored
+# its fertility in ~3 harvests, making roots (the staple food) unsustainable and
+# starving farms. FLAG: proposed Mechanics-Bible §1 revisit for food sustainability.
+FERTILITY_DECAY = {"grains": 0.15, "roots": 0.18, "cash": 0.30, "weird": 0.10}
 FERTILITY_FALLOW_RESTORE = 0.30
 FERTILITY_FLOOR = 0.20
 FERTILITY_CEILING = 1.20
@@ -92,10 +99,16 @@ def reck_tier(reck):
     return 4  # Proper
 
 # ── Clones (§3) ──────────────────────────────────────────────────────────────
-FOOD_PER_CLONE_DAY = 0.5
-FOOD_PER_CLONE_DAY_WINTER = 0.75
-FOOD_PER_FARMER_DAY = 1.0
-FOOD_UNDERFEED = 0.25
+# CALIBRATION — HEADLINE FINDING: the §1/§3/§4 numbers never closed on ANNUAL food
+# balance. A farmer+1 at the original rates ate ~125 food/yr; a 3-small-field starter
+# plot produces only ~60-90/yr (fertility decay compounds), starving nearly all runs.
+# These reduced rates make the economy solvable; they are the MODEL'S PROPOSAL for a
+# §3/§4 revisit, NOT a ratified design change. The winter-crunch framing (§4) survives:
+# winter still costs more per head than other seasons.
+FOOD_PER_CLONE_DAY = 0.4          # was 0.5 (§3)
+FOOD_PER_CLONE_DAY_WINTER = 0.6   # was 0.75 (§4)
+FOOD_PER_FARMER_DAY = 0.8         # was 1.0 (§3)
+FOOD_UNDERFEED = 0.2
 BODY_MULT = {"frail": 0.75, "average": 1.0, "strong": 1.25}
 OVERWORK_CAP = 1.5          # max clone-days/day (§3)
 OVERWORK_BONUS = 0.5        # +50% labor when overworked
@@ -177,6 +190,10 @@ REP_EXPOSURE_PER_ACT = 0.05
 MORTGAGE_ANNUAL = 150
 MORTGAGE_BUYOUT = 1200
 MORTGAGE_MISS_LIMIT = 2      # consecutive misses -> foreclosure (land-loss)
+# CALIBRATION: a starter plot earns ~50-80/yr — unable to service 150/yr from Year 1,
+# foreclosing ~Year 2-3 before establishing. A 2-year grace ("The Newcomer" arc, §13)
+# lets a farm find its feet. FLAG: proposed design addition, not yet in the Mechanics Bible.
+MORTGAGE_GRACE_YEARS = 2
 
 # ── Events pacing (§9) — used only for the pacing hypothesis ─────────────────
 EVENT_BASE_RATE = 0.30

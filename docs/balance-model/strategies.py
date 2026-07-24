@@ -34,7 +34,7 @@ class BaseStrategy:
         return max(C.START_FIELDS, self.target_clones * C.FIELDS_PER_WORKER)
 
     def clear_fields(self, farm):
-        if len(farm.fields) < self.desired_fields() and farm.coin > 150:
+        if len(farm.fields) < self.desired_fields() and farm.coin > 100:
             return 1
         return 0
 
@@ -44,7 +44,12 @@ class BaseStrategy:
     def plant(self, farm, free_fields):
         picks = []
         for i, fl in enumerate(free_fields):
-            picks.append(self._pick(farm, fl, i))
+            # rest an exhausted field so fertility recovers (§1) — but never a
+            # taint-bearing field a cruel strategy wants for bone-root.
+            if fl.fertility < 0.55 and fl.taint < 0.21:   # rest earlier, before collapse
+                picks.append("fallow")
+            else:
+                picks.append(self._pick(farm, fl, i))
         return picks
 
     def _pick(self, farm, fl, i):
@@ -100,14 +105,18 @@ class Subsistence(BaseStrategy):
     name = "subsistence"
     target_clones = 1
     fuel_mode = "wood"
+    FOOD_ROTATION = ["potato", "corn", "potato", "turnip"]   # high food-value crops
+
+    def desired_fields(self):
+        return 5     # room to rotate/fallow while still feeding a small household
 
     def buy_clone(self, farm):
         return len(farm.alive_clones) < 2 and farm.coin > 260
 
     def sell(self, farm, crop, units):
-        # hold more food back; sell only a small surplus
+        # never sell food while subsisting — only offload a genuine surplus
         if C.CROPS[crop]["food"] > 0:
-            return 0.35, "local"
+            return (0.5, "local") if units > 25 else (0.0, "local")
         return 1.0, "regional"
 
 

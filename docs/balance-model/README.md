@@ -69,6 +69,34 @@ The model is "done" when it can, across all strategies and Ascension +0…+10:
 5. Produce an HTML/chart report: survival curves, coin distributions, Reckoning trajectories, cause-of-death histograms.
 6. Run 1000 runs/strategy/Ascension in under 60s.
 
+## Calibration log — v0.1 first pass (6 rounds)
+
+The first real run starved ~90% of all runs by Year 2, masking every deeper hypothesis. Six calibration rounds stabilized the economy. **The config changes below are the model's *proposals*, heavily flagged in `config.py` — they are NOT ratified Mechanics-Bible edits.** They exist so runs survive long enough to test the deeper dynamics; the real design decisions are the user's.
+
+| Round | Change | Effect |
+|---|---|---|
+| 1 | Fix replant-gap (fields idled a season post-harvest); `START_FOOD` 0→70; small field 0.5→0.8 | starvation ↓, exposed the mortgage as next wall |
+| 2 | Mortgage **2-year grace** (new; "The Newcomer"); bots expand sooner | foreclosure ↓ |
+| 3 | Roots fertility decay 0.25→0.18 | farms reach ~Year 3–4 |
+| 4 | Bots fallow exhausted fields; proper fallow-restore (§1 +30%/season) | fertility sustainable |
+| 5 | Subsistence bot hoards food + plants high-food crops (was *selling food while starving*) | bot-bug fix |
+| 6 | **Consumption cut** (clone 0.5→0.4, winter 0.75→0.6, farmer 1.0→0.8); fallow earlier (<0.55); subsistence expands to 5 fields | farms establish; runs testable |
+
+### Headline findings (for the design pass)
+
+1. **The food economy never closed on ANNUAL balance.** §1/§3/§4 specify winter stockpile numbers but were never checked against year-round production: a farmer+1 ate ~125 food/yr while a 3-small-field starter plot yields ~60–90/yr (fertility decay compounds). Closing it needed a ~20–40% consumption cut *or* equivalent yield/plot increase. **This is the single most important thing to resolve** — and it's squarely inside the still-open Q-003 (full numerical balance). Decision needed: lower consumption, raise yields, or enlarge the starter plot?
+2. **The mortgage (150/yr) is unpayable in the establishment years** — a grace period (or lower early rate) is effectively required. Proposed as a §13 addition.
+3. **H-02 confirmed as a real gap:** bone-root's raw per-field margin is ~15.7× wheat, far past the 1.5–2× target. In-sim, the bone-root bot is the top earner (~900 coin). Lower `bone_root` price/yield, or restate the target as risk-adjusted.
+4. **H-01 self-termination is slower than claimed:** cruel bone-root runs reach Reckoning Proper only ~15% of the time and not by Year 3 — partly because the v0.1 bot stops killing once its field is tainted (a competent cruel operation keeps killing). The claim's "by Year 3" timeline and/or the accrual rate need revisiting alongside a sustained-cruelty bot.
+5. **H-32 peaks at n=1:** additional clones don't pay for their food in the current numbers, so labor isn't the binding mid-game constraint the design intends (**tension with D-024**). The curve peaks-and-declines (claim satisfied) but the *location* of the peak flags that clone value / labor demand needs strengthening.
+6. **H-09 tension:** the Round-6 consumption cut removed the intended *Year-1 scarcity* (now all clone counts survive Year 1). "Tight Year-1" (H-09) and "survivable runs" (H-01/H-32) pull in opposite directions — the right answer is a middle point this pass hasn't yet converged on.
+
+### Verdicts after calibration (40 seeds each)
+
+`CONFIRMED`: H-03, H-16, H-32 · `INVARIANT`: H-12 · `PARTIAL`: H-05, H-09, H-29 · `REFUTED`: H-01, H-02 · `NOT MODELED`: 31.
+
+*(Re-run `python run.py` to reproduce; `compare` for the strategy table.)*
+
 ## Deferred to code
 
 This is a validation tool, not the game engine. Its output is *decisions about numbers*, not files that ship. When the real game is scaffolded, the tuned formulas in `config.py` port into the TypeScript game logic (the balance model stays Python, per the tech-stack decision).

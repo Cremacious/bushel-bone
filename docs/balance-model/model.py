@@ -106,6 +106,7 @@ def new_farm(seed):
     f = Farm(seed=seed, rng=rng)
     f.fields = [Field(size=C.START_FIELD_SIZE) for _ in range(C.START_FIELDS)]
     f.clones = [Clone(name=f"Clone-{i+1}") for i in range(C.START_CLONES)]
+    f.storage["_bought_food"] = float(C.START_FOOD)   # starting larder (§1 scenario A)
     return f
 
 
@@ -252,12 +253,6 @@ def _grow_and_harvest(farm, strat):
         fl.fertility = max(C.FERTILITY_FLOOR, fl.fertility - C.FERTILITY_DECAY[d["family"]])
         fl.crop = None
         fl.progress = 0.0
-
-    # fallow restore + taint decay for empty fields
-    for fl in farm.fields:
-        if fl.crop is None:
-            fl.fertility = min(C.FERTILITY_CEILING, fl.fertility + C.FERTILITY_FALLOW_RESTORE / 4)
-            fl.taint = max(0.0, fl.taint - 0.05)
 
 
 def _sell(farm, strat):
@@ -455,6 +450,8 @@ def _reputation_upkeep(farm):
 
 
 def _year_end_mortgage(farm):
+    if farm.year <= C.MORTGAGE_GRACE_YEARS:   # establishment grace (§13 "The Newcomer")
+        return
     if farm.coin >= C.MORTGAGE_ANNUAL:
         farm.coin -= C.MORTGAGE_ANNUAL
         farm.mortgage_misses = 0
@@ -492,6 +489,13 @@ def step_season(farm, strat):
     _cruelty(farm, strat)
     cruelty_this_season = strat.cruelty_sacrifices(farm) > 0 or (farm.clones_died > cruel_before[0])
     _grow_and_harvest(farm, strat)
+    if not farm.is_winter:
+        _plant(farm, strat)     # fidelity fix: replant fields freed by this season's harvest
+    # fallow restore for fields left genuinely empty this season (§1: full-season fallow +30%)
+    for fl in farm.fields:
+        if fl.crop is None:
+            fl.fertility = min(C.FERTILITY_CEILING, fl.fertility + C.FERTILITY_FALLOW_RESTORE)
+            fl.taint = max(0.0, fl.taint - 0.05)
     # Fall: chop/provision fuel for the coming winter
     if farm.season == "Fall":
         strat.provision_winter(farm)
