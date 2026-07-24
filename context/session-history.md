@@ -21,9 +21,11 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 **Issue #4 — NPC interiority (DONE):** Wrote `docs/narrative-bible.md` Part 2 — all 10 canon NPCs profiled with real interiority (Public / Private truth / Background / Wants+Fears / Voice + signature line / Ties / reaction gradient / arc seed), each grounded in the Marrow/Salting/doctrine and carrying a genuine wound. Kept the Vane D-014 mystery live (all three truths). Added a cross-cast tension web. Full quest arcs deferred to #13, Vane biographies to #14, dialogue sets to #5.
 
-**Artifacts changed:** `docs/narrative-bible.md` (Parts 1 & 2 written), `context/decisions-log.md` (D-029–D-031), `context/open-questions.md` (Q-007/Q-008 resolved), this file. GitHub issues #1–#17 created; **#3 and #4 closed (2/17).**
+**Issue #5 — Voice & style guide (DONE):** Wrote `docs/style-guide.md` — register, do/don't, world diction vs. forbidden words, rhythm, five prose principles, 10 NPC voice tics, the event-card grammar, five reference cards (quiet dread / opportunity / town / reckoning / moral), a four-tier dialogue example. Fulfills Narrative Bible Part 6; **blocks #16 cleared.**
 
-**Next up (per recommended order):** the Phase-1 decisions still owned by the user — **#1 (MVP scope)** and **#2 (calibration levers: food economy / mortgage / bone-root price)**. On the narrative track (all solo-doable now): **#5 (prose voice)**, then **#13 (NPC quest arcs, unblocked by #4)** and **#14 (Vane mystery)**.
+**Artifacts changed:** `docs/narrative-bible.md` (Parts 1, 2 & 6-pointer), `docs/style-guide.md` (NEW), `context/decisions-log.md` (D-029–D-031), `context/open-questions.md` (Q-007/Q-008 resolved), this file. GitHub issues #1–#17 created; **#3, #4, #5 closed (3/17).**
+
+**Next up (per recommended order):** the two Phase-1 decisions still owned by the user — **#1 (MVP scope)** and **#2 (calibration levers: food economy / mortgage / bone-root price)** — which unblock the vertical slice (#7) and finalize the numbers. Narrative track (all solo-doable): **#13 (NPC quest arcs, unblocked by #4)**, **#14 (Vane mystery)**, **#15 (Season arcs 5–10)**. Validation track: **#6 (exploit bots)** depends on #2.
 
 ---
 
