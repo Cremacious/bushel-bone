@@ -1,0 +1,260 @@
+# Weather events (§10). Daily weather is a background state; these are the dramatic
+# cards drawn by the §9 engine. Forecast majors let the player emergency-harvest (−20%,
+# §1) or gamble on the front missing. Winter crises are fuel/food-gated.
+
+- id: soft-rain
+  title: "A Soft Rain"
+  family: weather
+  severity: minor
+  illustration: "rain coming grey across the sedge-flats, the fields darkening as it lands"
+  setup: >
+    Rain came in the night, soft and steady, the kind the old-timers call a growing rain.
+    By morning the furrows are dark with it and the young shoots stand a little taller.
+  conditions:
+    - season: [Spring, Summer]
+  choices:
+    - id: glad-of-it
+      text: "Be glad of it."
+      result: "The crops take the water well. It is a small mercy, and you have learned to count them."
+      effects:
+        - flag: { set: growth-boost-week, to: true }
+
+- id: fair-days
+  title: "Fair Days"
+  family: weather
+  severity: flavor
+  illustration: "a high clean sky over the homestead, wash on the line, the diorama bright"
+  setup: >
+    A stretch of fair weather settles over the Sull — dry mornings, warm afternoons, the
+    kind of days that make a man forget, for a while, what the ground is.
+  on_ignore: dismiss
+
+- id: the-hot-wind
+  title: "The Hot Wind"
+  family: weather
+  severity: minor
+  illustration: "heat shimmer over the fields, a clone straightening at the row's end, hand to the small of the back"
+  setup: >
+    A hot wind comes up out of the south and does not let up. The crops wilt by noon and
+    stand back up by dusk, a little less each day, and the hands tire faster in it.
+  conditions:
+    - season: Summer
+  choices:
+    - id: press-on
+      text: "Work the cool of the morning; rest the worst of it."
+      result: "You lose an hour at midday and keep your hands sound. The crop holds."
+      effects:
+        - morale: { target: household, amount: +1 }
+    - id: work-through
+      text: "There's no time. Work straight through."
+      result: "You bring the day's work in whole, and pay for it in tired, sullen hands."
+      effects:
+        - morale: { target: household, amount: -4 }
+
+- id: no-rain-yet
+  title: "No Rain Yet"
+  family: weather
+  severity: minor
+  illustration: "cracked ground at a field's edge, a dry well-rope, a hard blue sky"
+  setup: >
+    It has not rained in three weeks and the paper says none is coming. The ground goes
+    to dust at the edges. A well would ease it, if you had dug one.
+  conditions:
+    - season: Summer
+  choices:
+    - id: draw-water
+      text: "Haul water to the worst field."
+      cost: { labor: 1.0 }
+      result: "A day of hauling keeps one field green. The others must fend for themselves."
+    - id: wait-it-out
+      text: "Wait for the sky to turn."
+      result: "You wait. The dry holds, and the crop pays for the waiting."
+      effects:
+        - flag: { set: drought-stress, to: true }
+
+- id: hail-to-the-north
+  title: "Hail to the North"
+  family: weather
+  severity: major
+  illustration: "a bruised anvil of cloud building on the horizon, a ripe field white beneath it"
+  setup: >
+    The paper puts a hailstorm two days north, and the cloud on the horizon agrees with it.
+    Your best field stands ripe. Bring it in rushed and you'll save most of it; trust the
+    front to miss and you keep the full weight — if it misses.
+  conditions:
+    - season: [Summer, Fall]
+  on_ignore: worst
+  choices:
+    - id: emergency-harvest
+      text: "Bring it in now, rushed."
+      cost: { labor: 1.5 }
+      result: "You strip the field in a day, clumsy and fast, and lose a fifth of it to the hurry — but it's in the barn, and the sky can do what it likes."
+      effects:
+        - flag: { set: rushed-harvest, to: true }
+    - id: gamble
+      text: "Trust the front to miss."
+      outcomes:
+        - odds: even
+          result: "The storm slides east and misses you clean. You bring the full weight in, and say nothing to anyone about the night you didn't sleep."
+        - odds: even
+          result: "The hail comes in the afternoon and takes half the field in twenty minutes. You stand at the window and watch it happen."
+          effects:
+            - crop: { field: this, blight: true }
+
+- id: killing-frost
+  title: "The Killing Frost"
+  family: weather
+  severity: major
+  illustration: "frost furred white on a green cotton leaf at first light"
+  setup: >
+    A cold clear night, and frost by morning where there should be none. The warm-season
+    crops will not survive another. Whatever is ripe enough to pull, pull today.
+  conditions:
+    - season: Fall
+  on_ignore: worst
+  choices:
+    - id: pull-what-you-can
+      text: "Pull everything that will come."
+      cost: { labor: 1.0 }
+      result: "You save what has weight to it and leave the green to the cold. It's not the harvest you wanted. It's the one you've got."
+    - id: hope-it-holds
+      text: "One more day of ripening won't hurt."
+      result: "It hurts. The next morning the warm crops are black and slack on the stalk. You will not make that trade again."
+      effects:
+        - crop: { field: this, blight: true }
+
+- id: the-river-comes-up
+  title: "The River Comes Up"
+  family: weather
+  severity: major
+  illustration: "brown water over a low field, a fence-line half drowned, silt on the grass"
+  setup: >
+    A wet spring, and the river comes up over the low ground. Flood is a thief and a
+    gift both — it drowns what it takes and leaves rich silt where it recedes.
+  conditions:
+    - season: Spring
+  choices:
+    - id: let-it-lie
+      text: "Let it lie, and take the silt."
+      result: "You lose the low field this season, but when the water goes it leaves the ground fat and dark. It will grow anything next year."
+      effects:
+        - taint: { field: this, amount: -0.05 }
+        - flag: { set: field-enriched, to: true }
+    - id: dike-it
+      text: "Throw up a dike and save the crop."
+      cost: { labor: 1.0 }
+      result: "A day of wet, backbreaking work turns the water. The crop stands. Your hands smell of river for a week."
+
+- id: red-rain
+  title: "Red Rain"
+  family: weather
+  severity: minor
+  illustration: "rainwater standing in a furrow, faintly rust-red, a clone crouched looking at it"
+  setup: >
+    The rain that fell last night stands red in the low furrows this morning. Doc Bell
+    would say it's iron in the ground, washed up from the deep clay. Old Nan would say
+    something else. Nobody has asked either of them yet.
+  conditions:
+    - reckoning_tier: { min: warnings }
+  on_ignore: dismiss
+  choices:
+    - id: iron-in-the-ground
+      text: "It's iron in the ground. Work the day."
+      result: "You tell yourself it's iron. The clones step around the red furrows and do not say why."
+      effects:
+        - morale: { target: household, amount: -1 }
+
+- id: the-still-day
+  title: "The Still Day"
+  family: weather
+  severity: flavor
+  illustration: "flat grey light, no wind, the wash hanging dead-straight on the line, a crow not moving"
+  setup: >
+    There is no wind. Not a breath of it, all day — the wash hangs straight, the crows sit
+    the fence and do not call, and the whole Sull holds its breath over something you cannot see.
+  conditions:
+    - reckoning_tier: { min: warnings }
+  on_ignore: dismiss
+
+- id: the-long-dry
+  title: "The Long Dry"
+  family: weather
+  severity: major
+  illustration: "a whole field gone pale and brittle, dust rising where a boot falls"
+  setup: >
+    The dry has held three weeks and shows no sign of breaking. The crop is failing in the
+    field. A man with a well weathers this; a man without chooses which field lives.
+  conditions:
+    - season: Summer
+    - not: { has_building: well }
+  on_ignore: worst
+  choices:
+    - id: save-the-best
+      text: "Water the best field. Let the rest go."
+      cost: { labor: 1.0 }
+      result: "You save one field and watch the others burn brown. It is the arithmetic of a dry year, and you do it with your jaw set."
+    - id: pray-for-rain
+      text: "Pray for rain and plant your feet."
+      outcomes:
+        - odds: unlikely
+          result: "The rain comes on the fourth day. You will call it deliverance for the rest of your life."
+        - odds: likely
+          result: "The rain does not come. You lose the season's crop to the sky, and learn why the old-timers dig their wells first."
+          effects:
+            - crop: { field: this, blight: true }
+
+- id: the-deep-cold
+  title: "The Deep Cold"
+  family: weather
+  severity: crisis
+  illustration: "frost thick on the inside of a window, breath smoking in a dark bunkhouse"
+  setup: >
+    The cold comes down hard in the night and does not lift. The bunkhouse fire eats fuel
+    twice as fast, and the pile is lower than you'd like. This is the kind of cold that takes
+    the weak ones first.
+  crisis_gate:
+    - season: Winter
+    - fuel: { max: 20 }
+  on_ignore: worst
+  choices:
+    - id: burn-it-all
+      text: "Burn everything that burns."
+      result: "You feed the fire fence-rails and a broken cart and get the household through the worst of it. Come spring you'll rebuild what you burned."
+      effects:
+        - fuel: { amount: -10 }
+        - morale: { target: household, amount: -4 }
+    - id: buy-coal
+      text: "Ride for coal, whatever it costs."
+      requires:
+        - coin: { min: 30 }
+      cost: { coin: 30 }
+      result: "You come back through the dark with a sack of coal and the cold behind you. It cost too much. It always does, when you buy it late."
+      effects:
+        - fuel: { amount: +18 }
+    - id: ride-it-out
+      text: "Bank the fire low and pray for dawn."
+      result: "The fire gutters. In the morning the frailest of the hands does not wake. You bury them in ground too hard to take them."
+      effects:
+        - clone: { kill: weakest, disposal: marked }
+
+- id: white-out
+  title: "White Out"
+  family: weather
+  severity: crisis
+  illustration: "the homestead nearly lost in driving snow, the barn a grey smudge fifty feet off"
+  setup: >
+    The blizzard comes in sideways and shuts the world down to arm's reach. No stock can be
+    tended, no road ridden, no help fetched. You wait it out, and you count heads when it's done.
+  crisis_gate:
+    - season: Winter
+  on_ignore: worst
+  choices:
+    - id: rope-the-yard
+      text: "Rope a line to the barn and keep the stock alive."
+      cost: { labor: 1.0 }
+      result: "You string a rope from door to barn and haul feed along it blind. The stock lives. You lose the feeling in two fingers for a week."
+    - id: shut-the-doors
+      text: "Bar the doors and let the storm have the yard."
+      result: "You keep the household warm and lose what's outside it. When the snow clears there is less standing than there was."
+      effects:
+        - food: { amount: -8 }

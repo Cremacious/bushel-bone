@@ -1,0 +1,349 @@
+# Reckoning events (§6). Gated by reckoning_tier. Whispers ship to EVERY run (ambient
+# dread, no penalty). Warnings+ require the player to have accrued a debt. The prose shows
+# the land as omen and never names a number. Atonement cards let a player pay the debt down.
+
+# ── WHISPERS (0–24): ambient, all runs, flavor only ─────────────────────────
+- id: the-crows
+  title: "The Crows"
+  family: reckoning
+  severity: flavor
+  illustration: "a line of crows on the fence-rail, more than there ought to be, all facing the house"
+  setup: >
+    There are more crows on the fence this morning than yesterday, and more yesterday than
+    the day before. They do not caw. They sit, and they face the house, and when you go out
+    they do not startle the way birds should.
+  on_ignore: dismiss
+
+- id: cold-spot-in-the-barn
+  title: "The Cold Spot"
+  family: reckoning
+  severity: flavor
+  illustration: "a clone paused in the barn aisle, breath faintly smoking though the day is mild"
+  setup: >
+    There is a place in the barn, by the third stall, where the air stays cold when the rest
+    is warm. The stock will not stand in it. You have started walking around it yourself,
+    without deciding to.
+  on_ignore: dismiss
+
+- id: poor-sleep
+  title: "Poor Sleep"
+  family: reckoning
+  severity: flavor
+  illustration: "a lamp lit late in the bunkhouse window, a figure sitting up on the edge of a cot"
+  setup: >
+    Nobody in the house is sleeping well. Not the hands, not you. The dreams are of nothing
+    you can name by morning — only that they were of the ground, and that the ground was patient.
+  on_ignore: dismiss
+
+# ── WARNINGS (25–54): omens with teeth; require a debt ──────────────────────
+- id: sour-milk
+  title: "Sour"
+  family: reckoning
+  severity: minor
+  illustration: "a scalded tin pail, the milk in it turned grey; a crow on the rail behind"
+  setup: >
+    The morning milk came out of the pail already turned, though the cow is sound and the
+    pail was scalded clean. Josephine won't say it. She only sets it down by the east field,
+    where the ground stays warm through the frost, and goes back to her work.
+  conditions:
+    - reckoning_tier: { min: warnings }
+    - ghost_roll: { min: 1 }
+  recency_suppress: 12
+  on_ignore: dismiss
+  choices:
+    - id: pour-out
+      text: "Pour it out and say nothing."
+      result: "You pour it in the yard. The dog won't cross where it soaked in."
+    - id: ask-nan
+      text: "Ask Old Nan what it means."
+      requires:
+        - relationship: { npc: old_nan, min: warm }
+      result: >
+        She doesn't look up from her mending. "Milk sours where the ground's started
+        listening," she says. "You've laid something down it didn't care for."
+    - id: ignore
+      text: "It's nothing. Work the day."
+      result: "You work the day. The pail sours again at dusk."
+      effects:
+        - morale: { target: household, amount: -1 }
+
+- id: night-terrors
+  title: "Tom Won't Sleep"
+  family: reckoning
+  severity: minor
+  illustration: "a young clone wide-eyed against the bunkhouse wall, knees drawn up, in lamp-light"
+  setup: >
+    One of the hands — the young one, Tom — has stopped sleeping. He sits up against the
+    wall all night with his eyes on the door, and in the day he is slow and grey. He will
+    only say that someone stands at the foot of his cot, and that he knows her.
+  conditions:
+    - reckoning_tier: { min: warnings }
+    - ghost_roll: { min: 1 }
+  on_ignore: dismiss
+  choices:
+    - id: move-his-cot
+      text: "Move his cot to the far wall."
+      result: "You move the cot. He sleeps two nights, and on the third you find him sitting up again, watching the door."
+      effects:
+        - morale: { target: household, amount: -2 }
+    - id: sit-with-him
+      text: "Sit up with him a night."
+      result: "You sit the night through beside him. Nothing comes that you can see. But you understand, by morning, that he was not lying."
+      effects:
+        - morale: { target: household, amount: +2 }
+
+- id: blighted-corner
+  title: "The Blighted Corner"
+  family: reckoning
+  severity: minor
+  illustration: "a spreading grey rot in one corner of a healthy green field, sharp-edged as a shadow"
+  setup: >
+    A corner of the east field has gone grey and slack — not the whole field, only the near
+    corner, the low ground, in a shape with edges too clean for a natural rot. It stops
+    exactly where you'd expect it to stop, if you thought about where it started.
+  conditions:
+    - reckoning_tier: { min: warnings }
+  on_ignore: dismiss
+  choices:
+    - id: plow-it-under
+      text: "Plow the corner under and lose it."
+      result: "You turn the rot back into the ground it came from. The rest of the field holds. For now."
+      effects:
+        - crop: { field: this, blight: true }
+
+# ── WALKERS (55–79): the dead return, by name, to their fields ──────────────
+- id: she-comes-back
+  title: "She Comes Back to the Rows"
+  family: reckoning
+  severity: crisis
+  illustration: "a figure standing among the night barley, faced away, where a field was buried into"
+  setup: >
+    You put her in the east field in the spring — unmarked, to spare the forty marks and
+    the day of work. Tonight she is standing in it. She is not doing anything. She is only
+    standing where you left her, in the rows, faced away, as though waiting for the morning's task.
+  crisis_gate:
+    - reckoning_tier: { min: walkers }
+    - ghost_roll: { min: 1 }
+  recency_suppress: 8
+  on_ignore: worst
+  choices:
+    - id: name-her
+      text: "Give her the naming now. (40 marks, a rest day)"
+      cost: { coin: 40, rest_day: true }
+      result: "Grange comes and speaks her name over the ground until dawn. The field is quiet after. It is not forgiveness. It is a debt paid late."
+      effects:
+        - reckoning: -8
+        - ghost_roll: { remove: 1 }
+        - morale: { target: household, amount: +4 }
+    - id: bar-the-doors
+      text: "Bar the doors and wait for light."
+      result: "At dawn the barley is trampled flat in a wide ring, and she is gone back down. The household does not speak of it. She will come again."
+      effects:
+        - crop: { field: this, blight: true }
+        - morale: { target: household, amount: -8 }
+    - id: speak
+      text: "Go out and speak to her."
+      requires:
+        - relationship: { npc: old_nan, min: bonded }
+      outcomes:
+        - odds: even
+          result: "She does not turn, but she answers — a word, a name, something of what the ground below her wants. You will not repeat it, but you will act on it."
+          effects:
+            - flag: { set: marrow-truth-glimpsed, to: true }
+        - odds: even
+          result: "She turns. You do not sleep again that season."
+          effects:
+            - morale: { target: household, amount: -10 }
+
+- id: footsteps-in-the-yard
+  title: "Footsteps in the Yard"
+  family: reckoning
+  severity: major
+  illustration: "boot-prints in the frost circling the house, coming from the burial ground, going nowhere"
+  setup: >
+    There are prints in the frost this morning, a bare set of them, circling the house and
+    stopping under each window in turn before going back the way they came — toward the
+    burial ground, and no further. You count the windows they stopped at. They stopped at all of them.
+  conditions:
+    - reckoning_tier: { min: walkers }
+    - ghost_roll: { min: 1 }
+  on_ignore: worst
+  choices:
+    - id: salt-the-sills
+      text: "Salt the window-sills, the old way."
+      cost: { coin: 5 }
+      result: "You lay salt on every sill the way Old Nan told you the founders did. Whether it holds anything out, you sleep a little for having done it."
+      effects:
+        - morale: { target: household, amount: +1 }
+    - id: nothing
+      text: "It's the cold playing tricks. Do nothing."
+      result: "You do nothing. The prints come again the next night, and the next, and each night they wait a little longer under your window before they go."
+      effects:
+        - morale: { target: household, amount: -6 }
+
+- id: one-is-missing
+  title: "One of Them is Missing"
+  family: reckoning
+  severity: crisis
+  illustration: "an empty cot at dawn, the blanket thrown back, the bunkhouse door standing open on the dark"
+  setup: >
+    A cot is empty this morning that should not be, the blanket thrown back and the door
+    open on the cold. No tracks lead away. The hands will not meet your eye. One of them is
+    simply gone, in the night, the way the founders' people went — taken by the ground that
+    was owed.
+  crisis_gate:
+    - reckoning_tier: { min: walkers }
+    - clones: { min: 2 }
+  on_ignore: worst
+  choices:
+    - id: mark-the-loss
+      text: "Mark the loss. Gather the others and name what's happening."
+      result: "You gather the hands and tell them plainly what you all already know. It does not bring the missing one back. It keeps the rest from bolting into the dark to look."
+      effects:
+        - clone: { take: weakest }
+        - morale: { target: household, amount: -6 }
+    - id: say-nothing
+      text: "Say nothing and work the day."
+      result: "You work the day around the empty place at the table, and the silence does more harm than the truth would have."
+      effects:
+        - clone: { take: weakest }
+        - morale: { target: household, amount: -12 }
+
+# ── THE LONG VIGIL FAILS (80–94): the land itself turns ─────────────────────
+- id: the-fields-go-black
+  title: "The Fields Go Black"
+  family: reckoning
+  severity: crisis
+  illustration: "field after field gone black to the horizon overnight, the crows risen off all of them at once"
+  setup: >
+    It is not a corner now. In the night every field has gone black to the fence-lines, all
+    of them, at once, the rot moving faster than rot can move. The crows have risen off the
+    lot of them and will not settle. Whatever held the ground back is not holding anymore.
+  crisis_gate:
+    - reckoning_tier: { min: vigil_fails }
+  on_ignore: worst
+  choices:
+    - id: ride-for-grange
+      text: "Ride for Grange and Old Nan both."
+      requires:
+        - any:
+            - relationship: { npc: elias_grange, min: warm }
+            - relationship: { npc: old_nan, min: warm }
+      result: "They come. Between the preacher's rite and the old woman's older one, they buy the ground back a little — enough that some of it might grow again. It costs them, and they do not pretend otherwise."
+      effects:
+        - reckoning: -6
+    - id: salvage-what-you-can
+      text: "Salvage what will still cut and let the rest go."
+      result: "You take a knife to what has any weight left in it and leave the black to the black. It is a fraction of a harvest. It is the ground telling you what it thinks you're owed."
+      effects:
+        - crop: { field: this, blight: true }
+        - food: { amount: -10 }
+
+- id: stock-in-the-morning
+  title: "The Stock in the Morning"
+  family: reckoning
+  severity: crisis
+  illustration: "livestock down in the barn at dawn, unmarked, the straw undisturbed around them"
+  setup: >
+    The stock are down in the barn this morning, all of them, without a mark on them and the
+    straw around them undisturbed, as though they lay down together in the night and agreed
+    not to rise. The dog will not go in. Neither, you find, will you.
+  crisis_gate:
+    - reckoning_tier: { min: vigil_fails }
+    - has_building: barn
+  on_ignore: worst
+  choices:
+    - id: burn-them
+      text: "Burn the barn and everything in it."
+      result: "You put a torch to it and stand back and watch a season's meat and milk go up. Better the fire than to eat what lay down in the night. Old Nan, when she hears, only nods."
+      effects:
+        - flag: { set: barn-burned, to: true }
+        - morale: { target: household, amount: -6 }
+
+# ── THE RECKONING PROPER (95–100): the account is called in full ────────────
+- id: the-reckoning-proper
+  title: "The Long Vigil Fails"
+  family: reckoning
+  severity: crisis
+  illustration: "the whole household at the windows in the dark, and beyond the glass the burial ground standing up, all of it, at once"
+  setup: >
+    There is no omen tonight. There is only the ground, standing up — the whole burial field,
+    the whole low Sull, every name you laid down and did not name, coming home together across
+    the frost toward the only light left burning. The Vigil that held it since the Salting has
+    failed, and it has failed on your account.
+  crisis_gate:
+    - reckoning_tier: { min: proper }
+  on_ignore: worst
+  choices:
+    - id: the-old-well
+      text: "Ride for the Old Well and the last rite there is."
+      requires:
+        - relationship: { npc: old_nan, min: bonded }
+      outcomes:
+        - odds: long_shot
+          result: "You reach the Well with Old Nan and give the ground the one thing it will take in place of the farm — and it is not the farm you leave with. But you leave. Some of you leave."
+          effects:
+            - reckoning: -30
+        - odds: likely
+          result: "You do not reach the Well in time. The land takes back what was always its own — the fields, the house, the name. What the founders bought with the Salting, the ground has called due, and collected."
+          effects:
+            - flag: { set: land-lost, to: true }
+    - id: stand-in-the-door
+      text: "Stand in the door and meet it."
+      result: "You stand in your own door as the ground comes home, and you meet it, and it is the last thing you do on land that was never truly yours to keep. The Sull takes the homestead back into itself before the spring."
+      effects:
+        - flag: { set: land-lost, to: true }
+
+# ── ATONEMENT (offered services — the road back) ────────────────────────────
+- id: grange-offers-the-rite
+  title: "Grange at the Gate"
+  family: reckoning
+  severity: minor
+  illustration: "the preacher at the fence with his book, looking past you at the fields, hat in hand"
+  setup: >
+    Grange rides out unasked and sits his horse at the fence a while before he speaks. "I'll
+    not lecture you," he says, tired. "But there are names on your ground that want saying,
+    and I know the words. Say them with me, and the land may rest easier. It's your leave I need."
+  conditions:
+    - reckoning_tier: { min: warnings }
+    - ghost_roll: { min: 1 }
+    - relationship: { npc: elias_grange, min: neutral }
+  recency_suppress: 16
+  on_ignore: dismiss
+  choices:
+    - id: let-him
+      text: "Let him say the names. (50 marks, a day)"
+      cost: { coin: 50, rest_day: true }
+      result: "You give the day and the coin and stand bareheaded while Grange names your dead into the cold. Something in the ground goes quiet. It is not forgiveness. It is a start."
+      effects:
+        - reckoning: -5
+    - id: send-him-off
+      text: "Send him off. The ground's business is yours."
+      result: '"As you will," he says, and rides off slow. "The offer keeps. I only hope you do." '
+      effects:
+        - relationship: { npc: elias_grange, delta: -1 }
+
+- id: nans-price
+  title: "Nan's Price"
+  family: reckoning
+  severity: minor
+  illustration: "the old woman at her fire, a bundle of something dark in her lap, not looking up"
+  setup: >
+    Old Nan will cleanse a piece of ground the Church has no words for — she knows the older
+    ones. But she does not work in coin. "You'll owe it different," she says, "and I'll tell
+    you what it is when I come to collect. That's the price of the quiet word. Take it or don't."
+  conditions:
+    - reckoning_tier: { min: warnings }
+    - relationship: { npc: old_nan, min: warm }
+  recency_suppress: 16
+  on_ignore: dismiss
+  choices:
+    - id: pay-her-price
+      text: "Take the quiet word. Owe her what she asks."
+      result: "She works over the ground in a language older than the town, and the land eases more than the preacher's rite ever eases it. What you owe her, she does not yet say. She only writes it down, in her way, and you feel it noted."
+      effects:
+        - reckoning: -10
+        - flag: { set: owe-old-nan, to: true }
+    - id: refuse
+      text: "Refuse a debt you can't read."
+      result: '"Wise, maybe," she says. "Or maybe you just can''t afford to be wise yet. Come back when the ground''s taught you the difference." '
