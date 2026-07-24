@@ -7,7 +7,10 @@ Design decisions that are still open. When resolved, move the entry to `decision
 ### Q-001. MVP scope cut list — ✅ RESOLVED (Session 3, → D-033)
 Answered in `docs/scope-mvp.md`: ship the full core loop over a 4-year first lifetime; defer the Vat, Ascension, Black Market, Rail Depot, fancy contracts, Season Arcs 5–10, and the deep unlock catalog.
 
-### Q-002. Monetization model
+### Q-002. Monetization model — ✅ RESOLVED (Session 3, → D-035)
+Free demo (through Year 1) + one-time ~$6 full unlock; all post-launch content free; mobile-first + PC. No pay-to-win/ads/DLC. See D-035.
+
+*(original note:)*
 Four options: premium paid ($4–8), free demo + full unlock, F2P cosmetics/DLC, or full F2P (rejected — the design bends around it).
 **Blocks:** IAP verification code, store listing prep, marketing.
 

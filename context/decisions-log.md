@@ -168,6 +168,15 @@ Foundational narrative decisions. Full write-up in `docs/narrative-bible.md` Par
 - **Vat drip 0.5→1.0/day** — running a Vat is the land's deepest offense (D-030), a self-terminating Faustian bargain.
 **Rationale:** the model caught two real would-be exploits (overwork and the Vat baron topped the leaderboard); these fixes make the moral thesis TRUE, not just asserted. Result: H-01/H-10/H-11/H-18/H-20 all CONFIRMED — cruelty always costs more than it gives. Live source: `docs/balance-model/config.py`.
 
+### D-035. Monetization: free demo + one-time full unlock; all post-launch content free; mobile-first + PC (issue #17).
+**Chosen:**
+- **Free to try through Year 1** (the first lifetime, "The Newcomer" — the player learns the loop, meets the town, survives one winter, glimpses the Reckoning), then a **single ~$6 purchase** unlocks the full game. No pay-to-win, no gems, no ads.
+- **All post-launch content ships FREE** as updates — the deferred MVP systems (Vat, Ascension, Black Market, Rail Depot, Season Arcs 5–10) plus event/live-ops packs. No paid DLC.
+- **Dual-launch: mobile-first** (D-020) **+ PC** (Steam/itch).
+**Rationale:** preserves the game's premium integrity and moral tone (F2P nagging would be at war with a moral-survival design; consistent with content-not-power, D-015). The free demo solves mobile discoverability — try the whole first year, then buy to keep the lineage going. Free-content-forever maximizes goodwill and retention and reinforces the anti-monetization-bending ethos (a design concern flagged since Session 1). PC hedges mobile's premium-discovery problem (relates to Q-011).
+**Business note:** the single unlock is the ENTIRE revenue model — no recurring or DLC income by choice; retention is served by free content, not sold. A clean creative stance with a real revenue tradeoff, chosen deliberately.
+**Resolves Q-002.**
+
 ---
 
 *Add new decisions below with the next session number.*
