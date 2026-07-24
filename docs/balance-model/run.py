@@ -13,6 +13,14 @@ Stdlib only — no pip install required. Python 3.8+.
 
 import argparse
 import statistics as stats
+import sys
+
+# The report uses Unicode (§, →, ≈, ×). Windows consoles default to cp1252 and
+# would crash on encode; force UTF-8 so the suite prints anywhere.
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:  # pragma: no cover
+    pass
 
 import strategies as S
 from model import run_campaign
