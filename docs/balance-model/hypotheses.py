@@ -310,6 +310,48 @@ def h18():
                   "" if ok else "Sin-and-confess pays — steepen atonement diminishing returns or raise cleanse cost.")
 
 
+# ── Ascension sweep (issue #9) — shared by H-39 / H-40 ──────────────────────
+_ASC_CACHE = {}
+def _asc_sweep():
+    """{level: {strategy: mean_years}} across +0..+10 (cached)."""
+    if _ASC_CACHE:
+        return _ASC_CACHE
+    strat_map = {"balanced": S.Balanced, "subsistence": S.Subsistence,
+                 "cashcrop": S.CashCrop, "boneroot": S.BoneRootCruel}
+    seeds = list(range(1, 21))
+    for lvl in range(0, 11):
+        _ASC_CACHE[lvl] = {
+            name: stats.mean(run_campaign(cls(), s, ascension=lvl)["years_survived"] for s in seeds)
+            for name, cls in strat_map.items()
+        }
+    return _ASC_CACHE
+
+
+# ── H-39  every Ascension level is winnable by a master ──────────────────────
+def h39():
+    sweep = _asc_sweep()
+    best = {lvl: max(sweep[lvl].values()) for lvl in sweep}
+    ok = best[10] >= 2.0 and best[10] < best[0]
+    table = " ".join(f"+{l}:{best[l]:.1f}" for l in range(0, 11))
+    return Result("H-39", "CONFIRMED" if ok else "PARTIAL",
+                  f"best-strategy mean survival by level — {table}",
+                  "every level winnable (best strategy survives ≥2y even at +10) and difficulty rises across the ladder",
+                  "" if ok else "A level is unwinnable, or the curve doesn't rise — retune that modifier.")
+
+
+# ── H-40  no single strategy clears +10 ─────────────────────────────────────
+def h40():
+    sweep = _asc_sweep()
+    winners = [max(sweep[lvl], key=sweep[lvl].get) for lvl in range(0, 11)]
+    distinct = set(winners)
+    top10 = max(sweep[10].values())
+    ok = len(distinct) >= 2 and top10 < 8.0
+    return Result("H-40", "CONFIRMED" if ok else "PARTIAL",
+                  f"best strategy per level +0→+10: {winners}; top survival at +10 = {top10:.1f}y (cap 15)",
+                  "no single strategy is best at every level, and +10 is not trivially cleared (top < 8y)",
+                  "" if ok else "One strategy dominates the ladder or +10 is a cakewalk — re-point the offending modifier.")
+
+
 # ── Not modeled in v0.1 ──────────────────────────────────────────────────────
 NOT_MODELED = {
     "H-04": "Rail vs Regional venue choice — Rail unlock not simulated.",
@@ -337,11 +379,9 @@ NOT_MODELED = {
     "H-36": "Mortgage buy-out not a safety cheat — buy-out policy not modeled.",
     "H-37": "Content-not-power — meta/unlocks not modeled.",
     "H-38": "Vigils reward depth — meta-currency not modeled.",
-    "H-39": "Ascension winnable — ascension not modeled.",
-    "H-40": "No single strategy clears +10 — ascension not modeled.",
 }
 
-TESTS = [h01, h02, h03, h05, h09, h10, h11, h12, h16, h18, h29, h32]
+TESTS = [h01, h02, h03, h05, h09, h10, h11, h12, h16, h18, h29, h32, h39, h40]
 
 
 def run_suite():

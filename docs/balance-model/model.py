@@ -21,6 +21,20 @@ from dataclasses import dataclass, field as dfield
 import config as C
 
 
+def ascension_mods(level):
+    """Stacked Ascension modifiers for a level (§15). Multipliers multiply; cold_snaps/grace add."""
+    m = dict(start_coin=1.0, yld=1.0, fert_start=1.0, fert_decay=1.0, exposure=1.0,
+             reck_decay=1.0, reck_accrue=1.0, winter_food=1.0, cold_snaps=0, seasonal_amp=1.0,
+             frail=0.0, merchant=1.0, mortgage=1.0, grace=0, walker=1.0)
+    for lvl in range(1, level + 1):
+        for k, v in C.ASCENSION_LEVELS.get(lvl, {}).items():
+            if k in ("cold_snaps", "grace"):
+                m[k] += v
+            else:
+                m[k] *= v
+    return m
+
+
 # ── State ────────────────────────────────────────────────────────────────────
 @dataclass
 class Field:
@@ -58,6 +72,8 @@ class Farm:
     reckoning: float = 0.0
     reputation: float = C.REP_START
     has_vat: bool = False
+    ascension: int = 0
+    asc: dict = dfield(default_factory=dict)
     ghost_roll: list = dfield(default_factory=list)
     hidden_cruelties: int = 0          # un-exposed acts (for exposure rolls)
     biomass: float = 0.0               # Vat feedstock from corpses (H-10)
@@ -118,11 +134,20 @@ class Farm:
         return C.reck_tier(self.reckoning)
 
 
-def new_farm(seed):
+def _asc_body(farm, default="average"):
+    """Roll for a Frail body under Ascension +7 (Thin Blood)."""
+    if farm.asc.get("frail", 0.0) > 0 and farm.rng.random() < farm.asc["frail"]:
+        return "frail"
+    return default
+
+
+def new_farm(seed, ascension=0):
     rng = random.Random(seed)
-    f = Farm(seed=seed, rng=rng)
-    f.fields = [Field(size=C.START_FIELD_SIZE) for _ in range(C.START_FIELDS)]
-    f.clones = [Clone(name=f"Clone-{i+1}") for i in range(C.START_CLONES)]
+    f = Farm(seed=seed, rng=rng, ascension=ascension)
+    f.asc = ascension_mods(ascension)
+    f.coin = C.START_COIN * f.asc["start_coin"]
+    f.fields = [Field(size=C.START_FIELD_SIZE, fertility=f.asc["fert_start"]) for _ in range(C.START_FIELDS)]
+    f.clones = [Clone(name=f"Clone-{i+1}", body=_asc_body(f)) for i in range(C.START_CLONES)]
     f.storage["_bought_food"] = float(C.START_FOOD)   # starting larder (§1 scenario A)
     return f
 
@@ -156,7 +181,7 @@ def market_price(farm, crop, venue):
     """Per-unit price at a venue this season (§2 stack, micro-noise folded in)."""
     fam = C.CROPS[crop]["family"]
     base = C.CROPS[crop]["price"]
-    seasonal = C.SEASONAL_MULT[fam][farm.season]
+    seasonal = 1.0 + (C.SEASONAL_MULT[fam][farm.season] - 1.0) * farm.asc.get("seasonal_amp", 1.0)
     vmult, _cap = C.VENUE[venue]
     if venue == "black" and fam != "weird":
         vmult = C.BLACK_MARKET_NORMAL_MULT     # fence won't pay for legal crops (H-08)
@@ -261,13 +286,13 @@ def _grow_and_harvest(farm, strat):
             if farm.rng.random() < C.HAIL_CHANCE_PER_CASH_HARVEST:
                 weather *= (1.0 - C.HAIL_LOSS)
         y = (base * C.fertility_factor(fl.fertility) * tend * tier_mult
-             * taint_mult * weather * labor_factor * C.QUICK_GROUND_YIELD)
+             * taint_mult * weather * labor_factor * C.QUICK_GROUND_YIELD * farm.asc.get("yld", 1.0))
         y = max(0.0, y)
         farm.storage[fl.crop] = farm.storage.get(fl.crop, 0.0) + y
         if fl.crop == "bone_root" and y > 0:
             farm.reckoning += C.RECK_ACCRUAL["bone_root_harvest"]
         # fertility decay + reset field
-        fl.fertility = max(C.FERTILITY_FLOOR, fl.fertility - C.FERTILITY_DECAY[d["family"]])
+        fl.fertility = max(C.FERTILITY_FLOOR, fl.fertility - C.FERTILITY_DECAY[d["family"]] * farm.asc.get("fert_decay", 1.0))
         fl.crop = None
         fl.progress = 0.0
 
@@ -302,6 +327,8 @@ def _consume(farm, strat):
     # --- FOOD ---
     clone_rate = C.FOOD_PER_CLONE_DAY_WINTER if farm.is_winter else C.FOOD_PER_CLONE_DAY
     need = (C.FOOD_PER_FARMER_DAY + clone_rate * len(farm.alive_clones)) * C.DAYS_PER_SEASON
+    if farm.is_winter:
+        need *= farm.asc.get("winter_food", 1.0)
     have = _available_food(farm)
     if have < need and strat.will_buy_food(farm):
         deficit = need - have
@@ -315,7 +342,7 @@ def _consume(farm, strat):
 
     # --- FUEL (winter) ---
     if farm.is_winter:
-        snaps = C.COLD_SNAPS_PER_WINTER
+        snaps = C.COLD_SNAPS_PER_WINTER + farm.asc.get("cold_snaps", 0)
         fuel_need = C.FUEL_PER_WINTER * (1 + C.COLD_SNAP_FUEL_SPIKE * snaps / C.DAYS_PER_SEASON * 3)
         fuel = getattr(farm, "_fuel", 0.0)
         if fuel < fuel_need:
@@ -431,7 +458,7 @@ def _merchant(farm, strat):
     for _ in range(2):
         if not strat.buy_clone(farm):
             break
-        price = C.MERCHANT_PRICE_DEFAULT
+        price = C.MERCHANT_PRICE_DEFAULT * farm.asc.get("merchant", 1.0)
         if farm.reputation < 40:
             price *= C.MERCHANT_MARKUP_LOW_REP
         elif farm.reputation >= C.REP_PILLAR:
@@ -439,7 +466,7 @@ def _merchant(farm, strat):
         if farm.coin < price:
             break
         farm.coin -= price
-        farm.clones.append(Clone(name=f"Clone-{len(farm.clones)+1}"))
+        farm.clones.append(Clone(name=f"Clone-{len(farm.clones)+1}", body=_asc_body(farm)))
 
 
 def _apply_overwork(farm, strat):
@@ -480,12 +507,13 @@ def _walker_effects(farm):
     """At Walkers+ the named dead return and destroy — self-terminating cruelty (§6/H-10)."""
     if farm.reck_tier < 2 or not farm.ghost_roll:
         return
+    wmul = farm.asc.get("walker", 1.0)
     for _ in range(min(C.WALKER_MAX_EFFECTS, len(farm.ghost_roll))):
-        if farm.rng.random() < C.WALKER_BLIGHT_CHANCE:
+        if farm.rng.random() < C.WALKER_BLIGHT_CHANCE * wmul:
             planted = [fl for fl in farm.fields if fl.crop]
             if planted:
                 farm.rng.choice(planted).progress = 0.0        # crop blighted to nothing
-        if farm.rng.random() < C.WALKER_TAKEN_CHANCE and len(farm.alive_clones) > 1:
+        if farm.rng.random() < C.WALKER_TAKEN_CHANCE * wmul and len(farm.alive_clones) > 1:
             farm.rng.choice(farm.alive_clones).alive = False   # a clone is taken (no biomass)
             farm.clones_died += 1
             for c in farm.alive_clones:
@@ -504,13 +532,14 @@ def _atone(farm, strat):
 
 
 def _reckoning_upkeep(farm, cruelty_this_season):
-    farm.reckoning += C.RECK_BASELINE_PER_SEASON
+    accrue = farm.asc.get("reck_accrue", 1.0)
+    farm.reckoning += C.RECK_BASELINE_PER_SEASON * accrue
     if farm.has_vat:
-        farm.reckoning += C.RECK_VAT_DRIP_PER_SEASON
+        farm.reckoning += C.RECK_VAT_DRIP_PER_SEASON * accrue
     if not cruelty_this_season:
-        farm.reckoning = max(0.0, farm.reckoning - C.RECK_DECAY_PER_SEASON)
+        farm.reckoning = max(0.0, farm.reckoning - C.RECK_DECAY_PER_SEASON * farm.asc.get("reck_decay", 1.0))
     if C.reck_tier(farm.reckoning) >= 2:        # Walkers+ : the collection accelerates
-        farm.reckoning += C.WALKER_RECK_ACCEL
+        farm.reckoning += C.WALKER_RECK_ACCEL * accrue
     farm.reckoning = max(0.0, min(100.0, farm.reckoning))
     farm.peak_reckoning = max(farm.peak_reckoning, farm.reckoning)
     if farm.reckoning >= C.RECK_PROPER_FLOOR:
@@ -528,17 +557,19 @@ def _reputation_upkeep(farm):
         farm.reputation = min(50, farm.reputation + C.REP_RECOVERY_PER_SEASON)
     # exposure roll on hidden cruelties
     if farm.hidden_cruelties > 0:
-        p = C.REP_EXPOSURE_BASE + C.REP_EXPOSURE_PER_ACT * (farm.hidden_cruelties - 1)
+        p = (C.REP_EXPOSURE_BASE + C.REP_EXPOSURE_PER_ACT * (farm.hidden_cruelties - 1)) * farm.asc.get("exposure", 1.0)
         if farm.rng.random() < p:
             farm.reputation = max(0, farm.reputation - 3 * farm.hidden_cruelties)
             farm.hidden_cruelties = 0
 
 
 def _year_end_mortgage(farm):
-    if farm.year <= C.MORTGAGE_GRACE_YEARS:   # establishment grace (§13 "The Newcomer")
+    grace = max(0, C.MORTGAGE_GRACE_YEARS + farm.asc.get("grace", 0))
+    if farm.year <= grace:                    # establishment grace (§13 "The Newcomer")
         return
-    if farm.coin >= C.MORTGAGE_ANNUAL:
-        farm.coin -= C.MORTGAGE_ANNUAL
+    payment = C.MORTGAGE_ANNUAL * farm.asc.get("mortgage", 1.0)
+    if farm.coin >= payment:
+        farm.coin -= payment
         farm.mortgage_misses = 0
     else:
         farm.mortgage_misses += 1
@@ -628,9 +659,9 @@ def step_season(farm, strat):
         farm.end_reason = "survived_cap"
 
 
-def run_campaign(strategy, seed):
+def run_campaign(strategy, seed, ascension=0):
     """Run one full campaign. `strategy` is a fresh strategy object. Returns metrics."""
-    farm = new_farm(seed)
+    farm = new_farm(seed, ascension)
     strategy.on_start(farm)
     guard = 0
     while farm.alive and guard < C.MAX_YEARS * 4 + 4:

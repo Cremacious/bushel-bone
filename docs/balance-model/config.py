@@ -224,6 +224,23 @@ MORTGAGE_MISS_LIMIT = 2      # consecutive misses -> foreclosure (land-loss)
 # lets a farm find its feet. FLAG: proposed design addition, not yet in the Mechanics Bible.
 MORTGAGE_GRACE_YEARS = 2
 
+# ── Ascension (§15 / issue #9) — stacking difficulty modifiers +1..+10 ───────
+# Level N applies the modifiers for 1..N. Multiplier fields multiply; cold_snaps &
+# grace are additive deltas. Each level targets a DIFFERENT system (the anti-dominant-
+# strategy guarantee, H-40).
+ASCENSION_LEVELS = {
+    1:  {"start_coin": 0.7, "yld": 0.95},          # Lean Years
+    2:  {"fert_start": 0.85, "fert_decay": 1.3},   # Hard Ground
+    3:  {"exposure": 1.6},                          # A Watchful Town
+    4:  {"reck_accrue": 1.35, "reck_decay": 0.5},  # The Restless Land
+    5:  {"winter_food": 1.25, "cold_snaps": 1},    # Cruel Winters
+    6:  {"seasonal_amp": 1.4},                      # Fickle Markets
+    7:  {"frail": 0.4, "merchant": 1.25},          # Thin Blood
+    8:  {"mortgage": 1.3, "grace": -1},            # The Bank's Patience Wears
+    9:  {"walker": 1.4},                            # The Vigil Frays
+    10: {"yld": 0.95, "winter_food": 1.1, "mortgage": 1.1, "reck_accrue": 1.15},  # The Land Remembers All
+}
+
 # ── Events pacing (§9) — used only for the pacing hypothesis ─────────────────
 EVENT_BASE_RATE = 0.30
 EVENT_PRESSURE_STEP = 0.10

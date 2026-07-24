@@ -115,7 +115,16 @@ Added the exploit-prone systems the counters depend on (the Vat, overwork-to-dea
 
 **Ratified mechanic changes (→ Mechanics Bible §3/§6):** morale→labor link (unrest −25%, revolt −70% per clone); overwork morale cost −8→−12 + a −10 household witness penalty; Walker-tier damage (blight 45% / taken 22% / cap 3 per season) and Reckoning acceleration (+6/season at Walkers+); Vat drip 0.5→1.0/day.
 
-**Verdicts now (40 seeds): CONFIRMED 8 · INVARIANT 1 · PARTIAL 3 (H-05, H-09, H-29) · REFUTED 0.** The moral thesis — *cruelty always costs more than it gives* — is validated across the whole exploit cluster. **Still open:** the long-game ceiling and Year-1 scarcity (H-09), plus the remaining NOT-MODELED systems (contracts #10, Ascension, succession) and the paper playtest (#11).
+**Verdicts after Pass 3: CONFIRMED 8 · INVARIANT 1 · PARTIAL 3 (H-05, H-09, H-29) · REFUTED 0.** The moral thesis — *cruelty always costs more than it gives* — is validated across the whole exploit cluster.
+
+### Pass 4 — Ascension (issue #9)
+
+Modeled the +1..+10 stacking modifiers (§15) as difficulty adjustments (`config.ASCENSION_LEVELS`, applied at each system's hook via `farm.asc`), each targeting a different system. Added `run.py ascension` for the strategy×level survival table.
+
+- **H-39 (every level winnable) CONFIRMED** — the best playstyle's mean survival declines *gracefully* from ~5.0y (+0) to ~3.5y (+10); no cliff, no unwinnable rung.
+- **H-40 (no single strategy clears +10) CONFIRMED** — the best playstyle **changes across the ladder** (subsistence → boneroot → balanced), so no build dominates, and +10's top survival (~3.5y vs the 15-cap) shows it's genuinely hard, not a cakewalk.
+
+**Verdicts now (updated): CONFIRMED 10 · INVARIANT 1 · PARTIAL 3 · REFUTED 0.** Both the core-loop and the endgame anti-dominant-strategy guarantees now hold. **Still open:** the long-game ceiling / Year-1 scarcity (H-09), contracts & the event engine (#10 → H-06/07/22/23/24/28/29), succession (H-21), and the paper playtest (#11).
 
 ## Deferred to code
 

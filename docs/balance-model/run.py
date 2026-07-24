@@ -74,6 +74,27 @@ def cmd_compare(args):
     print("Read: no single strategy should dominate on BOTH survival and earnings.")
 
 
+def cmd_ascension(args):
+    # the four legitimate PLAYSTYLES (not the adversarial exploit-test bots)
+    ladder = {"subsistence": S.Subsistence, "cashcrop": S.CashCrop,
+              "boneroot": S.BoneRootCruel, "balanced": S.Balanced}
+    seeds = list(range(1, args.seeds + 1))
+    print("=" * 70)
+    print(f"ASCENSION LADDER — mean years survived ({len(seeds)} seeds each)")
+    print("=" * 70)
+    names = list(ladder)
+    print(f"{'level':6} " + "".join(f"{n[:9]:>11}" for n in names) + "   best")
+    print("-" * 70)
+    for lvl in range(0, 11):
+        row = {n: stats.mean(run_campaign(cls(), s, ascension=lvl)["years_survived"] for s in seeds)
+               for n, cls in ladder.items()}
+        best = max(row, key=row.get)
+        print(f"+{lvl:<5}" + "".join(f"{row[n]:>11.1f}" for n in names) + f"   {best}")
+    print("=" * 78)
+    print("Read: the best strategy should CHANGE across the ladder (H-40), and no")
+    print("level should be unwinnable (best stays > ~2y even at +10, H-39).")
+
+
 def main():
     p = argparse.ArgumentParser(description="Bushel & Bone Balance Model")
     sub = p.add_subparsers(dest="cmd")
@@ -87,11 +108,16 @@ def main():
     pc = sub.add_parser("compare", help="compare all strategies")
     pc.add_argument("--seeds", type=int, default=40)
 
+    pa = sub.add_parser("ascension", help="strategy × Ascension-level survival table")
+    pa.add_argument("--seeds", type=int, default=20)
+
     args = p.parse_args()
     if args.cmd == "sim":
         cmd_sim(args)
     elif args.cmd == "compare":
         cmd_compare(args)
+    elif args.cmd == "ascension":
+        cmd_ascension(args)
     else:
         cmd_hypotheses(args)
 
