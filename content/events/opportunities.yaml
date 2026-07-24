@@ -1,0 +1,289 @@
+# Opportunity events (§2/§9): merchants, demand shocks, contracts, windfalls, and the
+# eastern money. This family is the game's temptation engine — most cards offer a gain
+# with a cost woven in. Demand shocks re-rank the season's crops (§2).
+
+- id: vanes-wagon
+  title: "Vane's Wagon"
+  family: opportunities
+  severity: major
+  illustration: "a painted wagon halted on the dusk road, one lantern lit, a tarp over shapes"
+  setup: >
+    Ambrose Vane's wagon stops at your gate as the light goes. "A Grower," he says, warm
+    as a parlor. "Sharp-minded, strong-backed. I'd not sell her cheap to just anyone — but
+    you've a kind look about you." Under the tarp, something shifts, and is still.
+  weight: 18
+  conditions:
+    - year: { min: 1 }
+  recency_suppress: 20
+  on_ignore: dismiss
+  choices:
+    - id: buy
+      text: "Buy her. (110 marks)"
+      cost: { coin: 110 }
+      result: "She steps down when he says her name. She has a name; he tells it to you like a courtesy, and moves straight to the price."
+      effects:
+        - clone: { add: { archetype: grower, body: average, mind: sharp } }
+    - id: haggle
+      text: "Haggle."
+      requires:
+        - relationship: { npc: ambrose_vane, min: warm }
+      cost: { coin: 100 }
+      result: '"For you — a hundred, and you didn''t rob me, understand." (100 marks)'
+      effects:
+        - clone: { add: { archetype: grower, body: average, mind: sharp } }
+    - id: decline
+      text: "Not tonight."
+      result: '"Another season, then. The ground''s only getting quicker." He tips his hat, and the wagon rolls on into the dark.'
+
+- id: the-mills-are-buying
+  title: "The Mills Are Buying"
+  family: opportunities
+  severity: minor
+  illustration: "a broadsheet nailed to the saloon post, a figure reading it in the rain"
+  setup: >
+    Word comes up the Dray road that the eastern mills are short on grain and paying dear
+    for it. Prices in Marrow's Cross lift on the news. A full granary, right now, is worth
+    more than it was a week ago.
+  recency_suppress: 15
+  on_ignore: dismiss
+  choices:
+    - id: note-it
+      text: "Take note, and sell when the price is right."
+      result: "You watch the market and pick your day. Grain stands high while the mills go hungry."
+      effects:
+        - market: { crop: wheat, shock: +0.4, seasons: 2 }
+
+- id: rail-crews-want-tobacco
+  title: "The Rail Crews Are Thirsty"
+  family: opportunities
+  severity: minor
+  illustration: "a survey camp of tents down the valley, smoke rising, men in a line at a wagon"
+  setup: >
+    The Rail survey crews camped down the valley have money and vices and no time to grow
+    either. A buyer's come asking after tobacco and hops at a price that would make a
+    Marrow's Cross man blush to name it.
+  conditions:
+    - flag: { name: rail-survey, is: true }
+  recency_suppress: 15
+  on_ignore: dismiss
+  choices:
+    - id: sell-to-them
+      text: "Sell to the crews while they're here."
+      result: "You sell what you've got at their price and wish you'd planted more of it. The crews will move on; the money won't."
+      effects:
+        - market: { crop: tobacco, shock: +0.6, seasons: 2 }
+
+- id: the-pedlar
+  title: "The Pedlar"
+  family: opportunities
+  severity: minor
+  illustration: "a stooped man with a pack of tin and cloth at the gate, a mule behind him cropping grass"
+  setup: >
+    A pedlar comes up the road with a mule and a pack of everything — seed, tin, thread,
+    and, wrapped in oilcloth at the bottom, a few things he'll only show a serious buyer.
+  recency_suppress: 12
+  on_ignore: dismiss
+  choices:
+    - id: buy-seed
+      text: "Buy a sack of seed off him, cheap."
+      cost: { coin: 8 }
+      result: "Good seed at a fair price. The pedlar is honest, or honest enough, and gone by noon."
+      effects:
+        - seed: { crop: potato, amount: +10 }
+    - id: the-oilcloth
+      text: "Ask what's in the oilcloth."
+      requires:
+        - reputation: { max: 39 }
+      result: "He looks at you a moment, weighing, then unwraps it. Weird seed — moon barley, he says, and won't say from where. Dear, and worth it to a man with the nerve."
+      effects:
+        - seed: { crop: moon_barley, amount: +4 }
+        - coin: -15
+    - id: send-him-on
+      text: "Send him on his way."
+      result: "He shrugs, shoulders the pack, and is down the road before you've shut the gate."
+
+- id: a-buyer-from-ledbury
+  title: "A Buyer from Ledbury"
+  family: opportunities
+  severity: major
+  illustration: "a well-dressed factor at the saloon table, a contract and an inkpot between his hands"
+  setup: >
+    A crop factor rides in from Ledbury with a standing offer: contract your harvest now, at
+    a price locked today, and he'll take delivery in the fall come what may. Certainty has a
+    price, and so does breaking your word.
+  weight: 14
+  conditions:
+    - year: { min: 2 }
+  recency_suppress: 16
+  on_ignore: dismiss
+  choices:
+    - id: sign
+      text: "Sign the contract."
+      result: "You put your name to it and post the deposit. Now the price can crash and it won't touch you — and the sky had better cooperate, because the factor will not."
+      effects:
+        - contract: { offer: crop_supply }
+    - id: decline
+      text: "Keep your harvest free."
+      result: "You'd sooner take your chances with the market than owe a Ledbury man a bushel. He tips his hat, unbothered. There are other farms."
+
+- id: a-man-at-the-back-door
+  title: "A Man at the Back Door"
+  family: opportunities
+  severity: major
+  illustration: "a lantern held low at the kitchen door after dark, a face half in shadow, a satchel"
+  setup: >
+    There's a knock at the back door after dark, and a man you half-know from Meredith's
+    place, with a satchel and no name he'll give. He buys what the daylight market won't
+    touch, and sells the same. No questions, and no protection if it goes wrong.
+  conditions:
+    - reputation: { max: 39 }
+  recency_suppress: 14
+  on_ignore: dismiss
+  choices:
+    - id: sell-weird
+      text: "Sell him your Weird crop, no questions."
+      requires:
+        - has_item: weird_harvest
+      result: "He pays in hard coin and is gone before you've counted it. The daylight town would ruin you for this. The night town pays better."
+      effects:
+        - coin: +80
+        - reputation: -8
+    - id: buy-bone-root
+      text: "Buy bone-root seed off him."
+      cost: { coin: 10 }
+      result: "He hands over the seed like it's nothing, which it is not. It wants tainted ground, and you both know what makes that. He doesn't ask, and neither, tonight, do you."
+      effects:
+        - seed: { crop: bone_root, amount: +4 }
+        - reputation: -4
+    - id: shut-the-door
+      text: "Shut the door on him."
+      result: "You shut the door. He's gone by the time you've thrown the bolt. Word of it, though, may not be."
+
+- id: a-foundling
+  title: "A Foundling"
+  family: opportunities
+  severity: major
+  illustration: "a thin figure standing at the gate at dawn, no coat, no belongings, watching the house"
+  setup: >
+    There's a vessel at your gate come morning — a foundling, strayed off some failed farm or
+    wagon, thin and watchful and belonging to no one. Free hands, if you'll have them. Another
+    mouth to bring through winter, if you can.
+  weight: 12
+  recency_suppress: 18
+  on_ignore: dismiss
+  choices:
+    - id: take-them-in
+      text: "Take them in and feed them."
+      result: "You give them a bunk and a bowl and a day to stop flinching. Sister Ruth, when she hears, looks at you differently after. So do the other hands."
+      effects:
+        - clone: { add: { archetype: field_hand, body: frail, mind: average } }
+        - morale: { target: household, amount: +2 }
+    - id: send-to-ruth
+      text: "Send them on to Sister Ruth."
+      result: "You point them toward the church and the woman who keeps its charity. It costs you a pair of hands and buys you a clean conscience. You decide that's a fair trade."
+      effects:
+        - relationship: { npc: ruth_grange, delta: +1 }
+    - id: turn-them-out
+      text: "Turn them off your land."
+      result: "You send them back to the road. You have enough mouths. That is true, and it does not make the shutting of the gate feel like anything but what it is."
+      effects:
+        - reckoning: +1
+
+- id: the-almanac-man
+  title: "The Almanac Man"
+  family: opportunities
+  severity: minor
+  illustration: "a peddler holding up a thick weather-almanac, its pages full of tiny figures and moons"
+  setup: >
+    A man comes selling the year's almanac — the weather-tables, the moon-gates, the planting
+    windows, all reckoned out in tiny print. A farmer who reads it well is never quite as
+    surprised by the sky.
+  recency_suppress: 20
+  on_ignore: dismiss
+  choices:
+    - id: buy-almanac
+      text: "Buy it. (40 marks)"
+      cost: { coin: 40 }
+      result: "You buy the book and pore over it by lamp. The forecasts read clearer now, and the windows come as no ambush. Money well spent, if the year is hard — and the year is always hard."
+      effects:
+        - item: { grant: almanac }
+    - id: trust-the-sky
+      text: "Read the sky yourself, as you always have."
+      result: "You've farmed by your own eye this long. You'll keep on. The almanac man finds a buyer down the road."
+
+- id: the-buried-cache
+  title: "The Buried Cache"
+  family: opportunities
+  severity: minor
+  illustration: "a rusted tin unearthed at a fence-post, coins spilling from its cracked lid into dark soil"
+  setup: >
+    A fence-post rots through and comes up with a tin under it — old coin, buried by whoever
+    farmed this ground before you and never came back for it. Their loss is sitting in your hand.
+  once: true
+  on_ignore: dismiss
+  choices:
+    - id: take-it
+      text: "Take it. Finders keepers."
+      result: "You count out more than a season's honest work in old marks. You do not think too hard about why the last one buried it and never dug it up."
+      effects:
+        - coin: +60
+
+- id: the-card-game
+  title: "The Card Game at Vane's"
+  family: opportunities
+  severity: major
+  illustration: "a lamplit table at the saloon, cards down, coin in the middle, Meredith watching from the bar"
+  setup: >
+    There's a game running at the back of Meredith's place, and a chair open. She catches
+    your eye from behind the bar and lifts one brow — an invitation, or a warning, or both.
+    The pot is real money. So is the losing.
+  conditions:
+    - has_building: [] # always available once in town; placeholder for "visited town"
+  recency_suppress: 12
+  on_ignore: dismiss
+  choices:
+    - id: sit-in
+      text: "Sit in. (stake 30 marks)"
+      requires:
+        - coin: { min: 30 }
+      cost: { coin: 30 }
+      outcomes:
+        - odds: even
+          result: "You read the table right and rake the pot. Meredith sends over a drink you didn't order. 'On the house,' she says. 'You looked like you needed the practice.'"
+          effects:
+            - coin: +70
+        - odds: even
+          result: "You misread a quiet man in a good coat and walk out lighter. Meredith doesn't gloat. She's seen it a hundred times, and made money on every one."
+    - id: watch
+      text: "Watch, and buy Meredith's ear instead."
+      cost: { coin: 5 }
+      result: "You stand a round for the house and let Meredith talk. What she lets slip is worth more than the pot, to a man who knows how to use it."
+      effects:
+        - relationship: { npc: meredith_vane, delta: +1 }
+
+- id: the-man-from-the-east
+  title: "The Man from the East"
+  family: opportunities
+  severity: major
+  illustration: "a clean-shaven agent in a grey suit at your table, a leather folio and a fountain pen, out of place in the Sull"
+  setup: >
+    A man comes up the new Rail in a suit that cost more than your barn, and asks for you by
+    name. He represents an eastern concern — the Cawdor Mill — with an interest in the Sull's
+    ground. He is very polite. He would like to buy, or to contract, and he is used to getting
+    what he asks for.
+  conditions:
+    - flag: { name: rail-came, is: true }
+    - year: { min: 4 }
+  recency_suppress: 24
+  on_ignore: dismiss
+  choices:
+    - id: hear-him-out
+      text: "Hear his offer."
+      result: "He lays it out smooth as a card trick — a price for your land, or a contract to supply the Mill's works at scale. It is a great deal of money. He does not mention what the Mill does to ground like yours, and you do not, yet, ask."
+      effects:
+        - flag: { set: cawdor-approached, to: true }
+    - id: send-him-off
+      text: "Tell him the Sull's not for sale."
+      result: '"Everything is for sale, Mr. Farmer," he says, standing, unhurried. "It is only a question of the year." He leaves his card. You do not throw it away, which troubles you.'
+      effects:
+        - flag: { set: cawdor-refused, to: true }

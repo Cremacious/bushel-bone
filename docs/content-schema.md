@@ -121,6 +121,7 @@ A list of effect objects applied on resolution. Targets: `household` (all clones
 - unlock: { venue: rail_depot }                   # or { building: ... } | { arc: ... } | { archetype: ... }
 - relationship: { npc: old_nan, delta: +1 }
 - contract: { offer: crop_supply }                # surfaces a contract (§7)
+- market: { crop: tobacco, shock: +0.6, seasons: 2 }  # a demand shock (§2)
 ```
 
 *Every ledger axis in the Mechanics Bible (§1–§6) has an effect verb here; the engine applies them against the plain-JS state.*

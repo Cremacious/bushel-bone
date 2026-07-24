@@ -1,0 +1,318 @@
+# Town events (§12): the four festivals, civic dealings, the law, the church, and the
+# neighbors. NPC voices come through here (see the voice-tics table in the style guide).
+# Festivals are soft-required — attending costs a day; skipping costs standing.
+
+# ── THE FOUR FESTIVALS ──────────────────────────────────────────────────────
+- id: first-furrow
+  title: "First Furrow"
+  family: town
+  severity: major
+  illustration: "the town green in spring, seed-sacks and bunting, the preacher blessing a plough"
+  setup: >
+    Marrow's Cross keeps the Planting Fair the way it keeps everything — half for God and
+    half for trade. Halloway makes a speech about the town's future; Grange blesses the
+    ploughs; and there's seed to swap and a contract or two going for the asking.
+  conditions:
+    - season: Spring
+  once: true # once per year; the engine handles the yearly reset
+  on_ignore: dismiss
+  choices:
+    - id: attend
+      text: "Take the day and go."
+      cost: { rest_day: true }
+      result: "You lose a day's work and gain the town's good opinion, a blessed field, and a civic contract from a mayor who likes to be liked. A fair trade in a small place."
+      effects:
+        - reputation: +2
+        - reckoning: -1
+        - contract: { offer: crop_supply }
+    - id: work-through
+      text: "There's planting to do. Skip it."
+      result: "You get your seed in the ground while the town dances. Sensible. But a man who never comes to the Furrow is a man the town starts to wonder about."
+      effects:
+        - reputation: -2
+
+- id: high-market
+  title: "The High Market"
+  family: town
+  severity: major
+  illustration: "the summer market crowded with buyers' wagons, prices chalked on a board, a factor calling numbers"
+  setup: >
+    Midsummer brings the buyers up from Ledbury and the market runs hot for three days.
+    Prices lift, contracts change hands, and every rumor in the Sull passes through the
+    square at least twice before the dust settles.
+  conditions:
+    - season: Summer
+  once: true
+  on_ignore: dismiss
+  choices:
+    - id: work-the-market
+      text: "Work the market hard."
+      cost: { rest_day: true }
+      result: "You sell high, sign what's worth signing, and come home with your ear full of what's coming. The day off the fields pays for itself twice over."
+      effects:
+        - market: { crop: cotton, shock: +0.3, seasons: 1 }
+        - contract: { offer: crop_supply }
+    - id: quick-sale
+      text: "Sell what you can and get back to work."
+      result: "You do your business and go. You leave money and rumor on the table, but the fields don't tend themselves."
+
+- id: harvest-home
+  title: "Harvest Home"
+  family: town
+  severity: major
+  illustration: "long tables on the green under lanterns, a prize pumpkin, tired faces glad for one night"
+  setup: >
+    Harvest Home falls, as it always does, at the worst possible time — dead in the middle
+    of the fall crunch, with your crop still half in the field. The whole town stops to
+    feast and give thanks and judge each other's biggest turnip. You are expected.
+  conditions:
+    - season: Fall
+  once: true
+  on_ignore: worst
+  choices:
+    - id: send-the-household
+      text: "Send the household; keep working yourself."
+      result: "Your hands eat and dance and come back the better for it, and the town counts the Blackwoods present. You harvest by lamplight, alone, and call it a fair split."
+      effects:
+        - morale: { target: household, amount: +6 }
+        - reputation: +1
+    - id: all-attend
+      text: "Everyone goes. The crop can wait a night."
+      cost: { rest_day: true }
+      result: "You lose a harvest day you couldn't spare, and gain a household that would follow you into a hard winter, which — this being the Sull — they will."
+      effects:
+        - morale: { target: household, amount: +8 }
+        - reputation: +2
+    - id: skip-it
+      text: "Nobody goes. Bring the harvest in."
+      result: "You save the crop and spend the goodwill. 'The Blackwoods think themselves above us,' the town decides, and remembers it longer than you'd like."
+      effects:
+        - reputation: -3
+
+- id: the-long-vigil
+  title: "The Long Vigil"
+  family: town
+  severity: major
+  illustration: "the whole town in the church at midnight, every candle lit, an old capped well-head visible through the open door"
+  setup: >
+    On the longest night the town does not sleep. They fill the church and they watch, and
+    near midnight Grange reads the names of everyone who died in the Sull this year, slow,
+    one by one, so none are forgotten and left to be — the liturgy does not say taken, but
+    everyone hears it. Outside, past the graves, the old well-head sits under its cap of
+    iron and salt, and the watching is for it.
+  conditions:
+    - season: Winter
+  once: true
+  on_ignore: dismiss
+  choices:
+    - id: watch-through
+      text: "Watch the night through with them."
+      cost: { rest_day: true }
+      result: "You watch. You do not know what you are watching for, and by dawn you understand that no one else quite does either, and that they watch anyway. It is the truest thing you have seen in the Sull."
+      effects:
+        - reputation: +2
+        - reckoning: -2
+        - morale: { target: household, amount: +4 }
+    - id: go-home
+      text: "Go home to your own fire."
+      result: "You keep your own watch, alone, over your own ground. In the morning the town is a little colder to the man who wouldn't sit the Vigil."
+      effects:
+        - reputation: -1
+
+# ── THE LAW ─────────────────────────────────────────────────────────────────
+- id: sheriffs-rounds
+  title: "The Sheriff's Rounds"
+  family: town
+  severity: major
+  illustration: "a tall man in a dark coat sitting his horse at the fence line, not dismounting, looking at the east field"
+  setup: >
+    Sheriff Coldwater sits his horse at your line a long while before he speaks. "Heard
+    you're two hands short since spring," he says. He doesn't look at you. He looks at the
+    field. "Ground's soft out here. Things don't always stay buried in it. I'd hate to have
+    to come and look."
+  conditions:
+    - reputation: { max: 39 }
+  recency_suppress: 14
+  on_ignore: worst
+  choices:
+    - id: invite-him
+      text: "Invite him to look."
+      requires:
+        - ghost_roll: { max: 0 }
+      result: "He walks the rows, unhurried, and finds only rows. 'Obliged,' he says, and means it."
+      effects:
+        - reputation: +2
+    - id: lie
+      text: '"They ran off. Hands do."'
+      result: "He holds your eye a moment too long. 'They do,' he agrees, and does not believe you."
+      effects:
+        - flag: { set: coldwater-suspicious, to: true }
+    - id: warn-him-off
+      text: '"Mind your own line, Sheriff."'
+      result: "'It's all my line,' he says, and turns his horse. He'll be back."
+      effects:
+        - reputation: -3
+        - flag: { set: coldwater-suspicious, to: true }
+
+# ── CIVIC & CHURCH ──────────────────────────────────────────────────────────
+- id: the-mayors-request
+  title: "The Mayor's Request"
+  family: town
+  severity: minor
+  illustration: "Halloway on your porch, hat in hand, all warmth and civic purpose"
+  setup: >
+    Halloway rides out himself, which he only does when he wants something. The town needs
+    grain for the winter stores, he says — a civic matter, a neighborly one — and who better
+    to ask than the Sull's most promising farm? He never quite says no is an option.
+  recency_suppress: 16
+  on_ignore: dismiss
+  choices:
+    - id: take-the-contract
+      text: "Take the civic contract."
+      result: "You agree to supply the stores. Halloway shakes your hand like you've done him a personal kindness, which, in his ledger, you have. The town remembers who feeds it."
+      effects:
+        - contract: { offer: crop_supply }
+        - reputation: +2
+    - id: beg-off
+      text: "Beg off. Your own stores come first."
+      result: "'Of course, of course,' he says, disappointed and hiding it poorly. 'A man must mind his own.' He'll ask someone else, and remember that he had to."
+      effects:
+        - reputation: -1
+
+- id: the-collection-plate
+  title: "The Collection Plate"
+  family: town
+  severity: minor
+  illustration: "a worn tin plate passed down a church pew, coins and a folded note upon it"
+  setup: >
+    The plate comes down the pew, as it does every Sunday, and Grange's eye is on the room
+    without seeming to be. What a man gives to the Vigil is between him and the ground, they
+    say. They also count it.
+  conditions:
+    - relationship: { npc: elias_grange, min: neutral }
+  recency_suppress: 12
+  on_ignore: dismiss
+  choices:
+    - id: give-generous
+      text: "Give generously."
+      cost: { coin: 15 }
+      result: "You put more than your share on the plate. The Vigil is kept another week on coin like yours, and Grange marks it — not the amount, he'd never; only that you gave."
+      effects:
+        - reckoning: -1
+        - relationship: { npc: elias_grange, delta: +1 }
+    - id: give-token
+      text: "Give a token and no more."
+      result: "You put a coin on the plate and your conscience at ease. The plate moves on. It always moves on."
+
+- id: sister-ruths-basket
+  title: "Sister Ruth's Basket"
+  family: town
+  severity: minor
+  illustration: "a woman in plain grey at your door in the snow, a covered basket on her arm, breath smoking"
+  setup: >
+    Sister Ruth comes through the snow with a basket — bread, a little salt meat, a twist of
+    tea — for a household she's heard is running thin. She doesn't ask if you need it. She
+    just holds it out, and waits, and does not make it a shame to take.
+  conditions:
+    - season: Winter
+    - food: { max: 20 }
+  recency_suppress: 20
+  on_ignore: dismiss
+  choices:
+    - id: take-it
+      text: "Take it, and thank her."
+      result: "You take the basket because pride is a poor thing to freeze for. 'It's what it's for,' she says, and is gone before you can find words. You'll remember it."
+      effects:
+        - food: { amount: +12 }
+        - relationship: { npc: ruth_grange, delta: +1 }
+    - id: refuse-it
+      text: "Thank her, but refuse."
+      result: "You send the basket on to a house that needs it worse. She looks at you a moment, reading whether it's pride or plenty, and decides not to argue either."
+      effects:
+        - relationship: { npc: ruth_grange, delta: +1 }
+
+# ── THE NEIGHBORS ───────────────────────────────────────────────────────────
+- id: kettle-bottom-empties
+  title: "Kettle Bottom Empties"
+  family: town
+  severity: major
+  illustration: "an abandoned farmhouse down the valley, a for-sale stake leaning at its gate, curtains still in the windows"
+  setup: >
+    Another Kettle Bottom family has given up on the Sull and gone east — the third this year.
+    Their land goes cheap, their tools cheaper, and their two vessels are standing in the
+    empty yard with nowhere to be. Somebody will take them. The only question is who, and how.
+  weight: 10
+  recency_suppress: 18
+  on_ignore: dismiss
+  choices:
+    - id: buy-the-land
+      text: "Buy the land at the low price."
+      requires:
+        - coin: { min: 40 }
+      cost: { coin: 40 }
+      result: "You take the field off a broken family for a fraction of its worth. That's how land moves in a hard country. You tell yourself you'll farm it better than they did."
+      effects:
+        - flag: { set: field-bought, to: true }
+    - id: take-the-hands
+      text: "Take the stray hands on."
+      result: "You give the two vessels a place. They're grateful in the wary way of the abandoned, and they work. Sister Ruth hears you did it, and nods."
+      effects:
+        - clone: { add: { archetype: field_hand, body: average, mind: average } }
+        - relationship: { npc: ruth_grange, delta: +1 }
+    - id: leave-it
+      text: "Leave it be. Not your affair."
+      result: "You leave the land to whoever wants it worse. By spring someone crueler than you has the field and the hands both, and the Sull is a little colder for it."
+
+- id: bess-at-the-fair
+  title: "Bess Halloway"
+  family: town
+  severity: minor
+  illustration: "a bright-eyed young woman leaning on a fence rail at the fair, watching the crowd, and you"
+  setup: >
+    Bess Halloway finds you at the edge of the fair, away from her father's speeches. She has
+    a way of asking the one question nobody else will. "Everyone tells me what this town could
+    be," she says, watching the dancers. "You're the first I've a mind to ask what it is."
+  conditions:
+    - relationship: { npc: cyrus_halloway, min: neutral }
+  recency_suppress: 16
+  on_ignore: dismiss
+  choices:
+    - id: answer-honest
+      text: "Answer her honestly."
+      requires:
+        - reputation: { min: 40 }
+      result: "You tell her the truth of the Sull as you've found it, hard ground and all. She listens the whole way through, which no one at that fair has done for her in years. Something is decided, on her side, that she does not say aloud."
+      effects:
+        - relationship: { npc: bess_halloway, delta: +1 }
+    - id: give-the-speech
+      text: "Give her the pretty answer."
+      result: "You tell her what her father would tell her. She smiles the smile she keeps for exactly that, and you understand, too late, that it was a test, and that you have just failed it."
+      effects:
+        - relationship: { npc: bess_halloway, delta: -1 }
+
+- id: ridley-at-the-door
+  title: "Ridley at the Door"
+  family: town
+  severity: major
+  illustration: "the banker on the road, ledger in the saddlebag, not dismounting, glancing at the soft ground"
+  setup: >
+    Silas Ridley rides out with his ledger and his cold courtesy. The charter company is
+    pressing him, he says, though he'd never put it so plainly — and paper that seemed sound
+    a year ago is looking less so. He'd like to know your intentions. He'd like it very much.
+  conditions:
+    - year: { min: 3 }
+  recency_suppress: 20
+  on_ignore: dismiss
+  choices:
+    - id: reassure-him
+      text: "Show him the farm is sound."
+      requires:
+        - coin: { min: 100 }
+      result: "You walk him the fields and the full granary and let the numbers speak. The fear goes out of him by degrees. 'Good,' he says, meaning it more than a banker should. 'Good. This ground unsettles me, Blackwood. I'd not have it unsettle my ledger too.'"
+      effects:
+        - relationship: { npc: silas_ridley, delta: +1 }
+    - id: press-him-back
+      text: "Ask what he's really afraid of."
+      result: "You catch the fear under the arithmetic and name it. He goes still. 'The stories,' he says at last, very quiet. 'I believe the stories. God help me, out here I've started to.' It is the most honest thing a banker has ever said to you, and you will use it."
+      effects:
+        - flag: { set: silas-afraid, to: true }

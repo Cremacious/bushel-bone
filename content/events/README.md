@@ -6,13 +6,15 @@ The ~120 MVP event cards (GitHub issue #16), authored against [`docs/content-sch
 
 | Family | Target | Status |
 |---|---|---|
-| `weather` | ~15 | ✅ Batch 1 |
-| `reckoning` | ~20 | ✅ Batch 1 |
-| `opportunities` | ~18 | ⏳ (vanes-wagon exists) |
-| `town` | ~18 | ⏳ |
-| `pests` | ~15 | ⏳ |
-| `personal` | ~15 | ⏳ |
-| `wildlife` | ~12 | ⏳ |
+| `weather` | ~15 | ✅ Batch 1 (12) |
+| `reckoning` | ~20 | ✅ Batch 1 (14) |
+| `opportunities` | ~18 | ✅ Batch 2 (11) |
+| `town` | ~18 | ✅ Batch 2 (11) |
+| `pests` | ~15 | ⏳ Batch 3 |
+| `personal` | ~15 | ⏳ Batch 3 |
+| `wildlife` | ~12 | ⏳ Batch 3 |
+
+*~48 of ~120 written.*
 
 Severity mix within each family follows §9: ~30% flavor, ~45% minor, ~20% major, ~5% crisis (crises are `crisis_gate`d).
 
