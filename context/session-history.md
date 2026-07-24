@@ -19,9 +19,11 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 - **D-031** Invented frontier nation — Commonwealth of Ostrey / the Sull — sidesteps the D-018 trap (land's grievance is geological, not ethnic).
 - Also written: vesselry origins (Dr. Sabine Orrell, "quick ground"), Marrow's Cross history (the Salting = founding sin, the Old Well), a region map sketch, and a mechanics-mapping section.
 
-**Artifacts changed:** `docs/narrative-bible.md` (Part 1 written), `context/decisions-log.md` (D-029–D-031), `context/open-questions.md` (Q-007/Q-008 resolved), this file. GitHub issues #1–#17 created.
+**Issue #4 — NPC interiority (DONE):** Wrote `docs/narrative-bible.md` Part 2 — all 10 canon NPCs profiled with real interiority (Public / Private truth / Background / Wants+Fears / Voice + signature line / Ties / reaction gradient / arc seed), each grounded in the Marrow/Salting/doctrine and carrying a genuine wound. Kept the Vane D-014 mystery live (all three truths). Added a cross-cast tension web. Full quest arcs deferred to #13, Vane biographies to #14, dialogue sets to #5.
 
-**Next up (per recommended order):** the Phase-1 decisions still owned by the user — **#1 (MVP scope)** and **#2 (calibration levers: food economy / mortgage / bone-root price)** — then **#5 (prose voice)** and **#4 (NPC interiority, now unblocked by #3)**.
+**Artifacts changed:** `docs/narrative-bible.md` (Parts 1 & 2 written), `context/decisions-log.md` (D-029–D-031), `context/open-questions.md` (Q-007/Q-008 resolved), this file. GitHub issues #1–#17 created; **#3 and #4 closed (2/17).**
+
+**Next up (per recommended order):** the Phase-1 decisions still owned by the user — **#1 (MVP scope)** and **#2 (calibration levers: food economy / mortgage / bone-root price)**. On the narrative track (all solo-doable now): **#5 (prose voice)**, then **#13 (NPC quest arcs, unblocked by #4)** and **#14 (Vane mystery)**.
 
 ---
 
