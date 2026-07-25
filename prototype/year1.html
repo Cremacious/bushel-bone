@@ -321,6 +321,18 @@
   .answer{ font-size:15px; line-height:1.5; color:var(--ink); border-left:3px solid var(--accent); padding:8px 12px; background:color-mix(in srgb,var(--accent) 7%, transparent); margin-bottom:12px; font-style:italic; }
   .askq{ font-size:15px; border:1px solid var(--rule-fine); border-radius:4px; padding:9px 12px; margin-top:7px; background:color-mix(in srgb,var(--paper) 40%, transparent); color:var(--ink); cursor:pointer; }
   .askq:hover{ border-color:var(--accent); }
+
+  .tipbar{ display:none; border-top:2px solid var(--accent); background:color-mix(in srgb,var(--accent) 12%, var(--paper)); padding:10px 16px; }
+  .tipbar.on{ display:block; }
+  .tut-tip .who{ display:flex; align-items:center; gap:6px; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); }
+  .tut-tip .who .rdot{ width:15px; height:15px; border-radius:50%; background:#0e0c09; border:1px solid var(--accent); }
+  .tut-tip p{ margin:6px 0 8px; font-size:14px; font-style:italic; line-height:1.45; color:var(--ink); }
+  .tut-tip .got{ all:unset; cursor:pointer; font-size:13px; border:1px solid var(--accent); border-radius:3px; padding:4px 12px; color:var(--ink); background:color-mix(in srgb,var(--accent) 18%, var(--paper)); }
+  .tut-tip .got:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  #overlay-panel .tut-tip{ padding:10px 14px; border-bottom:2px solid var(--accent); background:color-mix(in srgb,var(--accent) 12%, var(--paper)); }
+  .tut-highlight{ box-shadow:0 0 0 3px var(--accent), 0 0 0 6px color-mix(in srgb,var(--accent) 28%, transparent); border-radius:4px; position:relative; z-index:1; }
+  @media (prefers-reduced-motion:no-preference){ .tut-highlight{ animation:tutpulse 1.5s ease-in-out infinite; } }
+  @keyframes tutpulse{ 0%,100%{ box-shadow:0 0 0 3px var(--accent), 0 0 0 6px color-mix(in srgb,var(--accent) 24%, transparent);} 50%{ box-shadow:0 0 0 3px var(--accent), 0 0 0 9px color-mix(in srgb,var(--accent) 8%, transparent);} }
 </style>
 
 <div id="desk">
@@ -341,6 +353,7 @@
 
     <main id="stage"></main>
 
+    <div class="tipbar" id="tipbar"></div>
     <div class="askbar" id="askbar" role="button" tabindex="0" aria-label="Ask Reuben">
       <span class="rdot"></span><span class="rtx"><b>Ask Reuben</b> what to do</span><span class="rq">?</span>
     </div>
@@ -1305,6 +1318,30 @@
     openOverlay(html, panel=>{ panel.querySelectorAll('.askq[data-i]').forEach(el=>el.addEventListener('click',()=>asks[+el.dataset.i].fn())); });
   }
 
+  let tutHi = [];
+  function tip(id, text, selector){
+    if(!tutGuided()) return;
+    if(!S.tutShown) S.tutShown = {};
+    if(S.tutShown[id]) return;
+    S.tutShown[id] = true;
+    const body = '<div class="tut-tip"><div class="who"><span class="rdot"></span> Reuben</div><p>'+text+'</p><button class="got" id="tut-got">Got it</button></div>';
+    const overlayOn = document.getElementById("overlay").classList.contains("on");
+    if(overlayOn){
+      document.getElementById("overlay-panel").insertAdjacentHTML("afterbegin", body);
+    } else {
+      const tb = document.getElementById("tipbar"); tb.innerHTML = body; tb.classList.add("on");
+    }
+    if(selector){ document.querySelectorAll(selector).forEach(el=>{ el.classList.add("tut-highlight"); tutHi.push(el); }); }
+    const got = document.getElementById("tut-got");
+    if(got) got.addEventListener("click", dismissTip);
+  }
+  function dismissTip(){
+    const tb = document.getElementById("tipbar"); if(tb){ tb.classList.remove("on"); tb.innerHTML=""; }
+    const t = document.querySelector("#overlay-panel .tut-tip"); if(t) t.remove();
+    tutHi.forEach(el=>el.classList.remove("tut-highlight")); tutHi = [];
+  }
+  function replayTips(){ if(S) S.tutShown = {}; tutSetGuided(true); }
+
   function tutGuided(){ try { return localStorage.getItem("bb_guided")==="1"; } catch(e){ return false; } }
   function tutSetGuided(on){ try { localStorage.setItem("bb_guided", on?"1":"0"); } catch(e){} }
   function tutSeen(){ try { return localStorage.getItem("bb_seenIntro")==="1"; } catch(e){ return true; } }
@@ -1342,7 +1379,7 @@
   newGame((Math.random()*1e9)>>>0);
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips };
   }
 
   runStep();
