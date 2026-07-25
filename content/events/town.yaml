@@ -1,6 +1,6 @@
 # Town events (§12): the four festivals, civic dealings, the law, the church, and the
 # neighbors. NPC voices come through here (see the voice-tics table in the style guide).
-# Festivals are soft-required — attending costs a day; skipping costs standing.
+# Festivals are soft-required: attending costs a day; skipping costs standing.
 
 # ── THE FOUR FESTIVALS ──────────────────────────────────────────────────────
 - id: first-furrow
@@ -9,7 +9,7 @@
   severity: major
   illustration: "the town green in spring, seed-sacks and bunting, the preacher blessing a plough"
   setup: >
-    Marrow's Cross keeps the Planting Fair the way it keeps everything — half for God and
+    Marrow's Cross keeps the Planting Fair the way it keeps everything: half for God and
     half for trade. Halloway makes a speech about the town's future; Grange blesses the
     ploughs; and there's seed to swap and a contract or two going for the asking.
   conditions:
@@ -62,7 +62,7 @@
   severity: major
   illustration: "long tables on the green under lanterns, a prize pumpkin, tired faces glad for one night"
   setup: >
-    Harvest Home falls, as it always does, at the worst possible time — dead in the middle
+    Harvest Home falls, as it always does, at the worst possible time: dead in the middle
     of the fall crunch, with your crop still half in the field. The whole town stops to
     feast and give thanks and judge each other's biggest turnip. You are expected.
   conditions:
@@ -79,7 +79,7 @@
     - id: all-attend
       text: "Everyone goes. The crop can wait a night."
       cost: { rest_day: true }
-      result: "You lose a harvest day you couldn't spare, and gain a household that would follow you into a hard winter, which — this being the Sull — they will."
+      result: "You lose a harvest day you couldn't spare, and gain a household that would follow you into a hard winter, which, this being the Sull, they will."
       effects:
         - morale: { target: household, amount: +8 }
         - reputation: +2
@@ -97,7 +97,7 @@
   setup: >
     On the longest night the town does not sleep. They fill the church and they watch, and
     near midnight Grange reads the names of everyone who died in the Sull this year, slow,
-    one by one, so none are forgotten and left to be — the liturgy does not say taken, but
+    one by one, so none are forgotten and left to be. The liturgy does not say taken, but
     everyone hears it. Outside, past the graves, the old well-head sits under its cap of
     iron and salt, and the watching is for it.
   conditions:
@@ -162,7 +162,7 @@
   illustration: "Halloway on your porch, hat in hand, all warmth and civic purpose"
   setup: >
     Halloway rides out himself, which he only does when he wants something. The town needs
-    grain for the winter stores, he says — a civic matter, a neighborly one — and who better
+    grain for the winter stores, he says, a civic matter, a neighborly one, and who better
     to ask than the Sull's most promising farm? He never quite says no is an option.
   recency_suppress: 16
   on_ignore: dismiss
@@ -196,7 +196,7 @@
     - id: give-generous
       text: "Give generously."
       cost: { coin: 15 }
-      result: "You put more than your share on the plate. The Vigil is kept another week on coin like yours, and Grange marks it — not the amount, he'd never; only that you gave."
+      result: "You put more than your share on the plate. The Vigil is kept another week on coin like yours, and Grange marks it: not the amount, he'd never; only that you gave."
       effects:
         - reckoning: -1
         - relationship: { npc: elias_grange, delta: +1 }
@@ -210,8 +210,8 @@
   severity: minor
   illustration: "a woman in plain grey at your door in the snow, a covered basket on her arm, breath smoking"
   setup: >
-    Sister Ruth comes through the snow with a basket — bread, a little salt meat, a twist of
-    tea — for a household she's heard is running thin. She doesn't ask if you need it. She
+    Sister Ruth comes through the snow with a basket (bread, a little salt meat, a twist of
+    tea) for a household she's heard is running thin. She doesn't ask if you need it. She
     just holds it out, and waits, and does not make it a shame to take.
   conditions:
     - season: Winter
@@ -238,7 +238,7 @@
   severity: major
   illustration: "an abandoned farmhouse down the valley, a for-sale stake leaning at its gate, curtains still in the windows"
   setup: >
-    Another Kettle Bottom family has given up on the Sull and gone east — the third this year.
+    Another Kettle Bottom family has given up on the Sull and gone east, the third this year.
     Their land goes cheap, their tools cheaper, and their two vessels are standing in the
     empty yard with nowhere to be. Somebody will take them. The only question is who, and how.
   weight: 10
@@ -297,7 +297,7 @@
   illustration: "the banker on the road, ledger in the saddlebag, not dismounting, glancing at the soft ground"
   setup: >
     Silas Ridley rides out with his ledger and his cold courtesy. The charter company is
-    pressing him, he says, though he'd never put it so plainly — and paper that seemed sound
+    pressing him, he says, though he'd never put it so plainly, and paper that seemed sound
     a year ago is looking less so. He'd like to know your intentions. He'd like it very much.
   conditions:
     - year: { min: 3 }
@@ -324,7 +324,7 @@
   illustration: "the old woman crossing the market square, the crowd parting around her without seeming to, no one meeting her eye"
   setup: >
     Old Nan comes into town, which she rarely does, and the square parts around her like water round a
-    stone — nobody quite looking, nobody quite in her way. She stops at your stall. "You," she says.
+    stone: nobody quite looking, nobody quite in her way. She stops at your stall. "You," she says.
     "The ground's been talking about your east field. Thought you'd want telling."
   conditions:
     - relationship: { npc: old_nan, min: neutral }
@@ -348,7 +348,7 @@
   severity: flavor
   illustration: "the congregation filing out of the whitewashed church into hard light, the preacher shaking hands at the door"
   setup: >
-    Grange preaches the Vigil on Sunday, as he always does — the world old and hungry underneath, the
+    Grange preaches the Vigil on Sunday, as he always does: the world old and hungry underneath, the
     living owing a debt of watching. Today his certainty has a crack in it you can hear if you listen,
     and once or twice his eyes go to the back of the room, where the ground is, and lose the thread.
   conditions:
@@ -361,7 +361,7 @@
   severity: major
   illustration: "two farmers and a dry ditch, the town gathered on the bank to see which way the mayor rules"
   setup: >
-    A quarrel over the creek has split the valley — upstream and down, whose fields drink first in a dry
+    A quarrel over the creek has split the valley: upstream and down, whose fields drink first in a dry
     year. Halloway means to settle it, and both sides are counting who stands where. Your voice carries;
     you'll have to spend it on one side or the other, or make an enemy of both by staying out.
   weight: 8
@@ -375,7 +375,7 @@
         - reputation: +1
     - id: side-downstream
       text: "Side with the downstream men."
-      result: "You back the downstream farms — the smaller holdings, the ones a dry year ruins. It costs you the upstream men's regard and buys you the gratitude of the desperate, which is worth more than it looks come a hard season."
+      result: "You back the downstream farms, the smaller holdings, the ones a dry year ruins. It costs you the upstream men's regard and buys you the gratitude of the desperate, which is worth more than it looks come a hard season."
       effects:
         - reputation: +1
     - id: stay-out
@@ -391,7 +391,7 @@
   illustration: "the doctor leaning in a doorway, dry and unhurried, a bottle in one hand, watching the street"
   setup: >
     Doc Bell knows everyone's ailments and half their secrets, and dispenses both with the same dry care.
-    Today they've a rumor for you — for a favor, or a bottle, or just because you treat your hands
+    Today they've a rumor for you, for a favor, or a bottle, or just because you treat your hands
     decent and they've noticed. "Heard something," Bell says. "Might be worth your knowing."
   conditions:
     - relationship: { npc: doc_bell, min: warm }
@@ -400,7 +400,7 @@
   choices:
     - id: hear-the-rumor
       text: "Hear it out."
-      result: "Bell tells you a thing about a neighbor, or the market, or the Vanes — dry, precise, and useful. Information is the one crop that never rots. You file it away and stand them a drink."
+      result: "Bell tells you a thing about a neighbor, or the market, or the Vanes, dry, precise, and useful. Information is the one crop that never rots. You file it away and stand them a drink."
       effects:
         - flag: { set: heard-rumor, to: true }
     - id: not-my-business
@@ -413,7 +413,7 @@
   severity: minor
   illustration: "a country wedding on the church green, plain flowers, the whole town turned out, one genuinely happy day"
   setup: >
-    There's a wedding at the church — a rare wholly-glad day in a country that doesn't hand them out
+    There's a wedding at the church, a rare wholly-glad day in a country that doesn't hand them out
     freely. The whole town turns out. For an afternoon nobody talks of blight or debt or the ground,
     and the fiddle plays, and it is almost enough to make a man forget where he is.
   recency_suppress: 20
@@ -437,7 +437,7 @@
   severity: major
   illustration: "a charter-company agent with a levy book, a badge of office, a line of grim farmers waiting to pay"
   setup: >
-    The charter company sends a man to collect its due — a levy on every homestead, for the roads and
+    The charter company sends a man to collect its due: a levy on every homestead, for the roads and
     the law and the privilege of scratching a living off ground the company owns on paper. Small enough.
     Regular as the frost, and about as welcome.
   conditions:
@@ -461,7 +461,7 @@
   severity: minor
   illustration: "the preacher walking a field's edge with his book, the household following, a hand cupped over new seed"
   setup: >
-    Grange offers to walk your fields and say the old words over them — a blessing on the ground and
+    Grange offers to walk your fields and say the old words over them: a blessing on the ground and
     the growing. The hardline Church calls it half-pagan. Grange says a man does what mercy he can and
     argues the doctrine later. He's offering it to you now, book in hand.
   conditions:

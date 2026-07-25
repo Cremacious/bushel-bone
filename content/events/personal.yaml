@@ -1,4 +1,4 @@
-# Personal events (§3/§5): the clones themselves — illness, quarrel, loyalty, despair,
+# Personal events (§3/§5): the clones themselves, illness, quarrel, loyalty, despair,
 # death and its disposal. This is the moral engine at the human scale. The burial card is
 # the whole game in miniature; treat it with the restraint the style guide demands.
 
@@ -8,7 +8,7 @@
   severity: major
   illustration: "a clone flushed and shivering on a cot, a damp cloth on the brow, the others watching from the door"
   setup: >
-    One of the hands has taken a fever — flushed and shaking and no use in the field, and
+    One of the hands has taken a fever, flushed and shaking and no use in the field, and
     getting worse. Doc Bell would come, for coin. Fevers pass, sometimes, left alone. In a
     hard winter, sometimes they don't.
   on_ignore: worst
@@ -41,7 +41,7 @@
   severity: major
   illustration: "a still form under a blanket in the bunkhouse, the other hands standing back, hats in hand, waiting on you"
   setup: >
-    One of them is dead — fever, or the cold, or the year simply catching up with a frail body.
+    One of them is dead: fever, or the cold, or the year simply catching up with a frail body.
     The others have carried the still form to the barn and stand waiting, because the next part
     is yours. The ground is soft in the east field. It is always soft, out here. What you do now,
     the land remembers.
@@ -78,7 +78,7 @@
         - ghost_roll: { add: this }
         - morale: { target: household, amount: -8 }
     - id: full-funeral
-      text: "A full funeral — the preacher, the naming, the day."
+      text: "A full funeral: the preacher, the naming, the day."
       cost: { coin: 40, rest_day: true }
       result: "You send for Grange and give the whole day to it, and every hand stands and hears the name said proper into the cold. It costs you a working day and forty marks. It is the difference between a farm and a slaughterhouse, and the household knows you chose it."
       effects:
@@ -91,8 +91,8 @@
   severity: minor
   illustration: "two clones squared off in the bunkhouse doorway, the others watching, a spilled bowl between them"
   setup: >
-    Two of the hands have come to hate each other — over a bunk, a chore, a word, nobody quite
-    knows anymore — and the whole bunkhouse is sour with it. Left to fester, it splits a
+    Two of the hands have come to hate each other, over a bunk, a chore, a word, nobody quite
+    knows anymore, and the whole bunkhouse is sour with it. Left to fester, it splits a
     household right when you need it whole.
   conditions:
     - clones: { min: 3 }
@@ -144,7 +144,7 @@
   severity: minor
   illustration: "a clone moving stiff and slow at the row's end, a hand pressed to the back, grey in the face"
   setup: >
-    You've been driving the hands hard — a hard year asks it — and it's begun to show. One of
+    You've been driving the hands hard, a hard year asks it, and it's begun to show. One of
     them moves like an old man now, stiff and grey, slower every week. Worked bodies wear out,
     the same as tools, and mend slower.
   conditions:
@@ -168,7 +168,7 @@
   severity: major
   illustration: "a made cot at dawn, unslept-in, the bunkhouse door ajar on grey light"
   setup: >
-    A cot is made and empty this morning — not taken, not dead, just gone, walked off into the
+    A cot is made and empty this morning, not taken, not dead, just gone, walked off into the
     dark rather than face another day of your farm. A household worked to the bone and never
     eased loses its hands to the road, one quiet dawn at a time.
   crisis_gate:
@@ -194,7 +194,7 @@
   illustration: "a clone standing cap in hand at the porch step, working up to a question, the farmer in the doorway"
   setup: >
     One of the hands comes to the porch of an evening, cap in hand, and takes a while working
-    up to it. They'd like a name of their own, they finally say — not the one the Vat gave, a
+    up to it. They'd like a name of their own, they finally say, not the one the Vat gave, a
     real one, one they picked. It's a small thing to ask. It's not a small thing to be asked.
   on_ignore: dismiss
   choices:
@@ -215,7 +215,7 @@
   severity: minor
   illustration: "a clone hauling a half-frozen farmer through the snow toward the lit house, both of them near done"
   setup: >
-    You went out in the blizzard after a strayed beast and the cold near had you — and it was
+    You went out in the blizzard after a strayed beast and the cold near had you, and it was
     one of the hands who came out into it, roped to the porch, and hauled you back through the
     white to the fire. You'd not be here to reckon the accounts if she hadn't. She says nothing
     of it. But it happened.
@@ -242,7 +242,7 @@
   severity: minor
   illustration: "two clones sitting close on the bunkhouse step at dusk, shoulders touching, not talking, just being near"
   setup: >
-    Two of the hands have taken to each other — you see them on the step at dusk, close, not saying
+    Two of the hands have taken to each other. You see them on the step at dusk, close, not saying
     much, just being near. The Vat gave them no leave to love anybody. They've gone and done it anyway,
     which tells you something about what you're really growing out there.
   conditions:
@@ -267,7 +267,7 @@
   severity: major
   illustration: "a clone standing stock-still in a field, tools down, meeting the farmer's eye and not moving"
   setup: >
-    One of the hands has stopped. Not tired — stopped. Stands in the field with the tools down and
+    One of the hands has stopped. Not tired: stopped. Stands in the field with the tools down and
     meets your eye and won't move, won't say why, won't be shouted back to work. A hand that defies you
     in front of the others is a crack in the whole crew, and every one of them is watching to see what
     you do with a crack.
@@ -277,12 +277,12 @@
   choices:
     - id: hear-them-out
       text: "Ask, plainly, what's wrong."
-      result: "You put your own tools down and ask. It takes a while, but it comes out — a grievance, a fear, a small hard thing you can actually fix. You fix it. The crew watches a man listen to a hand, and works the harder for having seen it."
+      result: "You put your own tools down and ask. It takes a while, but it comes out: a grievance, a fear, a small hard thing you can actually fix. You fix it. The crew watches a man listen to a hand, and works the harder for having seen it."
       effects:
         - morale: { target: household, amount: +2 }
     - id: make-an-example
       text: "Make an example. The others are watching."
-      result: "You break the defiance hard, in front of them all, because a crew must know who holds the whip. It works — the hand goes back to the field. And every other hand learns, watching, exactly what you are, and files it where the ground can read it later."
+      result: "You break the defiance hard, in front of them all, because a crew must know who holds the whip. It works: the hand goes back to the field. And every other hand learns, watching, exactly what you are, and files it where the ground can read it later."
       effects:
         - morale: { target: household, amount: -8 }
         - reckoning: +1
@@ -293,7 +293,7 @@
   severity: minor
   illustration: "a long-serving clone moving stiff at first light, grey at the temples, slower than the young ones but sure"
   setup: >
-    One of your hands is getting old — grey at the temple now, slow to start of a cold morning, not the
+    One of your hands is getting old, grey at the temple now, slow to start of a cold morning, not the
     worker he was. He knows it. He works twice as careful to make up for what he's lost in speed, and
     watches your face for the day you decide he's not worth his feed.
   conditions:
@@ -302,12 +302,12 @@
   choices:
     - id: keep-him-on
       text: "Keep him on. He's earned it."
-      result: "You put him to the work that wants care over speed — the seed, the tending, the young ones' teaching — and he does it better than any of them. A farm that keeps its old hands is a farm the young ones will stay to grow old on."
+      result: "You put him to the work that wants care over speed, the seed, the tending, the young ones' teaching, and he does it better than any of them. A farm that keeps its old hands is a farm the young ones will stay to grow old on."
       effects:
         - morale: { target: household, amount: +2 }
     - id: sell-him-on
       text: "Sell him to Vane while he's worth anything."
-      result: "You sell the old hand to Ambrose before age takes the last of his value. He goes without a word — he saw it coming. The young ones watch him go and do the arithmetic on their own futures, and the doing of it costs you more than the old man's slowing ever did."
+      result: "You sell the old hand to Ambrose before age takes the last of his value. He goes without a word: he saw it coming. The young ones watch him go and do the arithmetic on their own futures, and the doing of it costs you more than the old man's slowing ever did."
       effects:
         - coin: +20
         - morale: { target: household, amount: -6 }
@@ -319,7 +319,7 @@
   severity: minor
   illustration: "the hands gathered quiet around an empty cot, one of them holding a dead friend's tin cup"
   setup: >
-    One of them died this winter, and the ones left are grieving — quiet, around the empty cot, one of
+    One of them died this winter, and the ones left are grieving, quiet, around the empty cot, one of
     them turning a dead friend's tin cup over and over. The Vat grew them to work, not to mourn. They
     mourn anyway. How you meet it tells them whether their own dying will be marked or forgotten.
   conditions:
@@ -343,7 +343,7 @@
   severity: major
   illustration: "a snapped plough-blade in the mud, a clone standing over it stricken, the farmer's shadow falling across both"
   setup: >
-    A hand has broken the plough — carelessness, or bad iron, or plain hard luck, but it's broken, and
+    A hand has broken the plough, carelessness, or bad iron, or plain hard luck, but it's broken, and
     it's a season's mending or a purse of marks to replace, and the hand who did it stands over the
     wreck of it white-faced, waiting to learn what kind of man you are when a thing goes wrong.
   conditions:
@@ -368,7 +368,7 @@
   severity: flavor
   illustration: "a rough-carved wooden bird set on the farmhouse windowsill, a hand walking away not looking back"
   setup: >
-    There's a thing on the windowsill this morning — a little bird, rough-carved out of a scrap of
+    There's a thing on the windowsill this morning: a little bird, rough-carved out of a scrap of
     cottonwood, set there by one of the hands and no note and no name. It's not much. It's the kind of
     not-much a person only makes for someone they've decided is worth the whittling.
   conditions:
@@ -413,7 +413,7 @@
   severity: major
   illustration: "a full bowl untouched on a bunkhouse table, a hollow-eyed clone turned to the wall, the others exchanging looks"
   setup: >
-    One of the hands has stopped eating — turns his bowl away, turns to the wall, wastes to shadow while
+    One of the hands has stopped eating. He turns his bowl away, turns to the wall, wastes to shadow while
     the others watch and don't know what to do. It isn't sickness Doc Bell can name. It's the kind of
     giving-up that takes a soul the Vat grew for work and never taught a reason to keep going. He's
     slipping, and quiet, and quick.
@@ -424,7 +424,7 @@
     - id: give-him-reason
       text: "Sit with him. Find him a reason to stay."
       cost: { labor: 0.5 }
-      result: "You sit with him in the dark of the bunkhouse and don't leave until he's talking, and it's slow and it's hard and it works — you find him a small reason, a task that's his, a name said kind, a place. He eats. He stays. It cost you a day and it saved a life, and you'd not have called those a fair trade before you came to the Sull."
+      result: "You sit with him in the dark of the bunkhouse and don't leave until he's talking, and it's slow and it's hard and it works: you find him a small reason, a task that's his, a name said kind, a place. He eats. He stays. It cost you a day and it saved a life, and you'd not have called those a fair trade before you came to the Sull."
       effects:
         - morale: { target: household, amount: +3 }
     - id: let-him-go

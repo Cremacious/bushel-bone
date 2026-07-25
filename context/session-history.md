@@ -7,6 +7,22 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 6 — 2026-07-25 — Dash-punctuation scrub (#26)
+
+**Worked on:** Closed out the last content task in the "Prototype v0.2: Onboarding & Imagery" milestone: scrubbed every em dash and hyphen-as-pause from player-facing text, per D-037.
+
+**Method:** Dispatched nine parallel subagents, one per file, each briefed on the style-guide rule (comma/period/colon/semicolon/fresh-sentence instead of a dash, judged sentence by sentence, not a blind replace) and told to preserve hyphenated compound words. Covered `prototype/year1.html` (42 fixed), all seven `content/events/*.yaml` files (155 fixed total across weather/reckoning/opportunities/town/pests/wildlife/personal), and `docs/style-guide.md` itself (which, ironically, used em dashes in the very prose banning them).
+
+**Verified:** grepped the whole set for `—` (zero remaining), re-parsed all seven YAML files with `pyyaml` (all valid), and re-parsed `year1.html`'s embedded `<script>` block with Node (no syntax breakage from the edits).
+
+**Scope note:** left em dashes alone in internal design/process docs (CLAUDE.md, decisions-log, mechanics-bible, narrative-bible, etc.) and gitignored `.superpowers/` scratch content — issue #26 only covers player-facing prose and the style guide's own examples.
+
+**Artifacts changed:** `prototype/year1.html`, `docs/style-guide.md`, `content/events/{opportunities,personal,pests,reckoning,town,weather,wildlife}.yaml`, `CLAUDE.md` (status line), this file. **Not yet committed** — awaiting the user's go-ahead to commit and close #26.
+
+**Next up:** Commit this scrub and close #26, then the Vercel proof-of-concept for testers (the last item in milestone #2).
+
+---
+
 ## Session 5 — 2026-07-25 — Prototype UX design: Reuben the Foreman + the imagery layer
 
 **Worked on:** Acted on the first real playtest feedback (the prototype is confusing to play; Reuben is inconsistently privileged). Ran a full brainstorm-to-spec design pass using the visual companion (mockups approved in-browser), and set up issue tracking for the whole onboarding-and-imagery phase.

@@ -32,7 +32,7 @@
   illustration: "a lamp lit late in the bunkhouse window, a figure sitting up on the edge of a cot"
   setup: >
     Nobody in the house is sleeping well. Not the hands, not you. The dreams are of nothing
-    you can name by morning — only that they were of the ground, and that the ground was patient.
+    you can name by morning, only that they were of the ground, and that the ground was patient.
   on_ignore: dismiss
 
 # ── WARNINGS (25–54): omens with teeth; require a debt ──────────────────────
@@ -73,7 +73,7 @@
   severity: minor
   illustration: "a young clone wide-eyed against the bunkhouse wall, knees drawn up, in lamp-light"
   setup: >
-    One of the hands — the young one, Tom — has stopped sleeping. He sits up against the
+    One of the hands, the young one, Tom, has stopped sleeping. He sits up against the
     wall all night with his eyes on the door, and in the day he is slow and grey. He will
     only say that someone stands at the foot of his cot, and that he knows her.
   conditions:
@@ -98,7 +98,7 @@
   severity: minor
   illustration: "a spreading grey rot in one corner of a healthy green field, sharp-edged as a shadow"
   setup: >
-    A corner of the east field has gone grey and slack — not the whole field, only the near
+    A corner of the east field has gone grey and slack, not the whole field, only the near
     corner, the low ground, in a shape with edges too clean for a natural rot. It stops
     exactly where you'd expect it to stop, if you thought about where it started.
   conditions:
@@ -118,7 +118,7 @@
   severity: crisis
   illustration: "a figure standing among the night barley, faced away, where a field was buried into"
   setup: >
-    You put her in the east field in the spring — unmarked, to spare the forty marks and
+    You put her in the east field in the spring, unmarked, to spare the forty marks and
     the day of work. Tonight she is standing in it. She is not doing anything. She is only
     standing where you left her, in the rows, faced away, as though waiting for the morning's task.
   crisis_gate:
@@ -147,7 +147,7 @@
         - relationship: { npc: old_nan, min: bonded }
       outcomes:
         - odds: even
-          result: "She does not turn, but she answers — a word, a name, something of what the ground below her wants. You will not repeat it, but you will act on it."
+          result: "She does not turn, but she answers: a word, a name, something of what the ground below her wants. You will not repeat it, but you will act on it."
           effects:
             - flag: { set: marrow-truth-glimpsed, to: true }
         - odds: even
@@ -162,7 +162,7 @@
   illustration: "boot-prints in the frost circling the house, coming from the burial ground, going nowhere"
   setup: >
     There are prints in the frost this morning, a bare set of them, circling the house and
-    stopping under each window in turn before going back the way they came — toward the
+    stopping under each window in turn before going back the way they came, toward the
     burial ground, and no further. You count the windows they stopped at. They stopped at all of them.
   conditions:
     - reckoning_tier: { min: walkers }
@@ -189,7 +189,7 @@
   setup: >
     A cot is empty this morning that should not be, the blanket thrown back and the door
     open on the cold. No tracks lead away. The hands will not meet your eye. One of them is
-    simply gone, in the night, the way the founders' people went — taken by the ground that
+    simply gone, in the night, the way the founders' people went, taken by the ground that
     was owed.
   crisis_gate:
     - reckoning_tier: { min: walkers }
@@ -229,7 +229,7 @@
         - any:
             - relationship: { npc: elias_grange, min: warm }
             - relationship: { npc: old_nan, min: warm }
-      result: "They come. Between the preacher's rite and the old woman's older one, they buy the ground back a little — enough that some of it might grow again. It costs them, and they do not pretend otherwise."
+      result: "They come. Between the preacher's rite and the old woman's older one, they buy the ground back a little, enough that some of it might grow again. It costs them, and they do not pretend otherwise."
       effects:
         - reckoning: -6
     - id: salvage-what-you-can
@@ -267,7 +267,7 @@
   severity: crisis
   illustration: "the whole household at the windows in the dark, and beyond the glass the burial ground standing up, all of it, at once"
   setup: >
-    There is no omen tonight. There is only the ground, standing up — the whole burial field,
+    There is no omen tonight. There is only the ground, standing up: the whole burial field,
     the whole low Sull, every name you laid down and did not name, coming home together across
     the frost toward the only light left burning. The Vigil that held it since the Salting has
     failed, and it has failed on your account.
@@ -281,11 +281,11 @@
         - relationship: { npc: old_nan, min: bonded }
       outcomes:
         - odds: long_shot
-          result: "You reach the Well with Old Nan and give the ground the one thing it will take in place of the farm — and it is not the farm you leave with. But you leave. Some of you leave."
+          result: "You reach the Well with Old Nan and give the ground the one thing it will take in place of the farm, and it is not the farm you leave with. But you leave. Some of you leave."
           effects:
             - reckoning: -30
         - odds: likely
-          result: "You do not reach the Well in time. The land takes back what was always its own — the fields, the house, the name. What the founders bought with the Salting, the ground has called due, and collected."
+          result: "You do not reach the Well in time. The land takes back what was always its own: the fields, the house, the name. What the founders bought with the Salting, the ground has called due, and collected."
           effects:
             - flag: { set: land-lost, to: true }
     - id: stand-in-the-door
@@ -294,7 +294,7 @@
       effects:
         - flag: { set: land-lost, to: true }
 
-# ── ATONEMENT (offered services — the road back) ────────────────────────────
+# ── ATONEMENT (offered services, the road back) ────────────────────────────
 - id: grange-offers-the-rite
   title: "Grange at the Gate"
   family: reckoning
@@ -329,7 +329,7 @@
   severity: minor
   illustration: "the old woman at her fire, a bundle of something dark in her lap, not looking up"
   setup: >
-    Old Nan will cleanse a piece of ground the Church has no words for — she knows the older
+    Old Nan will cleanse a piece of ground the Church has no words for. She knows the older
     ones. But she does not work in coin. "You'll owe it different," she says, "and I'll tell
     you what it is when I come to collect. That's the price of the quiet word. Take it or don't."
   conditions:
@@ -367,7 +367,7 @@
   severity: minor
   illustration: "water drawn from the well standing cloudy and faintly warm in the bucket, though the day is cold"
   setup: >
-    The water's come up wrong — cloudy, and warm to the hand though the morning's cold, with a taste
+    The water's come up wrong: cloudy, and warm to the hand though the morning's cold, with a taste
     under the taste that the stock won't drink past. The well was sweet when you dug it. Something down
     in the ground has changed its mind about your water.
   conditions:
@@ -390,7 +390,7 @@
   severity: minor
   illustration: "a fist raised to knock at a door in failing light, the caller's face turned just out of view"
   setup: >
-    There's a knock at the door at dusk, and when you open it there's no one on the step — only, going
+    There's a knock at the door at dusk, and when you open it there's no one on the step, only, going
     away down the road in the last light, someone you half-know the walk of, someone you're fairly
     certain you buried. They don't turn around. The knock comes again the next dusk, and the next.
   conditions:
@@ -410,7 +410,7 @@
   severity: minor
   illustration: "a sleeper's face in lamplight, eyes moving under the lids, a suggestion of soil at the edges of the frame"
   setup: >
-    You've started dreaming of the ground — not of anything in it, just of the ground itself, deep and
+    You've started dreaming of the ground, not of anything in it, just of the ground itself, deep and
     pale and patient, keeping its long account. You wake knowing a number you can't name and can't
     forget. The hands have the same dream. None of you says so. All of you know.
   conditions:
@@ -432,7 +432,7 @@
   severity: crisis
   illustration: "the church candles all guttering low at once at midnight, the congregation's faces gone frightened in the failing light"
   setup: >
-    Word comes from town that the Vigil is failing — the candles gutter low all at once now, the rite
+    Word comes from town that the Vigil is failing. The candles gutter low all at once now, the rite
     won't hold the longest night the way it held it since the Salting, and Grange's voice cracks on the
     naming. The whole valley feels the cap on the Old Well loosening. And the valley, when it looks for
     a cause, looks toward the farm laying down the heaviest debt. It looks toward you.
@@ -446,13 +446,13 @@
         - any:
             - relationship: { npc: elias_grange, min: warm }
             - relationship: { npc: old_nan, min: warm }
-      result: "You throw your coin and your hands and your name behind the rite — Grange's words and Nan's older ones both — and between you the Vigil holds another year, guttering but unbroken. It buys the valley time. It does not buy forgiveness, and everyone knows whose debt nearly broke it."
+      result: "You throw your coin and your hands and your name behind the rite, Grange's words and Nan's older ones both, and between you the Vigil holds another year, guttering but unbroken. It buys the valley time. It does not buy forgiveness, and everyone knows whose debt nearly broke it."
       effects:
         - reckoning: -6
         - coin: -30
     - id: let-it-gutter
       text: "It's the town's rite, not yours. Let it gutter."
-      result: "You leave the town to its failing candles. The Vigil gutters lower, and the ground comes a little further up, and the valley marks the newcomer who wouldn't lift a hand to hold the dark back. When it breaks — and it will — they'll remember you didn't help."
+      result: "You leave the town to its failing candles. The Vigil gutters lower, and the ground comes a little further up, and the valley marks the newcomer who wouldn't lift a hand to hold the dark back. When it breaks, and it will, they'll remember you didn't help."
       effects:
         - reputation: -5
 
@@ -473,7 +473,7 @@
   choices:
     - id: keep-the-salt
       text: "Keep the salt lines, the old way."
-      result: "You keep the salt fresh across every threshold the way Nan showed you, and whether it holds anything out or only holds your nerve together, you sleep the better for the doing. The old ways are mostly that — something to do with your hands against the dark."
+      result: "You keep the salt fresh across every threshold the way Nan showed you, and whether it holds anything out or only holds your nerve together, you sleep the better for the doing. The old ways are mostly that: something to do with your hands against the dark."
       effects:
         - morale: { target: household, amount: +1 }
     - id: sweep-it-away
@@ -490,7 +490,7 @@
   setup: >
     Grange rides out and takes his hat off and, for once, doesn't reach for scripture. "I'll say it
     plain, because someone must," he tells you. "The ground's woken on your account. I've seen the signs
-    my whole life and I know them. You've a little time yet to set it right — the naming, the rites, the
+    my whole life and I know them. You've a little time yet to set it right: the naming, the rites, the
     stopping of whatever you've been doing. Not much time. But some. I'd not waste it."
   conditions:
     - reckoning_tier: { min: walkers }
@@ -499,7 +499,7 @@
   choices:
     - id: heed-him
       text: "Heed him. Begin setting it right."
-      result: "You take the preacher's plain warning the way it was meant, and begin the hard slow work of paying the ground back — the namings, the rites, the stopping. Grange helps where he can. It is not too late. He would not have ridden out if it were."
+      result: "You take the preacher's plain warning the way it was meant, and begin the hard slow work of paying the ground back: the namings, the rites, the stopping. Grange helps where he can. It is not too late. He would not have ridden out if it were."
       effects:
         - reckoning: -4
     - id: wave-him-off

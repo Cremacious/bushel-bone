@@ -1,5 +1,5 @@
 # Opportunity events (§2/§9): merchants, demand shocks, contracts, windfalls, and the
-# eastern money. This family is the game's temptation engine — most cards offer a gain
+# eastern money. This family is the game's temptation engine: most cards offer a gain
 # with a cost woven in. Demand shocks re-rank the season's crops (§2).
 
 - id: vanes-wagon
@@ -9,7 +9,7 @@
   illustration: "a painted wagon halted on the dusk road, one lantern lit, a tarp over shapes"
   setup: >
     Ambrose Vane's wagon stops at your gate as the light goes. "A Grower," he says, warm
-    as a parlor. "Sharp-minded, strong-backed. I'd not sell her cheap to just anyone — but
+    as a parlor. "Sharp-minded, strong-backed. I'd not sell her cheap to just anyone, but
     you've a kind look about you." Under the tarp, something shifts, and is still.
   weight: 18
   conditions:
@@ -28,7 +28,7 @@
       requires:
         - relationship: { npc: ambrose_vane, min: warm }
       cost: { coin: 100 }
-      result: '"For you — a hundred, and you didn''t rob me, understand." (100 marks)'
+      result: '"For you, a hundred, and you didn''t rob me, understand." (100 marks)'
       effects:
         - clone: { add: { archetype: grower, body: average, mind: sharp } }
     - id: decline
@@ -79,7 +79,7 @@
   severity: minor
   illustration: "a stooped man with a pack of tin and cloth at the gate, a mule behind him cropping grass"
   setup: >
-    A pedlar comes up the road with a mule and a pack of everything — seed, tin, thread,
+    A pedlar comes up the road with a mule and a pack of everything: seed, tin, thread,
     and, wrapped in oilcloth at the bottom, a few things he'll only show a serious buyer.
   recency_suppress: 12
   on_ignore: dismiss
@@ -94,7 +94,7 @@
       text: "Ask what's in the oilcloth."
       requires:
         - reputation: { max: 39 }
-      result: "He looks at you a moment, weighing, then unwraps it. Weird seed — moon barley, he says, and won't say from where. Dear, and worth it to a man with the nerve."
+      result: "He looks at you a moment, weighing, then unwraps it. Weird seed, moon barley, he says, and won't say from where. Dear, and worth it to a man with the nerve."
       effects:
         - seed: { crop: moon_barley, amount: +4 }
         - coin: -15
@@ -119,7 +119,7 @@
   choices:
     - id: sign
       text: "Sign the contract."
-      result: "You put your name to it and post the deposit. Now the price can crash and it won't touch you — and the sky had better cooperate, because the factor will not."
+      result: "You put your name to it and post the deposit. Now the price can crash and it won't touch you. The sky had better cooperate, though, because the factor will not."
       effects:
         - contract: { offer: crop_supply }
     - id: decline
@@ -165,7 +165,7 @@
   severity: major
   illustration: "a thin figure standing at the gate at dawn, no coat, no belongings, watching the house"
   setup: >
-    There's a vessel at your gate come morning — a foundling, strayed off some failed farm or
+    There's a vessel at your gate come morning: a foundling, strayed off some failed farm or
     wagon, thin and watchful and belonging to no one. Free hands, if you'll have them. Another
     mouth to bring through winter, if you can.
   weight: 12
@@ -195,7 +195,7 @@
   severity: minor
   illustration: "a peddler holding up a thick weather-almanac, its pages full of tiny figures and moons"
   setup: >
-    A man comes selling the year's almanac — the weather-tables, the moon-gates, the planting
+    A man comes selling the year's almanac: the weather-tables, the moon-gates, the planting
     windows, all reckoned out in tiny print. A farmer who reads it well is never quite as
     surprised by the sky.
   recency_suppress: 20
@@ -204,7 +204,7 @@
     - id: buy-almanac
       text: "Buy it. (40 marks)"
       cost: { coin: 40 }
-      result: "You buy the book and pore over it by lamp. The forecasts read clearer now, and the windows come as no ambush. Money well spent, if the year is hard — and the year is always hard."
+      result: "You buy the book and pore over it by lamp. The forecasts read clearer now, and the windows come as no ambush. Money well spent, if the year is hard, and the year is always hard."
       effects:
         - item: { grant: almanac }
     - id: trust-the-sky
@@ -217,7 +217,7 @@
   severity: minor
   illustration: "a rusted tin unearthed at a fence-post, coins spilling from its cracked lid into dark soil"
   setup: >
-    A fence-post rots through and comes up with a tin under it — old coin, buried by whoever
+    A fence-post rots through and comes up with a tin under it: old coin, buried by whoever
     farmed this ground before you and never came back for it. Their loss is sitting in your hand.
   once: true
   on_ignore: dismiss
@@ -235,7 +235,7 @@
   illustration: "a lamplit table at the saloon, cards down, coin in the middle, Meredith watching from the bar"
   setup: >
     There's a game running at the back of Meredith's place, and a chair open. She catches
-    your eye from behind the bar and lifts one brow — an invitation, or a warning, or both.
+    your eye from behind the bar and lifts one brow: an invitation, or a warning, or both.
     The pot is real money. So is the losing.
   conditions:
     - has_building: [] # always available once in town; placeholder for "visited town"
@@ -268,7 +268,7 @@
   illustration: "a clean-shaven agent in a grey suit at your table, a leather folio and a fountain pen, out of place in the Sull"
   setup: >
     A man comes up the new Rail in a suit that cost more than your barn, and asks for you by
-    name. He represents an eastern concern — the Cawdor Mill — with an interest in the Sull's
+    name. He represents an eastern concern, the Cawdor Mill, with an interest in the Sull's
     ground. He is very polite. He would like to buy, or to contract, and he is used to getting
     what he asks for.
   conditions:
@@ -279,7 +279,7 @@
   choices:
     - id: hear-him-out
       text: "Hear his offer."
-      result: "He lays it out smooth as a card trick — a price for your land, or a contract to supply the Mill's works at scale. It is a great deal of money. He does not mention what the Mill does to ground like yours, and you do not, yet, ask."
+      result: "He lays it out smooth as a card trick: a price for your land, or a contract to supply the Mill's works at scale. It is a great deal of money. He does not mention what the Mill does to ground like yours, and you do not, yet, ask."
       effects:
         - flag: { set: cawdor-approached, to: true }
     - id: send-him-off
@@ -295,7 +295,7 @@
   illustration: "a new-built rail depot, a scale and a chalkboard of prices, a clerk in sleeve-garters"
   setup: >
     The Rail Depot is open for trade at last. The eastern prices posted on its board make the
-    Marrow's Cross market look like a church raffle — but the freight man takes his cut, and it's
+    Marrow's Cross market look like a church raffle, but the freight man takes his cut, and it's
     a wagon-day to haul a load out there.
   conditions:
     - flag: { name: rail-came, is: true }
@@ -305,12 +305,12 @@
     - id: haul-to-depot
       text: "Haul a big load out to the Depot."
       cost: { labor: 1.0 }
-      result: "You lose a day and a wagon to the freight run, and come back with more coin than the local market has ever paid you. Worth it — for a load big enough to bother."
+      result: "You lose a day and a wagon to the freight run, and come back with more coin than the local market has ever paid you. Worth it, for a load big enough to bother."
       effects:
         - market: { crop: wheat, shock: +0.25, seasons: 1 }
     - id: stay-local
       text: "The local market's good enough for a small load."
-      result: "You keep your day and sell at home. The Depot's for men with more to move than you have — this season, anyhow."
+      result: "You keep your day and sell at home. The Depot's for men with more to move than you have, this season, anyhow."
 
 - id: a-standing-order
   title: "A Standing Order"
@@ -318,7 +318,7 @@
   severity: major
   illustration: "a factor with a leather book of recurring accounts, a fountain pen poised, a firm handshake offered"
   setup: >
-    A Ledbury house offers a standing order — the same crop, the same quantity, every season for a
+    A Ledbury house offers a standing order: the same crop, the same quantity, every season for a
     year, at a fixed price. Steady money you can plan a life around. Money you're chained to, if the
     ground has a bad year.
   conditions:
@@ -328,12 +328,12 @@
   choices:
     - id: take-standing
       text: "Sign the standing order."
-      result: "You lock in a year of certain sales. The market can do what it likes now — and so can the weather, which worries you more."
+      result: "You lock in a year of certain sales. The market can do what it likes now, and so can the weather, which worries you more."
       effects:
         - contract: { offer: crop_supply }
     - id: stay-free
       text: "Season by season suits you better."
-      result: "You'd rather answer to the market than to a Ledbury ledger. He shrugs — there's no shortage of farms hungrier than yours."
+      result: "You'd rather answer to the market than to a Ledbury ledger. He shrugs. There's no shortage of farms hungrier than yours."
 
 - id: under-the-right-moon
   title: "Under the Right Moon"
@@ -341,7 +341,7 @@
   severity: major
   illustration: "moon barley seed pale in an open palm under a full moon, the field silver behind"
   setup: >
-    Old Nan sends word — or the pedlar does, or you simply feel it — that the moon is right for
+    Old Nan sends word, or the pedlar does, or you simply feel it, that the moon is right for
     barley of the other kind. Moon barley pays like nothing else at the Black Market. It also grows
     where honest grain won't, and men who plant it tend to be men with reasons.
   conditions:
@@ -364,9 +364,9 @@
   title: "The Auction Wagon"
   family: opportunities
   severity: minor
-  illustration: "a dead man's tools laid out on a wagon-bed for sale — a good plough, a scythe, a churn"
+  illustration: "a dead man's tools laid out on a wagon-bed for sale: a good plough, a scythe, a churn"
   setup: >
-    A farm up the valley failed, and its tools are on the block cheap — a good plough, a scythe with
+    A farm up the valley failed, and its tools are on the block cheap: a good plough, a scythe with
     life left in it, a churn. One man's ruin outfits another's start. That's the Sull.
   recency_suppress: 16
   on_ignore: dismiss
@@ -387,7 +387,7 @@
   severity: minor
   illustration: "a newspaper column read by lamplight, the word BLIGHT in heavy type, a farmer's grim satisfaction"
   setup: >
-    The paper says blight has taken the potato in the south counties — whole harvests lost. Hard on
+    The paper says blight has taken the potato in the south counties, whole harvests lost. Hard on
     them. And every sound potato in the Sull is worth more this week for it. A man feels a little low,
     profiting off another county's ruin, and counts the coin anyway.
   recency_suppress: 15
@@ -405,7 +405,7 @@
   severity: major
   illustration: "the banker across a table with a loan paper, precise and bloodless, a pen turned toward you"
   setup: >
-    Silas Ridley, of all people, offers you money — a loan against next year's harvest, to see you
+    Silas Ridley, of all people, offers you money: a loan against next year's harvest, to see you
     through a lean patch. His terms are fair, for a banker. His terms are also a hook, and you both
     know which end of it you're on.
   conditions:
@@ -430,7 +430,7 @@
   illustration: "a travel-worn letter with an eastern postmark, delivered to the wrong farm, the wax seal already cracked"
   setup: >
     A letter comes up on the mail wagon, eastern-postmarked, meant for the Vanes but left at your gate
-    by a careless rider. The seal is already broken. What's in it is none of your affair — which has
+    by a careless rider. The seal is already broken. What's in it is none of your affair, which has
     never yet stopped a curious man in a slow country.
   conditions:
     - relationship: { npc: meredith_vane, min: neutral }
@@ -439,12 +439,12 @@
   choices:
     - id: read-it
       text: "Read it before you hand it over."
-      result: "You read what wasn't meant for you — a few careful lines, a name you don't know, a sum of money. It means nothing to you yet. It will. You reseal it as best you can and think about what you've seen."
+      result: "You read what wasn't meant for you: a few careful lines, a name you don't know, a sum of money. It means nothing to you yet. It will. You reseal it as best you can and think about what you've seen."
       effects:
         - flag: { set: vane-clue, to: true }
     - id: deliver-it
       text: "Deliver it unread, sealed as you can."
-      result: "You carry it to Meredith unread. She takes it, reads your face for whether you looked, and decides — you'll never be sure rightly — to believe you didn't. 'Obliged,' she says, and it costs her something to say."
+      result: "You carry it to Meredith unread. She takes it, reads your face for whether you looked, and decides, you'll never be sure rightly, to believe you didn't. 'Obliged,' she says, and it costs her something to say."
       effects:
         - relationship: { npc: meredith_vane, delta: +1 }
 
@@ -455,7 +455,7 @@
   illustration: "two young pigs in a slatted crate on a wagon-bed, a farmer looking them over, a deal in the offing"
   setup: >
     A farmer breaking up his stock offers you a breeding pair of pigs, cheap and sound. A pair like
-    this is a herd in a year or two, and a herd is meat, and manure, and a hedge against a bad harvest —
+    this is a herd in a year or two, and a herd is meat, and manure, and a hedge against a bad harvest,
     if you've the fodder and the barn to carry them.
   conditions:
     - has_building: barn
@@ -478,7 +478,7 @@
   severity: minor
   illustration: "a buyer testing a handful of corn kernels between his teeth, a full wagon behind him, coin ready"
   setup: >
-    A factor's come up the road buying corn for a distillery east of Ledbury, and paying well for it —
+    A factor's come up the road buying corn for a distillery east of Ledbury, and paying well for it:
     a bushel of corn's worth more turned to drink than to bread, it seems, which tells you something
     about the country. If you've corn to sell, his purse is open.
   recency_suppress: 15
@@ -486,6 +486,6 @@
   choices:
     - id: sell-to-factor
       text: "Sell the factor your corn."
-      result: "You sell into the distillery trade and do well by it. What becomes of the corn after — and of the men who drink it — is between them and their own accounts, not yours. You've marks in hand and a factor who'll be back."
+      result: "You sell into the distillery trade and do well by it. What becomes of the corn after, and of the men who drink it, is between them and their own accounts, not yours. You've marks in hand and a factor who'll be back."
       effects:
         - market: { crop: corn, shock: +0.4, seasons: 1 }

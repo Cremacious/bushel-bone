@@ -25,7 +25,7 @@
   severity: flavor
   illustration: "a high clean sky over the homestead, wash on the line, the diorama bright"
   setup: >
-    A stretch of fair weather settles over the Sull — dry mornings, warm afternoons, the
+    A stretch of fair weather settles over the Sull: dry mornings, warm afternoons, the
     kind of days that make a man forget, for a while, what the ground is.
   on_ignore: dismiss
 
@@ -80,7 +80,7 @@
   setup: >
     The paper puts a hailstorm two days north, and the cloud on the horizon agrees with it.
     Your best field stands ripe. Bring it in rushed and you'll save most of it; trust the
-    front to miss and you keep the full weight — if it misses.
+    front to miss and you keep the full weight, if it misses.
   conditions:
     - season: [Summer, Fall]
   on_ignore: worst
@@ -88,7 +88,7 @@
     - id: emergency-harvest
       text: "Bring it in now, rushed."
       cost: { labor: 1.5 }
-      result: "You strip the field in a day, clumsy and fast, and lose a fifth of it to the hurry — but it's in the barn, and the sky can do what it likes."
+      result: "You strip the field in a day, clumsy and fast, and lose a fifth of it to the hurry. But it's in the barn, and the sky can do what it likes."
       effects:
         - flag: { set: rushed-harvest, to: true }
     - id: gamble
@@ -130,7 +130,7 @@
   illustration: "brown water over a low field, a fence-line half drowned, silt on the grass"
   setup: >
     A wet spring, and the river comes up over the low ground. Flood is a thief and a
-    gift both — it drowns what it takes and leaves rich silt where it recedes.
+    gift both: it drowns what it takes and leaves rich silt where it recedes.
   conditions:
     - season: Spring
   choices:
@@ -170,7 +170,7 @@
   severity: flavor
   illustration: "flat grey light, no wind, the wash hanging dead-straight on the line, a crow not moving"
   setup: >
-    There is no wind. Not a breath of it, all day — the wash hangs straight, the crows sit
+    There is no wind. Not a breath of it, all day. The wash hangs straight, the crows sit
     the fence and do not call, and the whole Sull holds its breath over something you cannot see.
   conditions:
     - reckoning_tier: { min: warnings }
@@ -275,7 +275,7 @@
     - id: cover-the-beds
       text: "Cover the tenderest beds with sacking."
       cost: { labor: 0.5 }
-      result: "You're out before dawn throwing sacking over the tenderest rows, and it saves them — most of them. The rest you'll resow, and curse the sky, and plant on regardless, because that's the work."
+      result: "You're out before dawn throwing sacking over the tenderest rows, and it saves them, most of them. The rest you'll resow, and curse the sky, and plant on regardless, because that's the work."
     - id: let-it-take-what-it-takes
       text: "Let the frost take what it takes."
       result: "You leave the frost to its work and take the loss. Half the young stand is blackened by noon. A late frost is the sky reminding a newcomer that the calendar is a suggestion out here, not a promise."
@@ -288,7 +288,7 @@
   severity: flavor
   illustration: "snow going to grey slush across the yard, water dripping from every eave, the first bare ground showing"
   setup: >
-    The thaw comes at last — the snow going to grey slush, water off every eave, the first bare ground
+    The thaw comes at last: the snow going to grey slush, water off every eave, the first bare ground
     showing black and wet at the field edges. The worst of the year is behind you. Everyone stands in
     the yard a moment, breathing the mud-and-meltwater smell of having survived another winter.
   conditions:
@@ -301,7 +301,7 @@
   severity: minor
   illustration: "a brown wall of dust rolling across the flats, the sun going copper, a hand pulling a kerchief up"
   setup: >
-    A dry wind's been blowing a week, and now it's picked up the topsoil and turned it into weather — a
+    A dry wind's been blowing a week, and now it's picked up the topsoil and turned it into weather: a
     brown haze that gets into the food, the eyes, the lungs, and scours the tender growth off the exposed
     fields. Ground worked bare blows away. The old-timers with their windbreaks and their fallow watch
     the dust roll and say nothing, which is its own kind of saying.
@@ -322,7 +322,7 @@
   severity: flavor
   illustration: "a clear high autumn sky, gold light across a ripe field, the whole household out cutting with a will"
   setup: >
-    Now and then the Sull hands you a perfect one — a clear high sky, gold light lying long across the
+    Now and then the Sull hands you a perfect one: a clear high sky, gold light lying long across the
     ripe fields, the air just cool enough to work in all day and never tire. The whole household's out
     cutting with a will, and for a few golden hours the ground feels less like a creditor and more like
     a gift. You'll take it. Out here you learn to take the good days whole.
