@@ -534,7 +534,7 @@
   function promoteForeman(id){ const h=handById(id); if(h&&h.alive){ S.foremanId=id; } }
   function openPromote(){
     const html = '<div class="rosterhdr"><b>Name a new foreman</b></div>'+
-      '<div class="prose" style="padding:0 16px 8px"><p>Reuben is in the ground. The hands need one of their own to speak for them, and you need a right hand. Choose.</p></div>'+
+      '<div class="prose" style="padding:0 16px 8px"><p>Your foreman is in the ground. The hands need one of their own to speak for them, and you need a right hand. Choose.</p></div>'+
       livingHands().map(h=>'<div class="aopt" data-id="'+h.id+'"><div>'+h.name+'<small>'+h.trait+'</small></div><span class="arrow">&#9656;</span></div>').join('');
     openOverlay(html, panel=>{ panel.querySelectorAll('.aopt[data-id]').forEach(el=>el.addEventListener('click',()=>{ promoteForeman(el.dataset.id); closeOverlay(); })); });
   }
