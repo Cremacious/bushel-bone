@@ -546,7 +546,18 @@
       });
     });
   }
-  function collectiveLine(){ return "The crew holds."; }   // Task 8 replaces this
+  function collectiveLine(){
+    const hands = livingHands();
+    const others = hands.filter(h=>h.id!==S.foremanId);
+    const low = hands.slice().sort((a,b)=>a.morale-b.morale)[0];
+    if(low && (low.morale<=1 || low.hungry || low.ill))
+      return "We will hold, but "+low.name+" is in a bad way. A kind word, or a full plate, would not go amiss.";
+    if(others.length===0)
+      return "It is just me for now. I will tell you true when the ground turns or the work gets past one pair of hands.";
+    if(hands.every(h=>h.morale>=4))
+      return "The crew is in good heart. Fed, rested, and willing. Long may it last.";
+    return "The hands are steady enough. No complaints worth carrying to you, not today.";
+  }
   function reubenGuidance(){
     const s = season();
     const bare = S.fields.filter(f=>!f.crop).length;
@@ -1309,7 +1320,7 @@
   newGame((Math.random()*1e9)>>>0);
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine };
   }
 
   runStep();
