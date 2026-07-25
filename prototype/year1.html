@@ -277,6 +277,26 @@
   .askbar .rtx{ font-size:13px; color:var(--ink-soft); } .askbar .rtx b{ color:var(--ink); }
   .askbar .rq{ margin-left:auto; font-size:15px; color:var(--accent); }
   .askbar[hidden]{ display:none; }
+  .rosterhdr{ display:flex; justify-content:space-between; align-items:baseline; padding:14px 16px 8px; }
+  .rosterhdr b{ font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); }
+  .rosterhdr span{ font-size:12px; color:var(--ink-faint); font-style:italic; }
+  .hand{ margin:0 14px 10px; border:1px solid var(--rule-fine); border-radius:5px; padding:11px 12px; background:color-mix(in srgb,var(--paper) 40%, transparent); cursor:pointer; }
+  .hand:last-child{ margin-bottom:14px; }
+  .hand.foreman{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 9%, var(--paper)); }
+  .hand .htop{ display:flex; align-items:center; gap:10px; }
+  .hand .hn{ flex:1; min-width:0; }
+  .hand .hn .nm{ font-size:16px; color:var(--ink); }
+  .hand .badge{ font-size:9px; letter-spacing:.1em; text-transform:uppercase; padding:2px 7px; border-radius:9px; vertical-align:middle; margin-left:6px; }
+  .hand .badge.fore{ background:var(--accent); color:var(--paper); }
+  .hand .badge.trait{ border:1px solid var(--rule-fine); color:var(--ink-soft); }
+  .hand .hmorale{ flex:0 0 auto; }
+  .hand .hmeta{ display:flex; gap:10px; align-items:center; margin-top:7px; flex-wrap:wrap; font-size:13px; }
+  .hand .task{ color:var(--ink); border:1px solid var(--rule-fine); border-radius:3px; padding:2px 8px; background:color-mix(in srgb,var(--paper) 30%, transparent); }
+  .hand .cond{ font-style:italic; color:var(--ink-soft); }
+  .hand .cond.worn{ color:var(--warn); } .hand .cond.hungry{ color:var(--bad); } .hand .cond.ill{ color:var(--bad); }
+  .voice{ margin:0 14px 12px; padding:10px 12px; border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%, transparent); }
+  .voice .who{ display:block; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:3px; }
+  .voice p{ margin:0; font-size:14px; font-style:italic; color:var(--ink); line-height:1.45; }
 </style>
 
 <div id="desk">
@@ -452,8 +472,47 @@
     S.hands.filter(h=>!h.alive).forEach(h=>{ hh += '<span><span class="lab">'+h.name+'</span><span style="color:var(--bad)">a marked grave</span></span>'; });
     hh += '<span><span class="lab">Regard</span><span class="regard">'+regardWord()+'</span></span>';
     document.getElementById("household").innerHTML = hh;
+    const hhEl = document.getElementById("household");
+    hhEl.style.cursor = "pointer";
+    hhEl.onclick = openRoster;
   }
   function refresh(){ renderHeader(); renderLedger(); document.getElementById("seedtag").textContent = "seed "+SEED.toString(16); }
+
+  /* ---------------- roster overlay ---------------- */
+  function moraleDots(n){ return '<span class="dots">'+"●".repeat(Math.max(0,n))+'<span class="off">'+"●".repeat(Math.max(0,5-n))+'</span></span>'; }
+  function condClass(h){ const c=condition(h); return (c==="worn"||c==="hungry"||c==="ill") ? c : ""; }
+  function taskLabel(h){
+    if(!h.task) return "no task set";
+    if(h.task.type==="tend") return "Tending "+(h.task.fieldId!=null?fieldName(S.fields[h.task.fieldId]):"a field");
+    return { rest:"Resting", chop:"Chopping wood", harvest:"Harvesting" }[h.task.type] || "at work";
+  }
+  function renderRoster(){
+    const fm = foreman();
+    const rows = livingHands().map(h=>{
+      const isF = h.id===S.foremanId;
+      const traits = [h.trait].concat(h.body&&h.body!=="average"?["Body "+h.body]:[]).concat(h.mind&&h.mind!=="average"?["Mind "+h.mind]:[]);
+      return '<div class="hand'+(isF?' foreman':'')+'" data-hand="'+h.id+'">'+
+        '<div class="htop"><div class="hn"><span class="nm">'+h.name+'</span>'+
+          (isF?'<span class="badge fore">Foreman</span>':'')+
+          traits.map(t=>'<span class="badge trait">'+t+'</span>').join('')+
+        '</div><div class="hmorale">'+moraleDots(h.morale)+'</div></div>'+
+        '<div class="hmeta"><span class="task">'+taskLabel(h)+'</span><span class="cond '+condClass(h)+'">'+condition(h)+'</span></div>'+
+      '</div>';
+    }).join('');
+    const voice = fm
+      ? '<div class="voice"><span class="who">'+fm.name+' speaks for the hands</span><p>'+collectiveLine()+'</p></div>'
+      : '<div class="voice"><p>There is no foreman to speak for them.</p></div>';
+    return '<div class="rosterhdr"><b>The Hands</b><span>'+livingHands().length+' housed</span></div>'+voice+rows;
+  }
+  function openRoster(){
+    openOverlay(renderRoster(), panel=>{
+      panel.querySelectorAll('.hand[data-hand]').forEach(el=>{
+        el.addEventListener('click',()=>openHand(el.dataset.hand));
+      });
+    });
+  }
+  function collectiveLine(){ return "The crew holds."; }   // Task 8 replaces this
+  function openHand(id){}                                   // Task 4 replaces this
 
   /* ---------------- stage rendering ---------------- */
   const stage = ()=>document.getElementById("stage");
@@ -1134,7 +1193,7 @@
   newGame((Math.random()*1e9)>>>0);
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster };
   }
 
   runStep();
