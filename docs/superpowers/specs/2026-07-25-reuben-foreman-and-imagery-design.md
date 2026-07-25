@@ -94,7 +94,7 @@ The counterpart to the tutor. The player does not open this; it opens itself. Wh
 
 This is the fix for the "it came out of nowhere" complaint. The player is always warned, in character, before the land collects, while the Reckoning itself stays unmeasured.
 
-**Escalation:** at low debt the omens stay ambient (dusk flavor only, no interruption). The Foreman interruption is reserved for tier crossings, so it stays rare and heavy.
+**Escalation:** at low debt the omens stay ambient (dusk flavor only, no interruption). The Foreman interruption is reserved for tier crossings, so it stays rare and heavy. It fires only the **first** time the player reaches each tier in a run (the first crossing into Warnings, and later into Walkers). Further cruelty within a tier deepens the ambient omens but does not interrupt again.
 
 ---
 
@@ -106,7 +106,7 @@ Every scene shows a location illustration, called a **plate** (the almanac word 
 **Rule:** the player always sees a plate and reads a place name, every scene. A scene with no specific place uses the homestead as its default plate.
 
 ### 7.2 The speaker portrait
-When a character speaks, their portrait (head, neck, shoulders) rises over the plate with a nameplate (name and role), so the player always knows who is talking. When the player is talking to Reuben, his portrait fills the plate.
+When a character speaks, their portrait (head, neck, shoulders) rises over the plate with a nameplate (name and role), so the player always knows who is talking. When the player is talking to Reuben, his portrait fills the plate. Individual scripted beats may show a speaking hand's own portrait (for example Della at Vane's wagon). The **ambient collective voice is always Reuben**: the roster's collective line and the Reckoning alarm never come from another hand.
 
 ### 7.3 Placeholders first
 Until real art exists, both plates and portraits render as styled placeholders that describe what the image will be, drawn from the prototype's bracketed stage directions and short per character portrait notes. This lets us playtest the whole imagery layer before any art is made (issues #21, #22, #23).
@@ -160,7 +160,7 @@ The Reckoning is never a number, never a meter, never a tooltip value. It reache
 
 ---
 
-## 12. Open questions
+## 12. Resolved decisions (from review, 2026-07-25)
 
-- Does the Reckoning alarm fire at every tier crossing, or only the first time the player reaches a new tier in a run? (Proposed: the first crossing into each tier, so it stays rare.)
-- Do the other hands ever speak in their own portraits during scripted beats (for example Della at Vane's wagon), or only ever through Reuben in the roster and alarm? (Proposed: scripted beats may show a hand's own portrait; the ambient collective voice is always Reuben.)
+- **The Reckoning alarm fires first-only.** The Foreman interrupts the first time the player reaches each tier in a run (the first crossing into Warnings, and later into Walkers). It does not re-interrupt for further cruelty within the same tier; that deepens the ambient omens instead. This keeps the warning rare and heavy.
+- **The collective voice is always Reuben.** The roster's collective line and the Reckoning alarm always come from the Foreman. Individual scripted beats may still show a speaking hand's own portrait (for example Della at Vane's wagon), because an individual's own pivotal moment is not the ambient collective voice.

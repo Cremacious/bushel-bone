@@ -177,6 +177,14 @@ Foundational narrative decisions. Full write-up in `docs/narrative-bible.md` Par
 **Business note:** the single unlock is the ENTIRE revenue model — no recurring or DLC income by choice; retention is served by free content, not sold. A clean creative stance with a real revenue tradeoff, chosen deliberately.
 **Resolves Q-002.**
 
+### D-036. Reuben becomes the Foreman; the farmhand roster and the imagery layer (Prototype v0.2).
+**Chosen:** From a playtest that found the prototype confusing and Reuben inconsistently privileged, Reuben is made the **Foreman**: the player's right hand and the single human channel to the farmhand collective. He is their voice, the tutor (the player asks him what to do next), and the Reckoning alarm (he interrupts, in character, when moral debt crosses a tier, with no number shown). If he dies, the player names a new Foreman. Every hand is now first-class: a farmhand **roster** lists them all with morale and condition, and each is assigned per season (realizing the locked per-clone-assignment decision). A new **imagery layer** gives every scene a location "plate" (a woodcut illustration inside an engraved border, with an always-visible place-name caption) and a speaker portrait that rises over it. Two review decisions: the alarm fires **first-only** (the first crossing into each tier per run), and the ambient **collective voice is always Reuben** (individual scripted beats may still show a hand's own portrait). Full design: `docs/superpowers/specs/2026-07-25-reuben-foreman-and-imagery-design.md`.
+**Rationale:** one idea fixes two problems at once. It gives Reuben a real mechanical reason to exist (closing the inconsistency), and it turns the collective's suffering into a voice the player hears rather than a meter, which keeps the hidden Reckoning hidden while making it fair. The Foreman warning kills the "it came out of nowhere" failure mode; first-class hands close the "scale on anonymous disposable labor" exploit; named hands heard through Reuben answer the narrative-flatness fear. Spawns issue #25 and shapes issues #19 to #24.
+
+### D-037. No dash punctuation in any game text or docs.
+**Chosen:** No em dash, and no hyphen used as a pause, an aside, or a clause connector. Replace with a comma, period, colon, semicolon, parentheses, or a fresh sentence. Ordinary hyphenated compound words (belly-filler, two-season) are kept, since they are spelling, not punctuation. Reverses the previous voice guidance, which favored the em dash. Rule lives in `docs/style-guide.md`; existing content is scrubbed under issue #26.
+**Rationale:** the em dash is one of the strongest "written by AI" tells, and it makes the game feel AI-made, which is fatal to the alt-1800s almanac voice. Chris chose "ban dash punctuation" over the stricter "ban every hyphen." A voice-integrity decision with almost no downside.
+
 ---
 
 *Add new decisions below with the next session number.*

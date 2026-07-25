@@ -7,6 +7,26 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 5 — 2026-07-25 — Prototype UX design: Reuben the Foreman + the imagery layer
+
+**Worked on:** Acted on the first real playtest feedback (the prototype is confusing to play; Reuben is inconsistently privileged). Ran a full brainstorm-to-spec design pass using the visual companion (mockups approved in-browser), and set up issue tracking for the whole onboarding-and-imagery phase.
+
+**Milestone opened, "Prototype v0.2: Onboarding & Imagery" (#2):** filed and specced the phase, issues #18 to #26. #18 (the gameplay-flow spec) is already closed. Remaining: #19 UI clarity, #20 tutorial, #21 setting plates, #22 portraits, #23 placeholders, #24 art direction, #25 Foreman and roster, #26 dash scrub.
+
+**Design locked (→ D-036, D-037), full spec at `docs/superpowers/specs/2026-07-25-reuben-foreman-and-imagery-design.md`:**
+- **Reuben is the Foreman** — the player's right hand and the single voice of the farmhand collective: their voice, the **tutor** (Ask Reuben: "what should I do next?"), and the **Reckoning alarm** (he interrupts in character when moral debt crosses a tier, no number shown). Promotable if he dies. This closes the "why is Reuben special?" inconsistency and makes the hidden Reckoning *fair* (no more "came out of nowhere") while keeping it unmeasured.
+- **Farmhand roster** — every hand first-class: a vertical list with morale + condition, per-hand seasonal assignment (realizes the locked per-clone-assignment decision), closing the "scale on anonymous disposable labor" exploit.
+- **Imagery layer** — every scene shows a location **"plate"** (woodcut illustration in an engraved border) with an always-visible place-name caption, and a **speaker portrait** rising over it. Play-screen layout settled (visual-novel stage + woodcut border + caption below). Placeholders describe the art until it exists, so the imagery layer is playtestable now.
+- Review decisions: alarm fires **first-only** per tier per run; the ambient **collective voice is always Reuben** (individual scripted beats may still show a hand's own portrait).
+
+**D-037 — no dash punctuation:** the em dash (and hyphen-as-pause) is banned in all game text and docs as the strongest AI tell; hyphenated compounds kept. Reverses the old "favor the em-dash" guidance in `docs/style-guide.md`. Saved to memory. Existing content scrub tracked in #26.
+
+**Next up:** turn the spec into an implementation plan (writing-plans), then build toward the sequence Chris set: Foreman/roster + imagery slot → tutorial (#20) → Vercel proof-of-concept for testers.
+
+**Blockers/notes:** in-app Browser pane still flaky, but the visual-companion server (localhost) worked fine in Chris's own browser. `.superpowers/` is gitignored.
+
+---
+
 ## Session 4 — 2026-07-24 — First playable: Year-1 browser prototype ("The Newcomer")
 
 **Worked on:** With the "Ready to Code" milestone complete (17/17 issues), began the code phase by building the first **playable** thing — a self-contained browser prototype of the Year-1 vertical slice.
