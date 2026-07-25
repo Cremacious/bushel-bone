@@ -69,3 +69,6 @@ docs/balance-model/output/
 docs/balance-model/*.png
 docs/balance-model/*.html
 !docs/balance-model/README.md
+
+# Brainstorming visual companion (local mockups)
+.superpowers/

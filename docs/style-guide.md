@@ -19,10 +19,11 @@
 - Lead every card with a concrete, sensory image.
 - Allow **one** supernatural detail per card, at most. Let it sit unexplained.
 - State cruelty and its cost plainly — never with relish, never with a wink.
-- Use the em-dash and the period. Let a short declarative land, then occasionally open into one longer rolling sentence.
+- Favor the period and the comma. Let a short declarative land, then occasionally open into one longer rolling sentence.
 - Trust the reader to infer the Marrow. We never narrate the ledger.
 
 **DON'T**
+- **No dash punctuation. No em-dash, and no hyphen used as a pause or an aside.** It is the strongest "written by AI" tell, and it has no place in an almanac hand. Use a comma, a period, a colon, a semicolon, or a fresh sentence instead. (Ordinary hyphenated compound words like *belly-filler* or *two-season* are fine; they are spelling, not punctuation.)
 - No modern slang, therapy-speak, or game-speak (see §3's forbidden list).
 - No exclamation-point spam. (A single one, rarely, from a panicked NPC.)
 - No fourth-wall gags, memes, or authorial jokes.
@@ -46,7 +47,7 @@
 
 ## 4. Rhythm & punctuation
 
-- Favor the **period** and the **em-dash**. Semicolons: rare. A **comma splice** is permitted, occasionally, for a breathless rural cadence — *"She won't say it, she just sets the pail down and goes."*
+- Favor the **period** and the **comma**. Semicolons are rare, but always preferred over a dash. **No em-dash and no hyphen-as-pause** (see §2): it is the clearest AI tell. A **comma splice** is permitted, occasionally, for a breathless rural cadence, as in *"She won't say it, she just sets the pail down and goes."*
 - Sentence length varies: mostly short, one long roll per paragraph for weight.
 - Italics only for a single emphasized word or a *heard* whisper. Never ALL CAPS.
 - Numbers in flavor prose are spelled where small ("two hands short"); mechanical values (costs, yields) render as digits in the choice line.
