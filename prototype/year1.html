@@ -333,6 +333,21 @@
   .tut-highlight{ box-shadow:0 0 0 3px var(--accent), 0 0 0 6px color-mix(in srgb,var(--accent) 28%, transparent); border-radius:4px; position:relative; z-index:1; }
   @media (prefers-reduced-motion:no-preference){ .tut-highlight{ animation:tutpulse 1.5s ease-in-out infinite; } }
   @keyframes tutpulse{ 0%,100%{ box-shadow:0 0 0 3px var(--accent), 0 0 0 6px color-mix(in srgb,var(--accent) 24%, transparent);} 50%{ box-shadow:0 0 0 3px var(--accent), 0 0 0 9px color-mix(in srgb,var(--accent) 8%, transparent);} }
+
+  /* ---- location plate ---- */
+  .plate-wrap{ padding:8px 12px 0; }
+  #plate{ position:relative; height:120px; border:2px solid var(--rule); border-radius:2px; box-shadow:0 0 0 2px var(--paper-2), 0 0 0 3px var(--rule); overflow:hidden; background:repeating-linear-gradient(135deg,#26201a 0 3px,#2e2720 3px 6px),#2a2420; }
+  .plate-tag{ position:absolute; top:5px; left:5px; font-size:8px; letter-spacing:.12em; text-transform:uppercase; color:#b09a63; border:1px solid #6a5a34; border-radius:8px; padding:1px 6px; }
+  .plate-desc{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:14px; font-size:12px; font-style:italic; color:#b09a63; line-height:1.4; }
+  .plate-portrait{ position:absolute; bottom:0; right:10px; width:66px; height:78px; background:linear-gradient(#3a3229,#241d15); border:1px solid var(--accent); border-bottom:0; border-radius:8px 8px 0 0; }
+  .plate-portrait[hidden]{ display:none; }
+  .plate-portrait .silh .head{ position:absolute; bottom:20px; left:50%; transform:translateX(-50%); width:26px; height:27px; border-radius:50% 50% 47% 47%; background:#0d0b07; }
+  .plate-portrait .silh .neck{ position:absolute; bottom:16px; left:50%; transform:translateX(-50%); width:13px; height:8px; background:#0d0b07; }
+  .plate-portrait .silh .shoulders{ position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:54px; height:24px; background:#0d0b07; border-radius:26px 26px 0 0; }
+  .plate-nameplate{ position:absolute; bottom:6px; left:-2px; background:rgba(20,16,10,.85); border:1px solid var(--accent); border-radius:4px; padding:2px 7px; transform:translateX(calc(-100% - 4px)); white-space:nowrap; }
+  .plate-nameplate b{ font-size:10px; color:#e9d19a; display:block; } .plate-nameplate span{ font-size:8px; color:#b09a63; }
+  .plate-cap{ text-align:center; padding:5px 0 6px; border-bottom:3px double var(--rule); }
+  .plate-cap b{ font-size:14px; letter-spacing:.06em; color:var(--ink); font-variant:small-caps; } .plate-cap span{ font-size:11px; color:var(--ink-soft); font-style:italic; }
 </style>
 
 <div id="desk">
@@ -346,6 +361,18 @@
         <div class="season" id="plate-season">Spring<small id="plate-when">Year One · Day 1</small></div>
         <div class="weather" id="plate-weather"></div>
       </div>
+    </div>
+
+    <div class="plate-wrap" id="plate-wrap">
+      <div class="plate" id="plate">
+        <div class="plate-tag">plate</div>
+        <div class="plate-desc" id="plate-desc"></div>
+        <div class="plate-portrait" id="plate-portrait" hidden>
+          <div class="silh"><div class="head"></div><div class="neck"></div><div class="shoulders"></div></div>
+          <div class="nameplate" id="plate-nameplate"></div>
+        </div>
+      </div>
+      <div class="plate-cap" id="plate-cap"></div>
     </div>
 
     <div class="ledger" id="ledger"></div>
@@ -399,6 +426,7 @@
     SEED = seed>>>0; PRNG = mulberry32(SEED);
     S = {
       year:1, si:0,                 // season index
+      currentSetting:"homestead",
       marks:100, food:80, fuel:0, seed:20,
       fields:[0,1,2,3].map(i=>({ id:i, crop:null, progress:0, fert:3 })),
       hands:[ mkHand("reuben","Reuben","Field Hand",3,{body:"average",mind:"average"}) ],
@@ -638,6 +666,41 @@
     });
   }
 
+  /* ---------------- location plate ---------------- */
+  const SETTINGS = {
+    homestead:{ cap:"The Homestead", sub:"the yard", desc:"the homestead: four cleared fields, a lean-to, and a well capped in iron at the property's edge" },
+    fields:{ cap:"The Homestead", sub:"the fields", desc:"the four fields under an open sky" },
+    town:{ cap:"Marrow's Cross", sub:"the town green", desc:"a green between a white church and a low saloon, the town gathered" },
+    church:{ cap:"Marrow's Cross", sub:"the church", desc:"the church at midnight, every candle lit, a capped well through the open door" },
+    saloon:{ cap:"Marrow's Cross", sub:"the saloon", desc:"the saloon by lamplight, Meredith Vane behind the bar" },
+    wagon:{ cap:"The Track", sub:"Vane's wagon", desc:"a black wagon hung with lanterns on the property track" },
+    gate:{ cap:"The Homestead", sub:"the gate at dusk", desc:"the gate at the fence-line as the light goes" },
+  };
+  const NPCS = {
+    farmer:{ name:"You", role:"the newcomer", desc:"the newcomer, weathered and wary" },
+    reuben:{ name:"Reuben", role:"your foreman", desc:"Reuben, a field hand with a steady, tired face" },
+    silas:{ name:"Silas Ridley", role:"the banker", desc:"lean and correct, a good coat gone a little shabby" },
+    halloway:{ name:"Mayor Halloway", role:"the mayor", desc:"expansive and florid, a politician's warmth" },
+    grange:{ name:"Preacher Grange", role:"the preacher", desc:"gaunt and grave" },
+    meredith:{ name:"Meredith Vane", role:"the saloonkeeper", desc:"sharp-eyed and knowing" },
+    bell:{ name:"Doc Bell", role:"the doctor", desc:"dry and watchful behind spectacles" },
+    bess:{ name:"Bess Halloway", role:"the mayor's daughter", desc:"young and direct, quick to read a face" },
+    ruth:{ name:"Sister Ruth", role:"the church's charity", desc:"plain and kind, and misses nothing" },
+    coldwater:{ name:"Sheriff Coldwater", role:"the law", desc:"cool and still, a long stare" },
+    ambrose:{ name:"Dr. Ambrose Vane", role:"the clone merchant", desc:"courteous, and does not quite meet the eye" },
+    nan:{ name:"Old Nan", role:"the folk-magic woman", desc:"old and watchful, at the edge of things" },
+  };
+  function setPlate(settingId, speakerId, descOverride){
+    if(settingId) S.currentSetting = settingId;
+    const s = SETTINGS[S.currentSetting] || SETTINGS.homestead;
+    document.getElementById("plate-desc").textContent = "[ " + (descOverride || s.desc) + " ]";
+    document.getElementById("plate-cap").innerHTML = '<b>'+s.cap+'</b> · <span>'+s.sub+'</span>';
+    const pp = document.getElementById("plate-portrait"), np = document.getElementById("plate-nameplate");
+    const n = speakerId && NPCS[speakerId];
+    if(n){ np.innerHTML = '<b>'+n.name+'</b><span>'+n.role+'</span>'; pp.hidden = false; }
+    else { pp.hidden = true; }
+  }
+
   /* ---------------- stage rendering ---------------- */
   const stage = ()=>document.getElementById("stage");
   function paint(html){ stage().innerHTML = '<div class="leaf">'+html+'</div>'; refresh(); }
@@ -663,6 +726,7 @@
     if(spec.choices) h+=choiceHTML(spec.choices);
     paint(h);
     if(spec.choices) wireChoices(spec.choices);
+    setPlate(spec.setting, spec.speaker, spec.dir ? spec.dir.replace(/^\[|\]$/g,"").trim() : null);
   }
   // apply a choice then show a short result, then continue
   function resolve(effect, resultText){
@@ -1394,10 +1458,11 @@
   newGame((Math.random()*1e9)>>>0);
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate };
   }
 
   runStep();
+  setPlate("homestead", null);
   tutInit();
 })();
 </script>
