@@ -721,7 +721,6 @@
     let h="";
     if(spec.eyebrow) h+='<div class="eyebrow">'+spec.eyebrow+'</div>';
     if(spec.title)   h+='<h2>'+spec.title+'</h2>';
-    if(spec.dir)     h+='<p class="stagedir">'+spec.dir+'</p>';
     if(spec.body)    h+='<div class="prose">'+spec.body+'</div>';
     if(spec.choices) h+=choiceHTML(spec.choices);
     paint(h);
@@ -983,6 +982,7 @@
 
     // Silas's Welcome (scripted, Day 1)
     b.push(()=>card({ eyebrow:"A caller · Day 1", title:"Silas's Welcome",
+      setting:"homestead", speaker:"silas",
       dir:"[a man in a good coat on a poor road, a ledger in his saddlebag, not dismounting]",
       body:'<div class="prose"><p>Silas Ridley reins up at your gate and does not get down. <span class="said">“Ridley. I hold your charter.”</span> He says it the way another man might say the weather. <span class="said">“A hundred and fifty a year to the bank. Not this year, nor the next — the charter allows a new man his feet. After that, it minds its dates, and so will I.”</span> He looks a long moment at the soft ground by the east field, and something crosses his face he does not explain.</p></div>',
       choices:[
@@ -995,6 +995,7 @@
 
     // First Furrow festival
     b.push(()=>card({ eyebrow:"The First Furrow · Spring Fair", title:"The town turns out",
+      setting:"town", speaker:"halloway",
       dir:"[a green between a white church and a low saloon; the whole of Marrow's Cross gathered to bless the planting]",
       body:'<div class="prose"><p>Mayor Halloway makes an expansive welcome and presses a small wheat contract on you — eight units, at a fair locked price, come the harvest. Preacher Grange walks the new man’s fields and says the old words over them. Meredith Vane watches from the saloon step; the Sheriff watches from the shade.</p><p>Attending costs you a working day of Reuben’s — but a newcomer is only new once.</p></div>',
       choices:[
@@ -1027,6 +1028,7 @@
 
     // Vane's Wagon
     b.push(()=>card({ eyebrow:"An opportunity · ~Day 25", title:"Vane's Wagon",
+      setting:"wagon", speaker:"ambrose",
       dir:"[a black wagon hung with lanterns, and a courteous man who does not quite meet the eye]",
       body:'<div class="prose"><p>Dr. Ambrose Vane brings his wagon up the track. Behind the canvas, a shape that breathes. <span class="said">“A grower,”</span> he says, <span class="said">“strong in the ground, gentle with the seed. A hundred and ten marks, and cheap at it.”</span> He can see you counting. <span class="said">“Or a field hand, sixty — a plainer sort of help.”</span></p><p class="note">A second body is a second mouth. It must eat all winter, or it does not last the winter.</p></div>',
       choices:[
@@ -1044,6 +1046,7 @@
       const ripeField = S.fields.find(f=>ripe(f)) || S.fields.find(f=>f.crop);
       const isCotton = ripeField && ripeField.crop==="cotton";
       card({ eyebrow:"The fork · late Summer", title: isCotton?"The Cotton Won't Wait":"The Harvest Won't Wait",
+        setting:"fields", speaker:"reuben",
         dir:"[a field standing full, a bruise of storm two days out on the horizon, and a hand swaying on his feet]",
         body:'<div class="prose"><p>'+(ripeField?fieldName(ripeField):"A field")+' stands ready, and the forecast reads storm within two days. Reuben has been on his feet since before light and is grey with it. Push him through the night and you save the crop whole. Let him lie down and you lose a third of it to the weather.</p></div>',
         choices:[
@@ -1077,6 +1080,7 @@
 
     // Harvest Home
     b.push(()=>card({ eyebrow:"Harvest Home · the Fall feast", title:"The town lights the long tables",
+      setting:"town", speaker:"bess",
       dir:"[lanterns strung over the green, and Old Nan at the dark edge of it, watching the newcomer]",
       body:'<div class="prose"><p>Harvest Home falls square in the crunch. Bess Halloway asks you one sharp, honest question and reads your face for the answer. Sister Ruth notes how your hands look — fed or not. The Sheriff offers a cool word about soft ground. To go is to lose a working day; to stay away is to be the man who wouldn’t.</p></div>',
       choices:[
@@ -1129,6 +1133,7 @@
 
     // The Long Vigil
     b.push(()=>card({ eyebrow:"Midwinter · the longest night", title:"The Long Vigil",
+      setting:"church", speaker:"grange",
       dir:"[the whole town in the church at midnight, every candle lit, an old capped well-head through the open door]",
       body:'<div class="prose"><p>On the longest night the town does not sleep. They fill the church and they watch, and near midnight Grange reads the names of everyone who died in the Sull this year — slow, one by one, so that none is forgotten and left to be. The liturgy does not say <em>taken.</em> Everyone hears it anyway. Outside, past the graves, the old well-head sits under its cap of iron and salt, and the watching is for it.</p></div>',
       choices:[
