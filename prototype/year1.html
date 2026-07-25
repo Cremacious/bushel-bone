@@ -499,6 +499,8 @@
     const hhEl = document.getElementById("household");
     hhEl.style.cursor = "pointer";
     hhEl.onclick = openRoster;
+    const bar = document.getElementById("askbar");
+    if(bar){ const rtx = bar.querySelector(".rtx"); if(rtx) rtx.innerHTML = needsForeman() ? '<b>Name a new foreman</b>' : '<b>Ask Reuben</b> what to do'; }
   }
   function refresh(){ renderHeader(); renderLedger(); document.getElementById("seedtag").textContent = "seed "+SEED.toString(16); }
 
@@ -528,7 +530,16 @@
       : '<div class="voice"><p>There is no foreman to speak for them.</p></div>';
     return '<div class="rosterhdr"><b>The Hands</b><span>'+livingHands().length+' housed</span></div>'+voice+rows;
   }
+  function needsForeman(){ return !foreman() && livingHands().length>0; }
+  function promoteForeman(id){ const h=handById(id); if(h&&h.alive){ S.foremanId=id; } }
+  function openPromote(){
+    const html = '<div class="rosterhdr"><b>Name a new foreman</b></div>'+
+      '<div class="prose" style="padding:0 16px 8px"><p>Reuben is in the ground. The hands need one of their own to speak for them, and you need a right hand. Choose.</p></div>'+
+      livingHands().map(h=>'<div class="aopt" data-id="'+h.id+'"><div>'+h.name+'<small>'+h.trait+'</small></div><span class="arrow">&#9656;</span></div>').join('');
+    openOverlay(html, panel=>{ panel.querySelectorAll('.aopt[data-id]').forEach(el=>el.addEventListener('click',()=>{ promoteForeman(el.dataset.id); closeOverlay(); })); });
+  }
   function openRoster(){
+    if(needsForeman()){ openPromote(); return; }
     openOverlay(renderRoster(), panel=>{
       panel.querySelectorAll('.hand[data-hand]').forEach(el=>{
         el.addEventListener('click',()=>openHand(el.dataset.hand));
@@ -1268,6 +1279,7 @@
   }
   function closeOverlay(){ document.getElementById("overlay").classList.remove("on"); document.getElementById("overlay-panel").innerHTML=""; }
   function openAskReuben(){
+    if(needsForeman()){ openPromote(); return; }
     const fm = foreman();
     if(!fm){ openOverlay('<div class="rosterhdr"><b>No foreman</b></div><div class="prose" style="padding:0 16px 16px"><p>You have named no one to speak for the hands. Open the roster and make one your foreman.</p></div>'); return; }
     const port = '<div class="talkport"><div class="silh"><div class="head"></div><div class="neck"></div><div class="shoulders"></div></div><div class="nameplate"><b>'+fm.name+'</b><span>your foreman</span></div></div>';
@@ -1297,7 +1309,7 @@
   newGame((Math.random()*1e9)>>>0);
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote };
   }
 
   runStep();
