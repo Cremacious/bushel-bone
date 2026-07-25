@@ -16,4 +16,16 @@ describe("smoke", () => {
     expect(steps).toBeLessThan(400);
     expect(doc.getElementById("again")).toBeTruthy();
   });
+
+  it("can open the roster and Ask Reuben mid-run", () => {
+    const { doc, T } = boot();
+    T.openRoster();
+    expect(doc.getElementById("overlay").classList.contains("on")).toBe(true);
+    expect(doc.getElementById("overlay-panel").textContent).toContain("Reuben");
+    T.closeOverlay();
+    expect(doc.getElementById("overlay").classList.contains("on")).toBe(false);
+    T.openAskReuben();
+    expect(doc.getElementById("overlay-panel").textContent.length).toBeGreaterThan(0);
+    T.closeOverlay();
+  });
 });
