@@ -321,6 +321,18 @@
   .answer{ font-size:15px; line-height:1.5; color:var(--ink); border-left:3px solid var(--accent); padding:8px 12px; background:color-mix(in srgb,var(--accent) 7%, transparent); margin-bottom:12px; font-style:italic; }
   .askq{ font-size:15px; border:1px solid var(--rule-fine); border-radius:4px; padding:9px 12px; margin-top:7px; background:color-mix(in srgb,var(--paper) 40%, transparent); color:var(--ink); cursor:pointer; }
   .askq:hover{ border-color:var(--accent); }
+
+  .tipbar{ display:none; border-top:2px solid var(--accent); background:color-mix(in srgb,var(--accent) 12%, var(--paper)); padding:10px 16px; }
+  .tipbar.on{ display:block; }
+  .tut-tip .who{ display:flex; align-items:center; gap:6px; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); }
+  .tut-tip .who .rdot{ width:15px; height:15px; border-radius:50%; background:#0e0c09; border:1px solid var(--accent); }
+  .tut-tip p{ margin:6px 0 8px; font-size:14px; font-style:italic; line-height:1.45; color:var(--ink); }
+  .tut-tip .got{ all:unset; cursor:pointer; font-size:13px; border:1px solid var(--accent); border-radius:3px; padding:4px 12px; color:var(--ink); background:color-mix(in srgb,var(--accent) 18%, var(--paper)); }
+  .tut-tip .got:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  #overlay-panel .tut-tip{ padding:10px 14px; border-bottom:2px solid var(--accent); background:color-mix(in srgb,var(--accent) 12%, var(--paper)); }
+  .tut-highlight{ box-shadow:0 0 0 3px var(--accent), 0 0 0 6px color-mix(in srgb,var(--accent) 28%, transparent); border-radius:4px; position:relative; z-index:1; }
+  @media (prefers-reduced-motion:no-preference){ .tut-highlight{ animation:tutpulse 1.5s ease-in-out infinite; } }
+  @keyframes tutpulse{ 0%,100%{ box-shadow:0 0 0 3px var(--accent), 0 0 0 6px color-mix(in srgb,var(--accent) 24%, transparent);} 50%{ box-shadow:0 0 0 3px var(--accent), 0 0 0 9px color-mix(in srgb,var(--accent) 8%, transparent);} }
 </style>
 
 <div id="desk">
@@ -341,6 +353,7 @@
 
     <main id="stage"></main>
 
+    <div class="tipbar" id="tipbar"></div>
     <div class="askbar" id="askbar" role="button" tabindex="0" aria-label="Ask Reuben">
       <span class="rdot"></span><span class="rtx"><b>Ask Reuben</b> what to do</span><span class="rq">?</span>
     </div>
@@ -397,6 +410,7 @@
       dead:[],                      // marked graves (names)
       lost:[],                      // clones lost this winter
       flow:[], fi:0, ended:false,
+      tutShown:{},
     };
     rollWeather();
     buildSeason();
@@ -544,6 +558,7 @@
       panel.querySelectorAll('.hand[data-hand]').forEach(el=>{
         el.addEventListener('click',()=>openHand(el.dataset.hand));
       });
+      tip("roster","Here are the hands, each with a name and a heart. Keep them fed and rested and they work the better. Tap one to set their task.","#overlay-panel .hand");
     });
   }
   function collectiveLine(){
@@ -755,6 +770,7 @@
       card({ eyebrow:"The Market · "+season(), title:"What the fields gave up",
              body:'<div class="prose"><p class="note">Grain and roots keep a belly through winter; coin buys coal and hands. Choose for each lot.</p><div style="margin-top:6px">'+rows+'</div></div>',
              choices:[{t:"Close the day-book", primary:true, go:doSell}] });
+      tip("market","Now the market. Grain and roots can go to the larder to eat, or to town for coin. Coin buys much, but a full belly is what carries you through the dark months. Choose careful.","#stage button[data-t]");
       stage().querySelectorAll('button[data-t]').forEach(btn=>{
         btn.addEventListener('click',()=>{ choice[btn.dataset.t]=btn.dataset.v; draw(); });
       });
@@ -814,6 +830,9 @@
     card({ eyebrow:"Dusk · "+season(), title:"The day-book, closed",
            body:'<div class="report">'+rows+'</div>'+(hungerNote?'<p class="note">'+hungerNote+'</p>':'')+omen,
            choices:[{t: season()==="Fall" ? "Toward winter →" : "Turn the season →", primary:true, go:next}] });
+    if(omen){
+      tip("omen","The land keeps its own accounts of how we treat our own. It will not show you a number. It shows you signs, a soured pail, crows that will not leave. Mind them, and mind me. I will warn you before it comes to collect.", null);
+    }
   }
   function line(d,n,cls){ return '<div class="line"><span class="d">'+d+'</span><span class="n '+(cls||'')+'">'+n+'</span></div>'; }
 
@@ -852,6 +871,7 @@
       card({ eyebrow:"Dawn · Planting", title:"Set the fields",
              body:'<div class="fields">'+rows+'</div>'+nudge,
              choices:[{t:"Sow it so", primary:true, go:commit}] });
+      tip("plant","Plant your bellies first. Potatoes and turnips fill a larder, and you will want it full come winter. Tap a crop for each field, then sow.","#stage .crop-picks");
       stage().querySelectorAll('.chip[data-f]').forEach(ch=>{
         ch.addEventListener('click',()=>{ if(ch.hasAttribute('disabled'))return;
           const fid=+ch.dataset.f, k=ch.dataset.k;
@@ -883,6 +903,7 @@
         {t:"Open the roster", sub:"assign each hand", go:()=>{ openRoster(); }},
         {t:"Put them to work", sub:"work the tasks as set", primary:true, go:()=>{ applyLabor(); clearTasksForNextSeason(); next(); }},
       ] });
+    tip("assign","This is the day's work. Open the roster and set each hand a task. Set me to tending and I will make a field give more.","#stage .btn[data-c=\"0\"]");
   }
 
   /* ---------------- SEASON SCRIPTS ---------------- */
@@ -1075,6 +1096,7 @@
           '<div class="needbar"><span>After buying — fuel</span><span class="'+(projFuel>=un?'met':'short')+'"><b>'+projFuel+'</b> fuel</span></div>'+
           '<div class="needbar"><span>Coin spent</span><span><b>'+spend+'</b> / '+S.marks+' m</span></div></div>',
         choices:[{t:"Lay it in", primary:true, go:()=>{ S.marks-=spend; S.fuel+=coal*2; S.food+=grain; next(); }}] });
+      tip("winter","Winter is the test. You need food and wood laid by for every mouth. Watch these two. Come up short on wood and the frailest will freeze.","#stage .needbar");
       stage().querySelectorAll('button[data-a]').forEach(btn=>{
         btn.addEventListener('click',()=>{
           const spendNow=coal*3+grain*2;
@@ -1298,10 +1320,62 @@
     const asks = [
       {t:"What should I be doing?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = reubenGuidance(); }},
       {t:"How are the hands?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = collectiveLine(); }},
+      (tutGuided()
+        ? {t:"Stop the tips", fn:()=>{ tutSetGuided(false); dismissTip(); closeOverlay(); }}
+        : {t:"Walk me through the basics again", fn:()=>{ replayTips(); closeOverlay(); }}),
       {t:"Nothing, carry on", fn:closeOverlay},
     ];
     const html = port + '<div class="askpanel-body">'+answer + asks.map((a,i)=>'<div class="askq" data-i="'+i+'">'+a.t+'</div>').join('') + '</div>';
     openOverlay(html, panel=>{ panel.querySelectorAll('.askq[data-i]').forEach(el=>el.addEventListener('click',()=>asks[+el.dataset.i].fn())); });
+  }
+
+  let tutHi = [];
+  function tip(id, text, selector){
+    if(!tutGuided()) return;
+    if(!S.tutShown) S.tutShown = {};
+    if(S.tutShown[id]) return;
+    S.tutShown[id] = true;
+    const body = '<div class="tut-tip"><div class="who"><span class="rdot"></span> Reuben</div><p>'+text+'</p><button class="got">Got it</button></div>';
+    const overlayOn = document.getElementById("overlay").classList.contains("on");
+    let container;
+    if(overlayOn){
+      container = document.getElementById("overlay-panel");
+      container.insertAdjacentHTML("afterbegin", body);
+    } else {
+      container = document.getElementById("tipbar"); container.innerHTML = body; container.classList.add("on");
+    }
+    if(selector){ document.querySelectorAll(selector).forEach(el=>{ el.classList.add("tut-highlight"); tutHi.push(el); }); }
+    // wire the freshly inserted button within its own container, so a bar tip and
+    // an overlay tip open at once cannot collide on a shared id.
+    const got = container.querySelector(".tut-tip .got");
+    if(got) got.addEventListener("click", dismissTip);
+  }
+  function dismissTip(){
+    const tb = document.getElementById("tipbar"); if(tb){ tb.classList.remove("on"); tb.innerHTML=""; }
+    const t = document.querySelector("#overlay-panel .tut-tip"); if(t) t.remove();
+    tutHi.forEach(el=>el.classList.remove("tut-highlight")); tutHi = [];
+  }
+  function replayTips(){ if(S) S.tutShown = {}; tutSetGuided(true); }
+
+  function tutGuided(){ try { return localStorage.getItem("bb_guided")==="1"; } catch(e){ return false; } }
+  function tutSetGuided(on){ try { localStorage.setItem("bb_guided", on?"1":"0"); } catch(e){} }
+  function tutSeen(){ try { return localStorage.getItem("bb_seenIntro")==="1"; } catch(e){ return true; } }
+  function tutInit(){
+    if(tutSeen()) return;
+    try { localStorage.setItem("bb_seenIntro","1"); } catch(e){}
+    const html =
+      '<div class="talkport"><div class="silh"><div class="head"></div><div class="neck"></div><div class="shoulders"></div></div>'+
+      '<div class="nameplate"><b>Reuben</b><span>your foreman</span></div></div>'+
+      '<div class="askpanel-body"><div class="answer">I am Reuben, and I will be your foreman. New to the Sull, are you. The first year is the hard one. Let me walk you through it and you will have the way of it by spring.</div>'+
+      '<div class="askq" id="tut-yes">Walk me through it</div>'+
+      '<div class="askq" id="tut-no">I will find my own way</div></div>';
+    openOverlay(html, panel=>{
+      panel.querySelector("#tut-yes").addEventListener("click",()=>{
+        tutSetGuided(true); closeOverlay();
+        if(typeof tip==="function") tip("bar","See this. That is me, always here at the foot of the page. Tap it any time you are unsure and I will tell you the next thing that matters.","#askbar");
+      });
+      panel.querySelector("#tut-no").addEventListener("click",()=>{ tutSetGuided(false); closeOverlay(); });
+    });
   }
 
   /* ---------------- theme toggle ---------------- */
@@ -1320,10 +1394,11 @@
   newGame((Math.random()*1e9)>>>0);
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips };
   }
 
   runStep();
+  tutInit();
 })();
 </script>
 
