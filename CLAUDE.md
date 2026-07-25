@@ -26,7 +26,9 @@ If you (Claude) are reading this at the start of a new session: welcome back. Re
 - ⏳ **Balance Model** — not started. Stub at `docs/balance-model/README.md`.
 - ✅ **Paper Prototype Playtest** — kit + worked playthrough done (`docs/playtest-kit-year1.md`, `docs/playtest-example-year1.md`).
 - ✅ **Playable Year-1 browser prototype** — `prototype/year1.html`. Single-file, dependency-free; plays the full Year-1 loop ("The Newcomer") with all six scripted beats, real numbers, hidden-Reckoning-as-omen, seeded PRNG. Validated headlessly (winnable via the cautious line, punishing via the greedy line). Also a private claude.ai Artifact.
-- ⏳ **Production code scaffold (Next.js 15)** — next. Port the prototype's pure logic into `(state, action) => newState` modules loading `content/events/*.yaml` via `docs/content-schema.md`.
+- ✅ **Foreman + farmhand roster + Ask Reuben (D-036).** Built into `prototype/year1.html` via subagent-driven development with a Vitest + jsdom harness (24 tests), reviewed and merged to `main`. Reuben is now the foreman: the collective's voice, the tutor (Ask Reuben), and the first-only Reckoning alarm. Every hand is first-class with per-hand assignment and promotion on death. Design spec: `docs/superpowers/specs/2026-07-25-reuben-foreman-and-imagery-design.md`.
+- ⏳ **Prototype v0.2 phase (milestone #2)** — in progress. Next in sequence: the tutorial (#20, teaches Ask Reuben), then the imagery layer (plates + portraits, #21 to #23), then a Vercel proof-of-concept for testers. Voice rule now in force: no dash punctuation (D-037); existing prototype/event prose still needs the scrub (#26).
+- ⏳ **Production code scaffold (Next.js 15)** — deferred until the prototype design is validated with testers. Port the prototype's pure logic into `(state, action) => newState` modules loading `content/events/*.yaml` via `docs/content-schema.md`.
 
 See `context/session-history.md` for full session-by-session log.
 
@@ -176,4 +178,4 @@ bushel-and-bone/
 
 ---
 
-*Last updated: end of Session 4 — "Ready to Code" milestone complete; first playable Year-1 browser prototype built (`prototype/year1.html`). Next: production Next.js scaffold.*
+*Last updated: end of Session 5. The Foreman feature (D-036) is built, tested (24 Vitest+jsdom tests), reviewed, and merged into the prototype. No-dash voice rule locked (D-037). Next: the tutorial (#20), then the imagery layer, then a Vercel proof-of-concept.*
