@@ -558,6 +558,7 @@
       panel.querySelectorAll('.hand[data-hand]').forEach(el=>{
         el.addEventListener('click',()=>openHand(el.dataset.hand));
       });
+      tip("roster","Here are the hands, each with a name and a heart. Keep them fed and rested and they work the better. Tap one to set their task.","#overlay-panel .hand");
     });
   }
   function collectiveLine(){
@@ -769,6 +770,7 @@
       card({ eyebrow:"The Market · "+season(), title:"What the fields gave up",
              body:'<div class="prose"><p class="note">Grain and roots keep a belly through winter; coin buys coal and hands. Choose for each lot.</p><div style="margin-top:6px">'+rows+'</div></div>',
              choices:[{t:"Close the day-book", primary:true, go:doSell}] });
+      tip("market","Now the market. Grain and roots can go to the larder to eat, or to town for coin. Coin buys much, but a full belly is what carries you through the dark months. Choose careful.","#stage button[data-t]");
       stage().querySelectorAll('button[data-t]').forEach(btn=>{
         btn.addEventListener('click',()=>{ choice[btn.dataset.t]=btn.dataset.v; draw(); });
       });
@@ -828,6 +830,9 @@
     card({ eyebrow:"Dusk · "+season(), title:"The day-book, closed",
            body:'<div class="report">'+rows+'</div>'+(hungerNote?'<p class="note">'+hungerNote+'</p>':'')+omen,
            choices:[{t: season()==="Fall" ? "Toward winter →" : "Turn the season →", primary:true, go:next}] });
+    if(omen){
+      tip("omen","The land keeps its own accounts of how we treat our own. It will not show you a number. It shows you signs, a soured pail, crows that will not leave. Mind them, and mind me. I will warn you before it comes to collect.", null);
+    }
   }
   function line(d,n,cls){ return '<div class="line"><span class="d">'+d+'</span><span class="n '+(cls||'')+'">'+n+'</span></div>'; }
 
@@ -866,6 +871,7 @@
       card({ eyebrow:"Dawn · Planting", title:"Set the fields",
              body:'<div class="fields">'+rows+'</div>'+nudge,
              choices:[{t:"Sow it so", primary:true, go:commit}] });
+      tip("plant","Plant your bellies first. Potatoes and turnips fill a larder, and you will want it full come winter. Tap a crop for each field, then sow.","#stage .crop-picks");
       stage().querySelectorAll('.chip[data-f]').forEach(ch=>{
         ch.addEventListener('click',()=>{ if(ch.hasAttribute('disabled'))return;
           const fid=+ch.dataset.f, k=ch.dataset.k;
@@ -897,6 +903,7 @@
         {t:"Open the roster", sub:"assign each hand", go:()=>{ openRoster(); }},
         {t:"Put them to work", sub:"work the tasks as set", primary:true, go:()=>{ applyLabor(); clearTasksForNextSeason(); next(); }},
       ] });
+    tip("assign","This is the day's work. Open the roster and set each hand a task. Set me to tending and I will make a field give more.","#stage .btn[data-c=\"0\"]");
   }
 
   /* ---------------- SEASON SCRIPTS ---------------- */
@@ -1089,6 +1096,7 @@
           '<div class="needbar"><span>After buying — fuel</span><span class="'+(projFuel>=un?'met':'short')+'"><b>'+projFuel+'</b> fuel</span></div>'+
           '<div class="needbar"><span>Coin spent</span><span><b>'+spend+'</b> / '+S.marks+' m</span></div></div>',
         choices:[{t:"Lay it in", primary:true, go:()=>{ S.marks-=spend; S.fuel+=coal*2; S.food+=grain; next(); }}] });
+      tip("winter","Winter is the test. You need food and wood laid by for every mouth. Watch these two. Come up short on wood and the frailest will freeze.","#stage .needbar");
       stage().querySelectorAll('button[data-a]').forEach(btn=>{
         btn.addEventListener('click',()=>{
           const spendNow=coal*3+grain*2;
@@ -1312,6 +1320,9 @@
     const asks = [
       {t:"What should I be doing?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = reubenGuidance(); }},
       {t:"How are the hands?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = collectiveLine(); }},
+      (tutGuided()
+        ? {t:"Stop the tips", fn:()=>{ tutSetGuided(false); closeOverlay(); }}
+        : {t:"Walk me through the basics again", fn:()=>{ replayTips(); closeOverlay(); }}),
       {t:"Nothing, carry on", fn:closeOverlay},
     ];
     const html = port + '<div class="askpanel-body">'+answer + asks.map((a,i)=>'<div class="askq" data-i="'+i+'">'+a.t+'</div>').join('') + '</div>';
