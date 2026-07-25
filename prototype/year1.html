@@ -397,6 +397,7 @@
       dead:[],                      // marked graves (names)
       lost:[],                      // clones lost this winter
       flow:[], fi:0, ended:false,
+      tutShown:{},
     };
     rollWeather();
     buildSeason();
@@ -1304,6 +1305,27 @@
     openOverlay(html, panel=>{ panel.querySelectorAll('.askq[data-i]').forEach(el=>el.addEventListener('click',()=>asks[+el.dataset.i].fn())); });
   }
 
+  function tutGuided(){ try { return localStorage.getItem("bb_guided")==="1"; } catch(e){ return false; } }
+  function tutSetGuided(on){ try { localStorage.setItem("bb_guided", on?"1":"0"); } catch(e){} }
+  function tutSeen(){ try { return localStorage.getItem("bb_seenIntro")==="1"; } catch(e){ return true; } }
+  function tutInit(){
+    if(tutSeen()) return;
+    try { localStorage.setItem("bb_seenIntro","1"); } catch(e){}
+    const html =
+      '<div class="talkport"><div class="silh"><div class="head"></div><div class="neck"></div><div class="shoulders"></div></div>'+
+      '<div class="nameplate"><b>Reuben</b><span>your foreman</span></div></div>'+
+      '<div class="askpanel-body"><div class="answer">I am Reuben, and I will be your foreman. New to the Sull, are you. The first year is the hard one. Let me walk you through it and you will have the way of it by spring.</div>'+
+      '<div class="askq" id="tut-yes">Walk me through it</div>'+
+      '<div class="askq" id="tut-no">I will find my own way</div></div>';
+    openOverlay(html, panel=>{
+      panel.querySelector("#tut-yes").addEventListener("click",()=>{
+        tutSetGuided(true); closeOverlay();
+        if(typeof tip==="function") tip("bar","See this. That is me, always here at the foot of the page. Tap it any time you are unsure and I will tell you the next thing that matters.","#askbar");
+      });
+      panel.querySelector("#tut-no").addEventListener("click",()=>{ tutSetGuided(false); closeOverlay(); });
+    });
+  }
+
   /* ---------------- theme toggle ---------------- */
   document.getElementById("themetog").addEventListener("click",function(){
     const root=document.documentElement;
@@ -1320,10 +1342,11 @@
   newGame((Math.random()*1e9)>>>0);
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided };
   }
 
   runStep();
+  tutInit();
 })();
 </script>
 

@@ -8,14 +8,25 @@ const htmlPath = join(here, "..", "year1.html");
 
 // Boot a fresh game in jsdom. Returns { dom, win, doc, T } where
 // T === window.__BB_TEST__ (the internals hook added in Task 1).
-export function boot() {
+export function boot(opts = {}) {
+  const { seenIntro = true, guided = false } = opts;
   const html = readFileSync(htmlPath, "utf8");
   const full = "<!doctype html><html><head></head><body>" + html + "</body></html>";
-  const dom = new JSDOM(full, { runScripts: "dangerously", pretendToBeVisual: true });
+  const dom = new JSDOM(full, {
+    runScripts: "dangerously",
+    pretendToBeVisual: true,
+    url: "http://localhost/",
+    beforeParse(window) {
+      try {
+        if (seenIntro) window.localStorage.setItem("bb_seenIntro", "1");
+        window.localStorage.setItem("bb_guided", guided ? "1" : "0");
+      } catch (e) {}
+    },
+  });
   const win = dom.window;
   const doc = win.document;
   const T = win.__BB_TEST__;
-  if (!T) throw new Error("window.__BB_TEST__ hook missing (Task 1 not done)");
+  if (!T) throw new Error("window.__BB_TEST__ hook missing");
   return { dom, win, doc, T };
 }
 
