@@ -303,6 +303,17 @@
   .voice{ margin:0 14px 12px; padding:10px 12px; border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%, transparent); }
   .voice .who{ display:block; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:3px; }
   .voice p{ margin:0; font-size:14px; font-style:italic; color:var(--ink); line-height:1.45; }
+  .talkport{ position:relative; height:150px; background:repeating-linear-gradient(135deg,#241e18 0 3px,#2c251d 3px 6px),#28221c; overflow:hidden; border-bottom:2px double var(--rule); }
+  .talkport .silh{ position:absolute; bottom:0; left:50%; transform:translateX(-50%); }
+  .talkport .silh .head{ width:52px; height:54px; border-radius:50% 50% 47% 47%; background:#0d0b07; margin:0 auto; }
+  .talkport .silh .neck{ width:26px; height:14px; background:#0d0b07; margin:-2px auto 0; }
+  .talkport .silh .shoulders{ width:112px; height:52px; background:#0d0b07; border-radius:46px 46px 0 0; margin-top:-2px; }
+  .talkport .nameplate{ position:absolute; bottom:8px; left:10px; background:rgba(20,16,10,.85); border:1px solid var(--accent); border-radius:4px; padding:3px 9px; }
+  .talkport .nameplate b{ font-size:13px; color:#e9d19a; display:block; } .talkport .nameplate span{ font-size:10px; color:#b09a63; }
+  .askpanel-body{ padding:14px 16px 16px; }
+  .answer{ font-size:15px; line-height:1.5; color:var(--ink); border-left:3px solid var(--accent); padding:8px 12px; background:color-mix(in srgb,var(--accent) 7%, transparent); margin-bottom:12px; font-style:italic; }
+  .askq{ font-size:15px; border:1px solid var(--rule-fine); border-radius:4px; padding:9px 12px; margin-top:7px; background:color-mix(in srgb,var(--paper) 40%, transparent); color:var(--ink); cursor:pointer; }
+  .askq:hover{ border-color:var(--accent); }
 </style>
 
 <div id="desk">
@@ -518,6 +529,21 @@
     });
   }
   function collectiveLine(){ return "The crew holds."; }   // Task 8 replaces this
+  function reubenGuidance(){
+    const s = season();
+    const bare = S.fields.filter(f=>!f.crop).length;
+    const planting = (s==="Spring"||s==="Summer"||s==="Fall");
+    const low = livingHands().filter(h=>h.morale<=1 || h.hungry || h.ill);
+    if(planting && bare>0)
+      return "You have "+bare+" field"+(bare>1?"s":"")+" lying bare and a larder that will not see us to spring on its own. Get seed in the ground. Potatoes fill a belly.";
+    if((s==="Fall"||s==="Winter") && S.fuel < winterFuelNeed())
+      return "There is not near enough wood laid in for the cold. Put a hand on the woodline, or buy coal in town, before winter closes the road.";
+    if(low.length)
+      return "The hands are low. "+low[0].name+" most of all. A rest, or a full supper, and they will work the better for it.";
+    if(S.food < 25)
+      return "The larder is running thin. Sell less and keep more of what the fields give, or we go hungry come the dark months.";
+    return "We are holding for now. Keep the fields worked and the larder filling, and mind the town's regard. I will speak up if the ground turns.";
+  }
   function assignHand(id, task){ const h=handById(id); if(h&&h.alive) h.task=task; }
   function foremanReadOf(h){
     if(h.ill) return '"'+h.name+" is poorly. Rest, or you will lose them.\"";
@@ -1212,7 +1238,19 @@
     if(wire) wire(panel);
   }
   function closeOverlay(){ document.getElementById("overlay").classList.remove("on"); document.getElementById("overlay-panel").innerHTML=""; }
-  function openAskReuben(){ openOverlay('<div style="padding:18px">Reuben is here.</div>'); }
+  function openAskReuben(){
+    const fm = foreman();
+    if(!fm){ openOverlay('<div class="rosterhdr"><b>No foreman</b></div><div class="prose" style="padding:0 16px 16px"><p>You have named no one to speak for the hands. Open the roster and make one your foreman.</p></div>'); return; }
+    const port = '<div class="talkport"><div class="silh"><div class="head"></div><div class="neck"></div><div class="shoulders"></div></div><div class="nameplate"><b>'+fm.name+'</b><span>your foreman</span></div></div>';
+    const answer = '<div class="answer" id="reuben-answer">'+reubenGuidance()+'</div>';
+    const asks = [
+      {t:"What should I be doing?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = reubenGuidance(); }},
+      {t:"How are the hands?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = collectiveLine(); }},
+      {t:"Nothing, carry on", fn:closeOverlay},
+    ];
+    const html = port + '<div class="askpanel-body">'+answer + asks.map((a,i)=>'<div class="askq" data-i="'+i+'">'+a.t+'</div>').join('') + '</div>';
+    openOverlay(html, panel=>{ panel.querySelectorAll('.askq[data-i]').forEach(el=>el.addEventListener('click',()=>asks[+el.dataset.i].fn())); });
+  }
 
   /* ---------------- theme toggle ---------------- */
   document.getElementById("themetog").addEventListener("click",function(){
@@ -1230,7 +1268,7 @@
   newGame((Math.random()*1e9)>>>0);
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben };
   }
 
   runStep();
