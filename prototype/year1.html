@@ -280,6 +280,12 @@
   .rosterhdr{ display:flex; justify-content:space-between; align-items:baseline; padding:14px 16px 8px; }
   .rosterhdr b{ font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); }
   .rosterhdr span{ font-size:12px; color:var(--ink-faint); font-style:italic; }
+  .aopt{ margin:0 14px 8px; border:1px solid var(--rule-fine); border-radius:4px; padding:10px 12px; font-size:15px; color:var(--ink); background:color-mix(in srgb,var(--paper) 40%, transparent); display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+  .aopt:hover{ border-color:var(--accent); }
+  .aopt small{ display:block; color:var(--ink-faint); font-style:italic; font-size:12px; }
+  .aopt .arrow{ color:var(--accent); }
+  .foreadvice{ margin:8px 14px 10px; padding:9px 12px; border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%, transparent); font-size:14px; font-style:italic; color:var(--ink); }
+  .foreadvice .who{ font-style:normal; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); display:block; margin-bottom:3px; }
   .hand{ margin:0 14px 10px; border:1px solid var(--rule-fine); border-radius:5px; padding:11px 12px; background:color-mix(in srgb,var(--paper) 40%, transparent); cursor:pointer; }
   .hand:last-child{ margin-bottom:14px; }
   .hand.foreman{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 9%, var(--paper)); }
@@ -512,7 +518,55 @@
     });
   }
   function collectiveLine(){ return "The crew holds."; }   // Task 8 replaces this
-  function openHand(id){}                                   // Task 4 replaces this
+  function assignHand(id, task){ const h=handById(id); if(h&&h.alive) h.task=task; }
+  function foremanReadOf(h){
+    if(h.ill) return '"'+h.name+" is poorly. Rest, or you will lose them.\"";
+    if(h.morale<=1) return '"'+h.name+" is spent. A rest would do them good.\"";
+    if(condition(h)==="hungry") return '"'+h.name+" is going hungry. Feed them before you spend them.\"";
+    return '"'+h.name+" is willing. Put them where you need them.\"";
+  }
+  function openHand(id){
+    const h=handById(id); if(!h) return;
+    const fm=foreman();
+    const advice = (fm && fm.id!==id) ? '<div class="foreadvice"><span class="who">'+fm.name+"'s read</span>"+foremanReadOf(h)+'</div>' : '';
+    const planted = S.fields.filter(f=>f.crop);
+    const opts = [
+      {t:"Let them rest", sub:"their heart mends", task:{type:"rest"}},
+      planted.length?{t:"Tend a field", sub:"+2 yield on it", task:{type:"tend", fieldId:planted[0].id}}:null,
+      {t:"Chop wood", sub:"+16 fuel", task:{type:"chop"}},
+      {t:"Harvest", sub:"bring in the ripe fields", task:{type:"harvest"}},
+    ].filter(Boolean);
+    const html = '<div class="rosterhdr"><b>'+h.name+'</b><span>'+condition(h)+'</span></div>'+advice+
+      opts.map((o,i)=>'<div class="aopt" data-i="'+i+'"><div>'+o.t+'<small>'+o.sub+'</small></div><span class="arrow">&#9656;</span></div>').join('');
+    openOverlay(html, panel=>{
+      panel.querySelectorAll('.aopt[data-i]').forEach(el=>{
+        el.addEventListener('click',()=>{ assignHand(id, opts[+el.dataset.i].task); openRoster(); });
+      });
+    });
+  }
+  function applyLabor(){
+    livingHands().forEach(h=>{
+      if(!h.task) return;
+      if(h.task.type==="chop") S.fuel += 16;
+      else if(h.task.type==="rest"){ if(h.morale<5)h.morale++; }
+      else if(h.task.type==="tend"){ const f=S.fields[h.task.fieldId]; if(f&&f.crop) f.tended=true; }
+      // "harvest" is handled by the existing harvestStep (labor availability); no effect here
+    });
+  }
+  function clearTasksForNextSeason(){ livingHands().forEach(h=>h.task=null); }
+  // Give any unassigned hand a sensible default so advancing without opening the
+  // roster still does useful work (preserves the old single-hand behavior and
+  // keeps the smoke playthrough meaningful).
+  function defaultTasks(opts){
+    opts = opts || ["tend","rest"];
+    const planted = S.fields.filter(f=>f.crop).slice().sort((a,b)=> (CROPS[b.crop].base*CROPS[b.crop].yield)-(CROPS[a.crop].base*CROPS[a.crop].yield));
+    livingHands().forEach(h=>{
+      if(h.task) return;
+      if(opts.includes("tend") && planted.length) h.task={type:"tend", fieldId:planted[0].id};
+      else if(opts.includes("chop")) h.task={type:"chop"};
+      else h.task={type:"rest"};
+    });
+  }
 
   /* ---------------- stage rendering ---------------- */
   const stage = ()=>document.getElementById("stage");
@@ -764,32 +818,15 @@
   }
   function fieldName(f){ return ["The East Field","The River Strip","The Near Acre","The Stone Lot"][f.id]; }
 
-  /* ---------------- interactive: ASSIGN Reuben ---------------- */
+  /* ---------------- interactive: ASSIGN the crew ---------------- */
   function assignStep(opts){
-    // opts: array of {key,label,sub,apply}
-    const planted = S.fields.filter(f=>f.crop);
-    const list=[];
-    if(opts.includes("tend") && planted.length){
-      list.push({ t:"Set Reuben to tending", sub:"+2 to one field's yield, and it comes on faster", go:()=>{
-        // pick the most valuable planted field automatically (highest base×yield), or first
-        const f = planted.slice().sort((a,b)=> (CROPS[b.crop].base*CROPS[b.crop].yield)-(CROPS[a.crop].base*CROPS[a.crop].yield))[0];
-        f.tended=true;
-        resolve(null, "Reuben works "+fieldName(f).toLowerCase()+" from first light. It will give more for the minding.");
-      }});
-    }
-    if(opts.includes("chop")){
-      list.push({ t:"Send Reuben to the woodline", sub:"+16 fuel laid in for winter", go:()=>{
-        S.fuel+=16; resolve(null, "The axe rings all season. Sixteen measures of wood stack against the lean-to wall.");
-      }});
-    }
-    if(opts.includes("rest")){
-      list.push({ t:"Let Reuben rest the season", sub:"his spirits mend (+morale)", go:()=>{
-        const f=fore(); if(f&&f.morale<5)f.morale++; resolve(null, "You ask little of him. He mends a fence, sleeps sound, and looks at you differently for it.");
-      }});
-    }
-    card({ eyebrow:"Dawn · The hand", title:"What is Reuben's work?",
-           body:'<div class="prose"><p class="note">'+(planted.length?'':'Nothing is planted to tend. ')+'One hand, one task. The choosing of it is the whole game, in time.</p></div>',
-           choices:list });
+    defaultTasks(opts);
+    card({ eyebrow:"Dawn · the hands", title:"Set the crew to work",
+      body:'<div class="prose"><p class="note">Open the roster to give each hand a task for the season. Reuben gives his read on each. When you are ready, put them to work.</p></div>',
+      choices:[
+        {t:"Open the roster", sub:"assign each hand", go:()=>{ openRoster(); }},
+        {t:"Put them to work", sub:"work the tasks as set", primary:true, go:()=>{ applyLabor(); clearTasksForNextSeason(); next(); }},
+      ] });
   }
 
   /* ---------------- SEASON SCRIPTS ---------------- */
@@ -1193,7 +1230,7 @@
   newGame((Math.random()*1e9)>>>0);
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand };
   }
 
   runStep();
