@@ -262,6 +262,65 @@
   .end h2{ font-size:28px; margin:8px 0 14px; }
   .end .epi{ font-size:16px; color:var(--ink); font-style:italic; }
   .tally{ text-align:left; margin:18px auto 0; max-width:340px; }
+
+  /* overlay + ask bar */
+  .overlay-root{ position:fixed; inset:0; display:none; z-index:50; }
+  .overlay-root.on{ display:block; }
+  .overlay-scrim{ position:absolute; inset:0; background:rgba(20,16,10,.55); }
+  .overlay-panel{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:min(94vw,480px); max-height:88vh; overflow:auto;
+    background:var(--paper-2); border:1px solid var(--rule); border-radius:6px;
+    box-shadow:0 24px 60px -18px var(--shadow); }
+  .askbar{ display:flex; align-items:center; gap:8px; padding:8px 20px; border-top:1px solid var(--rule);
+    background:color-mix(in srgb,var(--paper-3) 45%, transparent); cursor:pointer; }
+  .askbar .rdot{ width:18px; height:18px; border-radius:50%; background:#0e0c09; border:1px solid var(--accent); flex:0 0 auto; }
+  .askbar .rtx{ font-size:13px; color:var(--ink-soft); } .askbar .rtx b{ color:var(--ink); }
+  .askbar .rq{ margin-left:auto; font-size:15px; color:var(--accent); }
+  .askbar[hidden]{ display:none; }
+  .rosterhdr{ display:flex; justify-content:space-between; align-items:baseline; padding:14px 16px 8px; }
+  .rosterhdr b{ font-size:13px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft); }
+  .rosterhdr span{ font-size:12px; color:var(--ink-faint); font-style:italic; }
+  .aopt{ margin:0 14px 8px; border:1px solid var(--rule-fine); border-radius:4px; padding:10px 12px; font-size:15px; color:var(--ink); background:color-mix(in srgb,var(--paper) 40%, transparent); display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+  .aopt:hover{ border-color:var(--accent); }
+  .aopt small{ display:block; color:var(--ink-faint); font-style:italic; font-size:12px; }
+  .aopt .arrow{ color:var(--accent); }
+  .foreadvice{ margin:8px 14px 10px; padding:9px 12px; border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%, transparent); font-size:14px; font-style:italic; color:var(--ink); }
+  .foreadvice .who{ font-style:normal; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); display:block; margin-bottom:3px; }
+  .hand{ margin:0 14px 10px; border:1px solid var(--rule-fine); border-radius:5px; padding:11px 12px; background:color-mix(in srgb,var(--paper) 40%, transparent); cursor:pointer; }
+  .hand:last-child{ margin-bottom:14px; }
+  .hand.foreman{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 9%, var(--paper)); }
+  .hand .htop{ display:flex; align-items:center; gap:10px; }
+  .hand .hn{ flex:1; min-width:0; }
+  .hand .hn .nm{ font-size:16px; color:var(--ink); }
+  .hand .badge{ font-size:9px; letter-spacing:.1em; text-transform:uppercase; padding:2px 7px; border-radius:9px; vertical-align:middle; margin-left:6px; }
+  .hand .badge.fore{ background:var(--accent); color:var(--paper); }
+  .hand .badge.trait{ border:1px solid var(--rule-fine); color:var(--ink-soft); }
+  .hand .hmorale{ flex:0 0 auto; }
+  .hand .hmeta{ display:flex; gap:10px; align-items:center; margin-top:7px; flex-wrap:wrap; font-size:13px; }
+  .hand .task{ color:var(--ink); border:1px solid var(--rule-fine); border-radius:3px; padding:2px 8px; background:color-mix(in srgb,var(--paper) 30%, transparent); }
+  .hand .cond{ font-style:italic; color:var(--ink-soft); }
+  .hand .cond.worn{ color:var(--warn); } .hand .cond.hungry{ color:var(--bad); } .hand .cond.ill{ color:var(--bad); }
+  .voice{ margin:0 14px 12px; padding:10px 12px; border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%, transparent); }
+  .voice .who{ display:block; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:3px; }
+  .voice p{ margin:0; font-size:14px; font-style:italic; color:var(--ink); line-height:1.45; }
+  .talkport{ position:relative; height:150px; background:repeating-linear-gradient(135deg,#241e18 0 3px,#2c251d 3px 6px),#28221c; overflow:hidden; border-bottom:2px double var(--rule); }
+  .talkport .silh{ position:absolute; bottom:0; left:50%; transform:translateX(-50%); }
+  .talkport .silh .head{ width:52px; height:54px; border-radius:50% 50% 47% 47%; background:#0d0b07; margin:0 auto; }
+  .talkport .silh .neck{ width:26px; height:14px; background:#0d0b07; margin:-2px auto 0; }
+  .talkport .silh .shoulders{ width:112px; height:52px; background:#0d0b07; border-radius:46px 46px 0 0; margin-top:-2px; }
+  .talkport .nameplate{ position:absolute; bottom:8px; left:10px; background:rgba(20,16,10,.85); border:1px solid var(--accent); border-radius:4px; padding:3px 9px; }
+  .talkport .nameplate b{ font-size:13px; color:#e9d19a; display:block; } .talkport .nameplate span{ font-size:10px; color:#b09a63; }
+  .talkport.warn::after{ content:""; position:absolute; inset:0; background:radial-gradient(60% 70% at 50% 40%, rgba(164,72,42,.30), transparent 70%); pointer-events:none; }
+  .warnlabel{ text-align:center; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--bad); padding:10px 0 2px; }
+  .warntext{ font-size:15px; line-height:1.55; color:var(--ink); padding:4px 16px 8px; }
+  .warnacts{ padding:6px 14px 14px; }
+  .wbtn{ font-size:15px; border:1px solid var(--rule); border-radius:4px; padding:10px 12px; margin-top:8px; color:var(--ink); background:color-mix(in srgb,var(--paper) 40%, transparent); cursor:pointer; }
+  .wbtn:hover{ border-color:var(--accent); }
+  .wbtn.pri{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 16%, var(--paper)); }
+  .askpanel-body{ padding:14px 16px 16px; }
+  .answer{ font-size:15px; line-height:1.5; color:var(--ink); border-left:3px solid var(--accent); padding:8px 12px; background:color-mix(in srgb,var(--accent) 7%, transparent); margin-bottom:12px; font-style:italic; }
+  .askq{ font-size:15px; border:1px solid var(--rule-fine); border-radius:4px; padding:9px 12px; margin-top:7px; background:color-mix(in srgb,var(--paper) 40%, transparent); color:var(--ink); cursor:pointer; }
+  .askq:hover{ border-color:var(--accent); }
 </style>
 
 <div id="desk">
@@ -282,10 +341,16 @@
 
     <main id="stage"></main>
 
+    <div class="askbar" id="askbar" role="button" tabindex="0" aria-label="Ask Reuben">
+      <span class="rdot"></span><span class="rtx"><b>Ask Reuben</b> what to do</span><span class="rq">?</span>
+    </div>
+
     <footer class="colophon">
       <span>An Illustrated Almanac of the Sull</span>
       <span class="seed" id="seedtag"></span>
     </footer>
+
+    <div class="overlay-root" id="overlay"><div class="overlay-scrim" id="overlay-scrim"></div><div class="overlay-panel" id="overlay-panel"></div></div>
   </div>
 </div>
 
@@ -323,8 +388,9 @@
       year:1, si:0,                 // season index
       marks:100, food:80, fuel:0, seed:20,
       fields:[0,1,2,3].map(i=>({ id:i, crop:null, progress:0, fert:3 })),
-      reuben:{ name:"Reuben", morale:3, alive:true, ill:false },
-      hands:[],                     // extra clones {name,morale,alive}
+      hands:[ mkHand("reuben","Reuben","Field Hand",3,{body:"average",mind:"average"}) ],
+      foremanId:"reuben",
+      alarmedTiers:{ Warnings:false, Walkers:false },
       regard:50, reckoning:0,
       flags:{},
       weather:null, coldsnap:false,
@@ -337,10 +403,26 @@
   }
 
   function season(){ return SEASONS[S.si]; }
-  function bodies(){ return 1 + livingHands(); }         // farmer + hands (reuben counts as a hand)
-  function livingHands(){ return (S.reuben.alive?1:0) + S.hands.filter(h=>h.alive).length; }
-  function extraHands(){ return Math.max(0, livingHands()-1); } // beyond Reuben
-  function allHands(){ const a=[]; if(S.reuben.alive)a.push(S.reuben); S.hands.forEach(h=>{if(h.alive)a.push(h);}); return a; }
+  let HAND_SEQ = 0;
+  function mkHand(id, name, trait, morale, extra){
+    return Object.assign({ id: id || ("h"+(++HAND_SEQ)), name, trait, morale, alive:true, ill:false, task:null,
+                           body:"average", mind:"average", hungry:false }, extra||{});
+  }
+  function livingHands(){ return S.hands.filter(h=>h.alive); }
+  function foreman(){ return S.hands.find(h=>h.id===S.foremanId && h.alive) || null; }
+  function handById(id){ return S.hands.find(h=>h.id===id); }
+  function bodies(){ return 1 + livingHands().length; }         // farmer + living hands
+  function extraHands(){ return Math.max(0, livingHands().length - 1); }
+  function allHands(){ return livingHands(); }
+  function condition(h){
+    if(!h.alive) return "lost";
+    if(h.ill) return "ill";
+    if(h.hungry) return "hungry";
+    if(h.morale<=1) return "worn";
+    if(h.morale>=4) return "in good heart";
+    return "steady";
+  }
+  function fore(){ return foreman() || livingHands()[0] || null; }
 
   /* ---------------- weather ---------------- */
   function rollWeather(){
@@ -406,12 +488,140 @@
       cell("Seed", S.seed, "");
     // household row
     const dots = n => '<span class="dots">'+"●".repeat(Math.max(0,n))+'<span class="off">'+"●".repeat(Math.max(0,5-n))+'</span></span>';
-    let hh = '<span><span class="lab">Reuben</span>'+(S.reuben.alive?dots(S.reuben.morale):'<span style="color:var(--bad)">a marked grave</span>')+'</span>';
-    S.hands.forEach(h=>{ hh += '<span><span class="lab">'+h.name+'</span>'+(h.alive?dots(h.morale):'<span style="color:var(--bad)">lost</span>')+'</span>'; });
+    let hh = "";
+    livingHands().forEach(h=>{
+      const foreTag = h.id===S.foremanId ? ' <span style="font-size:9px;color:var(--accent)">(foreman)</span>' : '';
+      hh += '<span><span class="lab">'+h.name+'</span>'+dots(h.morale)+foreTag+'</span>';
+    });
+    S.hands.filter(h=>!h.alive).forEach(h=>{ hh += '<span><span class="lab">'+h.name+'</span><span style="color:var(--bad)">a marked grave</span></span>'; });
     hh += '<span><span class="lab">Regard</span><span class="regard">'+regardWord()+'</span></span>';
     document.getElementById("household").innerHTML = hh;
+    const hhEl = document.getElementById("household");
+    hhEl.style.cursor = "pointer";
+    hhEl.onclick = openRoster;
+    const bar = document.getElementById("askbar");
+    if(bar){ const rtx = bar.querySelector(".rtx"); if(rtx) rtx.innerHTML = needsForeman() ? '<b>Name a new foreman</b>' : '<b>Ask Reuben</b> what to do'; }
   }
   function refresh(){ renderHeader(); renderLedger(); document.getElementById("seedtag").textContent = "seed "+SEED.toString(16); }
+
+  /* ---------------- roster overlay ---------------- */
+  function moraleDots(n){ return '<span class="dots">'+"●".repeat(Math.max(0,n))+'<span class="off">'+"●".repeat(Math.max(0,5-n))+'</span></span>'; }
+  function condClass(h){ const c=condition(h); return (c==="worn"||c==="hungry"||c==="ill") ? c : ""; }
+  function taskLabel(h){
+    if(!h.task) return "no task set";
+    if(h.task.type==="tend") return "Tending "+(h.task.fieldId!=null?fieldName(S.fields[h.task.fieldId]):"a field");
+    return { rest:"Resting", chop:"Chopping wood", harvest:"Harvesting" }[h.task.type] || "at work";
+  }
+  function renderRoster(){
+    const fm = foreman();
+    const rows = livingHands().map(h=>{
+      const isF = h.id===S.foremanId;
+      const traits = [h.trait].concat(h.body&&h.body!=="average"?["Body "+h.body]:[]).concat(h.mind&&h.mind!=="average"?["Mind "+h.mind]:[]);
+      return '<div class="hand'+(isF?' foreman':'')+'" data-hand="'+h.id+'">'+
+        '<div class="htop"><div class="hn"><span class="nm">'+h.name+'</span>'+
+          (isF?'<span class="badge fore">Foreman</span>':'')+
+          traits.map(t=>'<span class="badge trait">'+t+'</span>').join('')+
+        '</div><div class="hmorale">'+moraleDots(h.morale)+'</div></div>'+
+        '<div class="hmeta"><span class="task">'+taskLabel(h)+'</span><span class="cond '+condClass(h)+'">'+condition(h)+'</span></div>'+
+      '</div>';
+    }).join('');
+    const voice = fm
+      ? '<div class="voice"><span class="who">'+fm.name+' speaks for the hands</span><p>'+collectiveLine()+'</p></div>'
+      : '<div class="voice"><p>There is no foreman to speak for them.</p></div>';
+    return '<div class="rosterhdr"><b>The Hands</b><span>'+livingHands().length+' housed</span></div>'+voice+rows;
+  }
+  function needsForeman(){ return !foreman() && livingHands().length>0; }
+  function promoteForeman(id){ const h=handById(id); if(h&&h.alive){ S.foremanId=id; } }
+  function openPromote(){
+    const html = '<div class="rosterhdr"><b>Name a new foreman</b></div>'+
+      '<div class="prose" style="padding:0 16px 8px"><p>Your foreman is in the ground. The hands need one of their own to speak for them, and you need a right hand. Choose.</p></div>'+
+      livingHands().map(h=>'<div class="aopt" data-id="'+h.id+'"><div>'+h.name+'<small>'+h.trait+'</small></div><span class="arrow">&#9656;</span></div>').join('');
+    openOverlay(html, panel=>{ panel.querySelectorAll('.aopt[data-id]').forEach(el=>el.addEventListener('click',()=>{ promoteForeman(el.dataset.id); closeOverlay(); })); });
+  }
+  function openRoster(){
+    if(needsForeman()){ openPromote(); return; }
+    openOverlay(renderRoster(), panel=>{
+      panel.querySelectorAll('.hand[data-hand]').forEach(el=>{
+        el.addEventListener('click',()=>openHand(el.dataset.hand));
+      });
+    });
+  }
+  function collectiveLine(){
+    const hands = livingHands();
+    const others = hands.filter(h=>h.id!==S.foremanId);
+    const low = hands.slice().sort((a,b)=>a.morale-b.morale)[0];
+    if(low && (low.morale<=1 || low.hungry || low.ill))
+      return "We will hold, but "+low.name+" is in a bad way. A kind word, or a full plate, would not go amiss.";
+    if(others.length===0)
+      return "It is just me for now. I will tell you true when the ground turns or the work gets past one pair of hands.";
+    if(hands.every(h=>h.morale>=4))
+      return "The crew is in good heart. Fed, rested, and willing. Long may it last.";
+    return "The hands are steady enough. No complaints worth carrying to you, not today.";
+  }
+  function reubenGuidance(){
+    const s = season();
+    const bare = S.fields.filter(f=>!f.crop).length;
+    const planting = (s==="Spring"||s==="Summer"||s==="Fall");
+    const low = livingHands().filter(h=>h.morale<=1 || h.hungry || h.ill);
+    if(planting && bare>0)
+      return "You have "+bare+" field"+(bare>1?"s":"")+" lying bare and a larder that will not see us to spring on its own. Get seed in the ground. Potatoes fill a belly.";
+    if((s==="Fall"||s==="Winter") && S.fuel < winterFuelNeed())
+      return "There is not near enough wood laid in for the cold. Put a hand on the woodline, or buy coal in town, before winter closes the road.";
+    if(low.length)
+      return "The hands are low. "+low[0].name+" most of all. A rest, or a full supper, and they will work the better for it.";
+    if(S.food < 25)
+      return "The larder is running thin. Sell less and keep more of what the fields give, or we go hungry come the dark months.";
+    return "We are holding for now. Keep the fields worked and the larder filling, and mind the town's regard. I will speak up if the ground turns.";
+  }
+  function assignHand(id, task){ const h=handById(id); if(h&&h.alive) h.task=task; }
+  function foremanReadOf(h){
+    if(h.ill) return '"'+h.name+" is poorly. Rest, or you will lose them.\"";
+    if(h.morale<=1) return '"'+h.name+" is spent. A rest would do them good.\"";
+    if(condition(h)==="hungry") return '"'+h.name+" is going hungry. Feed them before you spend them.\"";
+    return '"'+h.name+" is willing. Put them where you need them.\"";
+  }
+  function openHand(id){
+    const h=handById(id); if(!h) return;
+    const fm=foreman();
+    const advice = (fm && fm.id!==id) ? '<div class="foreadvice"><span class="who">'+fm.name+"'s read</span>"+foremanReadOf(h)+'</div>' : '';
+    const planted = S.fields.filter(f=>f.crop);
+    const opts = [
+      {t:"Let them rest", sub:"their heart mends", task:{type:"rest"}},
+      planted.length?{t:"Tend a field", sub:"+2 yield on it", task:{type:"tend", fieldId:planted[0].id}}:null,
+      {t:"Chop wood", sub:"+16 fuel", task:{type:"chop"}},
+      {t:"Harvest", sub:"bring in the ripe fields", task:{type:"harvest"}},
+    ].filter(Boolean);
+    const html = '<div class="rosterhdr"><b>'+h.name+'</b><span>'+condition(h)+'</span></div>'+advice+
+      opts.map((o,i)=>'<div class="aopt" data-i="'+i+'"><div>'+o.t+'<small>'+o.sub+'</small></div><span class="arrow">&#9656;</span></div>').join('');
+    openOverlay(html, panel=>{
+      panel.querySelectorAll('.aopt[data-i]').forEach(el=>{
+        el.addEventListener('click',()=>{ assignHand(id, opts[+el.dataset.i].task); openRoster(); });
+      });
+    });
+  }
+  function applyLabor(){
+    livingHands().forEach(h=>{
+      if(!h.task) return;
+      if(h.task.type==="chop") S.fuel += 16;
+      else if(h.task.type==="rest"){ if(h.morale<5)h.morale++; }
+      else if(h.task.type==="tend"){ const f=S.fields[h.task.fieldId]; if(f&&f.crop) f.tended=true; }
+      // "harvest" is handled by the existing harvestStep (labor availability); no effect here
+    });
+  }
+  function clearTasksForNextSeason(){ livingHands().forEach(h=>h.task=null); }
+  // Give any unassigned hand a sensible default so advancing without opening the
+  // roster still does useful work (preserves the old single-hand behavior and
+  // keeps the smoke playthrough meaningful).
+  function defaultTasks(opts){
+    opts = opts || ["tend","rest"];
+    const planted = S.fields.filter(f=>f.crop).slice().sort((a,b)=> (CROPS[b.crop].base*CROPS[b.crop].yield)-(CROPS[a.crop].base*CROPS[a.crop].yield));
+    livingHands().forEach(h=>{
+      if(h.task) return;
+      if(opts.includes("tend") && planted.length) h.task={type:"tend", fieldId:planted[0].id};
+      else if(opts.includes("chop")) h.task={type:"chop"};
+      else h.task={type:"rest"};
+    });
+  }
 
   /* ---------------- stage rendering ---------------- */
   const stage = ()=>document.getElementById("stage");
@@ -495,7 +705,7 @@
 
   function harvestStep(){
     // gather everything ripe; cotton needs 2 hands (half if only 1 available for the harvest)
-    const lots=[]; const handCount=livingHands();
+    const lots=[]; const handCount=livingHands().length;
     S.fields.forEach(f=>{
       if(ripe(f)){
         const c=CROPS[f.crop];
@@ -578,14 +788,14 @@
     let hungerNote="";
     if(S.food < 0){
       // clones go hungry, farmer eats last (forgiving out of winter)
-      allHands().slice(1).forEach(h=>{ if(h.morale>0)h.morale--; });
-      if(S.reuben.alive && S.reuben.morale>0) S.reuben.morale--;
+      livingHands().forEach(h=>{ if(h.morale>0)h.morale--; });
       hungerNote = "The larder ran thin before the season turned; the hands went to bed hungry.";
       S.food = 0;
     }
     // reckoning drift: down if clean, up slowly regardless of small cruelties
     if(S.flags.crueltyThisSeason) S.reckoning += 2; else S.reckoning = Math.max(0, S.reckoning-2);
     S.flags.crueltyThisSeason=false;
+    maybeAlarm();
 
     const g = S._season_gain||{coin:0,food:0};
     let rows =
@@ -664,32 +874,15 @@
   }
   function fieldName(f){ return ["The East Field","The River Strip","The Near Acre","The Stone Lot"][f.id]; }
 
-  /* ---------------- interactive: ASSIGN Reuben ---------------- */
+  /* ---------------- interactive: ASSIGN the crew ---------------- */
   function assignStep(opts){
-    // opts: array of {key,label,sub,apply}
-    const planted = S.fields.filter(f=>f.crop);
-    const list=[];
-    if(opts.includes("tend") && planted.length){
-      list.push({ t:"Set Reuben to tending", sub:"+2 to one field's yield, and it comes on faster", go:()=>{
-        // pick the most valuable planted field automatically (highest base×yield), or first
-        const f = planted.slice().sort((a,b)=> (CROPS[b.crop].base*CROPS[b.crop].yield)-(CROPS[a.crop].base*CROPS[a.crop].yield))[0];
-        f.tended=true;
-        resolve(null, "Reuben works "+fieldName(f).toLowerCase()+" from first light. It will give more for the minding.");
-      }});
-    }
-    if(opts.includes("chop")){
-      list.push({ t:"Send Reuben to the woodline", sub:"+16 fuel laid in for winter", go:()=>{
-        S.fuel+=16; resolve(null, "The axe rings all season. Sixteen measures of wood stack against the lean-to wall.");
-      }});
-    }
-    if(opts.includes("rest")){
-      list.push({ t:"Let Reuben rest the season", sub:"his spirits mend (+morale)", go:()=>{
-        if(S.reuben.morale<5)S.reuben.morale++; resolve(null, "You ask little of him. He mends a fence, sleeps sound, and looks at you differently for it.");
-      }});
-    }
-    card({ eyebrow:"Dawn · The hand", title:"What is Reuben's work?",
-           body:'<div class="prose"><p class="note">'+(planted.length?'':'Nothing is planted to tend. ')+'One hand, one task. The choosing of it is the whole game, in time.</p></div>',
-           choices:list });
+    defaultTasks(opts);
+    card({ eyebrow:"Dawn · the hands", title:"Set the crew to work",
+      body:'<div class="prose"><p class="note">Open the roster to give each hand a task for the season. Reuben gives his read on each. When you are ready, put them to work.</p></div>',
+      choices:[
+        {t:"Open the roster", sub:"assign each hand", go:()=>{ openRoster(); }},
+        {t:"Put them to work", sub:"work the tasks as set", primary:true, go:()=>{ applyLabor(); clearTasksForNextSeason(); next(); }},
+      ] });
   }
 
   /* ---------------- SEASON SCRIPTS ---------------- */
@@ -721,7 +914,7 @@
       body:'<div class="prose"><p>Mayor Halloway makes an expansive welcome and presses a small wheat contract on you — eight units, at a fair locked price, come the harvest. Preacher Grange walks the new man’s fields and says the old words over them. Meredith Vane watches from the saloon step; the Sheriff watches from the shade.</p><p>Attending costs you a working day of Reuben’s — but a newcomer is only new once.</p></div>',
       choices:[
         {t:"Attend the Fair", sub:"+regard, a blessed field, the wheat contract — but Reuben rests today", primary:true, go:()=>resolve(()=>{
-          S.regard+=6; S.flags.wheatContract=true; if(S.reuben.morale<5)S.reuben.morale++;
+          S.regard+=6; S.flags.wheatContract=true; const fm=fore(); if(fm&&fm.morale<5)fm.morale++;
           // a blessed field: nudge a planted field's progress
           const f=S.fields.find(x=>x.crop); if(f)f.progress+=0.5;
           // clearing Reuben's tend if he'd been tending (he's at the fair)
@@ -752,10 +945,10 @@
       dir:"[a black wagon hung with lanterns, and a courteous man who does not quite meet the eye]",
       body:'<div class="prose"><p>Dr. Ambrose Vane brings his wagon up the track. Behind the canvas, a shape that breathes. <span class="said">“A grower,”</span> he says, <span class="said">“strong in the ground, gentle with the seed. A hundred and ten marks, and cheap at it.”</span> He can see you counting. <span class="said">“Or a field hand, sixty — a plainer sort of help.”</span></p><p class="note">A second body is a second mouth. It must eat all winter, or it does not last the winter.</p></div>',
       choices:[
-        {t:"Buy the Grower — 110 m", sub:"strong labor; a heavy winter mouth", disabled:S.marks<110, go:()=>resolve(()=>{S.marks-=110; S.hands.push({name:pick(["Della","Tace","Wick","Merrit"]),morale:3,alive:true});}, "The canvas comes back. She steps down slow, blinking at the light, and does not yet know your name or her own. You will have to feed her now, through everything.")},
-        {t:"Buy the Field Hand — 60 m", sub:"cheaper help; still a mouth to winter", disabled:S.marks<60, go:()=>resolve(()=>{S.marks-=60; S.hands.push({name:pick(["Amos","Pell","Bry","Cass"]),morale:3,alive:true});}, "Sixty marks, and a plain quiet worker climbs down from the wagon. Vane counts the coin twice and is gone before you can ask where such a one comes from.")},
+        {t:"Buy the Grower — 110 m", sub:"strong labor; a heavy winter mouth", disabled:S.marks<110, go:()=>resolve(()=>{S.marks-=110; S.hands.push(mkHand(null, pick(["Della","Tace","Wick","Merrit"]), "Grower", 3, {body:"strong",mind:"plain"}));}, "The canvas comes back. She steps down slow, blinking at the light, and does not yet know your name or her own. You will have to feed her now, through everything.")},
+        {t:"Buy the Field Hand — 60 m", sub:"cheaper help; still a mouth to winter", disabled:S.marks<60, go:()=>resolve(()=>{S.marks-=60; S.hands.push(mkHand(null, pick(["Amos","Pell","Bry","Cass"]), "Field Hand", 3, {}));}, "Sixty marks, and a plain quiet worker climbs down from the wagon. Vane counts the coin twice and is gone before you can ask where such a one comes from.")},
         {t:"Haggle", sub:"Vane likes to be liked", go:()=>resolve(()=>{
-          if(S.regard>=55 && S.marks>=100){ S.marks-=100; S.hands.push({name:pick(["Della","Tace","Wick"]),morale:3,alive:true}); S._hag="won"; }
+          if(S.regard>=55 && S.marks>=100){ S.marks-=100; S.hands.push(mkHand(null, pick(["Della","Tace","Wick"]), "Grower", 3, {body:"strong",mind:"plain"})); S._hag="won"; }
           else S._hag="lost";
         }, S._hag==="won" ? "He sighs, charmed despite himself. <span class=\"said\">“A hundred, then, for a face I like.”</span> The grower steps down. Ten marks saved, and a mouth to feed." : "<span class=\"said\">“A hundred and ten is the kindness,”</span> he says, and the price does not move. You let the wagon go on.")},
         {t:"Decline", sub:"one hand, one mouth — the safe winter", go:()=>resolve(null,"You let the wagon roll on toward the next homestead. One hand is a lean crew, but a lean crew is a fed crew.")},
@@ -770,12 +963,12 @@
         body:'<div class="prose"><p>'+(ripeField?fieldName(ripeField):"A field")+' stands ready, and the forecast reads storm within two days. Reuben has been on his feet since before light and is grey with it. Push him through the night and you save the crop whole. Let him lie down and you lose a third of it to the weather.</p></div>',
         choices:[
           {t:"Work him through the night", sub:"save the crop · Reuben loses heart", primary:true, go:()=>resolve(()=>{
-            if(S.reuben.morale>0)S.reuben.morale--;
+            const f=fore(); if(f&&f.morale>0)f.morale--;
             if(ripeField){ ripeField.tended=true; ripeField.progress=Math.max(ripeField.progress,CROPS[ripeField.crop].seasons); }
             S.flags.overworked=true;
           }, "The crop comes in whole under a black sky. Reuben does not speak for a day. <span class=\"whisper\">The land takes no notice of a hard day — not yet. A hard day is only a hard day.</span>")},
           {t:"Let him rest", sub:"lose a third · Reuben mends", go:()=>resolve(()=>{
-            if(S.reuben.morale<5)S.reuben.morale++;
+            const f=fore(); if(f&&f.morale<5)f.morale++;
             if(ripeField)ripeField.fert=Math.max(0,ripeField.fert-1);
           }, "You send him to his cot. The storm takes what it takes. In the morning he works the wet field with something like loyalty, and you find you do not regret the third you lost.")},
         ] });
@@ -802,7 +995,7 @@
       dir:"[lanterns strung over the green, and Old Nan at the dark edge of it, watching the newcomer]",
       body:'<div class="prose"><p>Harvest Home falls square in the crunch. Bess Halloway asks you one sharp, honest question and reads your face for the answer. Sister Ruth notes how your hands look — fed or not. The Sheriff offers a cool word about soft ground. To go is to lose a working day; to stay away is to be the man who wouldn’t.</p></div>',
       choices:[
-        {t:"Go to the feast", sub:"+regard, +heart — a day not worked", primary:true, go:()=>resolve(()=>{S.regard+=5; if(S.reuben.morale<5)S.reuben.morale++; S.fields.forEach(x=>x.tended=false);}, "You sit at the long tables. Bess decides something about you; you cannot tell what. It is warm, and there is bread, and for an evening the ground keeps its accounts to itself.")},
+        {t:"Go to the feast", sub:"+regard, +heart — a day not worked", primary:true, go:()=>resolve(()=>{S.regard+=5; const f=fore(); if(f&&f.morale<5)f.morale++; S.fields.forEach(x=>x.tended=false);}, "You sit at the long tables. Bess decides something about you; you cannot tell what. It is warm, and there is bread, and for an evening the ground keeps its accounts to itself.")},
         {t:"Stay and bring in the crop", sub:"−regard; the work gets done", go:()=>resolve(()=>{S.regard-=3;}, "You work while the fiddles carry over the fields. The crop is safe and the town is a shade cooler to you. You can live on a safe crop; you cannot eat regard.")},
       ] }));
 
@@ -902,7 +1095,7 @@
     const rep=[]; S.lost=[];
     // ---- FUEL: bodies freeze frailest-first; farmer last ----
     let fuel=S.fuel; let fuelShort = fuel < fuelNeed;
-    let survivors = allHands(); // includes reuben, farmer implicit
+    let survivors = livingHands(); // the farmer is implicit and not in this list
     // farmer needs a base share; clones freeze first
     if(fuelShort){
       // remove frailest clones until need is met or only farmer remains
@@ -926,7 +1119,7 @@
     }
     food-=farmerNeed;
     // feed remaining clones ~15 each; frailest served last starve
-    let clones = S.hands.filter(h=>h.alive).concat(S.reuben.alive?[S.reuben]:[]);
+    let clones = livingHands();
     clones.sort((a,b)=>b.morale-a.morale); // strongest fed first
     clones.forEach(h=>{
       if(food>=15){ food-=15; }
@@ -1003,16 +1196,16 @@
       ()=>card({eyebrow:"A hand asks",title:"A Name of His Own",
         body:'<div class="prose"><p>Reuben stands at the door with his hat in his hands and asks, haltingly, whether he might have a name that is <em>his</em> — not the one that came stamped on the charter papers, but one you’d call him by.</p></div>',
         choices:[
-          {t:"Grant it gladly",sub:"+heart; he works the harder for it",primary:true,go:()=>resolve(()=>{if(S.reuben.morale<5)S.reuben.morale++;S.regard+=1;},"He says the name over twice, quietly, like a thing he is afraid to drop. He works differently after — like a man, not a tool.")},
-          {t:"Refuse him",sub:"−heart; the asking never comes again",go:()=>resolve(()=>{if(S.reuben.morale>0)S.reuben.morale--;markCruelty();},"<span class=\"said\">“As you say,”</span> he answers, and goes back to the field. He does not ask again, and something in him closes for good. <span class=\"whisper\">The ground, somewhere, makes a small note of it.</span>")},
+          {t:"Grant it gladly",sub:"+heart; he works the harder for it",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;S.regard+=1;},"He says the name over twice, quietly, like a thing he is afraid to drop. He works differently after — like a man, not a tool.")},
+          {t:"Refuse him",sub:"−heart; the asking never comes again",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;markCruelty();},"<span class=\"said\">“As you say,”</span> he answers, and goes back to the field. He does not ask again, and something in him closes for good. <span class=\"whisper\">The ground, somewhere, makes a small note of it.</span>")},
         ]}),
     ],
     summer:[
       ()=>card({eyebrow:"A dry heat",title:"The Hot Wind",
         body:'<div class="prose"><p>A hot wind comes off the flats and sits on the valley for a week. The work is punishing under it.</p></div>',
         choices:[
-          {t:"Rest the worst of it",sub:"+heart; a slow week",primary:true,go:()=>resolve(()=>{if(S.reuben.morale<5)S.reuben.morale++;},"You keep to the shade through the killing hours. The work waits; the crew keeps its strength.")},
-          {t:"Work straight through",sub:"the crop, but Reuben wilts",go:()=>resolve(()=>{if(S.reuben.morale>0)S.reuben.morale--;},"The rows get worked in the full glare. Reuben comes in each night hollow-eyed. The land, for now, takes no notice of a hard week.")},
+          {t:"Rest the worst of it",sub:"+heart; a slow week",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;},"You keep to the shade through the killing hours. The work waits; the crew keeps its strength.")},
+          {t:"Work straight through",sub:"the crop, but Reuben wilts",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;},"The rows get worked in the full glare. Reuben comes in each night hollow-eyed. The land, for now, takes no notice of a hard week.")},
         ]}),
       ()=>card({eyebrow:"A traveller",title:"The Pedlar",
         body:'<div class="prose"><p>A pedlar with a swaybacked mule offers cheap seed by the roadside — and, when pressed, something else, wrapped in oilcloth, that he will not name and will not unwrap.</p></div>',
@@ -1032,7 +1225,7 @@
         dir:"[a thin figure at the fence-line at dusk, not quite a child, not quite not]",
         body:'<div class="prose"><p>A stray hand stands at your gate as the light goes — one of the Sull’s foundlings, grown wild from no wagon and no vat anyone will own to. It watches you and does not speak.</p></div>',
         choices:[
-          {t:"Take them in",sub:"free labor — and another winter mouth",primary:true,go:()=>resolve(()=>{S.hands.push({name:pick(["Wren","Cob","Lark","Fen"]),morale:2,alive:true});},"You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field — and one more belly to carry to spring.")},
+          {t:"Take them in",sub:"free labor — and another winter mouth",primary:true,go:()=>resolve(()=>{S.hands.push(mkHand(null, pick(["Wren","Cob","Lark","Fen"]), "Foundling", 2, {mind:"wary"}));},"You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field — and one more belly to carry to spring.")},
           {t:"Send them to Sister Ruth",sub:"+her regard",go:()=>resolve(()=>{S.regard+=3;},"You point the way to the church, where Ruth keeps a cot for such as these. She will remember that you sent them fed, not away.")},
           {t:"Turn them out",sub:"the ground marks it",go:()=>resolve(()=>{S.reckoning+=1;markCruelty();},"You close the gate. The figure stands a while in the cold, then is not there. <span class=\"whisper\">Something in the ground turns over in its long sleep.</span>")},
         ]}),
@@ -1051,7 +1244,7 @@
       ()=>card({eyebrow:"The long dark",title:"Cabin Fever",
         body:'<div class="prose"><p>The snow shuts the valley in. Days pass without a face from town, and the household grows short-tempered in the close air of the lean-to.</p></div>',
         choices:[
-          {t:"Keep them busy and fed",sub:"+heart if you can spare it",primary:true,go:()=>resolve(()=>{if(S.food>20&&S.reuben.morale<5)S.reuben.morale++;},"You ration out small comforts — a better supper, a task with an end to it. The crew holds together through the worst of the quiet.")},
+          {t:"Keep them busy and fed",sub:"+heart if you can spare it",primary:true,go:()=>resolve(()=>{const f=fore(); if(S.food>20&&f&&f.morale<5)f.morale++;},"You ration out small comforts — a better supper, a task with an end to it. The crew holds together through the worst of the quiet.")},
         ]}),
     ],
   };
@@ -1068,6 +1261,49 @@
     pool[idx]();
   }
 
+  /* ---------------- reckoning alarm ---------------- */
+  function checkReckoningAlarm(){
+    const band = reckBand();
+    if(band==="Warnings" && !S.alarmedTiers.Warnings){ S.alarmedTiers.Warnings = true; return "Warnings"; }
+    if(band==="Walkers" && !S.alarmedTiers.Walkers){ S.alarmedTiers.Walkers = true; return "Walkers"; }
+    return null;
+  }
+  const ALARM_TEXT = {
+    Warnings: "Hold a moment. The hands feel it and now so do I. The ground has took against something you have done. Milk turns though the cow is sound, and the crows will not leave the rail. Ease off, or it will come to collect. I would not see it collect from us.",
+    Walkers:  "You will want to hear this. What we laid down is not staying down. There are prints in the frost that start at the graves and end at our door. I have seen this before, on a place that is not there anymore. Make it right while there is still a right to make.",
+  };
+  function showReckoningAlarm(band){
+    const fm = foreman(); if(!fm) return;
+    const html = '<div class="talkport warn"><div class="silh"><div class="head"></div><div class="neck"></div><div class="shoulders"></div></div><div class="nameplate"><b>'+fm.name+'</b><span>grim</span></div></div>'+
+      '<div class="warnlabel">a word from your foreman</div>'+
+      '<div class="warntext">'+ALARM_TEXT[band]+'</div>'+
+      '<div class="warnacts"><div class="wbtn pri" data-a="heed">I hear you.</div><div class="wbtn" data-a="press">The work comes first.</div></div>';
+    openOverlay(html, panel=>{ panel.querySelectorAll('.wbtn[data-a]').forEach(el=>el.addEventListener('click',closeOverlay)); });
+  }
+  function maybeAlarm(){ if(!foreman()) return; const b=checkReckoningAlarm(); if(b) showReckoningAlarm(b); }
+
+  /* ---------------- overlay layer ---------------- */
+  function openOverlay(html, wire){
+    const root=document.getElementById("overlay"), panel=document.getElementById("overlay-panel");
+    panel.innerHTML = html; root.classList.add("on");
+    if(wire) wire(panel);
+  }
+  function closeOverlay(){ document.getElementById("overlay").classList.remove("on"); document.getElementById("overlay-panel").innerHTML=""; }
+  function openAskReuben(){
+    if(needsForeman()){ openPromote(); return; }
+    const fm = foreman();
+    if(!fm){ openOverlay('<div class="rosterhdr"><b>No foreman</b></div><div class="prose" style="padding:0 16px 16px"><p>You have named no one to speak for the hands. Open the roster and make one your foreman.</p></div>'); return; }
+    const port = '<div class="talkport"><div class="silh"><div class="head"></div><div class="neck"></div><div class="shoulders"></div></div><div class="nameplate"><b>'+fm.name+'</b><span>your foreman</span></div></div>';
+    const answer = '<div class="answer" id="reuben-answer">'+reubenGuidance()+'</div>';
+    const asks = [
+      {t:"What should I be doing?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = reubenGuidance(); }},
+      {t:"How are the hands?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = collectiveLine(); }},
+      {t:"Nothing, carry on", fn:closeOverlay},
+    ];
+    const html = port + '<div class="askpanel-body">'+answer + asks.map((a,i)=>'<div class="askq" data-i="'+i+'">'+a.t+'</div>').join('') + '</div>';
+    openOverlay(html, panel=>{ panel.querySelectorAll('.askq[data-i]').forEach(el=>el.addEventListener('click',()=>asks[+el.dataset.i].fn())); });
+  }
+
   /* ---------------- theme toggle ---------------- */
   document.getElementById("themetog").addEventListener("click",function(){
     const root=document.documentElement;
@@ -1077,8 +1313,16 @@
     this.textContent = dark? "☾ night" : "☀ day";
   });
 
+  document.getElementById("overlay-scrim").addEventListener("click", closeOverlay);
+  document.getElementById("askbar").addEventListener("click", openAskReuben);
+
   /* ---------------- boot ---------------- */
   newGame((Math.random()*1e9)>>>0);
+
+  if (typeof window !== "undefined") {
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine };
+  }
+
   runStep();
 })();
 </script>
