@@ -33,4 +33,18 @@ describe("tip()", () => {
     T.tip("q", "back again", "#askbar");
     expect(doc.getElementById("tipbar").classList.contains("on")).toBe(true);
   });
+
+  // Regression: a bar tip and an overlay tip can be open at once (the assign tip
+  // tells the player to open the roster). Each Got-it button must be wired within
+  // its own container, not by a shared global id.
+  it("wires the overlay tip's Got it even when a bar tip is already open", () => {
+    const { doc, T } = boot({ seenIntro: true, guided: true });
+    T.tip("a", "bar tip", "#askbar");                 // shows in #tipbar
+    T.openOverlay("<div class='hand'>x</div>");         // an overlay is now open
+    T.tip("b", "overlay tip", null);                    // shows inside the overlay
+    expect(doc.querySelectorAll(".tut-tip .got").length).toBe(2);
+    const overlayGot = doc.querySelector("#overlay-panel .tut-tip .got");
+    overlayGot.click();                                 // its own Got it must dismiss
+    expect(doc.querySelector("#overlay-panel .tut-tip")).toBeFalsy();
+  });
 });

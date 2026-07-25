@@ -1321,7 +1321,7 @@
       {t:"What should I be doing?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = reubenGuidance(); }},
       {t:"How are the hands?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = collectiveLine(); }},
       (tutGuided()
-        ? {t:"Stop the tips", fn:()=>{ tutSetGuided(false); closeOverlay(); }}
+        ? {t:"Stop the tips", fn:()=>{ tutSetGuided(false); dismissTip(); closeOverlay(); }}
         : {t:"Walk me through the basics again", fn:()=>{ replayTips(); closeOverlay(); }}),
       {t:"Nothing, carry on", fn:closeOverlay},
     ];
@@ -1335,15 +1335,19 @@
     if(!S.tutShown) S.tutShown = {};
     if(S.tutShown[id]) return;
     S.tutShown[id] = true;
-    const body = '<div class="tut-tip"><div class="who"><span class="rdot"></span> Reuben</div><p>'+text+'</p><button class="got" id="tut-got">Got it</button></div>';
+    const body = '<div class="tut-tip"><div class="who"><span class="rdot"></span> Reuben</div><p>'+text+'</p><button class="got">Got it</button></div>';
     const overlayOn = document.getElementById("overlay").classList.contains("on");
+    let container;
     if(overlayOn){
-      document.getElementById("overlay-panel").insertAdjacentHTML("afterbegin", body);
+      container = document.getElementById("overlay-panel");
+      container.insertAdjacentHTML("afterbegin", body);
     } else {
-      const tb = document.getElementById("tipbar"); tb.innerHTML = body; tb.classList.add("on");
+      container = document.getElementById("tipbar"); container.innerHTML = body; container.classList.add("on");
     }
     if(selector){ document.querySelectorAll(selector).forEach(el=>{ el.classList.add("tut-highlight"); tutHi.push(el); }); }
-    const got = document.getElementById("tut-got");
+    // wire the freshly inserted button within its own container, so a bar tip and
+    // an overlay tip open at once cannot collide on a shared id.
+    const got = container.querySelector(".tut-tip .got");
     if(got) got.addEventListener("click", dismissTip);
   }
   function dismissTip(){
