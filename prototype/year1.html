@@ -831,6 +831,7 @@
                '</div></div>';
       }).join('');
       card({ eyebrow:"The Market · "+season(), title:"What the fields gave up",
+             setting:"town",
              body:'<div class="prose"><p class="note">Grain and roots keep a belly through winter; coin buys coal and hands. Choose for each lot.</p><div style="margin-top:6px">'+rows+'</div></div>',
              choices:[{t:"Close the day-book", primary:true, go:doSell}] });
       tip("market","Now the market. Grain and roots can go to the larder to eat, or to town for coin. Coin buys much, but a full belly is what carries you through the dark months. Choose careful.","#stage button[data-t]");
@@ -891,6 +892,7 @@
       omen = '<div class="omenline">'+drawOmen()+'</div>';
     }
     card({ eyebrow:"Dusk · "+season(), title:"The day-book, closed",
+           setting:"homestead",
            body:'<div class="report">'+rows+'</div>'+(hungerNote?'<p class="note">'+hungerNote+'</p>':'')+omen,
            choices:[{t: season()==="Fall" ? "Toward winter →" : "Turn the season →", primary:true, go:next}] });
     if(omen){
@@ -932,6 +934,7 @@
       const nudge = (season()==="Spring" && !S.flags.plantedOnce)
         ? '<p class="note">A newcomer plants his belly first — potato and turnip fill a larder; wheat and corn sell but take two seasons; cotton is all coin and no supper.</p>' : '';
       card({ eyebrow:"Dawn · Planting", title:"Set the fields",
+             setting:"fields",
              body:'<div class="fields">'+rows+'</div>'+nudge,
              choices:[{t:"Sow it so", primary:true, go:commit}] });
       tip("plant","Plant your bellies first. Potatoes and turnips fill a larder, and you will want it full come winter. Tap a crop for each field, then sow.","#stage .crop-picks");
@@ -961,6 +964,7 @@
   function assignStep(opts){
     defaultTasks(opts);
     card({ eyebrow:"Dawn · the hands", title:"Set the crew to work",
+      setting:"fields",
       body:'<div class="prose"><p class="note">Open the roster to give each hand a task for the season. Reuben gives his read on each. When you are ready, put them to work.</p></div>',
       choices:[
         {t:"Open the roster", sub:"assign each hand", go:()=>{ openRoster(); }},
@@ -976,6 +980,7 @@
   // ---- SPRING ----
   function springFlow(b){
     b.push(()=>card({ eyebrow:"Year One begins", title:"The charter, and the cold ground",
+      setting:"homestead",
       dir:"[a wagon-rutted road, four cleared fields, a lean-to, and a well capped in iron at the property's edge]",
       body:'<div class="prose"><p class="dropcap">You have taken the charter on a homestead in the Sull — four small fields, a lean-to that sleeps two, a hundred marks, and one field hand named Reuben who came with the land as customs there require. It is Spring. The larder holds eighty measures against the year, and there is no fuel laid in at all.</p><p>They say the ground here keeps accounts. You will have a year to learn what that means.</p></div>',
       choices:[{t:"Walk the fields", primary:true, go:next}] }));
@@ -1020,6 +1025,7 @@
   // ---- SUMMER ----
   function summerFlow(b){
     b.push(()=>card({ eyebrow:"Summer · the market opens", title:"The long light",
+      setting:"fields",
       body:'<div class="prose"><p class="dropcap">The days stretch and the first crops come on. Word reaches you of Regional buyers who send a wagon for a real load, and of the saloon where Meredith Vane sells the one thing dearer than whiskey — knowing things. The heat sits heavy on the fields.</p></div>',
       choices:[{t:"To work", primary:true, go:next}] }));
 
@@ -1071,6 +1077,7 @@
   // ---- FALL ----
   function fallFlow(b){
     b.push(()=>card({ eyebrow:"Fall · the scramble", title:"Bring it in, and lay it by",
+      setting:"fields",
       body:'<div class="prose"><p class="dropcap">The year tips over into taking-in. Every ripe field wants harvesting and the winter wants fuel, and both want the same short days. From here the almanac keeps a running count in the margin: larder against need, wood against the cold.</p></div>',
       choices:[{t:"Begin", primary:true, go:next}] }));
 
@@ -1094,6 +1101,7 @@
     b.push(()=>{
       if(S.reckoning>=25){
         card({ eyebrow:"An omen", title:"Sour",
+          setting:"homestead", speaker:"nan",
           body:'<div class="prose"><p class="whisper">The milk turns though the cow is sound and the pail was clean. It turns again the next morning, and the next. When you ask Old Nan she does not touch it. <span class="said">“You’ve laid something down,”</span> she says, <span class="said">“that the ground did not care for. It remembers the shape of it.”</span></p></div>',
           choices:[{t:"Say nothing", primary:true, go:next}] });
       } else next();
@@ -1110,6 +1118,7 @@
   // ---- WINTER ----
   function winterFlow(b){
     b.push(()=>card({ eyebrow:"Winter · the crucible", title:"The short days close in",
+      setting:"fields",
       dir:"[frost on the well-cap; the whole valley gone quiet and white]",
       body:'<div class="prose"><p class="dropcap">Winter in the Sull is the year’s true test. There is no planting now — only the larder, the woodpile, and the long dark between them. What you laid by is what you have.</p></div>'+
         needBar(),
@@ -1122,6 +1131,7 @@
       const short = S.food < winterFoodNeed() || S.fuel < winterFuelNeed();
       if(short && !S.flags.tookCharity){
         card({ eyebrow:"A knock at the door", title:"Sister Ruth's Basket",
+          setting:"homestead", speaker:"ruth",
           dir:"[a plain woman with a covered basket and a look that misses nothing]",
           body:'<div class="prose"><p>Sister Ruth Grange comes up the frozen track with a basket on her arm. <span class="said">“The church keeps a little back,”</span> she says, <span class="said">“for a hard first winter. It is not charity. It is what a town is for.”</span> Her eyes go once around your yard, counting mouths and measuring the fire.</p></div>',
           choices:[
@@ -1158,6 +1168,7 @@
       const spend=coal*3+grain*2;
       const fn=45+8*extraHands(), un=45+8*extraHands(); // planning figures (cold snap unknown yet)
       card({ eyebrow:"The scramble · lay in stores", title:"Provision against winter",
+        setting:"homestead",
         body:'<div class="prose"><p class="note">Coal from town at 3 marks the measure (each gives 2 fuel). Grain at 2 marks the measure. Winter for '+bodies()+' will want roughly '+ (35+15*extraHands()) +' food and '+un+'–'+(un+10)+' fuel. You have '+S.marks+' marks.</p>'+
           '<div class="stepper"><div class="lab">Coal<small>+2 fuel each · 3 m</small></div><div class="ctrls"><button data-a="coal-">–</button><span class="qty">'+coal+'</span><button data-a="coal+">+</button></div></div>'+
           '<div class="stepper"><div class="lab">Grain<small>+1 food each · 2 m</small></div><div class="ctrls"><button data-a="grain-">–</button><span class="qty">'+grain+'</span><button data-a="grain+">+</button></div></div>'+
@@ -1275,9 +1286,11 @@
   const SYSTEMIC = {
     spring:[
       ()=>card({eyebrow:"A growing rain",title:"A Soft Rain",
+        setting:"fields",
         body:'<div class="prose"><p>Three days of soft, warm rain walk up the valley. The seed drinks it in and the fields come on a shade faster than the almanac promised.</p></div>',
         choices:[{t:"Good.",primary:true,go:()=>resolve(()=>{S.fields.forEach(f=>{if(f.crop)f.progress+=0.5;});},"Everything planted takes a step toward ripe.")}]}),
       ()=>card({eyebrow:"An unfenced field",title:"Crows in the Corn",
+        setting:"fields",
         body:'<div class="prose"><p>A black congregation settles on one of your fields and sets to work with a will. There is no fence to turn them.</p></div>',
         choices:[
           {t:"Set Reuben to scaring them",sub:"a day's labor spent",go:()=>resolve(()=>{S.fields.forEach(x=>x.tended=false);},"Reuben spends the day waving and shouting. The crows leave insulted; the crop is whole.")},
@@ -1285,6 +1298,7 @@
           {t:"Let them feed",sub:"lose a share of that field",go:()=>resolve(()=>{const f=S.fields.find(x=>x.crop);if(f)f.fert=Math.max(0,f.fert-1);},"You let them have their tithe. It is only a share. You will remember the fence come next planting.")},
         ]}),
       ()=>card({eyebrow:"A hand asks",title:"A Name of His Own",
+        setting:"homestead", speaker:"reuben",
         body:'<div class="prose"><p>Reuben stands at the door with his hat in his hands and asks, haltingly, whether he might have a name that is <em>his</em> — not the one that came stamped on the charter papers, but one you’d call him by.</p></div>',
         choices:[
           {t:"Grant it gladly",sub:"+heart; he works the harder for it",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;S.regard+=1;},"He says the name over twice, quietly, like a thing he is afraid to drop. He works differently after — like a man, not a tool.")},
@@ -1293,18 +1307,21 @@
     ],
     summer:[
       ()=>card({eyebrow:"A dry heat",title:"The Hot Wind",
+        setting:"fields",
         body:'<div class="prose"><p>A hot wind comes off the flats and sits on the valley for a week. The work is punishing under it.</p></div>',
         choices:[
           {t:"Rest the worst of it",sub:"+heart; a slow week",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;},"You keep to the shade through the killing hours. The work waits; the crew keeps its strength.")},
           {t:"Work straight through",sub:"the crop, but Reuben wilts",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;},"The rows get worked in the full glare. Reuben comes in each night hollow-eyed. The land, for now, takes no notice of a hard week.")},
         ]}),
       ()=>card({eyebrow:"A traveller",title:"The Pedlar",
+        setting:"fields",
         body:'<div class="prose"><p>A pedlar with a swaybacked mule offers cheap seed by the roadside — and, when pressed, something else, wrapped in oilcloth, that he will not name and will not unwrap.</p></div>',
         choices:[
           {t:"Buy the seed — 8 m",sub:"+8 seed",disabled:S.marks<8,primary:true,go:()=>resolve(()=>{S.marks-=8;S.seed+=8;},"Good seed at a fair price. The oilcloth stays wrapped, and the pedlar goes on his way looking almost relieved.")},
           {t:"Send him on",sub:"want nothing of it",go:()=>resolve(null,"You wave him past. The mule complains; the pedlar tips his hat; the oilcloth bundle rides on to trouble someone else.")},
         ]}),
       ()=>card({eyebrow:"In the granary",title:"Rats in the Stores",
+        setting:"fields",
         body:'<div class="prose"><p>Something has been in the larder. You find the tell-tale spill of grain and the small dark droppings along the wall.</p></div>',
         choices:[
           {t:"Trap them — 4 m",sub:"stop the loss",disabled:S.marks<4,primary:true,go:()=>resolve(()=>{S.marks-=4;},"Traps and a barn cat borrowed from Doc Bell. The stores hold.")},
@@ -1313,6 +1330,7 @@
     ],
     fall:[
       ()=>card({eyebrow:"At the gate",title:"A Foundling",
+        setting:"gate",
         dir:"[a thin figure at the fence-line at dusk, not quite a child, not quite not]",
         body:'<div class="prose"><p>A stray hand stands at your gate as the light goes — one of the Sull’s foundlings, grown wild from no wagon and no vat anyone will own to. It watches you and does not speak.</p></div>',
         choices:[
@@ -1321,11 +1339,13 @@
           {t:"Turn them out",sub:"the ground marks it",go:()=>resolve(()=>{S.reckoning+=1;markCruelty();},"You close the gate. The figure stands a while in the cold, then is not there. <span class=\"whisper\">Something in the ground turns over in its long sleep.</span>")},
         ]}),
       ()=>card({eyebrow:"A rumor at the saloon",title:"Doc Bell's Word",
+        setting:"saloon", speaker:"bell",
         body:'<div class="prose"><p>Doc Bell, dry as ever, lets fall over a glass that a Regional buyer will pay above the local price for grain this fall — if you have a wagon-load worth carrying, and the coin to wait for the wagon.</p></div>',
         choices:[
           {t:"Note it and thank him",sub:"good to know for Year Two",primary:true,go:()=>resolve(()=>{S.regard+=1;},"You file it away. The Regional wagon is a Year-Two concern — but the knowing of it is worth a drink, and Bell is worth cultivating.")},
         ]}),
       ()=>card({eyebrow:"An early frost",title:"Frost on the Low Ground",
+        setting:"fields",
         body:'<div class="prose"><p>A hard frost comes a week early to the low fields. Anything ripe should come in now or risk the cold.</p></div>',
         choices:[
           {t:"Bring in what's ready",sub:"safe, but rushed",primary:true,go:()=>resolve(()=>{S.fields.forEach(f=>{if(ripe(f))f.tended=false;});},"You get the ripe fields in ahead of the white. It is rough work in the cold, but the harvest is safe under roof.")},
@@ -1333,6 +1353,7 @@
     ],
     winter:[
       ()=>card({eyebrow:"The long dark",title:"Cabin Fever",
+        setting:"homestead",
         body:'<div class="prose"><p>The snow shuts the valley in. Days pass without a face from town, and the household grows short-tempered in the close air of the lean-to.</p></div>',
         choices:[
           {t:"Keep them busy and fed",sub:"+heart if you can spare it",primary:true,go:()=>resolve(()=>{const f=fore(); if(S.food>20&&f&&f.morale<5)f.morale++;},"You ration out small comforts — a better supper, a task with an end to it. The crew holds together through the worst of the quiet.")},
