@@ -1153,6 +1153,11 @@
           dir:"[a plain woman with a covered basket and a look that misses nothing]",
           body:'<div class="prose"><p>Sister Ruth Grange comes up the frozen track with a basket on her arm. <span class="said">“The church keeps a little back,”</span> she says, <span class="said">“for a hard first winter. It is not charity. It is what a town is for.”</span> Her eyes go once around your yard, counting mouths and measuring the fire.</p></div>',
           choices:[
+            // Deliberate two-value tag, the one exception to this file's
+            // "one representative tag" rule: this is the game's single
+            // emergency-relief choice, and it genuinely grants both tracked
+            // stats (S.food, S.fuel) at once. Collapsing it to one tag would
+            // understate what accepting the basket actually does.
             {t:"Accept the basket", sub:"a small debt of regard", tag:"+food, +fuel", primary:true, go:()=>resolve(()=>{S.food+=18;S.fuel+=14;S.flags.tookCharity=true;S.regard+=2;}, "She sets it down and will not stay for thanks. Bread, salt pork, a sack of coal. It is the difference, this year, between a grave and a spring.")},
             {t:"“We'll manage, Sister.”", sub:"pride; the fire stays low", tag:"+regard", go:()=>resolve(()=>{S.regard+=1;}, "She looks at you a long moment, then nods once and takes the basket back down the track. <span class=\"said\">“The offer keeps,”</span> she says, without turning. You hope you will not need it.")},
           ] });

@@ -28,4 +28,16 @@ describe("Winter content clarity", () => {
     const btn = doc.querySelector("#stage .btn[data-c]");
     expect(btn.querySelector(".sub").textContent).toBe("begin winter");
   });
+
+  it("Sister Ruth's Basket's accept choice carries the deliberate dual-stat tag", () => {
+    const { doc, T } = boot();
+    expect(driveToTitle(doc, "The short days close in")).toBe(true);
+    const state = T.getState();
+    state.food = 0;
+    state.fuel = 0;
+    expect(driveToTitle(doc, "Sister Ruth's Basket")).toBe(true);
+    const btns = [...doc.querySelectorAll("#stage .btn[data-c]")];
+    const accept = btns.find(b => b.querySelector(".t").textContent.includes("Accept the basket"));
+    expect(accept.querySelector(".tag").textContent).toBe("+food, +fuel");
+  });
 });
