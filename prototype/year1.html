@@ -152,8 +152,9 @@
     border-bottom:1px solid var(--rule);
     background:color-mix(in srgb,var(--paper-3) 55%, transparent);
   }
-  .ledger .cell{ padding:8px 6px 9px; text-align:center; border-right:1px solid var(--rule-fine); }
+  .ledger .cell{ padding:8px 6px 9px; text-align:center; border-right:1px solid var(--rule-fine); cursor:pointer; }
   .ledger .cell:last-child{ border-right:0; }
+  .ledger .cell:hover{ background:color-mix(in srgb,var(--accent) 8%, transparent); }
   .ledger .k{ font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-faint); }
   .ledger .v{ font-size:20px; font-variant-numeric:tabular-nums; margin-top:2px; color:var(--ink); }
   .ledger .v .u{ font-size:11px; color:var(--ink-faint); margin-left:2px; letter-spacing:.02em; }
@@ -529,15 +530,18 @@
     const w=S.weather;
     document.getElementById("plate-weather").innerHTML = wGlyph(w.glyph)+'<div class="wlabel">'+w.label+'</div>';
   }
-  function cell(k,v,u,cls){ return '<div class="cell"><div class="k">'+k+'</div><div class="v '+(cls||'')+'">'+v+(u?'<span class="u">'+u+'</span>':'')+'</div></div>'; }
+  function cell(key,k,v,u,cls){ return '<div class="cell" data-k="'+key+'"><div class="k">'+k+'</div><div class="v '+(cls||'')+'">'+v+(u?'<span class="u">'+u+'</span>':'')+'</div></div>'; }
   function renderLedger(){
     const foodCls = S.food<=15?'low':S.food<=30?'warn':'';
     const fuelCls = (season()==="Fall"||season()==="Winter") && S.fuel< winterFuelNeed() ? (S.fuel< winterFuelNeed()/2?'low':'warn') : '';
     document.getElementById("ledger").innerHTML =
-      cell("Coin", S.marks, "m") +
-      cell("Larder", Math.floor(S.food), "", foodCls) +
-      cell("Fuel", S.fuel, "", fuelCls) +
-      cell("Seed", S.seed, "");
+      cell("coin","Coin", S.marks, "m") +
+      cell("larder","Larder", Math.floor(S.food), "", foodCls) +
+      cell("fuel","Fuel", S.fuel, "", fuelCls) +
+      cell("seed","Seed", S.seed, "");
+    document.getElementById("ledger").querySelectorAll(".cell[data-k]").forEach(el=>{
+      el.onclick = ()=>openInfo(el.querySelector(".k").textContent, LEDGER_HELP[el.dataset.k]);
+    });
     // household row
     const dots = n => '<span class="dots">'+"●".repeat(Math.max(0,n))+'<span class="off">'+"●".repeat(Math.max(0,5-n))+'</span></span>';
     let hh = "";
@@ -1422,6 +1426,12 @@
     yearend: "The year is decided. Read how it went, then take the charter again.",
   };
   function setScreenType(t){ S.screenType = t; }
+  const LEDGER_HELP = {
+    coin: "Marks. Money for seed, coal, farmhands, and fences.",
+    larder: "Stored food. The household eats it every season. Run out in winter, and someone dies.",
+    fuel: "Wood and coal laid by. Only spent in winter. Too little, and the frailest freezes.",
+    seed: "Seed stock. Spent first when you plant, before coin.",
+  };
 
   /* ---------------- overlay layer ---------------- */
   function openOverlay(html, wire){
@@ -1516,7 +1526,7 @@
   newGame((Math.random()*1e9)>>>0);
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP };
   }
 
   runStep();
