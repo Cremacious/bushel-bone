@@ -1097,7 +1097,7 @@
     b.push(()=>card({ eyebrow:"Fall · the scramble", title:"Bring it in, and lay it by",
       setting:"fields",
       body:'<div class="prose"><p class="dropcap">The year tips over into taking-in. Every ripe field wants harvesting and the winter wants fuel, and both want the same short days. From here the almanac keeps a running count in the margin: larder against need, wood against the cold.</p></div>',
-      choices:[{t:"Begin", primary:true, go:next}] }));
+      choices:[{t:"Begin", sub:"begin the season", primary:true, go:next}] }));
 
     b.push(plantStep);
     // the scramble: tend vs chop
@@ -1109,8 +1109,8 @@
       dir:"[lanterns strung over the green, and Old Nan at the dark edge of it, watching the newcomer]",
       body:'<div class="prose"><p>Harvest Home falls square in the crunch. Bess Halloway asks you one sharp, honest question and reads your face for the answer. Sister Ruth notes how your hands look, fed or not. The Sheriff offers a cool word about soft ground. To go is to lose a working day; to stay away is to be the man who wouldn’t.</p></div>',
       choices:[
-        {t:"Go to the feast", sub:"+regard, +heart, a day not worked", primary:true, go:()=>resolve(()=>{S.regard+=5; const f=fore(); if(f&&f.morale<5)f.morale++; S.fields.forEach(x=>x.tended=false);}, "You sit at the long tables. Bess decides something about you; you cannot tell what. It is warm, and there is bread, and for an evening the ground keeps its accounts to itself.")},
-        {t:"Stay and bring in the crop", sub:"−regard; the work gets done", go:()=>resolve(()=>{S.regard-=3;}, "You work while the fiddles carry over the fields. The crop is safe and the town is a shade cooler to you. You can live on a safe crop; you cannot eat regard.")},
+        {t:"Go to the feast", sub:"+heart, a day not worked", tag:"+regard", primary:true, go:()=>resolve(()=>{S.regard+=5; const f=fore(); if(f&&f.morale<5)f.morale++; S.fields.forEach(x=>x.tended=false);}, "You sit at the long tables. Bess decides something about you; you cannot tell what. It is warm, and there is bread, and for an evening the ground keeps its accounts to itself.")},
+        {t:"Stay and bring in the crop", sub:"the work gets done", tag:"−regard", go:()=>resolve(()=>{S.regard-=3;}, "You work while the fiddles carry over the fields. The crop is safe and the town is a shade cooler to you. You can live on a safe crop; you cannot eat regard.")},
       ] }));
 
     b.push(()=>drawSystemic("fall"));
@@ -1121,7 +1121,7 @@
         card({ eyebrow:"An omen", title:"Sour",
           setting:"homestead", speaker:"nan",
           body:'<div class="prose"><p class="whisper">The milk turns though the cow is sound and the pail was clean. It turns again the next morning, and the next. When you ask Old Nan she does not touch it. <span class="said">“You’ve laid something down,”</span> she says, <span class="said">“that the ground did not care for. It remembers the shape of it.”</span></p></div>',
-          choices:[{t:"Say nothing", primary:true, go:next}] });
+          choices:[{t:"Say nothing", sub:"continue", primary:true, go:next}] });
       } else next();
     });
 
@@ -1354,15 +1354,23 @@
         dir:"[a thin figure at the fence-line at dusk, not quite a child, not quite not]",
         body:'<div class="prose"><p>A stray hand stands at your gate as the light goes, one of the Sull’s foundlings, grown wild from no wagon and no vat anyone will own to. It watches you and does not speak.</p></div>',
         choices:[
-          {t:"Take them in",sub:"free labor, and another winter mouth",primary:true,go:()=>resolve(()=>{S.hands.push(mkHand(null, pick(["Wren","Cob","Lark","Fen"]), "Foundling", 2, {mind:"wary"}));},"You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field, and one more belly to carry to spring.")},
-          {t:"Send them to Sister Ruth",sub:"+her regard",go:()=>resolve(()=>{S.regard+=3;},"You point the way to the church, where Ruth keeps a cot for such as these. She will remember that you sent them fed, not away.")},
+          {t:"Take them in",sub:"free labor, and another winter mouth",tag:"+1 mouth to feed",primary:true,go:()=>resolve(()=>{S.hands.push(mkHand(null, pick(["Wren","Cob","Lark","Fen"]), "Foundling", 2, {mind:"wary"}));},"You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field, and one more belly to carry to spring.")},
+          // sub deliberately kept close to the tag here: this choice's only
+          // effect is +regard, so "+her regard" (whose regard) and the
+          // "+regard" tag are naturally near-identical, unlike the trimmed
+          // cases above where sub still carried an extra, non-tag detail.
+          {t:"Send them to Sister Ruth",sub:"+her regard",tag:"+regard",go:()=>resolve(()=>{S.regard+=3;},"You point the way to the church, where Ruth keeps a cot for such as these. She will remember that you sent them fed, not away.")},
+          // No tag here, deliberately: this raises the hidden Reckoning meter
+          // (S.reckoning) via markCruelty(), and that meter must never be
+          // named, numbered, or hinted at in a tag/badge. The oblique sub
+          // ("the ground marks it") stays; the tag stays absent.
           {t:"Turn them out",sub:"the ground marks it",go:()=>resolve(()=>{S.reckoning+=1;markCruelty();},"You close the gate. The figure stands a while in the cold, then is not there. <span class=\"whisper\">Something in the ground turns over in its long sleep.</span>")},
         ]}),
       ()=>card({eyebrow:"A rumor at the saloon",title:"Doc Bell's Word",
         setting:"saloon", speaker:"bell",
         body:'<div class="prose"><p>Doc Bell, dry as ever, lets fall over a glass that a Regional buyer will pay above the local price for grain this fall, if you have a wagon-load worth carrying, and the coin to wait for the wagon.</p></div>',
         choices:[
-          {t:"Note it and thank him",sub:"good to know for Year Two",primary:true,go:()=>resolve(()=>{S.regard+=1;},"You file it away. The Regional wagon is a Year-Two concern, but the knowing of it is worth a drink, and Bell is worth cultivating.")},
+          {t:"Note it and thank him",sub:"good to know for Year Two",tag:"+regard",primary:true,go:()=>resolve(()=>{S.regard+=1;},"You file it away. The Regional wagon is a Year-Two concern, but the knowing of it is worth a drink, and Bell is worth cultivating.")},
         ]}),
       ()=>card({eyebrow:"An early frost",title:"Frost on the Low Ground",
         setting:"fields",
