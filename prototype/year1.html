@@ -1022,7 +1022,7 @@
       dir:"[a green between a white church and a low saloon; the whole of Marrow's Cross gathered to bless the planting]",
       body:'<div class="prose"><p>Mayor Halloway makes an expansive welcome and presses a small wheat contract on you: eight units, at a fair locked price, come the harvest. Preacher Grange walks the new man’s fields and says the old words over them. Meredith Vane watches from the saloon step; the Sheriff watches from the shade.</p><p>Attending costs you a working day of Reuben’s, but a newcomer is only new once.</p></div>',
       choices:[
-        {t:"Attend the Fair", sub:"+regard, a blessed field, the wheat contract, but Reuben rests today", tag:"+regard", primary:true, go:()=>resolve(()=>{
+        {t:"Attend the Fair", sub:"a blessed field, the wheat contract, but Reuben rests today", tag:"+regard", primary:true, go:()=>resolve(()=>{
           S.regard+=6; S.flags.wheatContract=true; const fm=fore(); if(fm&&fm.morale<5)fm.morale++;
           // a blessed field: nudge a planted field's progress
           const f=S.fields.find(x=>x.crop); if(f)f.progress+=0.5;
@@ -1321,8 +1321,8 @@
         setting:"homestead", speaker:"reuben",
         body:'<div class="prose"><p>Reuben stands at the door with his hat in his hands and asks, haltingly, whether he might have a name that is <em>his</em>, not the one that came stamped on the charter papers, but one you’d call him by.</p></div>',
         choices:[
-          {t:"Grant it gladly",sub:"+heart; he works the harder for it",tag:"+heart",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;S.regard+=1;},"He says the name over twice, quietly, like a thing he is afraid to drop. He works differently after, like a man, not a tool.")},
-          {t:"Refuse him",sub:"−heart; the asking never comes again",tag:"−heart",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;markCruelty();},"<span class=\"said\">“As you say,”</span> he answers, and goes back to the field. He does not ask again, and something in him closes for good. <span class=\"whisper\">The ground, somewhere, makes a small note of it.</span>")},
+          {t:"Grant it gladly",sub:"he works the harder for it",tag:"+heart",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;S.regard+=1;},"He says the name over twice, quietly, like a thing he is afraid to drop. He works differently after, like a man, not a tool.")},
+          {t:"Refuse him",sub:"the asking never comes again",tag:"−heart",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;markCruelty();},"<span class=\"said\">“As you say,”</span> he answers, and goes back to the field. He does not ask again, and something in him closes for good. <span class=\"whisper\">The ground, somewhere, makes a small note of it.</span>")},
         ]}),
     ],
     summer:[
