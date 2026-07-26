@@ -943,7 +943,8 @@
         const sel = chosen[f.id];
         const picks = Object.keys(CROPS).map(k=>{
           const c=CROPS[k]; const can = affordable(k,f.id);
-          return '<button class="chip '+(sel===k?'sel':'')+'" data-f="'+f.id+'" data-k="'+k+'"'+(can||sel===k?'':' disabled style="opacity:.35"')+'>'+c.name+'<span class="c">'+c.seed+'</span></button>';
+          const why = can ? "" : ' title="needs '+c.seed+' seed or coin, have '+S.seed+' seed, '+S.marks+'m"';
+          return '<button class="chip '+(sel===k?'sel':'')+'" data-f="'+f.id+'" data-k="'+k+'"'+(can||sel===k?'':' disabled style="opacity:.35"'+why)+'>'+c.name+'<span class="c">'+c.seed+'</span></button>';
         }).join('')+'<button class="chip '+(sel==null?'sel':'')+'" data-f="'+f.id+'" data-k="">fallow<span class="c">rest</span></button>';
         return '<div class="field-row"><div class="fh"><span class="fname">'+fieldName(f)+'</span>'+
                '<span class="fmeta">fert <span class="fert">'+"●".repeat(f.fert)+"○".repeat(3-f.fert)+'</span></span></div>'+
