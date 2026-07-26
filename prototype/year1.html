@@ -1001,7 +1001,7 @@
       setting:"homestead",
       dir:"[a wagon-rutted road, four cleared fields, a lean-to, and a well capped in iron at the property's edge]",
       body:'<div class="prose"><p class="dropcap">You have taken the charter on a homestead in the Sull: four small fields, a lean-to that sleeps two, a hundred marks, and one field hand named Reuben who came with the land as customs there require. It is Spring. The larder holds eighty measures against the year, and there is no fuel laid in at all.</p><p>They say the ground here keeps accounts. You will have a year to learn what that means.</p></div>',
-      choices:[{t:"Walk the fields", primary:true, go:next}] }));
+      choices:[{t:"Walk the fields", sub:"begin the year", primary:true, go:next}] }));
 
     // Silas's Welcome (scripted, Day 1)
     b.push(()=>card({ eyebrow:"A caller · Day 1", title:"Silas's Welcome",
@@ -1009,8 +1009,8 @@
       dir:"[a man in a good coat on a poor road, a ledger in his saddlebag, not dismounting]",
       body:'<div class="prose"><p>Silas Ridley reins up at your gate and does not get down. <span class="said">“Ridley. I hold your charter.”</span> He says it the way another man might say the weather. <span class="said">“A hundred and fifty a year to the bank. Not this year, nor the next: the charter allows a new man his feet. After that, it minds its dates, and so will I.”</span> He looks a long moment at the soft ground by the east field, and something crosses his face he does not explain.</p></div>',
       choices:[
-        {t:"“Obliged, Mr. Ridley.”", go:()=>resolve(()=>{S.flags.silas="civil";}, "He nods and rides off. You are, it seems, a man with a deadline, two years out.")},
-        {t:"“You believe the stories about this ground?”", go:()=>resolve(()=>{S.regard-=1;}, "He pauses. <span class=\"said\">“I believe in the ledger,”</span> he says. <span class=\"said\">“The stories are the ledger's business.”</span> He rides off faster than he came.")},
+        {t:"“Obliged, Mr. Ridley.”", sub:"keep the peace with your banker", go:()=>resolve(()=>{S.flags.silas="civil";}, "He nods and rides off. You are, it seems, a man with a deadline, two years out.")},
+        {t:"“You believe the stories about this ground?”", sub:"needle him; he does not care for it", tag:"−regard", go:()=>resolve(()=>{S.regard-=1;}, "He pauses. <span class=\"said\">“I believe in the ledger,”</span> he says. <span class=\"said\">“The stories are the ledger's business.”</span> He rides off faster than he came.")},
       ] }));
 
     b.push(plantStep);
@@ -1022,14 +1022,14 @@
       dir:"[a green between a white church and a low saloon; the whole of Marrow's Cross gathered to bless the planting]",
       body:'<div class="prose"><p>Mayor Halloway makes an expansive welcome and presses a small wheat contract on you: eight units, at a fair locked price, come the harvest. Preacher Grange walks the new man’s fields and says the old words over them. Meredith Vane watches from the saloon step; the Sheriff watches from the shade.</p><p>Attending costs you a working day of Reuben’s, but a newcomer is only new once.</p></div>',
       choices:[
-        {t:"Attend the Fair", sub:"+regard, a blessed field, the wheat contract, but Reuben rests today", primary:true, go:()=>resolve(()=>{
+        {t:"Attend the Fair", sub:"+regard, a blessed field, the wheat contract, but Reuben rests today", tag:"+regard", primary:true, go:()=>resolve(()=>{
           S.regard+=6; S.flags.wheatContract=true; const fm=fore(); if(fm&&fm.morale<5)fm.morale++;
           // a blessed field: nudge a planted field's progress
           const f=S.fields.find(x=>x.crop); if(f)f.progress+=0.5;
           // clearing Reuben's tend if he'd been tending (he's at the fair)
           S.fields.forEach(x=>x.tended=false);
         }, "You stand the day among them. Grange's blessing settles on the near ground like a light frost that does not bite. The town has seen your face now; that counts for something in the Sull.")},
-        {t:"Skip it and work", sub:"the town notes the newcomer who wouldn't come", go:()=>resolve(()=>{S.regard-=3;}, "You keep to your fields while the fiddles carry across the green. Marrow's Cross notices a man who will not sit with it. It always does.")},
+        {t:"Skip it and work", sub:"the town notes the newcomer who wouldn't come", tag:"−regard", go:()=>resolve(()=>{S.regard-=3;}, "You keep to your fields while the fiddles carry across the green. Marrow's Cross notices a man who will not sit with it. It always does.")},
       ] }));
 
     // one systemic spring event
@@ -1308,21 +1308,21 @@
       ()=>card({eyebrow:"A growing rain",title:"A Soft Rain",
         setting:"fields",
         body:'<div class="prose"><p>Three days of soft, warm rain walk up the valley. The seed drinks it in and the fields come on a shade faster than the almanac promised.</p></div>',
-        choices:[{t:"Good.",primary:true,go:()=>resolve(()=>{S.fields.forEach(f=>{if(f.crop)f.progress+=0.5;});},"Everything planted takes a step toward ripe.")}]}),
+        choices:[{t:"Good.",sub:"the planted fields grow a little faster",primary:true,go:()=>resolve(()=>{S.fields.forEach(f=>{if(f.crop)f.progress+=0.5;});},"Everything planted takes a step toward ripe.")}]}),
       ()=>card({eyebrow:"An unfenced field",title:"Crows in the Corn",
         setting:"fields",
         body:'<div class="prose"><p>A black congregation settles on one of your fields and sets to work with a will. There is no fence to turn them.</p></div>',
         choices:[
           {t:"Set Reuben to scaring them",sub:"a day's labor spent",go:()=>resolve(()=>{S.fields.forEach(x=>x.tended=false);},"Reuben spends the day waving and shouting. The crows leave insulted; the crop is whole.")},
-          {t:"Fence it, 15 m",sub:"lasting; costs coin",disabled:S.marks<15,go:()=>resolve(()=>{S.marks-=15;},"Posts and wire go up. The crows try it once, twice, and give it up. The fence will stand for years.")},
-          {t:"Let them feed",sub:"lose a share of that field",go:()=>resolve(()=>{const f=S.fields.find(x=>x.crop);if(f)f.fert=Math.max(0,f.fert-1);},"You let them have their tithe. It is only a share. You will remember the fence come next planting.")},
+          {t:"Fence it, 15 m",sub:"lasting; costs coin",why:"needs 15m, have "+S.marks+"m",disabled:S.marks<15,go:()=>resolve(()=>{S.marks-=15;},"Posts and wire go up. The crows try it once, twice, and give it up. The fence will stand for years.")},
+          {t:"Let them feed",sub:"lose a share of that field",tag:"−fertility",go:()=>resolve(()=>{const f=S.fields.find(x=>x.crop);if(f)f.fert=Math.max(0,f.fert-1);},"You let them have their tithe. It is only a share. You will remember the fence come next planting.")},
         ]}),
       ()=>card({eyebrow:"A hand asks",title:"A Name of His Own",
         setting:"homestead", speaker:"reuben",
         body:'<div class="prose"><p>Reuben stands at the door with his hat in his hands and asks, haltingly, whether he might have a name that is <em>his</em>, not the one that came stamped on the charter papers, but one you’d call him by.</p></div>',
         choices:[
-          {t:"Grant it gladly",sub:"+heart; he works the harder for it",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;S.regard+=1;},"He says the name over twice, quietly, like a thing he is afraid to drop. He works differently after, like a man, not a tool.")},
-          {t:"Refuse him",sub:"−heart; the asking never comes again",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;markCruelty();},"<span class=\"said\">“As you say,”</span> he answers, and goes back to the field. He does not ask again, and something in him closes for good. <span class=\"whisper\">The ground, somewhere, makes a small note of it.</span>")},
+          {t:"Grant it gladly",sub:"+heart; he works the harder for it",tag:"+heart",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;S.regard+=1;},"He says the name over twice, quietly, like a thing he is afraid to drop. He works differently after, like a man, not a tool.")},
+          {t:"Refuse him",sub:"−heart; the asking never comes again",tag:"−heart",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;markCruelty();},"<span class=\"said\">“As you say,”</span> he answers, and goes back to the field. He does not ask again, and something in him closes for good. <span class=\"whisper\">The ground, somewhere, makes a small note of it.</span>")},
         ]}),
     ],
     summer:[
