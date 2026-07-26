@@ -28,8 +28,9 @@ describe("choice tag/why mechanism", () => {
     const grower = btns.find(b => b.querySelector(".t").textContent.includes("Buy the Grower"));
     expect(grower).toBeTruthy();
     expect(grower.hasAttribute("disabled")).toBe(true);
-    // At this point in the plan (before Task 5 adds `why`), this choice has
-    // no `why` field, so it must still show its original `sub` prose.
-    expect(grower.querySelector(".sub").textContent).toBe("strong labor; a heavy winter mouth");
+    // Task 5 added a `why` field to this choice ("needs 110m, have 0m"), and
+    // choiceHTML() shows `why` instead of `sub` once a choice is disabled, so
+    // this expectation was updated from the original `sub` text accordingly.
+    expect(grower.querySelector(".sub").textContent).toBe("needs 110m, have 0m");
   });
 });

@@ -1045,7 +1045,7 @@
     b.push(()=>card({ eyebrow:"Summer · the market opens", title:"The long light",
       setting:"fields",
       body:'<div class="prose"><p class="dropcap">The days stretch and the first crops come on. Word reaches you of Regional buyers who send a wagon for a real load, and of the saloon where Meredith Vane sells the one thing dearer than whiskey: knowing things. The heat sits heavy on the fields.</p></div>',
-      choices:[{t:"To work", primary:true, go:next}] }));
+      choices:[{t:"To work", sub:"begin the season", primary:true, go:next}] }));
 
     b.push(plantStep);
     b.push(()=>assignStep(["tend","chop","rest"]));
@@ -1056,8 +1056,8 @@
       dir:"[a black wagon hung with lanterns, and a courteous man who does not quite meet the eye]",
       body:'<div class="prose"><p>Dr. Ambrose Vane brings his wagon up the track. Behind the canvas, a shape that breathes. <span class="said">“A grower,”</span> he says, <span class="said">“strong in the ground, gentle with the seed. A hundred and ten marks, and cheap at it.”</span> He can see you counting. <span class="said">“Or a field hand, sixty: a plainer sort of help.”</span></p><p class="note">A second body is a second mouth. It must eat all winter, or it does not last the winter.</p></div>',
       choices:[
-        {t:"Buy the Grower, 110 m", sub:"strong labor; a heavy winter mouth", disabled:S.marks<110, go:()=>resolve(()=>{S.marks-=110; S.hands.push(mkHand(null, pick(["Della","Tace","Wick","Merrit"]), "Grower", 3, {body:"strong",mind:"plain"}));}, "The canvas comes back. She steps down slow, blinking at the light, and does not yet know your name or her own. You will have to feed her now, through everything.")},
-        {t:"Buy the Field Hand, 60 m", sub:"cheaper help; still a mouth to winter", disabled:S.marks<60, go:()=>resolve(()=>{S.marks-=60; S.hands.push(mkHand(null, pick(["Amos","Pell","Bry","Cass"]), "Field Hand", 3, {}));}, "Sixty marks, and a plain quiet worker climbs down from the wagon. Vane counts the coin twice and is gone before you can ask where such a one comes from.")},
+        {t:"Buy the Grower, 110 m", sub:"strong labor; a heavy winter mouth", why:"needs 110m, have "+S.marks+"m", disabled:S.marks<110, go:()=>resolve(()=>{S.marks-=110; S.hands.push(mkHand(null, pick(["Della","Tace","Wick","Merrit"]), "Grower", 3, {body:"strong",mind:"plain"}));}, "The canvas comes back. She steps down slow, blinking at the light, and does not yet know your name or her own. You will have to feed her now, through everything.")},
+        {t:"Buy the Field Hand, 60 m", sub:"cheaper help; still a mouth to winter", why:"needs 60m, have "+S.marks+"m", disabled:S.marks<60, go:()=>resolve(()=>{S.marks-=60; S.hands.push(mkHand(null, pick(["Amos","Pell","Bry","Cass"]), "Field Hand", 3, {}));}, "Sixty marks, and a plain quiet worker climbs down from the wagon. Vane counts the coin twice and is gone before you can ask where such a one comes from.")},
         {t:"Haggle", sub:"Vane likes to be liked", go:()=>resolve(()=>{
           if(S.regard>=55 && S.marks>=100){ S.marks-=100; S.hands.push(mkHand(null, pick(["Della","Tace","Wick"]), "Grower", 3, {body:"strong",mind:"plain"})); S._hag="won"; }
           else S._hag="lost";
@@ -1074,12 +1074,12 @@
         dir:"[a field standing full, a bruise of storm two days out on the horizon, and a hand swaying on his feet]",
         body:'<div class="prose"><p>'+(ripeField?fieldName(ripeField):"A field")+' stands ready, and the forecast reads storm within two days. Reuben has been on his feet since before light and is grey with it. Push him through the night and you save the crop whole. Let him lie down and you lose a third of it to the weather.</p></div>',
         choices:[
-          {t:"Work him through the night", sub:"save the crop · Reuben loses heart", primary:true, go:()=>resolve(()=>{
+          {t:"Work him through the night", sub:"save the crop · Reuben loses heart", tag:"−heart", primary:true, go:()=>resolve(()=>{
             const f=fore(); if(f&&f.morale>0)f.morale--;
             if(ripeField){ ripeField.tended=true; ripeField.progress=Math.max(ripeField.progress,CROPS[ripeField.crop].seasons); }
             S.flags.overworked=true;
           }, "The crop comes in whole under a black sky. Reuben does not speak for a day. <span class=\"whisper\">The land takes no notice of a hard day, not yet. A hard day is only a hard day.</span>")},
-          {t:"Let him rest", sub:"lose a third · Reuben mends", go:()=>resolve(()=>{
+          {t:"Let him rest", sub:"lose a third · Reuben mends", tag:"−fertility", go:()=>resolve(()=>{
             const f=fore(); if(f&&f.morale<5)f.morale++;
             if(ripeField)ripeField.fert=Math.max(0,ripeField.fert-1);
           }, "You send him to his cot. The storm takes what it takes. In the morning he works the wet field with something like loyalty, and you find you do not regret the third you lost.")},
@@ -1330,22 +1330,22 @@
         setting:"fields",
         body:'<div class="prose"><p>A hot wind comes off the flats and sits on the valley for a week. The work is punishing under it.</p></div>',
         choices:[
-          {t:"Rest the worst of it",sub:"+heart; a slow week",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;},"You keep to the shade through the killing hours. The work waits; the crew keeps its strength.")},
-          {t:"Work straight through",sub:"the crop, but Reuben wilts",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;},"The rows get worked in the full glare. Reuben comes in each night hollow-eyed. The land, for now, takes no notice of a hard week.")},
+          {t:"Rest the worst of it",sub:"a slow week",tag:"+heart",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;},"You keep to the shade through the killing hours. The work waits; the crew keeps its strength.")},
+          {t:"Work straight through",sub:"the crop keeps, but Reuben wilts",tag:"−heart",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;},"The rows get worked in the full glare. Reuben comes in each night hollow-eyed. The land, for now, takes no notice of a hard week.")},
         ]}),
       ()=>card({eyebrow:"A traveller",title:"The Pedlar",
         setting:"fields",
         body:'<div class="prose"><p>A pedlar with a swaybacked mule offers cheap seed by the roadside, and, when pressed, something else, wrapped in oilcloth, that he will not name and will not unwrap.</p></div>',
         choices:[
-          {t:"Buy the seed, 8 m",sub:"+8 seed",disabled:S.marks<8,primary:true,go:()=>resolve(()=>{S.marks-=8;S.seed+=8;},"Good seed at a fair price. The oilcloth stays wrapped, and the pedlar goes on his way looking almost relieved.")},
+          {t:"Buy the seed, 8 m",sub:"+8 seed",tag:"+8 seed",why:"needs 8m, have "+S.marks+"m",disabled:S.marks<8,primary:true,go:()=>resolve(()=>{S.marks-=8;S.seed+=8;},"Good seed at a fair price. The oilcloth stays wrapped, and the pedlar goes on his way looking almost relieved.")},
           {t:"Send him on",sub:"want nothing of it",go:()=>resolve(null,"You wave him past. The mule complains; the pedlar tips his hat; the oilcloth bundle rides on to trouble someone else.")},
         ]}),
       ()=>card({eyebrow:"In the granary",title:"Rats in the Stores",
         setting:"fields",
         body:'<div class="prose"><p>Something has been in the larder. You find the tell-tale spill of grain and the small dark droppings along the wall.</p></div>',
         choices:[
-          {t:"Trap them, 4 m",sub:"stop the loss",disabled:S.marks<4,primary:true,go:()=>resolve(()=>{S.marks-=4;},"Traps and a barn cat borrowed from Doc Bell. The stores hold.")},
-          {t:"Ignore it",sub:"−food over the season",go:()=>resolve(()=>{S.food=Math.max(0,S.food-10);},"You let it ride. Ten measures of larder go down small throats before the season's out.")},
+          {t:"Trap them, 4 m",sub:"stop the loss",why:"needs 4m, have "+S.marks+"m",disabled:S.marks<4,primary:true,go:()=>resolve(()=>{S.marks-=4;},"Traps and a barn cat borrowed from Doc Bell. The stores hold.")},
+          {t:"Ignore it",sub:"lose food over the season",tag:"−food",go:()=>resolve(()=>{S.food=Math.max(0,S.food-10);},"You let it ride. Ten measures of larder go down small throats before the season's out.")},
         ]}),
     ],
     fall:[
