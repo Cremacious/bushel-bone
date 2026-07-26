@@ -208,7 +208,9 @@
   .btn:hover{ background:var(--paper); border-color:var(--accent); }
   .btn:active{ transform:translateY(1px); }
   .btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-  .btn .t{ font-size:16px; }
+  .btn .t{ font-size:16px; display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+  .btn .tag{ font-family:"Courier New",ui-monospace,monospace; font-size:11.5px; color:var(--ink-faint); white-space:nowrap; }
+  .btn.primary .tag{ color:var(--ink-soft); }
   .btn .sub{ display:block; font-size:12.5px; color:var(--ink-faint); margin-top:3px; font-style:italic; letter-spacing:.01em; }
   .btn.primary{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 15%, var(--paper)); }
   .btn.primary:hover{ background:color-mix(in srgb,var(--accent) 26%, var(--paper)); }
@@ -722,7 +724,8 @@
   function choiceHTML(list){
     return '<div class="choices">'+list.map((c,i)=>
       '<button class="btn '+(c.primary?'primary':'')+'" data-c="'+i+'"'+(c.disabled?' disabled':'')+'>'+
-        '<span class="t">'+c.t+'</span>'+(c.sub?'<span class="sub">'+c.sub+'</span>':'')+
+        '<span class="t">'+c.t+(c.tag?'<span class="tag">'+c.tag+'</span>':'')+'</span>'+
+        ((c.disabled && c.why) ? '<span class="sub">'+c.why+'</span>' : (c.sub?'<span class="sub">'+c.sub+'</span>':''))+
       '</button>').join('')+'</div>';
   }
   function wireChoices(list){
