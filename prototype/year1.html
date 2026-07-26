@@ -239,6 +239,7 @@
   .chip.sel{ background:color-mix(in srgb,var(--accent) 20%, var(--paper)); border-color:var(--accent); color:var(--ink); }
   .chip:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
   .chip .c{ color:var(--ink-faint); font-size:11px; margin-left:3px; }
+  .chip-disabled{ opacity:.35; }
   .growing{ font-size:13px; color:var(--ink-soft); font-style:italic; }
   .ripe{ color:var(--good); font-style:normal; }
 
@@ -943,8 +944,9 @@
         const sel = chosen[f.id];
         const picks = Object.keys(CROPS).map(k=>{
           const c=CROPS[k]; const can = affordable(k,f.id);
-          const why = can ? "" : ' title="needs '+c.seed+' seed or coin, have '+S.seed+' seed, '+S.marks+'m"';
-          return '<button class="chip '+(sel===k?'sel':'')+'" data-f="'+f.id+'" data-k="'+k+'"'+(can||sel===k?'':' disabled style="opacity:.35"'+why)+'>'+c.name+'<span class="c">'+c.seed+'</span></button>';
+          const disabled = !can && sel!==k;
+          const why = disabled ? ' data-why="needs '+c.seed+' seed or coin, have '+S.seed+' seed, '+S.marks+'m"' : "";
+          return '<button class="chip '+(sel===k?'sel':'')+(disabled?' chip-disabled':'')+'" data-f="'+f.id+'" data-k="'+k+'"'+why+'>'+c.name+'<span class="c">'+c.seed+'</span></button>';
         }).join('')+'<button class="chip '+(sel==null?'sel':'')+'" data-f="'+f.id+'" data-k="">fallow<span class="c">rest</span></button>';
         return '<div class="field-row"><div class="fh"><span class="fname">'+fieldName(f)+'</span>'+
                '<span class="fmeta">fert <span class="fert">'+"●".repeat(f.fert)+"○".repeat(3-f.fert)+'</span></span></div>'+
@@ -958,7 +960,8 @@
              choices:[{t:"Sow it so", sub:"confirm the planting; pay seed then coin", primary:true, go:commit}] });
       tip("plant","Plant your bellies first. Potatoes and turnips fill a larder, and you will want it full come winter. Tap a crop for each field, then sow.","#stage .crop-picks");
       stage().querySelectorAll('.chip[data-f]').forEach(ch=>{
-        ch.addEventListener('click',()=>{ if(ch.hasAttribute('disabled'))return;
+        ch.addEventListener('click',()=>{
+          if(ch.classList.contains('chip-disabled')){ openInfo("Can't plant that", ch.dataset.why); return; }
           const fid=+ch.dataset.f, k=ch.dataset.k;
           if(k==="") delete chosen[fid]; else chosen[fid]=k;
           draw();
