@@ -7,6 +7,26 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 7 — 2026-07-26 — UI clarity pass (#19)
+
+**Worked on:** Closed out the "UI clarity" issue in the "Prototype v0.2: Onboarding & Imagery" milestone, per the approved design (`docs/superpowers/specs/2026-07-25-ui-clarity-pass-design.md`) and implementation plan (`docs/superpowers/plans/2026-07-26-ui-clarity-pass.md`). Nine tasks: three build the reusable mechanisms, five author content season by season, one wraps up.
+
+**Built:** Three reusable mechanisms in `prototype/year1.html`: a `screenType`-keyed contextual help toggle in the masthead ("what do I do here?"), tap-to-reveal explanations on the four ledger cells (Coin, Larder, Fuel, Seed), and a structured `tag`/`why` field on choice buttons (a short badge for a clear resource cost/gain, a disabled-reason line in place of the normal sub-line when a choice can't be taken). Then a full content-authoring pass applied those mechanisms across all four seasons' scripted beats and systemic events, plus the planting screen, where disabled crop chips now explain why they're disabled.
+
+**Process:** Subagent-driven, one implementer + one spec-compliance reviewer + one code-quality reviewer per task, across all nine tasks, following the written spec and plan rather than improvising per-task.
+
+**Hidden-Reckoning constraint:** every tag decision was checked against the standing design rule that the Reckoning meter is never named or numbered anywhere in player-facing UI. Choices that move the hidden Reckoning got a `sub` line describing the moral weight in voice, never a tag naming or quantifying it. This was enforced task by task by the reviewers, not left to a single final pass.
+
+**Mid-implementation correction:** Task 8's first pass used a hover-only `title` tooltip for disabled planting chips. Code review flagged this as a mobile-usability gap (the game is mobile-first per CLAUDE.md; native tooltips don't fire on touch), so it was reworked to a tap-to-reveal popover, reusing the same `openInfo()` helper the ledger and screen-help toggles already used.
+
+**Verified:** Full suite green at 23 test files / 58 tests (`cd prototype && npm test`). A temporary headless smoke script (`prototype/smoke.mjs`, written for this task and deleted afterward) booted the game three times, clicked through a full year each run using the `helpers.mjs` `advance()` pattern, and confirmed no thrown errors and no unknown `screenType` values at any step (all runs reached an end screen in 35 steps, well under the 400-step safety bound).
+
+**Artifacts changed:** `prototype/year1.html` (all nine tasks), `docs/gameplay-flow.md` (§8 rewritten from "known gaps" to "resolved"), `CLAUDE.md` (status line + footer), this file.
+
+**Next up:** Close issue #19. Then the remaining milestone #2 items: #24 (art direction doc) and the Vercel proof-of-concept for testers.
+
+---
+
 ## Session 6 — 2026-07-25 — Dash-punctuation scrub (#26)
 
 **Worked on:** Closed out the last content task in the "Prototype v0.2: Onboarding & Imagery" milestone: scrubbed every em dash and hyphen-as-pause from player-facing text, per D-037.

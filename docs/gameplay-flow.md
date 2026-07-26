@@ -233,15 +233,17 @@ The prototype names its controls in the alt-1800s register. This is the decoder 
 
 ---
 
-## 8. Known legibility gaps (hand-off to #19 / #20)
+## 8. Legibility gaps (resolved by #19)
 
-Documented here so the clarity pass and tutorial have a checklist. These are *operational* problems observed in the prototype, not content problems:
+The five gaps below were the checklist for the UI-clarity pass (#19); all five are now closed in `prototype/year1.html`:
 
-1. **Voice-only button labels.** Several controls (*Sow it so, Lay it in, Close the day-book*) read as flavor with no function stated. → dual-label with the §7 plain meaning (#19).
-2. **Unexplained ledger.** New players don't know Fuel is a winter-only cost, or that Larder is spent every season. → first-use hints on each stat (#19).
-3. **Costs not always previewed.** Most choices state their effect in the sub-line, but not all; and the market's coin↔food stakes aren't spelled out. → consistent cost/benefit tags (#19).
-4. **No "what do I do here?"** Each screen assumes you know its type. → a per-screen help affordance fed by §4 (#19), and the first-run guided walkthrough (#20).
-5. **The hidden layer is invisible by design** — correct, but a first-time player may not realize their choices matter morally. The tutorial should *gesture* at this (the first omen) **without** exposing a number (#20).
+1. ~~Voice-only button labels.~~ Every advance button now carries a plain sub-line (`Sow it so` / *confirm the planting; pay seed then coin*, etc.).
+2. ~~Unexplained ledger.~~ The four ledger cells (Coin, Larder, Fuel, Seed) are tappable; each opens a plain-English explanation, independent of guided-mode status.
+3. ~~Costs not always previewed.~~ Every choice states its effect in `sub`; choices with a clear resource cost or gain also carry a structured `tag` badge (e.g. `−regard`, `+heart`). Choices that move the hidden Reckoning never carry a tag naming it, per §5.
+4. ~~No "what do I do here?"~~ A masthead "?" toggle explains the current screen type on demand, keyed by a `screenType` set on every render.
+5. The hidden layer stays invisible by design (unchanged, correct) — no tag, badge, or help text anywhere names or numbers the Reckoning.
+
+Additionally, disabled choices and the planting screen's crop chips now explain themselves: disabled choice buttons show a `why` line instead of their normal sub-line; disabled crop chips are tap-to-reveal (not hover-only, for mobile) via the same popover mechanism used by the ledger and screen-help toggles.
 
 ---
 
