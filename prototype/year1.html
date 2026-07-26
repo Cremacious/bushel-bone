@@ -1109,7 +1109,7 @@
       dir:"[lanterns strung over the green, and Old Nan at the dark edge of it, watching the newcomer]",
       body:'<div class="prose"><p>Harvest Home falls square in the crunch. Bess Halloway asks you one sharp, honest question and reads your face for the answer. Sister Ruth notes how your hands look, fed or not. The Sheriff offers a cool word about soft ground. To go is to lose a working day; to stay away is to be the man who wouldn’t.</p></div>',
       choices:[
-        {t:"Go to the feast", sub:"+heart, a day not worked", tag:"+regard", primary:true, go:()=>resolve(()=>{S.regard+=5; const f=fore(); if(f&&f.morale<5)f.morale++; S.fields.forEach(x=>x.tended=false);}, "You sit at the long tables. Bess decides something about you; you cannot tell what. It is warm, and there is bread, and for an evening the ground keeps its accounts to itself.")},
+        {t:"Go to the feast", sub:"heart mends, a day not worked", tag:"+regard", primary:true, go:()=>resolve(()=>{S.regard+=5; const f=fore(); if(f&&f.morale<5)f.morale++; S.fields.forEach(x=>x.tended=false);}, "You sit at the long tables. Bess decides something about you; you cannot tell what. It is warm, and there is bread, and for an evening the ground keeps its accounts to itself.")},
         {t:"Stay and bring in the crop", sub:"the work gets done", tag:"−regard", go:()=>resolve(()=>{S.regard-=3;}, "You work while the fiddles carry over the fields. The crop is safe and the town is a shade cooler to you. You can live on a safe crop; you cannot eat regard.")},
       ] }));
 
@@ -1354,7 +1354,7 @@
         dir:"[a thin figure at the fence-line at dusk, not quite a child, not quite not]",
         body:'<div class="prose"><p>A stray hand stands at your gate as the light goes, one of the Sull’s foundlings, grown wild from no wagon and no vat anyone will own to. It watches you and does not speak.</p></div>',
         choices:[
-          {t:"Take them in",sub:"free labor, and another winter mouth",tag:"+1 mouth to feed",primary:true,go:()=>resolve(()=>{S.hands.push(mkHand(null, pick(["Wren","Cob","Lark","Fen"]), "Foundling", 2, {mind:"wary"}));},"You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field, and one more belly to carry to spring.")},
+          {t:"Take them in",sub:"free labor, and another winter mouth",primary:true,go:()=>resolve(()=>{S.hands.push(mkHand(null, pick(["Wren","Cob","Lark","Fen"]), "Foundling", 2, {mind:"wary"}));},"You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field, and one more belly to carry to spring.")},
           // sub deliberately kept close to the tag here: this choice's only
           // effect is +regard, so "+her regard" (whose regard) and the
           // "+regard" tag are naturally near-identical, unlike the trimmed
