@@ -1025,14 +1025,21 @@
   /* ---------------- interactive: ASSIGN the crew ---------------- */
   function assignStep(opts){
     defaultTasks(opts);
+    const soloHand = livingHands().length===1;
+    const body = soloHand
+      ? "It is only me for now, so there is no one to divide the work between. I have set myself to tending the best field we have planted. Put me to work, or open the roster if you would rather I chop wood or rest instead."
+      : "Every hand already has a task, set by default: tending what needs tending, chopping wood, or resting. Open the roster to see or change any hand's task yourself, since a hand knows his own field better than a guess does. When you are ready, put them to work.";
     card({ eyebrow:"Dawn · the hands", title:"Set the crew to work",
       setting:"fields", screenType:"assignment",
-      body:'<div class="prose"><p class="note">Open the roster to give each hand a task for the season. Reuben gives his read on each. When you are ready, put them to work.</p></div>',
+      body:'<div class="prose"><p class="note">'+body+'</p></div>',
       choices:[
         {t:"Open the roster", sub:"assign each hand", go:()=>{ openRoster(); }},
         {t:"Put them to work", sub:"work the tasks as set", primary:true, go:()=>{ applyLabor(); clearTasksForNextSeason(); next(); }},
       ] });
-    tip("assign","Every hand already has a task, I have seen to that myself: the ones tending what needs tending, the rest chopping wood or resting as I judged best. Open the roster if you would set it otherwise, a hand knows his own field better than my guess does. Otherwise, put them to work as I have laid it out.","#stage .btn[data-c=\"0\"]");
+    const tipText = soloHand
+      ? "It is only me for now, so there is little to divide. I have set myself to tending the best field we have planted, since that is the surest thing to do with one pair of hands. Put me to work, or open the roster if you would rather I chop wood or rest instead. Once there are more of us, you will want to open the roster each season and see to us one by one."
+      : "Every hand already has a task, I have seen to that myself: the ones tending what needs tending, the rest chopping wood or resting as I judged best. Open the roster if you would set it otherwise, a hand knows his own field better than my guess does. Otherwise, put them to work as I have laid it out.";
+    tip("assign", tipText, "#stage .btn[data-c=\"0\"]");
   }
 
   /* ---------------- SEASON SCRIPTS ---------------- */
