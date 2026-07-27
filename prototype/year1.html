@@ -976,9 +976,13 @@
       }).join('');
       const nudge = (season()==="Spring" && !S.flags.plantedOnce)
         ? '<p class="note">A newcomer plants his belly first. Potato and turnip fill a larder; wheat and corn sell but take two seasons; cotton is all coin and no supper.</p>' : '';
+      const totalSeedCost = Object.keys(chosen).reduce((sum,fid)=>sum+CROPS[chosen[fid]].seed,0);
+      const seedSpent = Math.min(S.seed, totalSeedCost), coinSpent = totalSeedCost - seedSpent;
+      const spendLine = totalSeedCost>0
+        ? '<p class="note" id="seedspend">'+seedSpent+' of '+S.seed+' seed spent so far'+(coinSpent>0?', plus '+coinSpent+'m in coin':'')+'</p>' : '';
       card({ eyebrow:"Dawn · Planting", title:"Set the fields",
              setting:"fields", screenType:"planting",
-             body:'<div class="fields">'+rows+'</div>'+nudge,
+             body:'<div class="fields">'+rows+'</div>'+spendLine+nudge,
              choices:[{t:"Sow it so", sub:"confirm the planting; pay seed then coin", primary:true, go:commit}] });
       tip("plant","This is the season's planting. Turnip and potato fill bellies quick and cheap. Wheat and corn take longer but keep better and can be sold. Cotton pays best but wants two hands and two seasons before you see a mark of it. Plant enough to feed us, and something left over to sell. Get the balance wrong and a lean winter will find us out. Mind the fertility dots on each field too. Planting never touches them, only the harvest does, so a field harvested with none left gives back nothing at all for the season's work. Do not run one dry without meaning to.","#stage .crop-picks");
       stage().querySelectorAll('.chip[data-f]').forEach(ch=>{
