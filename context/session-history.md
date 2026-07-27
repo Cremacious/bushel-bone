@@ -7,6 +7,46 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 9 — 2026-07-27 — Onboarding clarity pass, part 2 (issues #27 to #42, D-039)
+
+**Worked on:** Chris ran a full playtest of the just-shipped onboarding clarity pass (`docs/superpowers/specs/2026-07-27-onboarding-clarity-pass-design.md`) and reported a long list of remaining confusion points. Rather than a single design doc, this session filed 16 GitHub issues (#27 to #42) covering every point, agreed an implementation order with Chris, then worked through them one at a time: implement, report exactly what changed and how to see it, wait for explicit approval, close the issue only on a yes.
+
+**Closed this session:** #39 (reworded "Crows in the Corn" to remove an unintended reading), #31 (Reuben's guidance no longer names a specific crop), #27 (fertility fully explained on the planting screen, five review rounds before it landed), #30 (live seed-spend feedback while planting), #34 (per-crop info icon, moved per Chris's preference with a padded tap zone), #29 (explicit "Show roster" button plus a Close button on the roster panel), #33 (reworked guided tutorial tips from a non-blocking bottom bar into blocking, paginated modal dialogs, several copy fixes found only by testing it), #28 (crew-assignment screen gives a direct answer when there is only one hand), #41 (the market screen always shows, and always lists still-growing fields; also fixed a real "l.name" bug that would have shown "undefined" for cotton).
+
+**Real bugs found via user testing that pure code review would have missed:** the sell/larder toggle buttons already had a `sel` class wired up with no matching CSS rule (silently doing nothing); a cash-crop lot object had no `.name` field so cotton's harvest line would read "undefined"; and the Attend the Fair "blessed field" bonus targeted an essentially arbitrary field (`S.fields.find(x=>x.crop)`, i.e. whichever planted field has the lowest id) with zero on-screen indication of which field or that it happened, which is what made two mechanically identical crops (turnip and potato, both one season) visibly diverge with no explanation.
+
+**Decided (→ D-039):** onboarding hand-holding fades out gradually across a run, never abruptly; any hidden mechanical effect that could read as a bug to a first-time player gets a plain-language explanation the moment it first matters. Written up with rationale in `decisions-log.md`, indexed in `CLAUDE.md`'s locked-decisions table.
+
+**Process note worth keeping:** several rounds on #27 and #33 were the user pushing back on a fix that was technically correct but still unclear (a contradictory sentence, a "See this" pointing gesture whose target was dimmed by the very modal explaining it, a crop-timing claim that was flatly wrong). Verified suspect claims against the actual code and, once, against a small scripted repro (`prototype/tests/helpers.mjs`) rather than trusting a first draft. Worth continuing: don't mark an issue resolved on a plausible-sounding explanation alone if it's checkable against the running code.
+
+**Next up:** issues #35 to #40, #42 remain open (mobile/desktop layout epic, start screen and save system, How to Play screen, Settings and audio, Year One as a low-risk tutorial arc, operating-cost visibility before the dusk report), roughly in that priority order agreed with Chris.
+
+---
+
+## Session 8 — 2026-07-27 — The founder's story (The Inherited Vigil, D-038)
+
+**Worked on:** Designed the game's story with Chris in a choice-driven, collaborative session (Chris picked every fork; Claude offered options and tradeoffs). Goal set by Chris: the narrative that gets a player started, explains why they take the farm and why there is a Reckoning, and what the ending shows, plus how the uncle threads into the existing cast.
+
+**What we found first:** the world, the cosmology (the Marrow), the 10-NPC cast, the Vane three-truth mystery, and the season arcs Years 1 to 10 were all already canon (narrative-bible Parts 1 to 4). The real gap was the **player's personal on-ramp**, so the session focused there and wove it into the existing world rather than reinventing it.
+
+**Decided (→ D-038), the forks Chris chose:**
+- **Origin:** an **inheritance** (over fresh charter / fleeing / returning blood). You are the heir of an uncle you never met.
+- **The uncle, Malachi:** a quiet, kind farmer who worked the Sull twenty years, learned the Marrow alongside Old Nan, and kept a private vigil.
+- **His fate:** **vanished, no body, no grave**, left his journals.
+- **The truth (fixed, not randomized):** the town's Long Vigil was slowly losing, and he **went down the Old Well and gave his life freely** to renew the failing seal.
+- **The trail (lean):** the player retraces him through his **journals**, **Old Nan** (spiritual truth), **Sheriff Coldwater** (the cold case), and **Reuben** the Foreman (his old hand). Chris kept the trail lean, declining Silas/Grange/Meredith as carriers.
+- **Thesis:** **deferral, forever.** You never beat the land; the best ending is bittersweet (the seal renewed, the watch passed to an heir on a loved land), agreeing with the core fantasy "I survived another year" (D-001).
+- **The reunion:** **earned and rare**, a reward for a kind, low-Reckoning lineage.
+- **Meta:** Malachi's sacrifice is permanent town canon (D-015); the first lineage is his heir; later lineages rediscover the truth, Codex-tracked. He is the fixed personal anchor beside the randomized Vane mystery.
+
+**Artifacts changed:** `docs/narrative-bible.md` (new **Part 0: The Founder's Story**, plus cross-refs on Old Nan, Coldwater, and the Old Well, and the status line), `context/decisions-log.md` (D-038, Session 8 header), `context/open-questions.md` (Q-013 resolved), `docs/vertical-slice-year1.md` (Year-1 reframed as arrival-and-inheritance: the starting state, Silas's Day-1 call, the Long Vigil resonance, a Journals object), `CLAUDE.md` (status bullet + footer), this file. Not yet committed.
+
+**Also:** opened a GitHub issue to implement the story (the prototype's Day-1 inheritance framing, the in-game journals/almanac feature, Reuben's "knew Malachi" thread, the Year-7/Year-10 Old Well payoff, the earned-reunion ending state, and a Codex field for how much of Malachi's truth a lineage uncovered). Code/prototype changes were deliberately left for that issue rather than made unreviewed this session.
+
+**Next up:** implement the founder story per the new issue; plus the standing milestone-2 items (#24 art direction doc, the Vercel proof-of-concept for testers).
+
+---
+
 ## Session 7 — 2026-07-26 — UI clarity pass (#19)
 
 **Worked on:** Closed out the "UI clarity" issue in the "Prototype v0.2: Onboarding & Imagery" milestone, per the approved design (`docs/superpowers/specs/2026-07-25-ui-clarity-pass-design.md`) and implementation plan (`docs/superpowers/plans/2026-07-26-ui-clarity-pass.md`). Nine tasks: three build the reusable mechanisms, five author content season by season, one wraps up.

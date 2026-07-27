@@ -187,4 +187,44 @@ Foundational narrative decisions. Full write-up in `docs/narrative-bible.md` Par
 
 ---
 
+## Session 8 — The founder's story (The Inherited Vigil)
+
+Designed collaboratively with Chris in a choice-driven session. Full write-up in `docs/narrative-bible.md` Part 0. Resolves the last narrative gap (Q-013): the player's personal origin and what the endings show.
+
+### D-038. The player's origin is an inheritance: Uncle Malachi and the vigil he died keeping.
+
+**Options considered (opening premise):** a fresh charter (blank-slate newcomer, the old default); fleeing a debt or crime; returning blood (a descendant of the Salting); or inheriting a predecessor's farm.
+**Chosen:** **inheritance.** The player is the heir of an uncle they never met, and the opening gesture is standing on someone else's unfinished life. This makes the first thing a new player feels the thing the whole game is about, land passed down and debt carried (D-007, D-027).
+
+**The predecessor (chosen forks):**
+- **Who:** **Uncle Malachi**, the player's father's brother (shares the family/lineage name). A quiet man, gentle with his hands, who worked the Sull homestead about twenty years and came to understand the Marrow alongside Old Nan, keeping a private vigil the town never knew about. (Chosen over: a known parent, a stranger's reverted claim, or a cruel predecessor.)
+- **His fate:** he **vanished with no body and no grave**, leaving his journals behind. (Chosen over: an ordinary death, a still-wandering changed thing, or a human crime.)
+- **The truth:** the town's Long Vigil was slowly losing against the valley's mounting debt, and Malachi understood that a life freely given is the heaviest payment the Marrow accepts (rite is payment, D-029). He **walked down into the Old Well and spent himself** to buy the Sull more time. (Chosen over: the town's collective debt taking him, a still-living changed uncle, or a human hand.) Kept **fixed**, not randomized like the Vane truths, as the player's stable personal anchor.
+
+**The narrative to follow:** the player uncovers Malachi four ways, paced across a lifetime: his **journals** (the guide from the grave, the reveal-pacing device), **Old Nan** (the spiritual truth; she taught him), **Sheriff Coldwater** (the cold case he never closed), and **Reuben** the Foreman (the living link, who was Malachi's hand and grieves him). Deliberately lean: the rest of the cast keep their arcs uncluttered.
+
+**The reckoning, made personal:** the seal Malachi bought with his life is wearing thin, and it comes due at Year 7 (The Old Well Opens) and Year 10 (The Long Vigil). The player faces the same shaft and the same choice; his motive is the template for the player's climactic one. No change to the hidden-meter rules (D-027); this is narrative framing over the existing endgame.
+
+**The thesis and the endings (deferral, forever):** you never defeat the land. The best a lineage earns is a longer sleep and a watch passed on, agreeing with the core fantasy "I survived another year" (D-001). Endings: **bittersweet best** (seal renewed, vigil handed to an heir on a loved land with only the lightest debt, a lantern handed over rather than a sunrise), **frayed middle**, and **the Salting repeated** (the seal breaks, the Marrow reclaims the Sull, land-loss by curse, D-007). (Chosen over: an earnable true peace, a become-the-keeper transformation, or a debt-only-moves cynicism.)
+
+**The reunion (earned, and rare):** only a kind, low-Reckoning lineage that reaches the best ending finds Malachi at peace enough to say one thing, and the player names him at last, giving him the grave he never had. A reward for the kind path. (Chosen over: a reliable voice at the bottom, a Walker who knows your name, or never at all.)
+
+**Meta fit (roguelite):** Malachi's sacrifice is **permanent town canon** (D-015); your first lineage is his heir; later lineages are new blood who rediscover the truth from scratch, with the Codex tracking how much each learned. He is the FIXED personal anchor beside the RANDOMIZED Vane mystery (D-014).
+
+**Enrichment touching D-036:** Reuben, the Foreman met on Day 1, was Malachi's hand. A narrative addition (a "knew Malachi" dialogue thread), not a mechanical change to the Foreman role.
+
+**Rationale:** gives the player a personal narrative to follow (the session's stated goal), welds the opening to the endgame through the Old Well, makes the Reckoning personal without altering the hidden-meter design, reinforces the inheritance-and-debt meta from the first minute, and lands the core fantasy as an emotional thesis (survival, not victory). Every fork was chosen by Chris.
+
+---
+
+## Session 9 · Playtest pass on the onboarding clarity work (#27 to #42)
+
+Working session with Chris, reviewing fixes for GitHub issues #27 to #42 one at a time against fresh playtest notes on the just-shipped onboarding clarity pass. Several rounds surfaced the same underlying pattern: a mechanically correct system (fertility depletion, the Attend the Fair blessed-field bonus, cotton's two-hand yield) produced results that looked like bugs because nothing on screen explained the cause.
+
+### D-039. Onboarding hand-holding fades out gradually, not abruptly.
+**Chosen:** a first-time player arrives completely cold and every gameplay element must be explained to them. Explicit explanation stays thick early (Year 1, the tutorial arc, see #40's "Year One as a low-risk, hard-to-fail tutorial arc") and tapers off gradually as the run progresses, rather than stopping at a fixed point. This applies uniformly across the game's explanation mechanisms: guided-mode tips (`tip()`), tap-to-reveal glossaries (`openInfo()`/`*_HELP`), and the result text shown after a choice resolves. Concretely: if a choice or system has a hidden effect that could read as random, unfair, or broken to someone seeing it for the first time (fertility hitting zero, a single field getting an unexplained growth bonus, a crop that still works with one hand but at half yield), the fix is to state the cause in plain language at the point it first matters, not to leave it implicit and let the player infer the mechanic from outcomes.
+**Rationale:** the pattern repeated enough times in one playtest pass (issues #27, #28, #33, and the Attend the Fair blessed-field fix) that it is worth locking as a standing principle rather than re-litigating per issue. It keeps future content authors (human or Claude) from reintroducing silent, unexplained mechanical effects, and it gives a clear test for "does this need an explanation": would a first-time player, seeing only the result, reasonably conclude the game is broken?
+
+---
+
 *Add new decisions below with the next session number.*
