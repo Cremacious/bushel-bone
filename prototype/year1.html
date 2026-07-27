@@ -241,17 +241,14 @@
   .fmeta{ cursor:pointer; }
   .fmeta:hover{ color:var(--accent); }
   .crop-picks{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-  .crop-pick-group{ display:inline-flex; align-items:stretch; gap:4px; }
-  .chip{ all:unset; cursor:pointer; font-size:13px; padding:5px 9px; border:1px solid var(--rule); border-radius:2px; color:var(--ink-soft); }
+  .chip{ all:unset; cursor:pointer; font-size:13px; padding:5px 9px; border:1px solid var(--rule); border-radius:2px; color:var(--ink-soft); display:inline-flex; align-items:center; }
   .chip:hover{ border-color:var(--accent); color:var(--ink); }
   .chip.sel{ background:color-mix(in srgb,var(--accent) 20%, var(--paper)); border-color:var(--accent); color:var(--ink); }
   .chip:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
   .chip .c{ color:var(--ink-faint); font-size:11px; margin-left:3px; }
-  .info{ color:var(--ink-faint); margin-left:5px; font-size:12px; cursor:pointer; }
+  .info{ color:var(--ink-faint); font-size:12px; cursor:pointer; }
   .info:hover{ color:var(--accent); }
-  .info-btn{ all:unset; cursor:pointer; min-width:34px; min-height:34px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--rule); border-radius:2px; color:var(--ink-faint); font-size:15px; }
-  .info-btn:hover{ border-color:var(--accent); color:var(--accent); }
-  .info-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .chip .info{ margin-left:6px; padding:9px 6px; margin-top:-9px; margin-bottom:-9px; margin-right:-6px; }
   .chip-disabled{ opacity:.35; }
   .growing{ font-size:13px; color:var(--ink-soft); font-style:italic; }
   .ripe{ color:var(--good); font-style:normal; }
@@ -972,8 +969,7 @@
           const c=CROPS[k]; const can = affordable(k,f.id);
           const disabled = !can && sel!==k;
           const why = disabled ? ' data-why="needs '+c.seed+' seed or coin, have '+S.seed+' seed, '+S.marks+'m"' : "";
-          return '<span class="crop-pick-group"><button class="chip '+(sel===k?'sel':'')+(disabled?' chip-disabled':'')+'" data-f="'+f.id+'" data-k="'+k+'"'+why+'>'+c.name+'<span class="c">'+c.seed+' seed</span></button>'+
-                 '<button class="info-btn" data-crop="'+k+'" aria-label="About '+c.name+'">&#9432;</button></span>';
+          return '<button class="chip '+(sel===k?'sel':'')+(disabled?' chip-disabled':'')+'" data-f="'+f.id+'" data-k="'+k+'"'+why+'>'+c.name+'<span class="c">'+c.seed+' seed</span><span class="info" data-crop="'+k+'">&#9432;</span></button>';
         }).join('')+'<button class="chip '+(sel==null?'sel':'')+'" data-f="'+f.id+'" data-k="">fallow<span class="c">rest</span></button>';
         return '<div class="field-row"><div class="fh"><span class="fname">'+fieldName(f)+'</span>'+
                '<span class="fmeta">fert <span class="fert">'+"●".repeat(f.fert)+"○".repeat(3-f.fert)+'</span><span class="info">&#9432;</span></span></div>'+
@@ -998,8 +994,8 @@
           draw();
         });
       });
-      stage().querySelectorAll('.info-btn[data-crop]').forEach(el=>{
-        el.addEventListener('click',()=>openInfo(CROPS[el.dataset.crop].name, CROP_INFO[el.dataset.crop]));
+      stage().querySelectorAll('.chip .info[data-crop]').forEach(el=>{
+        el.addEventListener('click',(e)=>{ e.stopPropagation(); openInfo(CROPS[el.dataset.crop].name, CROP_INFO[el.dataset.crop]); });
       });
       stage().querySelectorAll('.fmeta').forEach(el=>{
         el.addEventListener('click',()=>openInfo("Fertility", FERT_HELP));
