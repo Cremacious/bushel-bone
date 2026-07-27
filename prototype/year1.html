@@ -492,6 +492,22 @@
     .chip{ flex-direction:column; justify-content:center; text-align:center; gap:3px; padding:14px 6px; font-size:15px; }
     .chip .c{ font-size:13px; margin-left:0; }
     .chip .info{ margin:2px 0 0; padding:5px; font-size:15px; }
+
+    /* .note was missed in the earlier text-scaling pass: it isn't just a
+       small aside here, several screens (assignStep's body, the market
+       screen's intro and "nothing ripe"/food-need lines) use it as their
+       primary body copy, so it needs to read at the same size as .prose. */
+    .note{ font-size:19px; }
+
+    /* themed scrollbar for #stage, which scrolls internally on tall cards
+       (the planting screen in particular) instead of growing past the
+       fixed canvas. Firefox uses scrollbar-color/-width; WebKit/Chromium
+       (and Electron, the planned packaging target) use the pseudo-elements. */
+    #stage{ scrollbar-width:thin; scrollbar-color:var(--accent) transparent; }
+    #stage::-webkit-scrollbar{ width:12px; }
+    #stage::-webkit-scrollbar-track{ background:transparent; }
+    #stage::-webkit-scrollbar-thumb{ background-color:var(--accent); border-radius:7px; border:3px solid var(--paper-2); background-clip:padding-box; }
+    #stage::-webkit-scrollbar-thumb:hover{ background-color:color-mix(in srgb, var(--accent) 80%, white 15%); }
   }
 </style>
 
