@@ -436,6 +436,47 @@
     #stage{ grid-area: stage; overflow-y:auto; min-height:0; }
     .askbar{ grid-area: askbar; }
     footer.colophon{ grid-area: footer; }
+
+    /* Text and control sizing tuned up for the 1920x1080 reference canvas
+       (playtest feedback: in-game text and the speaker portrait/nameplate
+       were too small to read comfortably at this size). Mobile is
+       untouched, these overrides only apply inside this same breakpoint. */
+    .masthead{ padding:22px 32px 16px 34px; }
+    .masthead .brand{ font-size:15px; }
+    .masthead .themetog, .masthead .helptog{ font-size:14px; padding:5px 10px; }
+    .ledger .cell{ padding:14px 10px 16px; }
+    .ledger .k{ font-size:13px; }
+    .ledger .v{ font-size:28px; }
+    .household{ padding:12px 32px; font-size:16px; }
+    .household .lab{ font-size:13px; }
+    .roster-btn{ font-size:13px; padding:6px 14px; }
+    .eyebrow{ font-size:15px; }
+    .leaf h2{ font-size:34px; }
+    .stagedir{ font-size:19px; }
+    .prose{ font-size:21px; }
+    .prose .dropcap::first-letter{ font-size:68px; }
+    .choices{ gap:13px; margin-top:22px; }
+    .btn{ padding:16px 20px; }
+    .btn .t{ font-size:21px; }
+    .btn .tag{ font-size:15px; }
+    .btn .sub{ font-size:16px; }
+    .askbar{ padding:14px 32px; }
+    .askbar .rtx{ font-size:17px; }
+    footer.colophon{ padding:14px 32px; font-size:13px; }
+
+    /* the speaker portrait and nameplate, singled out as unreadably small */
+    .plate-tag{ font-size:11px; padding:2px 9px; }
+    .plate-desc{ font-size:17px; padding:22px; }
+    .plate-portrait{ width:130px; height:154px; right:18px; }
+    .plate-portrait .silh .head{ width:52px; height:54px; bottom:40px; }
+    .plate-portrait .silh .neck{ width:26px; height:16px; bottom:32px; }
+    .plate-portrait .silh .shoulders{ width:108px; height:48px; }
+    #plate-nameplate{ padding:6px 14px; }
+    #plate-nameplate b{ font-size:18px; }
+    #plate-nameplate span{ font-size:14px; }
+    .plate-cap{ padding:10px 0 12px; }
+    .plate-cap b{ font-size:20px; }
+    .plate-cap span{ font-size:16px; }
   }
 </style>
 
