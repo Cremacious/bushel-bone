@@ -138,15 +138,15 @@ Foundational narrative decisions. Full write-up in `docs/narrative-bible.md` Par
 
 ### D-029. The Reckoning's true source is the Marrow — the land keeps the ledger.
 **Options considered:** a living God's judgment; the dead's own revenant imprint; an eldritch thing the Vats woke; the land itself keeping accounts.
-**Chosen:** The land. Beneath the Sull runs *the Marrow*, an old pale seam that remembers the wronged dead and returns them by name when the account tips. Not a god; a reckoning that balances itself. Cruelty is a debt; rite is payment. The player may never be told outright — we hold the truth.
+**Chosen:** The land. Beneath the Sallows runs *the Marrow*, an old pale seam that remembers the wronged dead and returns them by name when the account tips. Not a god; a reckoning that balances itself. Cruelty is a debt; rite is payment. The player may never be told outright — we hold the truth.
 **Rationale:** Tightest fit for D-004/D-005 ("the land remembers," clones as moral engine) and the title. Un-gameable, poetic, and it explains every §6 mechanic (tiers, atonement, Ghost Roll, Vat drip) from one root.
 
 ### D-030. Whether making vessels is itself a sin is a permanently unsettled doctrinal dispute.
 **Chosen:** The Church of the Long Vigil preaches the Vat is blasphemy ("quickening what the earth would not"); Old Nan says the land only counts cruelty. The hidden truth leans Nan's way — but the Marrow *does* register a faint stain at vessels (the §6 baseline/Vat drip), so the Church isn't baseless. Neither is wholly right, and no one alive can prove it. The game never fully answers.
 **Rationale:** Gives the moral system a genuine argument and keeps the horror ambiguous without being arbitrary — the dispute is grounded in a real, hidden fact and maps directly to the mechanics.
 
-### D-031. Setting: an invented frontier nation — the Commonwealth of Ostrey, western territory the Sull.
-**Chosen:** A fictional 1800s-analog charter-republic and its frontier, with invented names, geography, faith, and vessel-trade. The Sull is genuinely unpeopled wildland; the only prior claim on it belongs to the ground (the Marrow), not to any displaced people.
+### D-031. Setting: an invented frontier nation — the Commonwealth of Ostrey, western territory the Sallows.
+**Chosen:** A fictional 1800s-analog charter-republic and its frontier, with invented names, geography, faith, and vessel-trade. The Sallows is genuinely unpeopled wildland; the only prior claim on it belongs to the ground (the Marrow), not to any displaced people.
 **Rationale:** Matches D-002's "freedom to invent," and sidesteps the D-018 cultural-care trap entirely by making the land's grievance geological, not ethnic.
 
 ### D-032. Balance calibration ratified (issue #2).
@@ -197,15 +197,15 @@ Designed collaboratively with Chris in a choice-driven session. Full write-up in
 **Chosen:** **inheritance.** The player is the heir of an uncle they never met, and the opening gesture is standing on someone else's unfinished life. This makes the first thing a new player feels the thing the whole game is about, land passed down and debt carried (D-007, D-027).
 
 **The predecessor (chosen forks):**
-- **Who:** **Uncle Malachi**, the player's father's brother (shares the family/lineage name). A quiet man, gentle with his hands, who worked the Sull homestead about twenty years and came to understand the Marrow alongside Old Nan, keeping a private vigil the town never knew about. (Chosen over: a known parent, a stranger's reverted claim, or a cruel predecessor.)
+- **Who:** **Uncle Malachi**, the player's father's brother (shares the family/lineage name). A quiet man, gentle with his hands, who worked the Sallows homestead about twenty years and came to understand the Marrow alongside Old Nan, keeping a private vigil the town never knew about. (Chosen over: a known parent, a stranger's reverted claim, or a cruel predecessor.)
 - **His fate:** he **vanished with no body and no grave**, leaving his journals behind. (Chosen over: an ordinary death, a still-wandering changed thing, or a human crime.)
-- **The truth:** the town's Long Vigil was slowly losing against the valley's mounting debt, and Malachi understood that a life freely given is the heaviest payment the Marrow accepts (rite is payment, D-029). He **walked down into the Old Well and spent himself** to buy the Sull more time. (Chosen over: the town's collective debt taking him, a still-living changed uncle, or a human hand.) Kept **fixed**, not randomized like the Vane truths, as the player's stable personal anchor.
+- **The truth:** the town's Long Vigil was slowly losing against the valley's mounting debt, and Malachi understood that a life freely given is the heaviest payment the Marrow accepts (rite is payment, D-029). He **walked down into the Old Well and spent himself** to buy the Sallows more time. (Chosen over: the town's collective debt taking him, a still-living changed uncle, or a human hand.) Kept **fixed**, not randomized like the Vane truths, as the player's stable personal anchor.
 
 **The narrative to follow:** the player uncovers Malachi four ways, paced across a lifetime: his **journals** (the guide from the grave, the reveal-pacing device), **Old Nan** (the spiritual truth; she taught him), **Sheriff Coldwater** (the cold case he never closed), and **Reuben** the Foreman (the living link, who was Malachi's hand and grieves him). Deliberately lean: the rest of the cast keep their arcs uncluttered.
 
 **The reckoning, made personal:** the seal Malachi bought with his life is wearing thin, and it comes due at Year 7 (The Old Well Opens) and Year 10 (The Long Vigil). The player faces the same shaft and the same choice; his motive is the template for the player's climactic one. No change to the hidden-meter rules (D-027); this is narrative framing over the existing endgame.
 
-**The thesis and the endings (deferral, forever):** you never defeat the land. The best a lineage earns is a longer sleep and a watch passed on, agreeing with the core fantasy "I survived another year" (D-001). Endings: **bittersweet best** (seal renewed, vigil handed to an heir on a loved land with only the lightest debt, a lantern handed over rather than a sunrise), **frayed middle**, and **the Salting repeated** (the seal breaks, the Marrow reclaims the Sull, land-loss by curse, D-007). (Chosen over: an earnable true peace, a become-the-keeper transformation, or a debt-only-moves cynicism.)
+**The thesis and the endings (deferral, forever):** you never defeat the land. The best a lineage earns is a longer sleep and a watch passed on, agreeing with the core fantasy "I survived another year" (D-001). Endings: **bittersweet best** (seal renewed, vigil handed to an heir on a loved land with only the lightest debt, a lantern handed over rather than a sunrise), **frayed middle**, and **the Salting repeated** (the seal breaks, the Marrow reclaims the Sallows, land-loss by curse, D-007). (Chosen over: an earnable true peace, a become-the-keeper transformation, or a debt-only-moves cynicism.)
 
 **The reunion (earned, and rare):** only a kind, low-Reckoning lineage that reaches the best ending finds Malachi at peace enough to say one thing, and the player names him at last, giving him the grave he never had. A reward for the kind path. (Chosen over: a reliable voice at the bottom, a Walker who knows your name, or never at all.)
 
@@ -224,6 +224,24 @@ Working session with Chris, reviewing fixes for GitHub issues #27 to #42 one at 
 ### D-039. Onboarding hand-holding fades out gradually, not abruptly.
 **Chosen:** a first-time player arrives completely cold and every gameplay element must be explained to them. Explicit explanation stays thick early (Year 1, the tutorial arc, see #40's "Year One as a low-risk, hard-to-fail tutorial arc") and tapers off gradually as the run progresses, rather than stopping at a fixed point. This applies uniformly across the game's explanation mechanisms: guided-mode tips (`tip()`), tap-to-reveal glossaries (`openInfo()`/`*_HELP`), and the result text shown after a choice resolves. Concretely: if a choice or system has a hidden effect that could read as random, unfair, or broken to someone seeing it for the first time (fertility hitting zero, a single field getting an unexplained growth bonus, a crop that still works with one hand but at half yield), the fix is to state the cause in plain language at the point it first matters, not to leave it implicit and let the player infer the mechanic from outcomes.
 **Rationale:** the pattern repeated enough times in one playtest pass (issues #27, #28, #33, and the Attend the Fair blessed-field fix) that it is worth locking as a standing principle rather than re-litigating per issue. It keeps future content authors (human or Claude) from reintroducing silent, unexplained mechanical effects, and it gives a clear test for "does this need an explanation": would a first-time player, seeing only the result, reasonably conclude the game is broken?
+
+---
+
+## Session 8 (continued) — Reverted-parcel Reckoning, and the Sallows rename
+
+### D-040. Reckoning is anchored to the land; a reverted parcel carries a residual keyed to how the prior line ended.
+**Context:** D-027 fixed two cases (a dignified heir on the same land inherits 25%; a wholly new lineage on new land starts at 0), but left a gap the later-lineage opening (issue #44) makes common: what a NEW family inherits when it takes up a REVERTED parcel a previous line held and lost.
+**Chosen:** the Reckoning belongs to the land, not the bloodline (reaffirming D-005/D-029, "the land remembers"), so a reverted parcel does not wipe clean for a new family:
+- **Fresh, never-held land:** 0 (unchanged).
+- **Dignified heir, same land:** 25% (unchanged, D-027), reflecting the rite and continuity of a proper handoff.
+- **New family on a reverted parcel:** a residual keyed to how the prior line ended. **Quiet line-death (no heir) about 40%**; **curse-reclaimed by the Reckoning Proper about 60 to 75%** (and may require Old Nan's cleansing before the ground can be worked); **mundane foreclosure or fire about 15 to 25%** (the debt was financial or physical, not supernatural).
+- **Decay:** the residual bleeds off slowly while a parcel sits vacant, so long-abandoned land is safer to take than freshly-emptied cursed ground.
+**Rationale:** falls straight out of the locked cosmology (the debt is the ground's), makes reverted land a real and legible gamble (cheap, but haunted to a degree the last family set), and turns a returning player's own past failures into the haunting of their next attempt on that ground. The percentages are a first pass and belong to the Balance Model to tune (Q-003). Resolves the open Reckoning-carry-over item on issue #44.
+
+### D-041. The frontier territory is renamed: the Sull becomes the Sallows.
+**Chosen:** the western territory the game is set in, formerly **the Sull** (D-031), is renamed **the Sallows**, for the marsh willows ("sallows") that grow in its wet ground and for "sallow" as in sickly-pale, fitting the low, pale, uneasy country. The nation (the Commonwealth of Ostrey), the town (Marrow's Cross), and the seam (the Marrow) are unchanged.
+**Rationale:** "Sull" read blunt and a little flat; "the Sallows" is more evocative, keeps a hint of the old S-sound, and folds the terrain and the dread into one word.
+**Propagation:** the living canon docs are updated (narrative-bible, mechanics-bible, gameplay-flow, style-guide, vertical-slice, playtest-kit, open-questions, and this log) and the story issues (#43/#44). Historical logs and dated design artifacts (session-history, the superpowers plans/specs) retain "the Sull" as a period record; map any such reference to "the Sallows."
 
 ---
 

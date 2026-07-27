@@ -40,7 +40,7 @@ The whole game is a single portrait "almanac page." Four zones are always on scr
 │     dusk report, or year-end —            │
 │                                           │
 ├───────────────────────────────────────────┤
-│  An Illustrated Almanac of the Sull   seed │  ← colophon (+ the run's PRNG seed)
+│  An Illustrated Almanac of the Sallows   seed │  ← colophon (+ the run's PRNG seed)
 └───────────────────────────────────────────┘
 ```
 
@@ -89,7 +89,7 @@ A **year** is four **seasons** (Spring → Summer → Fall → Winter). Each sea
                           ┌────────┴────────┐
                     farmer lives        farmer dies
                           │                  │
-                  "I survived           "The Sull
+                  "I survived           "The Sallows
                    another year."        keeps the land."
                     (Year 2)                (run ends)
 ```

@@ -8,7 +8,7 @@
 
 ## 1. What Year 1 is
 
-A newcomer takes over a homestead in the Sull and works it through one year (four seasons, 80 days), meeting the town, learning the loop, and surviving the first winter. Per the founder story (D-038, narrative-bible Part 0), the newcomer is the **heir of Uncle Malachi**, a farmer they never met who worked this land for twenty years and then vanished into the Old Well, leaving no grave and a shelf of journals. Year 1 plays as arrival and inheritance; the founder mystery only whispers here (a first journal entry, a word from Reuben who was Malachi's hand), and deepens across later years. **Year 1 has no mortgage payment** (the 2-year establishment grace, D-032/§13), so it cannot be lost to foreclosure; the only failure is starving or freezing the household. It teaches every system at low stakes and ends on the Long Vigil — the town's rite over the thing in the ground — so the player leaves Year 1 having *felt* the whole game in miniature.
+A newcomer takes over a homestead in the Sallows and works it through one year (four seasons, 80 days), meeting the town, learning the loop, and surviving the first winter. Per the founder story (D-038, narrative-bible Part 0), the newcomer is the **heir of Uncle Malachi**, a farmer they never met who worked this land for twenty years and then vanished into the Old Well, leaving no grave and a shelf of journals. Year 1 plays as arrival and inheritance; the founder mystery only whispers here (a first journal entry, a word from Reuben who was Malachi's hand), and deepens across later years. **Year 1 has no mortgage payment** (the 2-year establishment grace, D-032/§13), so it cannot be lost to foreclosure; the only failure is starving or freezing the household. It teaches every system at low stakes and ends on the Long Vigil — the town's rite over the thing in the ground — so the player leaves Year 1 having *felt* the whole game in miniature.
 
 **Win:** reach Year 2, Spring Day 1, with the farmer alive.
 **Lose:** the farmer starves or freezes. (Clones can die; the run only ends if the farmer does.)
@@ -117,9 +117,9 @@ Three are written in full in the voice guide already (Vane's Wagon = 8B, The She
 
 **The Long Vigil** *(scripted, Day 75)*
 *[the whole town in the church at midnight, every candle lit, an old capped well-head visible through the open door]*
-> On the longest night the town does not sleep. They fill the church and they watch, and near midnight Grange reads the names of everyone who died in the Sull this year, slow, one by one, so that none of them are forgotten and left to be — the liturgy does not say *taken,* but everyone hears it. Outside, past the graves, the old well-head sits under its cap of iron and salt, and the watching is for it.
+> On the longest night the town does not sleep. They fill the church and they watch, and near midnight Grange reads the names of everyone who died in the Sallows this year, slow, one by one, so that none of them are forgotten and left to be — the liturgy does not say *taken,* but everyone hears it. Outside, past the graves, the old well-head sits under its cap of iron and salt, and the watching is for it.
 
-- **Watch the night through with them. (a rest day, +Morale, +Reputation)** → *You watch. You do not know what you are watching for, and by dawn you understand that no one else quite does either, and that they watch anyway. It is the truest thing you have seen in the Sull.*
+- **Watch the night through with them. (a rest day, +Morale, +Reputation)** → *You watch. You do not know what you are watching for, and by dawn you understand that no one else quite does either, and that they watch anyway. It is the truest thing you have seen in the Sallows.*
 - **Go home to your fire.** → *You keep your own watch, alone, over your own ground. In the morning the town is a little colder to the man who wouldn't sit the Vigil. (−small Reputation)*
 
 ---

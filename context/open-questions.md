@@ -35,7 +35,7 @@ GDD names Year 1 (The Newcomer), Year 2 (The Preacher's Sickness), Year 3 (The R
 Written in `docs/narrative-bible.md` Part 3 (elaborates D-014): the shared surface + Corvantine wound; **Truth A** (spy for the Cawdor Mill), **Truth B** (the third Vane, Cassius), **Truth C** (Meredith is a vessel of the dead Meredith) — each with clues, red herrings, reveal pacing, payoff (kind/cruel branches), and cruelty-state reactivity. Full quest-chain beats slot into #13/#15.
 
 ### Q-007. World geography and lore — ✅ RESOLVED (Session 3, → D-029/D-030/D-031)
-Answered in `docs/narrative-bible.md` Part 1: the Commonwealth of Ostrey / the Sull; vessel-trade; the Church of the Long Vigil; the Marrow as the Reckoning's source.
+Answered in `docs/narrative-bible.md` Part 1: the Commonwealth of Ostrey / the Sallows; vessel-trade; the Church of the Long Vigil; the Marrow as the Reckoning's source.
 
 ### Q-008. Ancient / pre-play history of Marrow's Cross — ✅ RESOLVED (Session 3, → D-029)
 Answered in `docs/narrative-bible.md` Part 1.5: the Salting (founding sin), the naming, the Old Well.

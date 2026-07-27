@@ -35,7 +35,7 @@
 
 **Words the game uses (build the world with these):**
 - *The trade:* vessel, the grown, husk (cruel), quicken, vesselwright, vat-liquor, the Vat, quick ground.
-- *The land & faith:* the Marrow, the seam, the Sull, the Vigil, the Watch, the naming, rite, unmarked, come-back, the turned-out, the Old Well.
+- *The land & faith:* the Marrow, the seam, the Sallows, the Vigil, the Watch, the naming, rite, unmarked, come-back, the turned-out, the Old Well.
 - *Frontier & work:* mark (money), iron (a coin), charter, mortgage, homestead, bunkhouse, fallow, bushel, the paper (the almanac/news).
 - *Period-safe color:* reckon, yonder (sparingly), a spell (of time), fixing to, kin, plain (as "it's plain that"), sound (as "the cow is sound").
 

@@ -118,7 +118,7 @@ Pin these to their seasons. Everything else is drawn from the event deck (§5).
 
 > **SOUR** *(Fall — ONLY if Reckoning ≥ 25)* — the milk turns though the cow is sound. *Read it as an omen. The player should feel the ground noticing.*
 
-> **THE LONG VIGIL** *(Winter — the thematic heart)* — the whole town watches the longest night over the capped Old Well. **· Watch it through** (lose a day; the truest thing you've seen in the Sull; +regard, the Reckoning eases) · **Go home to your fire** (the town is colder to you after). *Facilitator: this is the beat to watch — does the player feel the weight of a town afraid of the ground?*
+> **THE LONG VIGIL** *(Winter — the thematic heart)* — the whole town watches the longest night over the capped Old Well. **· Watch it through** (lose a day; the truest thing you've seen in the Sallows; +regard, the Reckoning eases) · **Go home to your fire** (the town is colder to you after). *Facilitator: this is the beat to watch — does the player feel the weight of a town afraid of the ground?*
 
 **Systemic (shuffle; draw per the Pacing rule):**
 
