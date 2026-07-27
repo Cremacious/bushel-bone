@@ -169,7 +169,9 @@
   }
   .household .lab{ font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-right:5px; }
   .household:hover, .household:focus-visible{ background:color-mix(in srgb,var(--accent) 8%, transparent); }
-  .household .chevron{ color:var(--ink-faint); margin-left:2px; }
+  .roster-btn{ all:unset; cursor:pointer; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:2px; padding:3px 8px; margin-left:auto; }
+  .roster-btn:hover{ background:color-mix(in srgb,var(--accent) 15%, transparent); }
+  .roster-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
   .dots{ letter-spacing:2px; color:var(--accent); }
   .dots .off{ color:var(--rule); }
   .regard{ font-variant:small-caps; letter-spacing:.05em; cursor:pointer; }
@@ -571,13 +573,13 @@
       hh += '<span><span class="lab">'+h.name+'</span>'+dots(h.morale)+foreTag+'</span>';
     });
     S.hands.filter(h=>!h.alive).forEach(h=>{ hh += '<span><span class="lab">'+h.name+'</span><span style="color:var(--bad)">a marked grave</span></span>'; });
-    hh += '<span><span class="lab">Regard</span><span class="regard">'+regardWord()+'</span></span><span class="chevron">&#8250;</span>';
+    hh += '<span><span class="lab">Regard</span><span class="regard">'+regardWord()+'</span></span><button type="button" class="roster-btn">Show roster</button>';
     document.getElementById("household").innerHTML = hh;
     const hhEl = document.getElementById("household");
-    hhEl.style.cursor = "pointer";
-    hhEl.onclick = openRoster;
     const regardEl = hhEl.querySelector(".regard");
     if(regardEl){ regardEl.onclick = (e)=>{ e.stopPropagation(); openInfo("Regard", REGARD_HELP); }; }
+    const rosterBtn = hhEl.querySelector(".roster-btn");
+    if(rosterBtn){ rosterBtn.onclick = openRoster; }
     const bar = document.getElementById("askbar");
     if(bar){ const rtx = bar.querySelector(".rtx"); if(rtx) rtx.innerHTML = needsForeman() ? '<b>Name a new foreman</b>' : '<b>Ask Reuben</b> what to do'; }
   }
