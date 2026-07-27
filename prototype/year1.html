@@ -346,8 +346,8 @@
   .askq{ font-size:15px; border:1px solid var(--rule-fine); border-radius:4px; padding:9px 12px; margin-top:7px; background:color-mix(in srgb,var(--paper) 40%, transparent); color:var(--ink); cursor:pointer; }
   .askq:hover{ border-color:var(--accent); }
 
-  .tipbar{ display:none; border-top:2px solid var(--accent); background:color-mix(in srgb,var(--accent) 12%, var(--paper)); padding:10px 16px; }
-  .tipbar.on{ display:block; }
+  .tip-nav{ display:flex; gap:8px; padding:8px 14px 14px; }
+  .tip-nav .wbtn{ flex:1; text-align:center; }
   .tut-tip .who{ display:flex; align-items:center; gap:6px; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); }
   .tut-tip .who .rdot{ width:15px; height:15px; border-radius:50%; background:#0e0c09; border:1px solid var(--accent); }
   .tut-tip p{ margin:6px 0 8px; font-size:14px; font-style:italic; line-height:1.45; color:var(--ink); }
@@ -407,7 +407,6 @@
 
     <main id="stage"></main>
 
-    <div class="tipbar" id="tipbar"></div>
     <div class="askbar" id="askbar" role="button" tabindex="0" aria-label="Ask Reuben">
       <span class="rdot"></span><span class="rtx"><b>Ask Reuben</b> what to do</span><span class="rq">?</span>
     </div>
@@ -990,7 +989,10 @@
              setting:"fields", screenType:"planting",
              body:'<div class="fields">'+rows+'</div>'+spendLine+nudge,
              choices:[{t:"Sow it so", sub:"confirm the planting; pay seed then coin", primary:true, go:commit}] });
-      tip("plant","This is the season's planting. Turnip and potato fill bellies quick and cheap. Wheat and corn take longer but keep better and can be sold. Cotton pays best but wants two hands and two seasons before you see a mark of it. Plant enough to feed us, and something left over to sell. Get the balance wrong and a lean winter will find us out. Mind the fertility dots on each field too. Planting never touches them, only the harvest does, so a field harvested with none left gives back nothing at all for the season's work. Do not run one dry without meaning to.","#stage .crop-picks");
+      tip("plant",[
+        "Now then. Coin buys seed and coal. The larder feeds us through to spring. Fuel keeps the cold out come winter. Seed goes in the ground before coin ever does. Tap any of those four, any time, and I will tell you plain what it means. Below that, my dots show how the hands are holding up, tap the row to see them each by name. And Regard there, that is how the town has come to look at you. Tap it and I will tell you what it means too.",
+        "This is the season's planting. Turnip and potato fill bellies quick and cheap. Wheat and corn take longer but keep better and can be sold. Cotton pays best but wants two hands and two seasons before you see a mark of it. Plant enough to feed us, and something left over to sell. Get the balance wrong and a lean winter will find us out. Mind the fertility dots on each field too. Planting never touches them, only the harvest does, so a field harvested with none left gives back nothing at all for the season's work. Do not run one dry without meaning to.",
+      ], ["#ledger, #household", "#stage .crop-picks"]);
       stage().querySelectorAll('.chip[data-f]').forEach(ch=>{
         ch.addEventListener('click',()=>{
           if(ch.classList.contains('chip-disabled')){ openInfo("Can't plant that", ch.dataset.why); return; }
@@ -1046,16 +1048,14 @@
       choices:[{t:"Walk the fields", sub:"begin the year", primary:true, go:next}] }));
 
     // Silas's Welcome (scripted, Day 1)
-    b.push(()=>{ card({ eyebrow:"A caller · Day 1", title:"Silas's Welcome",
+    b.push(()=>card({ eyebrow:"A caller · Day 1", title:"Silas's Welcome",
       setting:"homestead", speaker:"silas",
       dir:"[a man in a good coat on a poor road, a ledger in his saddlebag, not dismounting]",
       body:'<div class="prose"><p>Silas Ridley reins up at your gate and does not get down. <span class="said">“Ridley. I hold your charter.”</span> He says it the way another man might say the weather. <span class="said">“A hundred and fifty a year to the bank. Not this year, nor the next: the charter allows a new man his feet. After that, it minds its dates, and so will I.”</span> He looks a long moment at the soft ground by the east field, and something crosses his face he does not explain.</p></div>',
       choices:[
         {t:"“Obliged, Mr. Ridley.”", sub:"keep the peace with your banker", go:()=>resolve(()=>{S.flags.silas="civil";}, "He nods and rides off. You are, it seems, a man with a deadline, two years out.")},
         {t:"“You believe the stories about this ground?”", sub:"needle him; he does not care for it", tag:"−regard", go:()=>resolve(()=>{S.regard-=1;}, "He pauses. <span class=\"said\">“I believe in the ledger,”</span> he says. <span class=\"said\">“The stories are the ledger's business.”</span> He rides off faster than he came.")},
-      ] });
-      tip("statbar","Now then. Coin buys seed and coal. The larder feeds us through to spring. Fuel keeps the cold out come winter. Seed goes in the ground before coin ever does. Tap any of those four, any time, and I will tell you plain what it means. Below that, my dots show how the hands are holding up, tap the row to see them each by name. And Regard there, that is how the town has come to look at you. Tap it and I will tell you what it means too.","#ledger, #household");
-    });
+      ] }));
 
     b.push(plantStep);
     b.push(()=>assignStep(["tend","rest"]));
@@ -1525,30 +1525,55 @@
   }
 
   let tutHi = [];
-  function tip(id, text, selector){
+  function clearTutHighlight(){ tutHi.forEach(el=>el.classList.remove("tut-highlight")); tutHi = []; }
+  // content: a single string, or an array of strings for a multi-page tip.
+  // selector: a single selector applied to every page, or an array of
+  // selectors index-matched to each page.
+  function tip(id, content, selector){
     if(!tutGuided()) return;
     if(!S.tutShown) S.tutShown = {};
     if(S.tutShown[id]) return;
     S.tutShown[id] = true;
-    const body = '<div class="tut-tip"><div class="who"><span class="rdot"></span> Reuben</div><p>'+text+'</p><button class="got">Got it</button></div>';
+    const pages = Array.isArray(content) ? content : [content];
+    const selFor = i => Array.isArray(selector) ? selector[i] : selector;
     const overlayOn = document.getElementById("overlay").classList.contains("on");
-    let container;
     if(overlayOn){
-      container = document.getElementById("overlay-panel");
+      // a tip fired while another overlay (e.g. the roster) is already open:
+      // fold it into that panel instead of replacing it with a new modal.
+      const body = '<div class="tut-tip"><div class="who"><span class="rdot"></span> Reuben</div><p>'+pages[0]+'</p><button class="got">Got it</button></div>';
+      const container = document.getElementById("overlay-panel");
       container.insertAdjacentHTML("afterbegin", body);
-    } else {
-      container = document.getElementById("tipbar"); container.innerHTML = body; container.classList.add("on");
+      const s0 = selFor(0);
+      if(s0){ document.querySelectorAll(s0).forEach(el=>{ el.classList.add("tut-highlight"); tutHi.push(el); }); }
+      const got = container.querySelector(".tut-tip .got");
+      if(got) got.addEventListener("click", dismissTip);
+      return;
     }
-    if(selector){ document.querySelectorAll(selector).forEach(el=>{ el.classList.add("tut-highlight"); tutHi.push(el); }); }
-    // wire the freshly inserted button within its own container, so a bar tip and
-    // an overlay tip open at once cannot collide on a shared id.
-    const got = container.querySelector(".tut-tip .got");
-    if(got) got.addEventListener("click", dismissTip);
+    showTipPage(pages, selFor, 0);
+  }
+  function showTipPage(pages, selFor, idx){
+    const isFirst = idx===0, isLast = idx===pages.length-1;
+    const pageMark = pages.length>1 ? '<span>'+(idx+1)+' of '+pages.length+'</span>' : '';
+    let nav = '<div class="tip-nav">';
+    if(!isFirst) nav += '<button class="wbtn" id="tip-prev">Previous</button>';
+    nav += isLast ? '<button class="wbtn pri" id="tip-close">Got it</button>' : '<button class="wbtn pri" id="tip-next">Next</button>';
+    nav += '</div>';
+    const html = '<div class="rosterhdr"><b>Reuben</b>'+pageMark+'</div>'+
+      '<div class="prose" style="padding:0 16px 4px"><p>'+pages[idx]+'</p></div>'+nav;
+    openOverlay(html, panel=>{
+      const s = selFor(idx);
+      if(s){ document.querySelectorAll(s).forEach(el=>{ el.classList.add("tut-highlight"); tutHi.push(el); }); }
+      const prev = panel.querySelector('#tip-prev');
+      if(prev) prev.addEventListener('click',()=>{ clearTutHighlight(); showTipPage(pages, selFor, idx-1); });
+      const next = panel.querySelector('#tip-next');
+      if(next) next.addEventListener('click',()=>{ clearTutHighlight(); showTipPage(pages, selFor, idx+1); });
+      const close = panel.querySelector('#tip-close');
+      if(close) close.addEventListener('click',()=>{ clearTutHighlight(); closeOverlay(); });
+    });
   }
   function dismissTip(){
-    const tb = document.getElementById("tipbar"); if(tb){ tb.classList.remove("on"); tb.innerHTML=""; }
     const t = document.querySelector("#overlay-panel .tut-tip"); if(t) t.remove();
-    tutHi.forEach(el=>el.classList.remove("tut-highlight")); tutHi = [];
+    clearTutHighlight();
   }
   function replayTips(){ if(S) S.tutShown = {}; tutSetGuided(true); }
 
