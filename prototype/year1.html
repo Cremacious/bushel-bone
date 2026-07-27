@@ -1088,13 +1088,18 @@
       choices:[
         {t:"Attend the Fair", sub:"a blessed field, the wheat contract, but Reuben rests today", tag:"+regard",
          why:"Reuben spends the whole day at your side in town. No field gets tended today, but the wheat contract locks in and the town takes note.",
-         primary:true, go:()=>resolve(()=>{
-          S.regard+=6; S.flags.wheatContract=true; const fm=fore(); if(fm&&fm.morale<5)fm.morale++;
-          // a blessed field: nudge a planted field's progress
-          const f=S.fields.find(x=>x.crop); if(f)f.progress+=0.5;
-          // clearing Reuben's tend if he'd been tending (he's at the fair)
-          S.fields.forEach(x=>x.tended=false);
-        }, "You stand the day among them. Grange's blessing settles on the near ground like a light frost that does not bite. The town has seen your face now; that counts for something in the Sull.")},
+         primary:true, go:()=>{
+          // a blessed field: nudge one planted field's progress; name it plainly
+          // in the result so a first-time player sees exactly which field it was
+          // and why, rather than a vague "the near ground" with no reference.
+          const f=S.fields.find(x=>x.crop);
+          resolve(()=>{
+            S.regard+=6; S.flags.wheatContract=true; const fm=fore(); if(fm&&fm.morale<5)fm.morale++;
+            if(f)f.progress+=0.5;
+            // clearing Reuben's tend if he'd been tending (he's at the fair)
+            S.fields.forEach(x=>x.tended=false);
+          }, "You stand the day among them. Grange walks "+(f?fieldName(f):"the fields")+" and says the old words over it"+(f?", and that ground will come ripe a touch sooner for the blessing":"")+". The town has seen your face now, and that counts for something in the Sull.");
+        }},
         {t:"Skip it and work", sub:"the town notes the newcomer who wouldn't come", tag:"−regard",
          why:"Reuben keeps working the fields as usual. You lose nothing today, but Marrow's Cross remembers who stayed away.",
          go:()=>resolve(()=>{S.regard-=3;}, "You keep to your fields while the fiddles carry across the green. Marrow's Cross notices a man who will not sit with it. It always does.")},
