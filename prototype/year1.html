@@ -995,9 +995,18 @@
       const harvestBlock = S.lots.length
         ? '<div style="margin-top:6px">'+rows+'</div>'
         : '<p class="note">Nothing ripe to bring in this season.</p>';
+      const need = seasonFoodNeed();
+      const foodToLarder = S.lots.filter(l=>!l.cash && choice[l.crop]==='food').reduce((sum,l)=>sum+Math.round(l.units*CROPS[l.crop].food),0);
+      const projected = Math.floor(S.food) + foodToLarder;
+      const shortBy = need - projected;
+      const needLine = '<p class="note" style="margin-top:10px">The household will eat about '+need+' food this season. '+
+        (shortBy>0
+          ? 'Counting the larder and what heads there now, that falls short by '+shortBy+'.'
+          : 'Counting the larder and what heads there now, that is covered with '+(-shortBy)+' to spare.')+
+        '</p>';
       card({ eyebrow:"The Market · "+season(), title:"What the fields gave up",
              setting:"town", screenType:"market",
-             body:'<div class="prose"><p class="note">Grain and roots keep a belly through winter; coin buys coal and hands. Choose for each lot.</p>'+harvestBlock+growingBlock+'</div>',
+             body:'<div class="prose"><p class="note">Grain and roots keep a belly through winter; coin buys coal and hands. Choose for each lot.</p>'+harvestBlock+needLine+growingBlock+'</div>',
              choices:[{t: S.lots.length ? "Close the day-book" : "Move on", sub: S.lots.length ? "apply every larder and sell choice you set above" : "nothing to sell yet", primary:true, go:doSell}] });
       tip("market","Now the market. Grain and roots can go to the larder to eat, or to town for coin. Coin buys much, but a full belly is what carries you through the dark months. Choose carefully.","#stage button[data-t]");
       stage().querySelectorAll('button[data-t]').forEach(btn=>{
