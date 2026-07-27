@@ -168,9 +168,12 @@
     font-size:12px; color:var(--ink-soft);
   }
   .household .lab{ font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-right:5px; }
+  .household:hover, .household:focus-visible{ background:color-mix(in srgb,var(--accent) 8%, transparent); }
+  .household .chevron{ color:var(--ink-faint); margin-left:2px; }
   .dots{ letter-spacing:2px; color:var(--accent); }
   .dots .off{ color:var(--rule); }
-  .regard{ font-variant:small-caps; letter-spacing:.05em; }
+  .regard{ font-variant:small-caps; letter-spacing:.05em; cursor:pointer; }
+  .regard:hover{ color:var(--accent); }
 
   /* ---- the leaf (stage) ---- */
   #stage{ padding:20px 22px 8px; min-height:230px; }
@@ -210,6 +213,8 @@
   .btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
   .btn .t{ font-size:16px; display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
   .btn .tag{ font-family:"Courier New",ui-monospace,monospace; font-size:11.5px; color:var(--ink-faint); white-space:nowrap; }
+  .whyinfo{ margin-left:4px; font-family:initial; }
+  .whyinfo:hover{ color:var(--accent); }
   .btn.primary .tag{ color:var(--ink-soft); }
   .btn .sub{ display:block; font-size:12.5px; color:var(--ink-faint); margin-top:3px; font-style:italic; letter-spacing:.01em; }
   .btn.primary{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 15%, var(--paper)); }
@@ -239,6 +244,8 @@
   .chip.sel{ background:color-mix(in srgb,var(--accent) 20%, var(--paper)); border-color:var(--accent); color:var(--ink); }
   .chip:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
   .chip .c{ color:var(--ink-faint); font-size:11px; margin-left:3px; }
+  .chip .info{ color:var(--ink-faint); margin-left:5px; font-size:12px; }
+  .chip .info:hover{ color:var(--accent); }
   .chip-disabled{ opacity:.35; }
   .growing{ font-size:13px; color:var(--ink-soft); font-style:italic; }
   .ripe{ color:var(--good); font-style:normal; }
@@ -252,6 +259,7 @@
   .stepper button:hover{ border-color:var(--accent); }
   .stepper button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
   .stepper button[disabled]{ opacity:.35; cursor:not-allowed; }
+  .stepper button.sel{ background:color-mix(in srgb,var(--accent) 20%, var(--paper)); border-color:var(--accent); color:var(--ink); }
   .stepper .qty{ min-width:34px; text-align:center; font-variant-numeric:tabular-nums; font-size:16px; }
   .needbar{ display:flex; justify-content:space-between; font-size:13px; padding:8px 0 2px; }
   .needbar b{ font-variant-numeric:tabular-nums; }
@@ -429,6 +437,13 @@
     corn:  {name:"Corn",   seed:5,  seasons:2, yield:9,  food:2,   base:4,  cash:false, tag:"grain"},
     cotton:{name:"Cotton", seed:10, seasons:2, yield:5,  food:0,   base:12, cash:true,  twoHands:true, tag:"cash · 2 hands"},
   };
+  const CROP_INFO = {
+    turnip: "Turnip: 3 seed to plant, ready in one season. A fast root that fills the larder quick.",
+    potato: "Potato: 6 seed to plant, ready in one season. Cheap and filling, the surest way to see the household through the year.",
+    wheat:  "Wheat: 4 seed to plant, ready in two seasons. A grain that keeps well and can be sold, though it wants two seasons to ripen.",
+    corn:   "Corn: 5 seed to plant, ready in two seasons. Feeds well and sells fair, but wants two seasons to ripen.",
+    cotton: "Cotton: 10 seed to plant, ready in two seasons and needs two hands. Pays best of anything you can grow, but takes the longest to see a mark of it.",
+  };
   const MULT = {
     Spring:{crop:1.1, cash:0.9},  Summer:{crop:1.0, cash:1.2},
     Fall:  {crop:0.8, cash:1.05}, Winter:{crop:1.25,cash:0.95},
@@ -553,11 +568,13 @@
       hh += '<span><span class="lab">'+h.name+'</span>'+dots(h.morale)+foreTag+'</span>';
     });
     S.hands.filter(h=>!h.alive).forEach(h=>{ hh += '<span><span class="lab">'+h.name+'</span><span style="color:var(--bad)">a marked grave</span></span>'; });
-    hh += '<span><span class="lab">Regard</span><span class="regard">'+regardWord()+'</span></span>';
+    hh += '<span><span class="lab">Regard</span><span class="regard">'+regardWord()+'</span></span><span class="chevron">&#8250;</span>';
     document.getElementById("household").innerHTML = hh;
     const hhEl = document.getElementById("household");
     hhEl.style.cursor = "pointer";
     hhEl.onclick = openRoster;
+    const regardEl = hhEl.querySelector(".regard");
+    if(regardEl){ regardEl.onclick = (e)=>{ e.stopPropagation(); openInfo("Regard", REGARD_HELP); }; }
     const bar = document.getElementById("askbar");
     if(bar){ const rtx = bar.querySelector(".rtx"); if(rtx) rtx.innerHTML = needsForeman() ? '<b>Name a new foreman</b>' : '<b>Ask Reuben</b> what to do'; }
   }
@@ -725,13 +742,16 @@
   function choiceHTML(list){
     return '<div class="choices">'+list.map((c,i)=>
       '<button class="btn '+(c.primary?'primary':'')+'" data-c="'+i+'"'+(c.disabled?' disabled':'')+'>'+
-        '<span class="t">'+c.t+(c.tag?'<span class="tag">'+c.tag+'</span>':'')+'</span>'+
+        '<span class="t">'+c.t+(c.tag?'<span class="tag">'+c.tag+(!c.disabled&&c.why?'<span class="whyinfo" data-w="'+i+'">&#9432;</span>':'')+'</span>':'')+'</span>'+
         ((c.disabled && c.why) ? '<span class="sub">'+c.why+'</span>' : (c.sub?'<span class="sub">'+c.sub+'</span>':''))+
       '</button>').join('')+'</div>';
   }
   function wireChoices(list){
     stage().querySelectorAll('.btn[data-c]').forEach(b=>{
       b.addEventListener('click',()=>{ if(b.hasAttribute('disabled'))return; list[+b.dataset.c].go(); });
+    });
+    stage().querySelectorAll('.whyinfo[data-w]').forEach(el=>{
+      el.addEventListener('click',(e)=>{ e.stopPropagation(); const c=list[+el.dataset.w]; openInfo(c.t, c.why); });
     });
   }
   // a simple choice card
@@ -946,7 +966,7 @@
           const c=CROPS[k]; const can = affordable(k,f.id);
           const disabled = !can && sel!==k;
           const why = disabled ? ' data-why="needs '+c.seed+' seed or coin, have '+S.seed+' seed, '+S.marks+'m"' : "";
-          return '<button class="chip '+(sel===k?'sel':'')+(disabled?' chip-disabled':'')+'" data-f="'+f.id+'" data-k="'+k+'"'+why+'>'+c.name+'<span class="c">'+c.seed+'</span></button>';
+          return '<button class="chip '+(sel===k?'sel':'')+(disabled?' chip-disabled':'')+'" data-f="'+f.id+'" data-k="'+k+'"'+why+'>'+c.name+'<span class="c">'+c.seed+' seed</span><span class="info" data-crop="'+k+'">&#9432;</span></button>';
         }).join('')+'<button class="chip '+(sel==null?'sel':'')+'" data-f="'+f.id+'" data-k="">fallow<span class="c">rest</span></button>';
         return '<div class="field-row"><div class="fh"><span class="fname">'+fieldName(f)+'</span>'+
                '<span class="fmeta">fert <span class="fert">'+"●".repeat(f.fert)+"○".repeat(3-f.fert)+'</span></span></div>'+
@@ -958,7 +978,7 @@
              setting:"fields", screenType:"planting",
              body:'<div class="fields">'+rows+'</div>'+nudge,
              choices:[{t:"Sow it so", sub:"confirm the planting; pay seed then coin", primary:true, go:commit}] });
-      tip("plant","Plant your bellies first. Potatoes and turnips fill a larder, and you will want it full come winter. Tap a crop for each field, then sow.","#stage .crop-picks");
+      tip("plant","This is the season's planting. Turnip and potato fill bellies quick and cheap. Wheat and corn take longer but keep better and can be sold. Cotton pays best but wants two hands and two seasons before you see a mark of it. Plant enough to feed us, and something left over to sell. Get the balance wrong and a lean winter will find us out.","#stage .crop-picks");
       stage().querySelectorAll('.chip[data-f]').forEach(ch=>{
         ch.addEventListener('click',()=>{
           if(ch.classList.contains('chip-disabled')){ openInfo("Can't plant that", ch.dataset.why); return; }
@@ -966,6 +986,9 @@
           if(k==="") delete chosen[fid]; else chosen[fid]=k;
           draw();
         });
+      });
+      stage().querySelectorAll('.chip .info[data-crop]').forEach(el=>{
+        el.addEventListener('click',(e)=>{ e.stopPropagation(); openInfo(CROPS[el.dataset.crop].name, CROP_INFO[el.dataset.crop]); });
       });
     }
     function commit(){
@@ -992,7 +1015,7 @@
         {t:"Open the roster", sub:"assign each hand", go:()=>{ openRoster(); }},
         {t:"Put them to work", sub:"work the tasks as set", primary:true, go:()=>{ applyLabor(); clearTasksForNextSeason(); next(); }},
       ] });
-    tip("assign","This is the day's work. Open the roster and set each hand a task. Set me to tending and I will make a field give more.","#stage .btn[data-c=\"0\"]");
+    tip("assign","Every hand already has a task, I have seen to that myself: the ones tending what needs tending, the rest chopping wood or resting as I judged best. Open the roster if you would set it otherwise, a hand knows his own field better than my guess does. Otherwise, put them to work as I have laid it out.","#stage .btn[data-c=\"0\"]");
   }
 
   /* ---------------- SEASON SCRIPTS ---------------- */
@@ -1004,18 +1027,20 @@
     b.push(()=>card({ eyebrow:"Year One begins", title:"The charter, and the cold ground",
       setting:"homestead",
       dir:"[a wagon-rutted road, four cleared fields, a lean-to, and a well capped in iron at the property's edge]",
-      body:'<div class="prose"><p class="dropcap">You have taken the charter on a homestead in the Sull: four small fields, a lean-to that sleeps two, a hundred marks, and one field hand named Reuben who came with the land as customs there require. It is Spring. The larder holds eighty measures against the year, and there is no fuel laid in at all.</p><p>They say the ground here keeps accounts. You will have a year to learn what that means.</p></div>',
+      body:'<div class="prose"><p class="dropcap">You have taken the charter on a homestead in the Sull: four small fields, a lean-to that sleeps two, a hundred marks, and one field hand named Reuben who came with the land as customs there require. It is Spring. The larder holds eighty measures against the year, and there is no fuel laid in at all.</p><p>They say the ground here keeps accounts. You will have a year to learn what that can mean.</p></div>',
       choices:[{t:"Walk the fields", sub:"begin the year", primary:true, go:next}] }));
 
     // Silas's Welcome (scripted, Day 1)
-    b.push(()=>card({ eyebrow:"A caller · Day 1", title:"Silas's Welcome",
+    b.push(()=>{ card({ eyebrow:"A caller · Day 1", title:"Silas's Welcome",
       setting:"homestead", speaker:"silas",
       dir:"[a man in a good coat on a poor road, a ledger in his saddlebag, not dismounting]",
       body:'<div class="prose"><p>Silas Ridley reins up at your gate and does not get down. <span class="said">“Ridley. I hold your charter.”</span> He says it the way another man might say the weather. <span class="said">“A hundred and fifty a year to the bank. Not this year, nor the next: the charter allows a new man his feet. After that, it minds its dates, and so will I.”</span> He looks a long moment at the soft ground by the east field, and something crosses his face he does not explain.</p></div>',
       choices:[
         {t:"“Obliged, Mr. Ridley.”", sub:"keep the peace with your banker", go:()=>resolve(()=>{S.flags.silas="civil";}, "He nods and rides off. You are, it seems, a man with a deadline, two years out.")},
         {t:"“You believe the stories about this ground?”", sub:"needle him; he does not care for it", tag:"−regard", go:()=>resolve(()=>{S.regard-=1;}, "He pauses. <span class=\"said\">“I believe in the ledger,”</span> he says. <span class=\"said\">“The stories are the ledger's business.”</span> He rides off faster than he came.")},
-      ] }));
+      ] });
+      tip("statbar","Now then. Coin buys seed and coal. The larder feeds us through to spring. Fuel keeps the cold out come winter. Seed goes in the ground before coin ever does. Tap any of those four, any time, and I will tell you plain what it means. Below that, my dots show how the hands are holding up, tap the row to see them each by name. And Regard there, that is how the town has come to look at you. Tap it and I will tell you what it means too.","#ledger, #household");
+    });
 
     b.push(plantStep);
     b.push(()=>assignStep(["tend","rest"]));
@@ -1026,14 +1051,18 @@
       dir:"[a green between a white church and a low saloon; the whole of Marrow's Cross gathered to bless the planting]",
       body:'<div class="prose"><p>Mayor Halloway makes an expansive welcome and presses a small wheat contract on you: eight units, at a fair locked price, come the harvest. Preacher Grange walks the new man’s fields and says the old words over them. Meredith Vane watches from the saloon step; the Sheriff watches from the shade.</p><p>Attending costs you a working day of Reuben’s, but a newcomer is only new once.</p></div>',
       choices:[
-        {t:"Attend the Fair", sub:"a blessed field, the wheat contract, but Reuben rests today", tag:"+regard", primary:true, go:()=>resolve(()=>{
+        {t:"Attend the Fair", sub:"a blessed field, the wheat contract, but Reuben rests today", tag:"+regard",
+         why:"Reuben spends the whole day at your side in town. No field gets tended today, but the wheat contract locks in and the town takes note.",
+         primary:true, go:()=>resolve(()=>{
           S.regard+=6; S.flags.wheatContract=true; const fm=fore(); if(fm&&fm.morale<5)fm.morale++;
           // a blessed field: nudge a planted field's progress
           const f=S.fields.find(x=>x.crop); if(f)f.progress+=0.5;
           // clearing Reuben's tend if he'd been tending (he's at the fair)
           S.fields.forEach(x=>x.tended=false);
         }, "You stand the day among them. Grange's blessing settles on the near ground like a light frost that does not bite. The town has seen your face now; that counts for something in the Sull.")},
-        {t:"Skip it and work", sub:"the town notes the newcomer who wouldn't come", tag:"−regard", go:()=>resolve(()=>{S.regard-=3;}, "You keep to your fields while the fiddles carry across the green. Marrow's Cross notices a man who will not sit with it. It always does.")},
+        {t:"Skip it and work", sub:"the town notes the newcomer who wouldn't come", tag:"−regard",
+         why:"Reuben keeps working the fields as usual. You lose nothing today, but Marrow's Cross remembers who stayed away.",
+         go:()=>resolve(()=>{S.regard-=3;}, "You keep to your fields while the fiddles carry across the green. Marrow's Cross notices a man who will not sit with it. It always does.")},
       ] }));
 
     // one systemic spring event
@@ -1452,6 +1481,7 @@
     fuel: "Wood and coal laid by. Only spent in winter. Too little, and the frailest freezes.",
     seed: "Seed stock. Spent first when you plant, before coin.",
   };
+  const REGARD_HELP = "Regard is how the town of Marrow's Cross has come to see you, the newcomer. Every choice that touches your neighbors nudges it up or down. For now it marks your standing in your own eyes. In time it can open doors, or close them.";
 
   /* ---------------- overlay layer ---------------- */
   function openOverlay(html, wire){
@@ -1465,7 +1495,7 @@
     const fm = foreman();
     if(!fm){ openOverlay('<div class="rosterhdr"><b>No foreman</b></div><div class="prose" style="padding:0 16px 16px"><p>You have named no one to speak for the hands. Open the roster and make one your foreman.</p></div>'); return; }
     const port = '<div class="talkport"><div class="silh"><div class="head"></div><div class="neck"></div><div class="shoulders"></div></div><div class="nameplate"><b>'+fm.name+'</b><span>your foreman</span></div></div>';
-    const answer = '<div class="answer" id="reuben-answer">'+reubenGuidance()+'</div>';
+    const answer = '<div class="answer" id="reuben-answer"></div>';
     const asks = [
       {t:"What should I be doing?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = reubenGuidance(); }},
       {t:"How are the hands?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = collectiveLine(); }},
