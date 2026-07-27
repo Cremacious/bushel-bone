@@ -389,10 +389,14 @@
   .start-btn[disabled]{ opacity:.4; cursor:not-allowed; }
   .start-btn small{ display:block; font-size:10.5px; color:var(--ink-faint); font-weight:400; margin-top:2px; }
   @media (min-width: 1100px){
-    .start-card{ flex-direction:row; align-items:center; max-width:560px; gap:28px; }
-    .start-logo{ width:180px; height:220px; flex-shrink:0; }
-    .start-right{ align-items:flex-start; }
+    .start-card{ flex-direction:row; align-items:stretch; max-width:760px; gap:40px; }
+    .start-logo{ width:auto; height:100%; object-fit:contain; flex-shrink:0; }
+    .start-right{ align-items:flex-start; justify-content:center; gap:20px; }
     .start-title{ text-align:left; }
+    .start-title .mark{ font-size:32px; }
+    .start-title .sub{ font-size:13px; }
+    .start-menu{ gap:12px; }
+    .start-btn{ padding:14px 16px; font-size:16px; }
   }
 
   /* ---- desktop/web split (#35): plate and stage side by side on wide viewports ---- */
@@ -426,7 +430,7 @@
     <div class="start-right">
       <div class="start-title">
         <div class="mark">Bushel &amp; Bone</div>
-        <div class="sub">An Illustrated Almanac of the Sull</div>
+        <div class="sub">A Dark Homestead Survival Almanac</div>
       </div>
       <div class="start-menu">
         <button type="button" class="start-btn primary" id="btn-new-game">New Game</button>
