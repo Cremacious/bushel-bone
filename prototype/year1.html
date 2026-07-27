@@ -1540,12 +1540,21 @@
       {t:"What should I be doing?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = reubenGuidance(); }},
       {t:"How are the hands?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = collectiveLine(); }},
       (tutGuided()
-        ? {t:"Stop the tips", fn:()=>{ tutSetGuided(false); dismissTip(); closeOverlay(); }}
+        ? {t:"Stop the tips", fn:confirmStopTips}
         : {t:"Walk me through the basics again", fn:()=>{ replayTips(); closeOverlay(); }}),
       {t:"Nothing, carry on", fn:closeOverlay},
     ];
     const html = port + '<div class="askpanel-body">'+answer + asks.map((a,i)=>'<div class="askq" data-i="'+i+'">'+a.t+'</div>').join('') + '</div>';
     openOverlay(html, panel=>{ panel.querySelectorAll('.askq[data-i]').forEach(el=>el.addEventListener('click',()=>asks[+el.dataset.i].fn())); });
+  }
+  function confirmStopTips(){
+    const html = '<div class="rosterhdr"><b>Stop the tips</b></div>'+
+      '<div class="prose" style="padding:0 16px 8px"><p>The tips are there to help a newcomer learn the way of things. Turn them off before you know the game well, and you may find yourself lost with no one to ask.</p></div>'+
+      '<div class="tip-nav"><button class="wbtn" id="stop-tips-no">No, keep them</button><button class="wbtn pri" id="stop-tips-yes">Yes, stop the tips</button></div>';
+    openOverlay(html, panel=>{
+      panel.querySelector('#stop-tips-no').addEventListener('click', openAskReuben);
+      panel.querySelector('#stop-tips-yes').addEventListener('click', ()=>{ tutSetGuided(false); dismissTip(); closeOverlay(); });
+    });
   }
 
   let tutHi = [];
