@@ -1764,7 +1764,11 @@
   }
   function refreshContinueButton(){
     const btn = document.getElementById("btn-continue");
-    if(btn) btn.disabled = !hasSave();
+    if(!btn) return;
+    const has = hasSave();
+    btn.disabled = !has;
+    const small = btn.querySelector("small");
+    if(small) small.textContent = has ? "resume where you left off" : "no game in progress";
   }
   function beginNewGame(){
     newGame((Math.random()*1e9)>>>0);

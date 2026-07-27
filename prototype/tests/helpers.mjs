@@ -15,7 +15,7 @@ const htmlPath = join(here, "..", "year1.html");
 // Pass { atStartScreen: true } to instead get the start screen itself,
 // unstarted, for tests that exercise New Game/Continue/the save system.
 export function boot(opts = {}) {
-  const { seenIntro = true, guided = false, atStartScreen = false } = opts;
+  const { seenIntro = true, guided = false, atStartScreen = false, presetSave = null } = opts;
   const html = readFileSync(htmlPath, "utf8");
   const full = "<!doctype html><html><head></head><body>" + html + "</body></html>";
   const dom = new JSDOM(full, {
@@ -26,6 +26,10 @@ export function boot(opts = {}) {
       try {
         if (seenIntro) window.localStorage.setItem("bb_seenIntro", "1");
         window.localStorage.setItem("bb_guided", guided ? "1" : "0");
+        // Simulates a save already sitting in localStorage from a prior visit
+        // (jsdom's localStorage is isolated per instance, so this is the only
+        // way to boot with a pre-existing save rather than one made in-session).
+        if (presetSave) window.localStorage.setItem("bb_save", JSON.stringify(presetSave));
       } catch (e) {}
     },
   });

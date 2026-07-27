@@ -8,9 +8,24 @@ describe("start screen", () => {
     expect(doc.getElementById("desk").style.display).toBe("none");
   });
 
-  it("disables Continue when no save exists", () => {
+  it("disables Continue when no save exists, and says so", () => {
     const { doc } = boot({ atStartScreen: true });
-    expect(doc.getElementById("btn-continue").disabled).toBe(true);
+    const btn = doc.getElementById("btn-continue");
+    expect(btn.disabled).toBe(true);
+    expect(btn.querySelector("small").textContent).toBe("no game in progress");
+  });
+
+  it("enables Continue with matching text when a save already exists at boot", () => {
+    const presetSave = {
+      year:1, si:0, currentSetting:"homestead", marks:250, food:80, fuel:0, seed:20,
+      fields:[], hands:[], foremanId:"reuben", alarmedTiers:{Warnings:false,Walkers:false},
+      regard:50, reckoning:0, flags:{}, weather:{key:"mild",label:"Mild",grow:0,glyph:"cloud"},
+      coldsnap:false, dead:[], lost:[], ended:false, tutShown:{}, seedDisplay:123, rngState:123,
+    };
+    const { doc } = boot({ atStartScreen: true, presetSave });
+    const btn = doc.getElementById("btn-continue");
+    expect(btn.disabled).toBe(false);
+    expect(btn.querySelector("small").textContent).toBe("resume where you left off");
   });
 
   it("New Game with no existing save starts immediately, no confirmation", () => {
