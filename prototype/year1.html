@@ -1647,6 +1647,7 @@
     const asks = [
       {t:"What should I be doing?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = reubenGuidance(); }},
       {t:"How are the hands?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = collectiveLine(); }},
+      {t:"How do I play this?", fn:showHowToPlay},
       (tutGuided()
         ? {t:"Stop the tips", fn:confirmStopTips}
         : {t:"Walk me through the basics again", fn:()=>{ replayTips(); closeOverlay(); }}),
@@ -1794,9 +1795,20 @@
   function showComingSoon(title){
     openInfo(title, "Not built yet. This is coming in a later pass.");
   }
+  function showHowToPlay(){
+    openInfo("How to Play", ''+
+      '<p><b>The shape of a year.</b> The year runs in four seasons, Spring, Summer, Fall, Winter, twenty days apiece. Each day comes in three turns: I give you my read on the morning, you set the fields and the hands to their work, and by dusk we close the day\'s accounts. Do that well enough, season on season, and you get a spring you did not think you would see.</p>'+
+      '<p><b>What you are trying to do.</b> Keep this household fed, warm, and standing until the year turns. Let the larder run dry in winter, or the wood run out, and someone does not wake. Let the coin run out and the bank has its own patience, though not forever.</p>'+
+      '<p><b>The quiet third debt.</b> The land keeps its own accounts of how the hands are treated, and it does not forgive on a payment plan. You will not see a number for that one, only omens, and me, if you have ears for it.</p>'+
+      '<p><b>The ledger.</b> Coin buys seed, coal, and hands. The larder feeds us every season, run it dry in winter and it costs a life. Fuel is wood and coal laid by, spent only in the cold months. Seed goes in the ground before coin ever does. Tap any of the four, any time, and I will tell you plain what each one means.</p>'+
+      '<p><b>The household.</b> Below the ledger sits the household: my name and dots for how the hands are holding up, and Regard beside it, how the town has come to see you. Tap the row for the roster, tap Regard for what it means.</p>'+
+      '<p><b>The fields.</b> Plant what you can afford and mind the fertility left in each field. A field harvested down to nothing gives nothing back. Rest it fallow a season instead and it mends.</p>'+
+      '<p>Tap Ask Reuben, at the foot of the page, any time you are lost. I am always there.</p>'
+    );
+  }
   document.getElementById("btn-new-game").addEventListener("click", confirmNewGame);
   document.getElementById("btn-continue").addEventListener("click", continueGame);
-  document.getElementById("btn-how-to-play").addEventListener("click", ()=>showComingSoon("How to Play"));
+  document.getElementById("btn-how-to-play").addEventListener("click", showHowToPlay);
   document.getElementById("btn-settings").addEventListener("click", ()=>showComingSoon("Settings"));
 
   /* ---------------- boot ---------------- */

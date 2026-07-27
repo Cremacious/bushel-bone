@@ -91,11 +91,30 @@ describe("start screen", () => {
     expect(doc.getElementById("desk").style.display).not.toBe("none");
   });
 
-  it("How to Play and Settings show a placeholder for now", () => {
+  it("How to Play explains the core loop, the goal, and the ledger", () => {
     const { doc } = boot({ atStartScreen: true });
     doc.getElementById("btn-how-to-play").click();
-    expect(doc.getElementById("overlay-panel").textContent).toContain("How to Play");
+    const text = doc.getElementById("overlay-panel").textContent;
+    expect(text).toContain("How to Play");
+    expect(text.toLowerCase()).toContain("four seasons");
+    expect(text.toLowerCase()).toContain("larder");
+    expect(text.toLowerCase()).toContain("fertility");
+  });
+
+  it("Settings still shows a placeholder for now", () => {
+    const { doc } = boot({ atStartScreen: true });
     doc.getElementById("btn-settings").click();
     expect(doc.getElementById("overlay-panel").textContent).toContain("Settings");
+    expect(doc.getElementById("overlay-panel").textContent).toContain("Not built yet");
+  });
+
+  it("How to Play is also reachable in-game via Ask Reuben", () => {
+    const { doc, T } = boot();
+    T.openAskReuben();
+    const rows = [...doc.querySelectorAll(".askq")];
+    const howTo = rows.find(r => r.textContent.includes("How do I play"));
+    expect(howTo).toBeTruthy();
+    howTo.click();
+    expect(doc.getElementById("overlay-panel").textContent).toContain("How to Play");
   });
 });
