@@ -82,6 +82,7 @@
     min-height:100vh;
     display:flex; justify-content:center; align-items:flex-start;
     padding:clamp(8px,3vw,32px);
+    position:relative;
     background:
       radial-gradient(120% 80% at 50% -10%, color-mix(in srgb,var(--paper) 82%, #000 4%), transparent 60%),
       var(--paper);
@@ -399,12 +400,15 @@
     .start-btn{ padding:14px 16px; font-size:16px; }
   }
 
-  /* ---- desktop/web split (#35): plate and stage side by side on wide viewports ---- */
+  /* ---- desktop/web split (#35) + fixed-size canvas (#47 phase 1) ---- */
   @media (min-width: 1100px){
+    #desk{ overflow:hidden; }
     #almanac{
-      max-width: 960px;
+      position:absolute; top:50%; left:50%;
+      width:1920px; height:1080px;
       display:grid;
       grid-template-columns: 40% 60%;
+      grid-template-rows: auto auto auto 1fr auto auto;
       grid-template-areas:
         "masthead  masthead"
         "ledger    ledger"
@@ -412,13 +416,24 @@
         "platewrap stage"
         "askbar    askbar"
         "footer    footer";
+      /* scale is computed and applied in JS (applyDesktopScale()), since a
+         uniform "fit both width and height, preserve aspect ratio, letterbox
+         the rest" scale factor needs the real viewport pixel size, which CSS
+         alone cannot compute against a fixed 1920x1080 reference. The
+         translate(-50%,-50%) half of the transform is set here so the
+         element stays centered on top:50%/left:50% regardless of scale;
+         applyDesktopScale() only ever appends "scale(N)" after it. */
+      transform: translate(-50%,-50%);
     }
     .masthead{ grid-area: masthead; }
     #ledger{ grid-area: ledger; }
     #household{ grid-area: household; }
-    #plate-wrap{ grid-area: platewrap; display:flex; flex-direction:column; border-right:1px solid var(--rule); }
-    #plate-wrap #plate{ flex:1; height:auto; min-height:220px; }
-    #stage{ grid-area: stage; }
+    #plate-wrap{ grid-area: platewrap; display:flex; flex-direction:column; border-right:1px solid var(--rule); min-height:0; }
+    #plate-wrap #plate{ flex:1; height:auto; min-height:440px; }
+    /* min-height:0 overrides the grid-item default of min-height:auto, which
+       would otherwise force this row (and the fixed 1080px canvas) to grow
+       to fit tall content instead of letting it scroll internally. */
+    #stage{ grid-area: stage; overflow-y:auto; min-height:0; }
     .askbar{ grid-area: askbar; }
     footer.colophon{ grid-area: footer; }
   }
@@ -1855,11 +1870,31 @@
   document.getElementById("btn-how-to-play").addEventListener("click", showHowToPlay);
   document.getElementById("btn-settings").addEventListener("click", showSettings);
 
+  /* ---------------- fixed-size desktop canvas (#47 phase 1) ---------------- */
+  const DESKTOP_BREAKPOINT = 1100, CANVAS_W = 1920, CANVAS_H = 1080;
+  function applyDesktopScale(){
+    const al = document.getElementById("almanac");
+    if(!al) return;
+    if(window.innerWidth < DESKTOP_BREAKPOINT){
+      al.style.transform = "";
+      return;
+    }
+    const scale = Math.min(window.innerWidth/CANVAS_W, window.innerHeight/CANVAS_H);
+    al.style.transform = "translate(-50%,-50%) scale("+scale+")";
+  }
+  let desktopScaleTimer = null;
+  function scheduleDesktopScale(){
+    clearTimeout(desktopScaleTimer);
+    desktopScaleTimer = setTimeout(applyDesktopScale, 120);
+  }
+  window.addEventListener("resize", scheduleDesktopScale);
+
   /* ---------------- boot ---------------- */
   refreshContinueButton();
+  applyDesktopScale();
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP, beginNewGame, continueGame, confirmNewGame, hasSave, saveGame, loadGame, clearSave, showGame, refreshContinueButton, showHowToPlay, showSettings, musicOn, sfxOn, setMusicOn, setSfxOn };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP, beginNewGame, continueGame, confirmNewGame, hasSave, saveGame, loadGame, clearSave, showGame, refreshContinueButton, showHowToPlay, showSettings, musicOn, sfxOn, setMusicOn, setSfxOn, applyDesktopScale };
   }
 })();
 </script>
