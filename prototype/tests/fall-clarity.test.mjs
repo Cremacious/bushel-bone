@@ -34,6 +34,20 @@ describe("Fall content clarity", () => {
     expect(turnOut.querySelector(".tag")).toBeFalsy();
   });
 
+  it("the Foundling's 'Take them in' now discloses the ongoing food/fuel cost (#40)", () => {
+    const { doc, T } = boot();
+    T.getState().flags._seen = { fall1: true, fall2: true };
+    expect(driveToTitle(doc, "A Foundling")).toBe(true);
+    const btns = [...doc.querySelectorAll("#stage .btn[data-c]")];
+    const takeIn = btns.find(b => b.querySelector(".t").textContent.includes("Take them in"));
+    const tagEl = takeIn.querySelector(".tag");
+    expect(tagEl.childNodes[0].textContent).toBe("+1 mouth"); // tag's own text node, excluding the nested (i) icon
+    const infoBtn = takeIn.querySelector(".whyinfo");
+    expect(infoBtn).toBeTruthy();
+    infoBtn.click();
+    expect(doc.getElementById("overlay-panel").textContent.toLowerCase()).toContain("food and fuel");
+  });
+
   it("provisioning steppers disable the + button once unaffordable", () => {
     const { doc, T } = boot();
     T.getState().marks = 2; // enough for exactly one grain (2m), not one coal (3m)

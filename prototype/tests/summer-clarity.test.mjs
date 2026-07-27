@@ -44,4 +44,16 @@ describe("Summer content clarity", () => {
     expect(work.querySelector(".tag").textContent).toBe("−heart");
     expect(rest.querySelector(".tag").textContent).toBe("−fertility");
   });
+
+  it("Rats in the Stores' 'Ignore it' states the actual amount, not just a direction (#40)", () => {
+    const { doc, T } = boot();
+    // SYSTEMIC.summer draws one of 3 events at random per run (Rats in the
+    // Stores is pool index 2). Mark the other two as already-seen so
+    // drawSystemic's "don't repeat" filter deterministically leaves only it.
+    T.getState().flags._seen = { summer0: true, summer1: true };
+    expect(driveToTitle(doc, "Rats in the Stores")).toBe(true);
+    const btns = [...doc.querySelectorAll("#stage .btn[data-c]")];
+    const ignore = btns.find(b => b.querySelector(".t").textContent.includes("Ignore it"));
+    expect(ignore.querySelector(".tag").textContent).toBe("−10 food");
+  });
 });

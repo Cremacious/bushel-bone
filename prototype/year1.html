@@ -1324,6 +1324,9 @@
 
     b.push(()=>assignStep(["chop","rest"]));
 
+    // one systemic winter event (was previously defined but never drawn)
+    b.push(()=>drawSystemic("winter"));
+
     // a chance at Sister Ruth's charity if short
     b.push(()=>{
       const short = S.food < winterFoodNeed() || S.fuel < winterFuelNeed();
@@ -1498,7 +1501,7 @@
         setting:"fields",
         body:'<div class="prose"><p>A wing of crows settles on one of your fields and sets to work with a will. There is no fence to turn them.</p></div>',
         choices:[
-          {t:"Set Reuben to scaring them",sub:"a day's labor spent",go:()=>resolve(()=>{S.fields.forEach(x=>x.tended=false);},"Reuben spends the day waving and shouting. The crows leave insulted; the crop is whole.")},
+          {t:"Set Reuben to scaring them",sub:"a day's labor spent",tag:"all fields",why:"Reuben spends the day at this field, so every other field goes untended today too, not just this one.",go:()=>resolve(()=>{S.fields.forEach(x=>x.tended=false);},"Reuben spends the day waving and shouting. The crows leave insulted; the crop is whole.")},
           {t:"Fence it, 15 m",sub:"lasting; costs coin",why:"needs 15m, have "+S.marks+"m",disabled:S.marks<15,go:()=>resolve(()=>{S.marks-=15;},"Posts and wire go up. The crows try it once, twice, and give it up. The fence will stand for years.")},
           {t:"Let them feed",sub:"lose a share of that field",tag:"−fertility",go:()=>resolve(()=>{const f=S.fields.find(x=>x.crop);if(f)f.fert=Math.max(0,f.fert-1);},"You let them have their tithe. It is only a share. You will remember the fence come next planting.")},
         ]}),
@@ -1530,7 +1533,7 @@
         body:'<div class="prose"><p>Something has been in the larder. You find the tell-tale spill of grain and the small dark droppings along the wall.</p></div>',
         choices:[
           {t:"Trap them, 4 m",sub:"stop the loss",why:"needs 4m, have "+S.marks+"m",disabled:S.marks<4,primary:true,go:()=>resolve(()=>{S.marks-=4;},"Traps and a barn cat borrowed from Doc Bell. The stores hold.")},
-          {t:"Ignore it",sub:"lose food over the season",tag:"−food",go:()=>resolve(()=>{S.food=Math.max(0,S.food-10);},"You let it ride. Ten measures of larder go down small throats before the season's out.")},
+          {t:"Ignore it",sub:"lose food over the season",tag:"−10 food",go:()=>resolve(()=>{S.food=Math.max(0,S.food-10);},"You let it ride. Ten measures of larder go down small throats before the season's out.")},
         ]}),
     ],
     fall:[
@@ -1539,7 +1542,7 @@
         dir:"[a thin figure at the fence-line at dusk, not quite a child, not quite not]",
         body:'<div class="prose"><p>A stray hand stands at your gate as the light goes, one of the Sull’s foundlings, grown wild from no wagon and no vat anyone will own to. It watches you and does not speak.</p></div>',
         choices:[
-          {t:"Take them in",sub:"free labor, and another winter mouth",primary:true,go:()=>resolve(()=>{S.hands.push(mkHand(null, pick(["Wren","Cob","Lark","Fen"]), "Foundling", 2, {mind:"wary"}));},"You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field, and one more belly to carry to spring.")},
+          {t:"Take them in",sub:"free labor, and another winter mouth",tag:"+1 mouth",why:"Another hand works the fields, but winter's food and fuel needs grow to match, for good.",primary:true,go:()=>resolve(()=>{S.hands.push(mkHand(null, pick(["Wren","Cob","Lark","Fen"]), "Foundling", 2, {mind:"wary"}));},"You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field, and one more belly to carry to spring.")},
           // sub deliberately kept close to the tag here: this choice's only
           // effect is +regard, so "+her regard" (whose regard) and the
           // "+regard" tag are naturally near-identical, unlike the trimmed

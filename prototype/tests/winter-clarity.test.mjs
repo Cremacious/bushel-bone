@@ -40,4 +40,9 @@ describe("Winter content clarity", () => {
     const accept = btns.find(b => b.querySelector(".t").textContent.includes("Accept the basket"));
     expect(accept.querySelector(".tag").textContent).toBe("+food, +fuel");
   });
+
+  it("Winter now draws its systemic event (Cabin Fever), previously dead code (#40)", () => {
+    const { doc } = boot();
+    expect(driveToTitle(doc, "Cabin Fever")).toBe(true);
+  });
 });
