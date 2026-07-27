@@ -256,10 +256,10 @@
   .ripe{ color:var(--good); font-style:normal; }
 
   /* provision / steppers */
-  .stepper{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px dotted var(--rule-fine); }
+  .stepper{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px dotted var(--rule-fine); flex-wrap:wrap; }
   .stepper .lab{ font-size:14.5px; }
   .stepper .lab small{ display:block; color:var(--ink-faint); font-size:12px; font-style:italic; }
-  .stepper .ctrls{ display:flex; align-items:center; gap:8px; }
+  .stepper .ctrls{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
   .stepper button{ all:unset; cursor:pointer; width:28px; height:28px; text-align:center; line-height:26px; border:1px solid var(--rule); border-radius:2px; font-size:17px; color:var(--ink); }
   .stepper button:hover{ border-color:var(--accent); }
   .stepper button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
@@ -875,11 +875,10 @@
                  '<div class="ctrls"><span class="regard" style="color:var(--good)">sell · +'+coin+'m</span></div></div>';
         }
         const sel = choice[l.crop];
-        return '<div class="stepper"><div class="lab">'+c.name+'  '+l.units+' units<small>'+
-                 (sel==='food'?('to the larder · +'+food+' food'):('to market · +'+coin+' m'))+'</small></div>'+
+        return '<div class="stepper"><div class="lab">'+c.name+'  '+l.units+' units</div>'+
                '<div class="ctrls">'+
-                 '<button data-t="'+l.crop+'" data-v="food" class="'+(sel==='food'?'sel':'')+'" style="width:auto;padding:0 9px">larder</button>'+
-                 '<button data-t="'+l.crop+'" data-v="sell" class="'+(sel==='sell'?'sel':'')+'" style="width:auto;padding:0 9px">sell</button>'+
+                 '<button data-t="'+l.crop+'" data-v="food" class="'+(sel==='food'?'sel':'')+'" style="width:auto;padding:0 9px">larder · +'+food+' food</button>'+
+                 '<button data-t="'+l.crop+'" data-v="sell" class="'+(sel==='sell'?'sel':'')+'" style="width:auto;padding:0 9px">sell · +'+coin+'m</button>'+
                '</div></div>';
       }).join('');
       const growing = growingRows();
