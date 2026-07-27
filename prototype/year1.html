@@ -477,6 +477,21 @@
     .plate-cap{ padding:10px 0 12px; }
     .plate-cap b{ font-size:20px; }
     .plate-cap span{ font-size:16px; }
+
+    /* Planting screen redesign for the wider stage column (playtest
+       feedback: chips wrapped single-file down a narrow column, small and
+       hard to hit). Fields stay stacked (unlike the earlier 2x2 grid option,
+       not chosen), but each field's 6 crop options now sit in one row of 6
+       instead of wrapping, with bigger touch targets throughout. Mobile
+       (the flex-wrap layout) is untouched. */
+    .fields{ gap:16px; }
+    .field-row{ padding:16px 18px; }
+    .field-row .fname{ font-size:19px; }
+    .field-row .fmeta{ font-size:15px; }
+    .crop-picks{ display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-top:12px; }
+    .chip{ flex-direction:column; justify-content:center; text-align:center; gap:3px; padding:14px 6px; font-size:15px; }
+    .chip .c{ font-size:13px; margin-left:0; }
+    .chip .info{ margin:2px 0 0; padding:5px; font-size:15px; }
   }
 </style>
 
