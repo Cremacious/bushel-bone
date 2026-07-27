@@ -101,11 +101,24 @@ describe("start screen", () => {
     expect(text.toLowerCase()).toContain("fertility");
   });
 
-  it("Settings still shows a placeholder for now", () => {
-    const { doc } = boot({ atStartScreen: true });
+  it("Settings shows music/SFX toggles, defaulting to on, and is honest that there's no audio yet", () => {
+    const { doc, T } = boot({ atStartScreen: true });
     doc.getElementById("btn-settings").click();
-    expect(doc.getElementById("overlay-panel").textContent).toContain("Settings");
-    expect(doc.getElementById("overlay-panel").textContent).toContain("Not built yet");
+    const text = doc.getElementById("overlay-panel").textContent;
+    expect(text).toContain("Settings");
+    expect(text.toLowerCase()).toContain("no music or sound in this build");
+    expect(T.musicOn()).toBe(true);
+    expect(T.sfxOn()).toBe(true);
+  });
+
+  it("Settings toggles persist and reflect their state", () => {
+    const { doc, T } = boot({ atStartScreen: true });
+    doc.getElementById("btn-settings").click();
+    doc.querySelector('button[data-k="music"][data-v="off"]').click();
+    expect(T.musicOn()).toBe(false);
+    expect(doc.querySelector('button[data-k="music"][data-v="off"]').classList.contains("sel")).toBe(true);
+    doc.querySelector('button[data-k="sfx"][data-v="off"]').click();
+    expect(T.sfxOn()).toBe(false);
   });
 
   it("How to Play is also reachable in-game via Ask Reuben", () => {

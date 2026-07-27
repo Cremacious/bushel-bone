@@ -1792,9 +1792,6 @@
     showGame();
     runStep();
   }
-  function showComingSoon(title){
-    openInfo(title, "Not built yet. This is coming in a later pass.");
-  }
   function showHowToPlay(){
     const section = (title, body) => '<div class="eyebrow">'+title+'</div><p>'+body+'</p><hr class="hr-hatch">';
     openInfo("How to Play", ''+
@@ -1807,16 +1804,50 @@
       '<p>Ask Reuben sits at the foot of the page and answers when tapped, any time the way ahead is unclear.</p>'
     );
   }
+  /* ---------------- settings (#38): toggles only, no audio built yet ---------------- */
+  function musicOn(){ try { return localStorage.getItem("bb_music") !== "0"; } catch(e){ return true; } }
+  function sfxOn(){ try { return localStorage.getItem("bb_sfx") !== "0"; } catch(e){ return true; } }
+  function setMusicOn(on){ try { localStorage.setItem("bb_music", on?"1":"0"); } catch(e){} }
+  function setSfxOn(on){ try { localStorage.setItem("bb_sfx", on?"1":"0"); } catch(e){} }
+  function showSettings(){
+    function draw(){
+      const html = '<div class="rosterhdr"><b>Settings</b></div>'+
+        '<div class="prose" style="padding:0 16px 8px"><p class="note">There is no music or sound in this build yet. These switches are here early and will take hold once there is.</p></div>'+
+        '<div style="padding:0 16px 4px">'+
+          '<div class="stepper"><div class="lab">Music</div><div class="ctrls">'+
+            '<button data-k="music" data-v="on" class="'+(musicOn()?'sel':'')+'" style="width:auto;padding:0 12px">On</button>'+
+            '<button data-k="music" data-v="off" class="'+(!musicOn()?'sel':'')+'" style="width:auto;padding:0 12px">Off</button>'+
+          '</div></div>'+
+          '<div class="stepper"><div class="lab">Sound Effects</div><div class="ctrls">'+
+            '<button data-k="sfx" data-v="on" class="'+(sfxOn()?'sel':'')+'" style="width:auto;padding:0 12px">On</button>'+
+            '<button data-k="sfx" data-v="off" class="'+(!sfxOn()?'sel':'')+'" style="width:auto;padding:0 12px">Off</button>'+
+          '</div></div>'+
+        '</div>'+
+        '<div style="padding:8px 14px 14px"><button class="wbtn pri" id="settings-close" style="width:100%">Close</button></div>';
+      openOverlay(html, panel=>{
+        panel.querySelectorAll('button[data-k]').forEach(btn=>{
+          btn.addEventListener('click',()=>{
+            const on = btn.dataset.v==="on";
+            if(btn.dataset.k==="music") setMusicOn(on); else setSfxOn(on);
+            draw();
+          });
+        });
+        const close = panel.querySelector('#settings-close');
+        if(close) close.addEventListener('click', closeOverlay);
+      });
+    }
+    draw();
+  }
   document.getElementById("btn-new-game").addEventListener("click", confirmNewGame);
   document.getElementById("btn-continue").addEventListener("click", continueGame);
   document.getElementById("btn-how-to-play").addEventListener("click", showHowToPlay);
-  document.getElementById("btn-settings").addEventListener("click", ()=>showComingSoon("Settings"));
+  document.getElementById("btn-settings").addEventListener("click", showSettings);
 
   /* ---------------- boot ---------------- */
   refreshContinueButton();
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP, beginNewGame, continueGame, confirmNewGame, hasSave, saveGame, loadGame, clearSave, showGame, refreshContinueButton };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP, beginNewGame, continueGame, confirmNewGame, hasSave, saveGame, loadGame, clearSave, showGame, refreshContinueButton, showHowToPlay, showSettings, musicOn, sfxOn, setMusicOn, setSfxOn };
   }
 })();
 </script>
