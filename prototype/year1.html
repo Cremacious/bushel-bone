@@ -847,7 +847,6 @@
       }
     });
     S.lots = lots;
-    if(lots.length===0){ next(); return; }
     marketStep();
   }
 
@@ -860,12 +859,19 @@
     // per-lot decision: larder vs coin (cash crops auto-sell)
     const choice = {}; // crop -> 'food'|'sell'
     S.lots.forEach(l=> choice[l.crop] = l.cash?'sell':'food');
+    function growingRows(){
+      return S.fields.filter(f=>f.crop).map(f=>{
+        const c=CROPS[f.crop];
+        const pct = Math.min(100, Math.round(f.progress/c.seasons*100));
+        return '<div class="stepper"><div class="lab">'+fieldName(f)+'<small>'+c.name+', coming on ('+pct+'%)</small></div></div>';
+      }).join('');
+    }
     function draw(){
       let rows = S.lots.map(l=>{
         const c=CROPS[l.crop];
         const coin=sellValue(l.crop,l.units), food=Math.round(l.units*c.food);
         if(l.cash){
-          return '<div class="stepper"><div class="lab">'+l.name+'  '+l.units+' bales<small>a cash crop; feeds no one</small></div>'+
+          return '<div class="stepper"><div class="lab">'+c.name+'  '+l.units+' bales<small>a cash crop; feeds no one</small></div>'+
                  '<div class="ctrls"><span class="regard" style="color:var(--good)">sell · +'+coin+'m</span></div></div>';
         }
         const sel = choice[l.crop];
@@ -876,10 +882,16 @@
                  '<button data-t="'+l.crop+'" data-v="sell" class="'+(sel==='sell'?'sel':'')+'" style="width:auto;padding:0 9px">sell</button>'+
                '</div></div>';
       }).join('');
+      const growing = growingRows();
+      const growingBlock = growing
+        ? '<p class="note" style="margin-top:12px">Still in the ground:</p><div>'+growing+'</div>' : '';
+      const harvestBlock = S.lots.length
+        ? '<div style="margin-top:6px">'+rows+'</div>'
+        : '<p class="note">Nothing ripe to bring in this season.</p>';
       card({ eyebrow:"The Market · "+season(), title:"What the fields gave up",
              setting:"town", screenType:"market",
-             body:'<div class="prose"><p class="note">Grain and roots keep a belly through winter; coin buys coal and hands. Choose for each lot.</p><div style="margin-top:6px">'+rows+'</div></div>',
-             choices:[{t:"Close the day-book", sub:"apply every larder and sell choice you set above", primary:true, go:doSell}] });
+             body:'<div class="prose"><p class="note">Grain and roots keep a belly through winter; coin buys coal and hands. Choose for each lot.</p>'+harvestBlock+growingBlock+'</div>',
+             choices:[{t: S.lots.length ? "Close the day-book" : "Move on", sub: S.lots.length ? "apply every larder and sell choice you set above" : "nothing to sell yet", primary:true, go:doSell}] });
       tip("market","Now the market. Grain and roots can go to the larder to eat, or to town for coin. Coin buys much, but a full belly is what carries you through the dark months. Choose careful.","#stage button[data-t]");
       stage().querySelectorAll('button[data-t]').forEach(btn=>{
         btn.addEventListener('click',()=>{ choice[btn.dataset.t]=btn.dataset.v; draw(); });
