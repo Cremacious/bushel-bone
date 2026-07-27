@@ -40,6 +40,9 @@ Answered in `docs/narrative-bible.md` Part 1: the Commonwealth of Ostrey / the S
 ### Q-008. Ancient / pre-play history of Marrow's Cross — ✅ RESOLVED (Session 3, → D-029)
 Answered in `docs/narrative-bible.md` Part 1.5: the Salting (founding sin), the naming, the Old Well.
 
+### Q-013. The player's origin / founder story — ✅ RESOLVED (Session 8, → D-038)
+Answered in `docs/narrative-bible.md` Part 0. The player inherits the homestead of an uncle they never met, **Malachi**, who vanished into the Old Well after giving his life to renew the Marrow's failing seal. A **fixed** personal mystery (unlike the randomized Vane truths) uncovered through his journals, Old Nan, Sheriff Coldwater, and Reuben (who was his hand). **Deferral** is the thesis (you never beat the land, you pass the watch on); the endings show the vigil handed to an heir; an **earned, rare reunion** rewards the kind path. See D-038.
+
 ## Lower priority — needed before ship
 
 ### Q-009. Localization plan

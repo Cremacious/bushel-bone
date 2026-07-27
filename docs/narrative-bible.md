@@ -1,6 +1,6 @@
 # Bushel & Bone — Narrative & World Bible
 
-**Status: IN PROGRESS.** Part 1 — The World (#3), Part 2 — The Cast interiority (#4), Part 3 — The Vane Family / three-truth mystery (#14), Part 3B — NPC Quest Arcs (#13), and Part 4 — Season Arcs Years 5–10 (#15) are written. The voice guide (#5) is written as [`docs/style-guide.md`](style-guide.md). The narrative bible is now substantially complete; the last narrative-adjacent piece is the event-card library (#16), which is a content build atop the schema (#12).
+**Status: IN PROGRESS.** Part 1 — The World (#3), Part 2 — The Cast interiority (#4), Part 3 — The Vane Family / three-truth mystery (#14), Part 3B — NPC Quest Arcs (#13), and Part 4 — Season Arcs Years 5–10 (#15) are written. The voice guide (#5) is written as [`docs/style-guide.md`](style-guide.md). The narrative bible is now substantially complete; **Part 0 (The Founder's Story, the player's origin and the spine of a lineage) is now written (Session 8, D-038).** The last narrative-adjacent piece is the event-card library (#16), which is a content build atop the schema (#12).
 
 This bible fleshes out the story, the world, the NPCs, and the tone of Bushel & Bone in the depth required to actually write dialogue, event cards, and quest arcs without holes.
 
@@ -10,6 +10,70 @@ This bible fleshes out the story, the world, the NPCs, and the tone of Bushel & 
 - **The setting is an invented frontier nation** (the Commonwealth of Ostrey; the western territory called the Sull), so we invent freely and sidestep the D-018 cultural-care trap — the land's grievance belongs to the *ground*, not to any displaced people.
 
 ## Planned structure
+
+## PART 0: THE FOUNDER'S STORY (The Inherited Vigil)  *(written, Session 8, → D-038)*
+
+*The player's personal on-ramp, and the spine of a single lineage. The world, the cast, and the season arcs (Parts 1 to 4) were written first; Part 0 is the thread that ties a specific player to all of it. It answers the last narrative gap: who the player is, why they take this land, and what the ending shows. Unlike the randomized Vane truths (Part 3), this origin is FIXED: every campaign shares it, and the Codex remembers it (D-015).*
+
+### 0.1 The premise
+
+You are a nobody, back east, when a letter finds you. An uncle you never met, **Malachi** (your father's brother, sharing your family name), has died in a far western territory called the Sull, and his homestead is now yours by default of blood. You come west to claim it and find a half-worked farm, a shelf of his journals, an old field hand who knew him, and no grave, because there is no body.
+
+This is the game's first gesture, and it is the whole game in miniature. You are standing on someone else's unfinished life, on ground that keeps an account, and the debt and the watch are yours now whether you wanted them or not. Opening on an inheritance means the first thing a new player feels is the thing the whole game is about: land passed down and debt carried (D-007, D-027).
+
+### 0.2 Malachi, the uncle
+
+A quiet man who worked the Sull homestead for about twenty years. Gentle with his hands, a Gardener in Ambrose's sense (§1.4), who treated his vessels well. He was no scholar and no zealot, but living on the quick ground he came, slowly, to understand what lies under the valley: the Marrow, and the account it keeps (§1.2). He learned it alongside **Old Nan**, the only other soul in Marrow's Cross who truly knows the land. And he kept a private vigil, his own small watch against the thing in the ground, that the town never knew about. His name carries the weight the man carried: a plain farmer who came to know too much and told no one.
+
+### 0.3 What he did (the fixed mystery)
+
+The town keeps the **Long Vigil** every Midwinter to renew the cap on the **Old Well** (§1.3, §1.5). Malachi came to see what the town would not admit: the Vigil was slowly losing. The valley's account had tipped too far over the years (the Salting's old debt, the farms' small cruelties, the mounting weight), and the yearly watching was no longer enough to hold the seam quiet.
+
+He also understood the oldest truth of the Marrow: **a life freely given is the heaviest payment it will accept** (rite is payment, D-029). So one winter, when watching was no longer enough and he could see no other way, Malachi walked down into the Old Well and spent himself, to buy the Sull a little more time.
+
+He told no one. He left his journals behind for whoever would come. The town knows only that the Well has been quiet these few years, and does not ask why. Only Old Nan suspects.
+
+### 0.4 The narrative to follow (how the player uncovers it)
+
+Retracing Malachi is the player's personal mid-game thread, laid over the season and NPC arcs (Parts 3B and 4). It surfaces four ways, paced across a lifetime:
+
+- **Malachi's journals** (the guide from the grave). A shelf of his almanac-notebooks, readable in game, that dole out the Marrow reveal one uneasy entry at a time. This is the pacing device for the whole cosmology (the Illustrated Almanac, D-019): the player learns what is under the Sull the way Malachi learned it, slowly and against their will.
+- **Old Nan** (the spiritual truth). She taught him, half-knows what he did, and will not say it plainly until the player has earned it (ties her arc, Part 2 §7, and The Long Watch, Part 3B). She is the surest path to the truth and to the Old Well.
+- **Sheriff Coldwater** (the earthly truth). A missing man with no body is the one case he filed as "lost to winter" and never closed in his heart (his whole self is "I catch what I failed to stop," Part 2 §8). A nephew or niece asking questions reopens it. He holds the worldly, procedural half of the mystery.
+- **Reuben** (the living link). The field hand who greets the player on Day 1, the Foreman and the collective's voice (D-036), was **Malachi's hand** and stayed with the land. He is the one person on the farm who remembers the uncle, a quiet fourth source on who Malachi was, and he grieves him.
+
+*(Deliberately lean: only the journals, Nan, Coldwater, and Reuben carry Malachi. The rest of the cast keep their own arcs uncluttered.)*
+
+### 0.5 The reckoning, made personal
+
+The seal Malachi bought with his life is **wearing thin**. This is the personal hook onto the existing endgame: it comes due at **Year 7, The Old Well Opens** (Part 4, Q-005) and the lineage's culmination at **Year 10, The Long Vigil**. When a lineage finally stands at the failing seal, the player faces the same shaft and the same choice their uncle faced. His motive (a sacrifice to hold the seam a little longer) is the template for the player's own climactic choice.
+
+### 0.6 The thesis and the endings (deferral, forever)
+
+**You never defeat the land.** The Marrow cannot be put to rest for good; the best any lineage earns is a longer sleep and a watch passed on. This agrees with the locked core fantasy, "I survived another year" (D-001), and with the Long Vigil as a rite that must be renewed forever. What the endings show, on the deferral thesis:
+
+- **The best (bittersweet).** A life lived clean, the seal renewed, and the vigil handed to an heir who inherits a loved land and only the lightest debt (25% Reckoning, D-027). The closing image is a lantern handed over, not a sunrise of victory. *You kept it sleeping. That was enough.*
+- **The middle.** You survived, but frayed. The land is quiet, not at peace; the heir is warned.
+- **The worst (the Salting repeated).** The seal breaks on your watch, and the Marrow reclaims the Sull. Your lineage ends the way the founders nearly did (land-loss by curse, D-007).
+
+### 0.7 The reunion (earned, and rare)
+
+Only a **kind, low-Reckoning lineage** that reaches the best ending is granted the moment. Descending to renew the seal, the player finds Malachi at peace enough to say one thing, and then he is gone, and the player **names him** at last, giving him the grave he never had (the naming of the dead is how a debt is forgiven, §1.2). A cruel or haunted lineage finds only the hungry dark. The reunion is the reward for the kind path, which keeps it precious and leaves the bleak default intact.
+
+### 0.8 How it fits the meta (the roguelite)
+
+- **Malachi's sacrifice is permanent town canon** (D-015). It is true in every campaign. Marrow's Cross evolves, but the Well has been held these years by a dead man's gift, and that stays fixed.
+- **Your first lineage is his heir.** The very first playthrough (Year 1, "The Newcomer") is the nephew or niece arriving on the letter.
+- **Later lineages are new blood** who rediscover the buried truth of the Well from scratch, with the Codex tracking what each learned about Malachi, exactly as it tracks which Vane truth a lineage uncovered (Part 3). Malachi is the FIXED personal anchor of the whole game; the Vanes are the RANDOMIZED one. Together they give the roguelite one stable heart and one shuffling mystery.
+
+### 0.9 Canon guardrails and mechanics hooks
+
+- **Locked (do not reopen without the user):** the inheritance premise; Malachi the vanished uncle; his descent into the Old Well as a freely given life to renew the failing seal; the journals as the reveal device; the journals, Nan, Coldwater, and Reuben as his four threads; deferral as the thesis; the earned, rare reunion; the persistent-anchor meta.
+- **Deliberately open (for later work):** Malachi's exact journal entries (player-facing prose, the voice guide and #16); the precise mechanical gate on the earned reunion (which Reckoning and reputation thresholds); how the Year-7 and Year-10 Well beats read for a lineage that never pursued the mystery.
+- **New mechanics this implies:** an in-game **journals/almanac** object that unlocks entries over time; a Day-1 opening reframed from a generic charter to an inheritance (the vertical slice, Year 1); Reuben carrying a small "knew Malachi" dialogue thread; the earned-reunion ending state in the Year-10 verdict logic; a Codex field recording how much of Malachi's truth a lineage uncovered.
+- **The player's family name** is the **lineage name**, which players set themselves in the roguelite (D-007, D-015). Malachi shares it. In fixed text he is "your uncle Malachi" or "Malachi"; the surname is filled from the player's chosen lineage.
+
+---
 
 ## PART 1 — THE WORLD  *(written — issue #3)*
 
@@ -74,7 +138,7 @@ This bible fleshes out the story, the world, the NPCs, and the tone of Bushel & 
 
 **The founding and the Salting (the town's original sin — and the template for the whole game).** The first charter-party wintered at the crossroads about a generation ago and starved. To save the stores, the strongest **turned out the weakest** — the sick, the old, two children — to die in the cold, and buried them unmarked in the soft warm ground because it was the only ground that would dig in the frost. **That spring, the buried came back** — by name, to the doors they'd been turned from. The survivors' preacher put them down with a rite of watching and naming that lasted till dawn, and called it *the Long Vigil.* The town has kept the Vigil every Midwinter since. **Everything the player does with a clone and a shovel is a small echo of the Salting** — the game's moral engine is this founding, run again and again.
 
-**The Old Well** (late-game unlock, §13 Year 7). The deepest shaft the founders sank into the marrow, looking for water and finding the seam. They capped it, set the first Vigil over the cap, and forbade its reopening. It is the town's throat to the thing underneath — where the Reckoning is closest to the surface, where the Vigil is *actually* kept, and where a late lineage may go looking for answers it would be wiser to leave buried.
+**The Old Well** (late-game unlock, §13 Year 7). The deepest shaft the founders sank into the marrow, looking for water and finding the seam. They capped it, set the first Vigil over the cap, and forbade its reopening. It is the town's throat to the thing underneath — where the Reckoning is closest to the surface, where the Vigil is *actually* kept, and where a late lineage may go looking for answers it would be wiser to leave buried. In the player's own story, this is the shaft the vanished uncle Malachi went down and did not return from (Part 0).
 
 ### 1.6 Map sketch
 
@@ -188,7 +252,7 @@ Each of the ten canon NPCs (CLAUDE.md §4 — no new NPCs) gets: **Public** (how
 - **Voice:** fragments and indirection; speaks of the land as a person — *she remembers, she's hungry;* never a straight answer, always a true one. Signature: *"You asked after rain. I'll tell you instead what's under your east field, since that's what's asking after you."*
 - **Ties:** the town fears her; Silas secretly pays her; Grange is her rival and secret kindred; she watches Meredith Vane with recognition (she can half-read a vessel); she holds careless Ambrose in cold contempt.
 - **Reaction to the player:** *kind, land-respecting* → she opens, becomes the truest guide to the Reckoning (§6 reads, folk-cleansing). *Cruel* → no moralizing; a plain warning, then withdrawal — she's seen it all before. *High Reckoning* → the only one who can still help, and her help costs — *she notes what you did* (§1).
-- **Arc seed (→#13, and the Old Well, Year 7).**
+- **Arc seed (→#13, and the Old Well, Year 7).** She is also the keeper of the truth about the player's uncle Malachi and what he did at the Well (Part 0).
 
 ### 8. Sheriff Nathaniel Coldwater — the law, cruelty investigations (§5)
 - **Public:** the law in Marrow's Cross; hard, upright, hunts cruelty; feared and respected in equal measure.
@@ -198,7 +262,7 @@ Each of the ten canon NPCs (CLAUDE.md §4 — no new NPCs) gets: **Public** (how
 - **Voice:** clipped, plain, no euphemism (the opposite of Silas) — moral certainty stretched over a buried wound. Signature: *"I don't much care what a man believes. I care what I find in his west field."*
 - **Ties:** wary respect with Grange (two men keeping order two ways); friction with Halloway (business wants him blind); relies on and mistrusts Bell's rumors; tolerates Meredith's Black Market for the information it buys him; would jail Ambrose if he could ever prove a thing.
 - **Reaction to the player:** *kind* → an ally and a bulwark. *Cruel* → the primary human enforcer — investigations, fines, raids, escalating with exposure (§5). *High Reckoning* → even he can't arrest the land; watching order mean nothing against the Marrow unmoors him.
-- **Arc seed (→#13):** the thing he did, and whether the player learns it — and what they do with it.
+- **Arc seed (→#13):** the thing he did, and whether the player learns it — and what they do with it. He also carries the one case he never closed, the disappearance of the player's uncle Malachi (Part 0).
 
 ### 9. Dr. Ambrose Vane — clone merchant, brother of Meredith
 - **Public:** the affable, cultured vessel-merchant; the wagon that brings clones (§3); a lapsed Millwright playing frontier Gardener (§1.4). Meredith's brother.

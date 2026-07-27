@@ -8,7 +8,7 @@
 
 ## 1. What Year 1 is
 
-A newcomer takes the charter on a homestead in the Sull and works it through one year — four seasons, 80 days — meeting the town, learning the loop, and surviving the first winter. **Year 1 has no mortgage payment** (the 2-year establishment grace, D-032/§13), so it cannot be lost to foreclosure; the only failure is starving or freezing the household. It teaches every system at low stakes and ends on the Long Vigil — the town's rite over the thing in the ground — so the player leaves Year 1 having *felt* the whole game in miniature.
+A newcomer takes over a homestead in the Sull and works it through one year (four seasons, 80 days), meeting the town, learning the loop, and surviving the first winter. Per the founder story (D-038, narrative-bible Part 0), the newcomer is the **heir of Uncle Malachi**, a farmer they never met who worked this land for twenty years and then vanished into the Old Well, leaving no grave and a shelf of journals. Year 1 plays as arrival and inheritance; the founder mystery only whispers here (a first journal entry, a word from Reuben who was Malachi's hand), and deepens across later years. **Year 1 has no mortgage payment** (the 2-year establishment grace, D-032/§13), so it cannot be lost to foreclosure; the only failure is starving or freezing the household. It teaches every system at low stakes and ends on the Long Vigil — the town's rite over the thing in the ground — so the player leaves Year 1 having *felt* the whole game in miniature.
 
 **Win:** reach Year 2, Spring Day 1, with the farmer alive.
 **Lose:** the farmer starves or freezes. (Clones can die; the run only ends if the farmer does.)
@@ -21,7 +21,8 @@ A newcomer takes the charter on a homestead in the Sull and works it through one
 |---|---|---|
 | Coin | **100 marks** | |
 | Fields | **4 small, cleared** | ratified starter (D-032). Small = 0.8× yield, +10% quick-ground (D-029). |
-| Clone | **1 — "Reuben," Field Hand, Body Average, Mind Average** | came with the charter (customary: a homestead comes with one vessel). |
+| Clone | **1 — "Reuben," Field Hand, Body Average, Mind Average** | was Uncle Malachi's hand and stayed with the land; the one soul on the farm who remembers him (D-038). |
+| Journals | **Malachi's almanac-notebooks** | a readable in-game object; entries unlock over time and pace the Marrow reveal (D-038). |
 | Food | **80 units** | the starting larder. |
 | Seed | **20 (mixed wheat & potato)** | enough to plant the four fields once. |
 | Fuel | **0** | must be laid in before winter. |
@@ -46,7 +47,7 @@ Seasons are **20 days**; the year is **80 days**, four seasons: Spring → Summe
 ## 4. The Year-1 spine — "The Newcomer" arc, season by season
 
 ### SPRING (Days 1–20) — Arrival & first planting
-- **Day 1 — Silas Ridley calls.** *(scripted)* The banker rides out to "welcome" the newcomer and lay out the mortgage. He is correct, cold, and — for once — almost kind: *"You'll owe the bank a hundred and fifty a year. Not this year, nor the next; the charter's not unkind to a new man. After that, it minds its dates."* Teaches the mortgage clock **and** the grace. First read of Silas.
+- **Day 1 — Silas Ridley calls.** *(scripted)* The banker rides out to "welcome" the newcomer, hand over the deed to Uncle Malachi's homestead, and lay out the mortgage. In his bloodless way he notes only that the charter passes to blood when a holder is "lost," and moves straight to the dates (the founder mystery stays a whisper in Year 1; Silas is not one of its threads, D-038). He is correct, cold, and — for once — almost kind: *"You'll owe the bank a hundred and fifty a year. Not this year, nor the next; the charter's not unkind to a new man. After that, it minds its dates."* Teaches the mortgage clock **and** the grace. First read of Silas.
 - **Days 1–3 — First planting (tutorial).** Guided: the four fields, season-fit, seed cost. Recommended nudge: plant food (potato, wheat) — *"a newcomer plants his belly first."* The player may ignore the nudge.
 - **Day 10 — First Furrow (Spring festival, §12).** *(scripted)* The town gathers. Introduces **Mayor Halloway** (expansive welcome, offers a first small **crop-supply contract** — 8 units of wheat at a fair locked price, an easy tutorial contract) and **Preacher Grange** (blesses the fields — a small Reckoning ease + a fertility touch; teaches the rite quietly). The player sees the town square, the church, the saloon.
 - **Systemic Spring:** mild weather; one **rain** event (+growth); one minor systemic card (a fence to mend / a stray dog at the flock). Reuben tends; the player learns dawn assignment.
@@ -68,7 +69,7 @@ Seasons are **20 days**; the year is **80 days**, four seasons: Spring → Summe
 ### WINTER (Days 61–80) — The crucible (milder, guided)
 - **The first winter is gentler (§4 tutorial mildness):** a small household, an explicit readiness callout in the late-Fall Brief, and **at most one cold snap** (vs. the usual two).
 - **Consumption:** farmer 1.0/day + each clone 0.75/day, plus fuel. Farmer + Reuben over 20 days = **35 food** + ~46 fuel. If short, the **emergency levers**: **Sister Ruth's charity** (a Ruth event gifts food/fuel at a small reputation/obligation cost — the tutorial safety net) or a fire-sale of stored crops for coal.
-- **Day 75 — The Long Vigil (Midwinter festival, §12) — the thematic heart.** *(scripted)* The town watches through the longest night to renew the cap on the Old Well. The player attends (or not). This is where the **cosmology surfaces**: Grange's liturgy, the naming of the year's dead, and the plain fact that the whole town is afraid of something under the ground. The player leaves Year 1 knowing there *is* a Marrow, without being told what it is.
+- **Day 75 — The Long Vigil (Midwinter festival, §12) — the thematic heart.** *(scripted)* The town watches through the longest night to renew the cap on the Old Well. The player attends (or not). This is where the **cosmology surfaces**: Grange's liturgy, the naming of the year's dead, and the plain fact that the whole town is afraid of something under the ground. The player leaves Year 1 knowing there *is* a Marrow, without being told what it is. For this player it lands doubly: the rite Malachi kept in private is the one the whole town keeps tonight, and a first journal entry can be earned here (D-038).
 - **Spring, Day 1, Year 2 — "I survived another year."** The win beat. A quiet Dusk-to-dawn: the household wakes, the frost breaks, and the year turns. Vigils awarded (meta, §14); the Codex records who lived and who didn't.
 
 ---
