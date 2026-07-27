@@ -641,7 +641,7 @@
     const planting = (s==="Spring"||s==="Summer"||s==="Fall");
     const low = livingHands().filter(h=>h.morale<=1 || h.hungry || h.ill);
     if(planting && bare>0)
-      return "You have "+bare+" field"+(bare>1?"s":"")+" lying bare and a larder that will not see us to spring on its own. Get seed in the ground. Potatoes fill a belly.";
+      return "You have "+bare+" field"+(bare>1?"s":"")+" lying bare and a larder that will not see us to spring on its own. Get seed in the ground. Something that fills a belly, to start.";
     if((s==="Fall"||s==="Winter") && S.fuel < winterFuelNeed())
       return "There is not near enough wood laid in for the cold. Put a hand on the woodline, or buy coal in town, before winter closes the road.";
     if(low.length)
