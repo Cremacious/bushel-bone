@@ -1,0 +1,86 @@
+import { describe, it, expect } from "vitest";
+import { boot } from "./helpers.mjs";
+
+describe("start screen", () => {
+  it("shows the start screen and hides the game before any choice is made", () => {
+    const { doc } = boot({ atStartScreen: true });
+    expect(doc.getElementById("start-screen").style.display).not.toBe("none");
+    expect(doc.getElementById("desk").style.display).toBe("none");
+  });
+
+  it("disables Continue when no save exists", () => {
+    const { doc } = boot({ atStartScreen: true });
+    expect(doc.getElementById("btn-continue").disabled).toBe(true);
+  });
+
+  it("New Game with no existing save starts immediately, no confirmation", () => {
+    const { doc, T } = boot({ atStartScreen: true });
+    doc.getElementById("btn-new-game").click();
+    expect(doc.getElementById("desk").style.display).not.toBe("none");
+    expect(doc.getElementById("start-screen").style.display).toBe("none");
+    expect(T.getState().year).toBe(1);
+  });
+
+  it("autosaves at the start of a season, enabling Continue on a fresh boot", () => {
+    const { T } = boot({ atStartScreen: true });
+    expect(T.hasSave()).toBe(false);
+    T.beginNewGame(); // buildSeason() inside newGame() should autosave
+    expect(T.hasSave()).toBe(true);
+  });
+
+  it("New Game with an existing save asks for confirmation first", () => {
+    const { doc, T } = boot(); // default boot already starts a game (and autosaves)
+    expect(T.hasSave()).toBe(true);
+    doc.getElementById("btn-new-game").click(); // the button element still exists even though its screen is hidden
+    expect(doc.getElementById("overlay-panel").textContent.toLowerCase()).toContain("erase it");
+  });
+
+  it("confirming New Game clears the old save and starts fresh", () => {
+    const { doc, T } = boot();
+    const before = T.getState();
+    before.marks = 12345; // mutate so we can tell a fresh game apart from the old one
+    T.saveGame();
+    doc.getElementById("btn-new-game").click();
+    doc.getElementById("newgame-yes").click();
+    expect(T.getState().marks).toBe(100); // back to newGame()'s starting marks, not 12345
+  });
+
+  it("declining New Game keeps the existing save untouched", () => {
+    const { doc, T } = boot();
+    doc.getElementById("btn-new-game").click();
+    doc.getElementById("newgame-no").click();
+    expect(T.hasSave()).toBe(true);
+  });
+
+  it("Continue restores saved state instead of the current in-memory state", () => {
+    // jsdom's localStorage is isolated per JSDOM instance (it does not persist
+    // across separate boot() calls the way a real browser persists across page
+    // reloads), so this stays within one instance: save a snapshot, mutate the
+    // live state without saving again, then prove Continue reloads from disk
+    // rather than reflecting whatever S currently holds in memory. Calls
+    // continueGame() directly rather than clicking #btn-continue: that button's
+    // disabled attribute is only refreshed at boot (there is no back-to-menu
+    // path yet that would need it refreshed mid-game), so a stale disabled
+    // attribute would make a DOM click silently no-op here without exercising
+    // the actual behavior under test.
+    const { doc, T } = boot();
+    const s = T.getState();
+    s.marks = 777;
+    s.regard = 88;
+    T.saveGame();
+    s.marks = 1;
+    s.regard = 1;
+    T.continueGame();
+    expect(T.getState().marks).toBe(777);
+    expect(T.getState().regard).toBe(88);
+    expect(doc.getElementById("desk").style.display).not.toBe("none");
+  });
+
+  it("How to Play and Settings show a placeholder for now", () => {
+    const { doc } = boot({ atStartScreen: true });
+    doc.getElementById("btn-how-to-play").click();
+    expect(doc.getElementById("overlay-panel").textContent).toContain("How to Play");
+    doc.getElementById("btn-settings").click();
+    expect(doc.getElementById("overlay-panel").textContent).toContain("Settings");
+  });
+});

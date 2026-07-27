@@ -8,8 +8,14 @@ const htmlPath = join(here, "..", "year1.html");
 
 // Boot a fresh game in jsdom. Returns { dom, win, doc, T } where
 // T === window.__BB_TEST__ (the internals hook added in Task 1).
+// By default, boot() starts a fresh game immediately (via the same
+// beginNewGame() the start screen's "New Game" button calls), so every
+// existing test that expects to land straight in the game keeps working
+// unchanged after #36 added a start screen in front of the boot sequence.
+// Pass { atStartScreen: true } to instead get the start screen itself,
+// unstarted, for tests that exercise New Game/Continue/the save system.
 export function boot(opts = {}) {
-  const { seenIntro = true, guided = false } = opts;
+  const { seenIntro = true, guided = false, atStartScreen = false } = opts;
   const html = readFileSync(htmlPath, "utf8");
   const full = "<!doctype html><html><head></head><body>" + html + "</body></html>";
   const dom = new JSDOM(full, {
@@ -27,6 +33,7 @@ export function boot(opts = {}) {
   const doc = win.document;
   const T = win.__BB_TEST__;
   if (!T) throw new Error("window.__BB_TEST__ hook missing");
+  if (!atStartScreen) T.beginNewGame();
   return { dom, win, doc, T };
 }
 

@@ -9,7 +9,7 @@
 <body>
 <style>
   /* ==== BUSHEL & BONE: Year One, "The Newcomer" ==== */
-  /* The Illustrated Almanac, made playable. Self-contained; no external assets. */
+  /* The Illustrated Almanac, made playable. Self-contained aside from prototype/assets/logo.png. */
 
   :root{
     color-scheme: light dark;
@@ -373,6 +373,28 @@
   .plate-cap{ text-align:center; padding:5px 0 6px; border-bottom:3px double var(--rule); }
   .plate-cap b{ font-size:14px; letter-spacing:.06em; color:var(--ink); font-variant:small-caps; } .plate-cap span{ font-size:11px; color:var(--ink-soft); font-style:italic; }
 
+  /* ---- start screen (#36) ---- */
+  .start-screen{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; background:var(--paper); }
+  .start-card{ display:flex; flex-direction:column; align-items:center; gap:14px; max-width:340px; width:100%; }
+  .start-logo{ width:88px; height:88px; object-fit:contain; border-radius:8px; }
+  .start-right{ display:flex; flex-direction:column; align-items:center; gap:14px; width:100%; }
+  .start-title{ text-align:center; }
+  .start-title .mark{ font-size:24px; letter-spacing:.04em; font-variant:small-caps; color:var(--ink); }
+  .start-title .sub{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin-top:4px; }
+  .start-menu{ width:100%; display:flex; flex-direction:column; gap:9px; }
+  .start-btn{ all:unset; box-sizing:border-box; cursor:pointer; width:100%; padding:11px; text-align:center; border:1px solid var(--rule); border-radius:2px; color:var(--ink-soft); font-size:14px; letter-spacing:.03em; }
+  .start-btn:hover{ border-color:var(--accent); color:var(--ink); }
+  .start-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .start-btn.primary{ border-color:var(--accent); background:color-mix(in srgb,var(--accent) 18%, var(--paper)); color:var(--ink); font-weight:600; }
+  .start-btn[disabled]{ opacity:.4; cursor:not-allowed; }
+  .start-btn small{ display:block; font-size:10.5px; color:var(--ink-faint); font-weight:400; margin-top:2px; }
+  @media (min-width: 1100px){
+    .start-card{ flex-direction:row; align-items:center; max-width:560px; gap:28px; }
+    .start-logo{ width:180px; height:220px; flex-shrink:0; }
+    .start-right{ align-items:flex-start; }
+    .start-title{ text-align:left; }
+  }
+
   /* ---- desktop/web split (#35): plate and stage side by side on wide viewports ---- */
   @media (min-width: 1100px){
     #almanac{
@@ -398,7 +420,25 @@
   }
 </style>
 
-<div id="desk">
+<div id="start-screen" class="start-screen">
+  <div class="start-card">
+    <img class="start-logo" src="assets/logo.png" alt="Bushel &amp; Bone">
+    <div class="start-right">
+      <div class="start-title">
+        <div class="mark">Bushel &amp; Bone</div>
+        <div class="sub">An Illustrated Almanac of the Sull</div>
+      </div>
+      <div class="start-menu">
+        <button type="button" class="start-btn primary" id="btn-new-game">New Game</button>
+        <button type="button" class="start-btn" id="btn-continue" disabled>Continue<small>no game in progress</small></button>
+        <button type="button" class="start-btn" id="btn-how-to-play">How to Play</button>
+        <button type="button" class="start-btn" id="btn-settings">Settings</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="desk" style="display:none">
   <div id="almanac" data-season="Spring">
     <div class="masthead">
       <div class="brand">
@@ -440,16 +480,22 @@
       <span class="seed" id="seedtag"></span>
     </footer>
 
-    <div class="overlay-root" id="overlay"><div class="overlay-scrim" id="overlay-scrim"></div><div class="overlay-panel" id="overlay-panel"></div></div>
   </div>
 </div>
+
+<div class="overlay-root" id="overlay"><div class="overlay-scrim" id="overlay-scrim"></div><div class="overlay-panel" id="overlay-panel"></div></div>
 
 <script>
 (function(){
   "use strict";
 
   /* ---------------- seeded PRNG (stored in save state) ---------------- */
-  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  function mulberry32(a){
+    let state=a|0;
+    const fn=function(){ state|=0; state=state+0x6D2B79F5|0; let t=Math.imul(state^state>>>15,1|state); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
+    fn.getState=()=>state;
+    return fn;
+  }
   let PRNG, SEED;
   function rnd(){ return PRNG(); }
   function ri(n){ return Math.floor(rnd()*n); }        // 0..n-1
@@ -499,6 +545,39 @@
     };
     rollWeather();
     buildSeason();
+  }
+
+  /* ---------------- save / load (single slot, localStorage) ---------------- */
+  const SAVE_KEY = "bb_save";
+  function hasSave(){ try { return localStorage.getItem(SAVE_KEY) !== null; } catch(e){ return false; } }
+  function clearSave(){ try { localStorage.removeItem(SAVE_KEY); } catch(e){} }
+  // Only ever called from buildSeason(), i.e. always at the start of a season
+  // (S.fi===0). S.flow is a fresh array of step closures each season and is
+  // not serializable, and is not needed: loadGame() calls buildSeason() to
+  // regenerate it from the restored year/season data instead of persisting it.
+  function saveGame(){
+    try {
+      const snap = {
+        year:S.year, si:S.si, currentSetting:S.currentSetting,
+        marks:S.marks, food:S.food, fuel:S.fuel, seed:S.seed,
+        fields:S.fields, hands:S.hands, foremanId:S.foremanId,
+        alarmedTiers:S.alarmedTiers, regard:S.regard, reckoning:S.reckoning,
+        flags:S.flags, weather:S.weather, coldsnap:S.coldsnap,
+        dead:S.dead, lost:S.lost, ended:S.ended, tutShown:S.tutShown,
+        seedDisplay:SEED, rngState:PRNG.getState(),
+      };
+      localStorage.setItem(SAVE_KEY, JSON.stringify(snap));
+    } catch(e){}
+  }
+  function loadGame(){
+    let snap;
+    try { snap = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch(e){ return false; }
+    if(!snap) return false;
+    SEED = snap.seedDisplay>>>0;
+    PRNG = mulberry32(snap.rngState|0);
+    S = Object.assign({ flow:[], fi:0 }, snap);
+    buildSeason();
+    return true;
   }
 
   function season(){ return SEASONS[S.si]; }
@@ -815,6 +894,7 @@
     else if(s==="Fall") fallFlow(b);
     else winterFlow(b);
     S.flow=b; S.fi=0;
+    saveGame();
   }
   function runStep(){
     if(S.ended) return;
@@ -1649,7 +1729,10 @@
     openOverlay(html, panel=>{
       panel.querySelector("#tut-yes").addEventListener("click",()=>{
         tutSetGuided(true); closeOverlay();
-        if(typeof tip==="function") tip("bar","That bar at the bottom of the screen, with my name on it, is Ask Reuben. It stays there always. Tap it any time you are unsure, and I will tell you the next thing that matters.","#askbar");
+        if(typeof tip==="function") tip("bar",[
+          "That bar at the bottom of the screen, with my name on it, is Ask Reuben. It stays there always. Tap it any time you are unsure, and I will tell you the next thing that matters.",
+          "One more thing. Your progress saves itself at the turn of each season, so you may close this and come back another day to find the homestead as you left it.",
+        ],"#askbar");
       });
       panel.querySelector("#tut-no").addEventListener("click",()=>{ tutSetGuided(false); closeOverlay(); });
     });
@@ -1670,15 +1753,50 @@
     openInfo("What do I do here?", SCREEN_HELP[S.screenType] || SCREEN_HELP.event);
   });
 
+  /* ---------------- start screen ---------------- */
+  function showGame(){
+    document.getElementById("start-screen").style.display = "none";
+    document.getElementById("desk").style.display = "";
+  }
+  function refreshContinueButton(){
+    const btn = document.getElementById("btn-continue");
+    if(btn) btn.disabled = !hasSave();
+  }
+  function beginNewGame(){
+    newGame((Math.random()*1e9)>>>0);
+    showGame();
+    runStep();
+    tutInit();
+  }
+  function confirmNewGame(){
+    if(!hasSave()){ beginNewGame(); return; }
+    const html = '<div class="rosterhdr"><b>Start a new game</b></div>'+
+      '<div class="prose" style="padding:0 16px 8px"><p>You have a game in progress. Starting new will erase it. There is no way back once you do.</p></div>'+
+      '<div class="tip-nav"><button class="wbtn" id="newgame-no">No, keep my game</button><button class="wbtn pri" id="newgame-yes">Yes, start new</button></div>';
+    openOverlay(html, panel=>{
+      panel.querySelector('#newgame-no').addEventListener('click', closeOverlay);
+      panel.querySelector('#newgame-yes').addEventListener('click', ()=>{ closeOverlay(); clearSave(); beginNewGame(); });
+    });
+  }
+  function continueGame(){
+    if(!loadGame()) return;
+    showGame();
+    runStep();
+  }
+  function showComingSoon(title){
+    openInfo(title, "Not built yet. This is coming in a later pass.");
+  }
+  document.getElementById("btn-new-game").addEventListener("click", confirmNewGame);
+  document.getElementById("btn-continue").addEventListener("click", continueGame);
+  document.getElementById("btn-how-to-play").addEventListener("click", ()=>showComingSoon("How to Play"));
+  document.getElementById("btn-settings").addEventListener("click", ()=>showComingSoon("Settings"));
+
   /* ---------------- boot ---------------- */
-  newGame((Math.random()*1e9)>>>0);
+  refreshContinueButton();
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP, beginNewGame, continueGame, confirmNewGame, hasSave, saveGame, loadGame, clearSave, showGame, refreshContinueButton };
   }
-
-  runStep();
-  tutInit();
 })();
 </script>
 
