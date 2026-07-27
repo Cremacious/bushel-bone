@@ -1592,7 +1592,7 @@
     openOverlay(html, panel=>{
       panel.querySelector("#tut-yes").addEventListener("click",()=>{
         tutSetGuided(true); closeOverlay();
-        if(typeof tip==="function") tip("bar","See this. That is me, always here at the foot of the page. Tap it any time you are unsure and I will tell you the next thing that matters.","#askbar");
+        if(typeof tip==="function") tip("bar","That bar at the bottom of the screen, with my name on it, is Ask Reuben. It stays there always. Tap it any time you are unsure, and I will tell you the next thing that matters.","#askbar");
       });
       panel.querySelector("#tut-no").addEventListener("click",()=>{ tutSetGuided(false); closeOverlay(); });
     });
