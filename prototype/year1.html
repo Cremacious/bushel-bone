@@ -892,7 +892,7 @@
              setting:"town", screenType:"market",
              body:'<div class="prose"><p class="note">Grain and roots keep a belly through winter; coin buys coal and hands. Choose for each lot.</p>'+harvestBlock+growingBlock+'</div>',
              choices:[{t: S.lots.length ? "Close the day-book" : "Move on", sub: S.lots.length ? "apply every larder and sell choice you set above" : "nothing to sell yet", primary:true, go:doSell}] });
-      tip("market","Now the market. Grain and roots can go to the larder to eat, or to town for coin. Coin buys much, but a full belly is what carries you through the dark months. Choose careful.","#stage button[data-t]");
+      tip("market","Now the market. Grain and roots can go to the larder to eat, or to town for coin. Coin buys much, but a full belly is what carries you through the dark months. Choose carefully.","#stage button[data-t]");
       stage().querySelectorAll('button[data-t]').forEach(btn=>{
         btn.addEventListener('click',()=>{ choice[btn.dataset.t]=btn.dataset.v; draw(); });
       });
