@@ -1349,7 +1349,7 @@
         choices:[{t:"Good.",sub:"the planted fields grow a little faster",primary:true,go:()=>resolve(()=>{S.fields.forEach(f=>{if(f.crop)f.progress+=0.5;});},"Everything planted takes a step toward ripe.")}]}),
       ()=>card({eyebrow:"An unfenced field",title:"Crows in the Corn",
         setting:"fields",
-        body:'<div class="prose"><p>A black congregation settles on one of your fields and sets to work with a will. There is no fence to turn them.</p></div>',
+        body:'<div class="prose"><p>A wing of crows settles on one of your fields and sets to work with a will. There is no fence to turn them.</p></div>',
         choices:[
           {t:"Set Reuben to scaring them",sub:"a day's labor spent",go:()=>resolve(()=>{S.fields.forEach(x=>x.tended=false);},"Reuben spends the day waving and shouting. The crows leave insulted; the crop is whole.")},
           {t:"Fence it, 15 m",sub:"lasting; costs coin",why:"needs 15m, have "+S.marks+"m",disabled:S.marks<15,go:()=>resolve(()=>{S.marks-=15;},"Posts and wire go up. The crows try it once, twice, and give it up. The fence will stand for years.")},
