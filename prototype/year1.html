@@ -609,7 +609,8 @@
     const voice = fm
       ? '<div class="voice"><span class="who">'+fm.name+' speaks for the hands</span><p>'+collectiveLine()+'</p></div>'
       : '<div class="voice"><p>There is no foreman to speak for them.</p></div>';
-    return '<div class="rosterhdr"><b>The Hands</b><span>'+livingHands().length+' housed</span></div>'+voice+rows;
+    return '<div class="rosterhdr"><b>The Hands</b><span>'+livingHands().length+' housed</span></div>'+voice+rows+
+      '<div style="padding:4px 14px 14px"><button class="wbtn" id="roster-close" style="width:100%">Close</button></div>';
   }
   function needsForeman(){ return !foreman() && livingHands().length>0; }
   function promoteForeman(id){ const h=handById(id); if(h&&h.alive){ S.foremanId=id; } }
@@ -625,6 +626,8 @@
       panel.querySelectorAll('.hand[data-hand]').forEach(el=>{
         el.addEventListener('click',()=>openHand(el.dataset.hand));
       });
+      const closeBtn = panel.querySelector('#roster-close');
+      if(closeBtn) closeBtn.addEventListener('click', closeOverlay);
       tip("roster","Here are the hands, each with a name and a heart. Keep them fed and rested and they work the better. Tap one to set their task.","#overlay-panel .hand");
     });
   }
