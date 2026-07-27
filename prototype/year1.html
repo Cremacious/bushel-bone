@@ -372,6 +372,30 @@
   #plate-nameplate b{ font-size:10px; color:#e9d19a; display:block; } #plate-nameplate span{ font-size:8px; color:#b09a63; }
   .plate-cap{ text-align:center; padding:5px 0 6px; border-bottom:3px double var(--rule); }
   .plate-cap b{ font-size:14px; letter-spacing:.06em; color:var(--ink); font-variant:small-caps; } .plate-cap span{ font-size:11px; color:var(--ink-soft); font-style:italic; }
+
+  /* ---- desktop/web split (#35): plate and stage side by side on wide viewports ---- */
+  @media (min-width: 1100px){
+    #almanac{
+      max-width: 960px;
+      display:grid;
+      grid-template-columns: 40% 60%;
+      grid-template-areas:
+        "masthead  masthead"
+        "ledger    ledger"
+        "household household"
+        "platewrap stage"
+        "askbar    askbar"
+        "footer    footer";
+    }
+    .masthead{ grid-area: masthead; }
+    #ledger{ grid-area: ledger; }
+    #household{ grid-area: household; }
+    #plate-wrap{ grid-area: platewrap; display:flex; flex-direction:column; border-right:1px solid var(--rule); }
+    #plate-wrap #plate{ flex:1; height:auto; min-height:220px; }
+    #stage{ grid-area: stage; }
+    .askbar{ grid-area: askbar; }
+    footer.colophon{ grid-area: footer; }
+  }
 </style>
 
 <div id="desk">
