@@ -6,6 +6,6 @@ export function mulberry32(seed) {
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
-  fn.state = () => state;
+  fn.getState = () => state;
   return fn;
 }

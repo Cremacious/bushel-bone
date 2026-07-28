@@ -14,7 +14,12 @@ describe("reducer", () => {
     for (let i = 0; i < 4; i++) s = reduce(s, { type: "ADVANCE_WEEK" });
     expect(s.week).toBe(5);
     expect(season(s)).toBe("spring");
-    s = reduce(s, { type: "ADVANCE_WEEK" }); // week 5 -> next season
+    const before = { week: s.week, seasonIndex: s.seasonIndex, year: s.year };
+    const next = reduce(s, { type: "ADVANCE_WEEK" }); // week 5 -> next season
+    expect(s.week).toBe(before.week);
+    expect(s.seasonIndex).toBe(before.seasonIndex);
+    expect(s.year).toBe(before.year); // input untouched
+    s = next;
     expect(s.week).toBe(1);
     expect(season(s)).toBe("summer");
     for (let i = 0; i < 15; i++) s = reduce(s, { type: "ADVANCE_WEEK" }); // through winter into Year 2

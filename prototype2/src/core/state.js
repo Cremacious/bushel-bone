@@ -6,6 +6,7 @@ export function makeHand(id, name, { body = "average", mind = "average" } = {}) 
 
 export function initialState(seed = 1, lineageName = "Crane") {
   return {
+    // rngSeed = the original game seed (for display/restart); rngState = the PRNG's resumable cursor
     rngSeed: seed >>> 0,
     rngState: seed >>> 0,
     lineageName,
