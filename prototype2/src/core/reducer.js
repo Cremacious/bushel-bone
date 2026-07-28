@@ -91,8 +91,8 @@ function resolveWeek(s) {
   // 2) Crop growth (uses the tended flags set above), then reset tended.
   for (const f of fields) { if (f.crop) f.progress += weeklyGrowth(f, s.weather); f.tended = false; }
 
-  // 3) Eating: the household eats; a shortfall strains everyone alike (the already-worn
-  // are the ones who then cross the loss threshold first — see the clamp/loss step below).
+  // 3) Eating: the household eats; a shortfall strains everyone alike. The already-worn
+  // are the ones who then cross the loss threshold first, per the clamp/loss step below.
   const eaters = 1 + hands.filter((h) => h.alive).length;
   const foodWant = eaters * BALANCE.foodPerMouthPerWeek;
   if (larder >= foodWant) { larder -= foodWant; }
