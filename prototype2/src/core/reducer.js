@@ -21,6 +21,10 @@ export function reduce(state, action) {
       return mapField(state, action.fieldId, (f) => ({ ...f, crop: null, progress: 0 }));
     case "SOW":
       return { ...state, phase: "week", week: 1 };
+    case "ASSIGN":
+      return mapHand(state, action.handId, (h) => ({ ...h, task: action.task, targetFieldId: action.targetFieldId }));
+    case "SET_PLAYER_ACTION":
+      return { ...state, playerAction: { kind: action.kind, target: action.target } };
     default:
       return state;
   }
@@ -39,6 +43,12 @@ function advanceWeek(s) {
 
 function mapField(s, id, fn) {
   return { ...s, fields: s.fields.map((f) => (f.id === id ? fn(f) : f)) };
+}
+
+function mapHand(s, id, fn) {
+  const h = s.hands.find((x) => x.id === id && x.alive);
+  if (!h) return s;
+  return { ...s, hands: s.hands.map((x) => (x.id === id ? fn(x) : x)) };
 }
 
 function plant(s, id, cropKey) {
