@@ -1,5 +1,5 @@
 import { el } from "./dom.js";
-import { season } from "../core/state.js";
+import { seasonLabel } from "../core/state.js";
 import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard } from "./components.js";
@@ -16,9 +16,9 @@ const SCREENS = {
 
   brief: (stage, s, dispatch) => {
     const isFirst = s.year === 1 && s.seasonIndex === 0;
-    const eyebrow = isFirst ? tok(L("spring_open.eyebrow")) : `${cap(s)} · a new season`;
+    const eyebrow = isFirst ? tok(L("spring_open.eyebrow")) : `${seasonLabel(s)} · a new season`;
     const title = isFirst ? tok(L("spring_open.title")) : "The season turns";
-    const body = isFirst ? tok(L("spring_open.body")) : `<p>The work of ${cap(s)} is on you now.</p>`;
+    const body = isFirst ? tok(L("spring_open.body")) : `<div class="prose"><p>The work of ${seasonLabel(s)} is on you now.</p></div>`;
     stage.append(
       el("div", { class: "eyebrow t-label", text: eyebrow }),
       el("h2", { class: "t-title", text: title }),
@@ -30,6 +30,6 @@ const SCREENS = {
 };
 export { SCREENS };
 
-function cap(s) { return { spring: "Spring", summer: "Summer", fall: "Fall", winter: "Winter" }[season(s)]; }
-// The script bodies are HTML (from #46). Render them as real nodes.
-function htmlProse(html) { const d = el("div", { class: "prose t-prose" }); d.innerHTML = html; return d; }
+// The script bodies are HTML (from #46) and carry their own `.prose` wrapper; render
+// them as real nodes in a plain typographic container (no second `.prose` to nest).
+function htmlProse(html) { const d = el("div", { class: "t-prose" }); d.innerHTML = html; return d; }

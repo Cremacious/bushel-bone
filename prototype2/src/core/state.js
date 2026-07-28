@@ -34,6 +34,8 @@ export function initialState(seed = 1, lineageName = "Crane") {
 }
 
 export const SEASONS = ["spring", "summer", "fall", "winter"];
+const SEASON_LABELS = { spring: "Spring", summer: "Summer", fall: "Fall", winter: "Winter" };
 export const WEEKS_PER_SEASON = BALANCE.weeksPerSeason; // single source of truth (balance.js)
 export const season = (s) => SEASONS[s.seasonIndex];
+export const seasonLabel = (s) => SEASON_LABELS[season(s)]; // "Spring".. (single source; shell + screens share it)
 export const livingHands = (s) => s.hands.filter((h) => h.alive);
