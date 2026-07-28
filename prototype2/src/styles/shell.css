@@ -1,17 +1,69 @@
-#app { min-height: 100dvh; display: flex; flex-direction: column; background: var(--paper); }
-.masthead { display: flex; align-items: baseline; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--rule-fine); background: var(--leaf); }
-.masthead .brand { font-size: 1.2rem; }
-.masthead .when, .masthead .weather { margin-left: auto; }
-.masthead .themetog { all: unset; cursor: pointer; color: var(--ink-faint); padding: 2px 8px; border: 1px solid var(--rule-fine); border-radius: 2px; }
-.masthead .themetog:hover, .masthead .themetog:focus-visible { color: var(--ink); border-color: var(--lamp); outline: none; }
-.ledger { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 10px 20px; border-bottom: 1px solid var(--rule-fine); background: var(--paper-3); }
-.ledger .cell { text-align: left; }
+/* The V0.3 portrait shell (design reference §10, §8.6, §8.1, §8.7).
+   One continuous surface on phone: spine, masthead, brass ledger, warnings, stage,
+   six-tab bar. The desktop floating-leaf treatment is layered on in Stage 5. */
+
+html, body { height: 100%; }
+#app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex; flex-direction: column;
+  background: var(--paper);
+}
+
+/* ---- masthead ---- */
+.masthead { position: relative; background: linear-gradient(var(--ledger-top), var(--ledger-bot)); }
+.masthead .spine { height: 4px; background: var(--accent); }        /* the season, on the binding edge */
+.mast-row { display: flex; align-items: center; gap: 12px; padding: 11px 20px 6px; }
+.mast-row .brand { font-size: 0.72rem; }
+.mast-tools { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.wx { display: flex; align-items: center; gap: 7px; color: var(--accent); }
+.wx .wx-label { color: var(--ink-soft); letter-spacing: .14em; }
+.iconbtn { all: unset; cursor: pointer; display: grid; place-items: center; width: 34px; height: 34px;
+  border: 1px solid var(--rule); color: var(--ink-soft); font-size: 1rem; }
+.iconbtn:hover, .iconbtn:focus-visible { color: var(--lamp); border-color: var(--lamp); outline: none; }
+
+.mast-when { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  padding: 0 20px 12px; border-bottom: 3px double var(--rule); }
+.mast-when .season { line-height: 1; }
+.mast-when .when { color: var(--accent); letter-spacing: .2em; }
+.pips { display: inline-flex; gap: 5px; align-self: center; margin-left: auto; }
+.pip { width: 9px; height: 9px; border: 1px solid var(--rule); box-sizing: border-box; }
+.pip.on { background: var(--accent); border-color: var(--accent); }
+
+/* ---- brass ledger bar ---- */
+.ledger { display: flex; background: linear-gradient(var(--ledger-top), var(--ledger-bot));
+  border-bottom: 1px solid var(--rule); }
+.ledger .cell { flex: 1; padding: 9px 6px; text-align: center; border-right: 1px solid var(--rule-hair); }
+.ledger .cell:last-child { border-right: 0; }
+.cell-k { display: block; font-size: 0.65rem; }
+.cell-v { font-size: 1.41rem; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--ink); line-height: 1.1; }
+.cell-v .unit { font-size: 0.7rem; color: var(--ink-faint); margin-left: 3px; }
+.cell-v.warn { color: var(--warn); }
+.cell-v.bad  { color: var(--bad); }
+
+/* ---- warnings band (rides under the ledger) ---- */
+.warnband { display: flex; gap: 8px 20px; flex-wrap: wrap; padding: 9px 20px;
+  border-bottom: 1px solid var(--rule-fine); background: color-mix(in srgb, var(--bad) 7%, transparent); }
+.warnband.stacked { flex-direction: column; }
+.warnband .warnline { color: var(--bad); border-left: 3px solid var(--bad); padding-left: 10px; font-style: normal; }
+
+/* ---- stage (the scrolling content region) ---- */
 .stage { flex: 1; padding: 20px; overflow-y: auto; }
-.tabbar { display: grid; grid-template-columns: repeat(6, 1fr); border-top: 1px solid var(--rule); background: var(--leaf); }
-.tabbar .tab { all: unset; cursor: pointer; text-align: center; padding: 14px 4px; min-height: 56px; box-sizing: border-box; color: var(--ink-faint); font-size: 0.82rem; letter-spacing: .08em; }
-.tabbar .tab.sel { color: var(--lamp); }
+
+/* ---- six-tab bottom bar ---- */
+.tabbar { display: flex; border-top: 1px solid var(--rule); background: var(--card);
+  padding-bottom: max(6px, env(safe-area-inset-bottom)); }
+.tabbar .tab { all: unset; cursor: pointer; flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 4px; padding: 9px 2px 6px; min-height: 56px; box-sizing: border-box;
+  color: var(--ink-faint); border-top: 2px solid transparent; }
+.tabbar .tab .icon { display: grid; place-items: center; height: 24px; }
+.tabbar .tab-label { font-size: 0.6rem; letter-spacing: .1em; text-transform: uppercase; }
+.tabbar .tab.sel { color: var(--accent); border-top-color: var(--accent); }
+.tabbar .tab.sel .tab-label { font-weight: 600; }
 .tabbar .tab:focus-visible { outline: 2px solid var(--lamp); outline-offset: -2px; }
+
+/* ---- desktop: widen and center the reading column; the full floating-leaf
+   treatment lands in Stage 5. ---- */
 @media (min-width: 1100px) {
-  .tabbar { grid-template-columns: repeat(6, max-content); justify-content: center; gap: 56px; border-top: none; border-bottom: 1px solid var(--rule); order: -1; }
   .stage { max-width: 1004px; margin: 0 auto; width: 100%; }
 }

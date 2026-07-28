@@ -30,7 +30,7 @@ describe("shell render", () => {
     let state = initialState(1, "Mackall");
     renderShell(root, state, () => {});
     expect(root.querySelectorAll(".ledger .cell").length).toBe(4);
-    expect([...root.querySelectorAll(".tabbar .tab")].map((t) => t.textContent)).toEqual(TABS);
+    expect([...root.querySelectorAll(".tabbar .tab .tab-label")].map((t) => t.textContent)).toEqual(TABS.map((t) => t[1]));
     expect(root.querySelector(".when").textContent).toContain("Day 1 of 20");
     expect(document.documentElement.getAttribute("data-season")).toBe("spring");
   });
@@ -39,7 +39,7 @@ describe("shell render", () => {
     let state = initialState(1);
     const dispatch = (action) => { state = reduce(state, action); renderShell(root, state, dispatch); };
     renderShell(root, state, dispatch);
-    root.querySelector(".themetog").click();
+    root.querySelector(".iconbtn").click();
     expect(state.theme).toBe("day");
     expect(document.documentElement.getAttribute("data-theme")).toBe("day");
   });
