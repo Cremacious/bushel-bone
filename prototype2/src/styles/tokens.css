@@ -1,20 +1,14 @@
-/* TODO: swap to real IM Fell English SC / Spectral / Courier Prime woff2 files in
-   ../../assets/fonts/ once available offline. Until then these @font-face rules
-   point at not-yet-present files; the browser silently falls through to the
-   generic serif fallback declared alongside each font-family below, so the type
-   ramp and roles are unaffected by the missing binaries. */
-@font-face { font-family: "Fell SC"; src: url("../../assets/fonts/imfell-sc.woff2") format("woff2"); font-display: swap; }
-@font-face { font-family: "Spectral"; src: url("../../assets/fonts/spectral-400.woff2") format("woff2"); font-weight: 400; }
-@font-face { font-family: "Spectral"; src: url("../../assets/fonts/spectral-500.woff2") format("woff2"); font-weight: 500; }
-@font-face { font-family: "Spectral"; src: url("../../assets/fonts/spectral-italic.woff2") format("woff2"); font-style: italic; }
-@font-face { font-family: "Courier Prime"; src: url("../../assets/fonts/courierprime.woff2") format("woff2"); }
+/* The three faces (IM Fell English SC · Spectral · Courier Prime, plus IM Fell
+   English italic for accents) load from Google Fonts via the <link> in index.html,
+   exactly as the V0.3 design does. Family names below match Google's. If offline
+   support is needed later, self-host the woff2 and add @font-face here. */
 
 :root {
   color-scheme: dark light;
   --paper:#17130d; --leaf:#1f1a12; --paper-3:#2f2718;
-  --ink:#e9dcbe; --ink-soft:#c3b087; --ink-faint:#8f7e5c;
+  --ink:#e9dcbe; --ink-hi:#f0e4c6; --ink-soft:#c3b087; --ink-faint:#8f7e5c;
   --rule:#4b3f2b; --rule-fine:#38301f;
-  --omen:#a892c4; --lamp:#d9a441; --bad:#cf6a4e;
+  --good:#9fb262; --warn:#d0a54a; --bad:#cf6a4e; --omen:#a892c4; --lamp:#d9a441;
   --accent:#6f8a3f;                 /* season accent, set per data-season */
   --root: 17px;                     /* mobile default */
 }
@@ -34,12 +28,15 @@ html { font-size: var(--root); }
 body {
   margin:0; background:var(--paper); color:var(--ink);
   font-family:"Spectral", Georgia, serif;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
 }
-/* type ramp — rem of --root (mobile shown; desktop scales via --root bump) */
-.t-plate  { font-family:"Fell SC", serif; font-size:1.88rem; }   /* 32 / 48 */
-.t-title  { font-family:"Fell SC", serif; font-size:1.53rem; }   /* 26 / 36 */
+/* type ramp — rem of --root (mobile shown; desktop scales via --root bump).
+   Fell SC carries the plate + scene titles; Spectral the body; the .22em
+   eyebrow label and the Courier seed-tag round it out (see the V0.3 ramp). */
+.t-plate  { font-family:"IM Fell English SC", Georgia, serif; font-size:1.88rem; color:var(--ink-hi); line-height:1; } /* 32 / 48 */
+.t-title  { font-family:"IM Fell English SC", Georgia, serif; font-size:1.53rem; color:var(--ink-hi); line-height:1.08; } /* 26 / 36 */
 .t-prose  { font-size:1.06rem; line-height:1.6; }                /* 18 / 22 */
 .t-choice { font-weight:500; font-size:1.06rem; }                /* 18 / 22 */
 .t-sub    { font-style:italic; font-size:0.88rem; color:var(--ink-soft); } /* 15 / 17 */
 .t-fig    { font-weight:500; font-variant-numeric:tabular-nums; font-size:1.41rem; } /* 24 / 34 */
-.t-label  { font-size:0.82rem; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-faint); } /* 12 / 14 */
+.t-label  { font-size:0.82rem; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; } /* 12 / 14 */
