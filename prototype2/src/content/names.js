@@ -1,5 +1,11 @@
 import NAMES from "../generated/names.js";
 
+// lookupName only knows static content (names.yaml), not save state. Per-game
+// runtime tokens like {{lineage}} (the player's chosen surname, set at New Game
+// and stored in save state) are NOT resolvable here — they are supplied by the
+// render/state layer via tok(s, extra)'s `extra` map (deferred to a later unit,
+// once state carries lineageName). Until a caller passes `extra.lineage`,
+// {{lineage}} is left as literal text rather than resolved or thrown on.
 export function lookupName(path) {
   const p = path.split(".");
   if (p[0] === "npc")   { const c = NAMES.characters[p[1]]; return c ? c[p[2] || "name"] : null; }
