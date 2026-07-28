@@ -3,7 +3,7 @@ import { seasonLabel, WEEKS_PER_SEASON, livingHands } from "../core/state.js";
 import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard } from "./components.js";
-import { CROPS } from "../core/crops.js";
+import { CROPS, ripe } from "../core/crops.js";
 import { fieldLabel, conditionOf, ripeFields, duskSummary } from "../core/selectors.js";
 
 // Fleshed out across Tasks 8-12. Renders the active screen into the shell's stage.
@@ -106,7 +106,50 @@ const SCREENS = {
       el("p", { class: "prose t-prose", text: "The Winter broke, and the household woke to the thaw. You made it. Not everyone does." }),
       choiceCard({ text: "Play another first year", sub: "a new seed, a new weather", primary: true }, () => { try { location.reload && location.reload(); } catch { /* jsdom: no-op */ } }));
   },
-  // fields, hands, ledger, almanac added in later tasks
+  // Read-only status tabs, open anytime. They read state and never dispatch a mutation.
+  fields: (stage, s) => {
+    stage.append(el("div", { class: "eyebrow t-label", text: "The fields" }), el("h2", { class: "t-title", text: "What is in the ground" }));
+    for (const f of s.fields) {
+      const row = el("div", { class: "fieldrow" }, [
+        el("div", { class: "fieldname t-choice", text: fieldLabel(f) }),
+        el("div", { class: "fert", text: "fert " + "●".repeat(f.fert) + "○".repeat(3 - f.fert) }),
+      ]);
+      if (f.crop) {
+        const c = CROPS[f.crop];
+        const pct = Math.min(100, Math.round((f.progress / c.seasons) * 100));
+        row.append(el("div", { class: "t-sub", text: ripe(f) ? `${c.name}, ripe and waiting on the harvest` : `${c.name}, coming on (${pct}%)` }));
+      } else {
+        row.append(el("div", { class: "t-sub", text: "fallow, unplanted" }));
+      }
+      stage.append(row);
+    }
+  },
+  hands: (stage, s) => {
+    stage.append(el("div", { class: "eyebrow t-label", text: "The hands" }), el("h2", { class: "t-title", text: "Who stands, and how" }));
+    for (const h of livingHands(s)) {
+      const isForeman = s.foremanId === h.id;
+      const row = el("div", { class: "handrow" }, [
+        el("span", { class: "hname t-choice", text: h.name + (isForeman ? " · foreman" : "") }),
+        el("span", { class: "hcond t-sub", text: conditionOf(h) }),
+      ]);
+      row.append(el("div", { class: "t-sub", text: "at task: " + (TASK_LABEL[h.task] || h.task) }));
+      stage.append(row);
+    }
+  },
+  ledger: (stage) => {
+    stage.append(el("div", { class: "eyebrow t-label", text: "The ledger" }), el("h2", { class: "t-title", text: "What the four figures mean" }));
+    for (const [label, body] of LEDGER_ROWS) {
+      stage.append(el("div", { class: "ledgerrow" }, [
+        el("div", { class: "t-choice", text: label }),
+        el("div", { class: "t-sub", text: body }),
+      ]));
+    }
+  },
+  almanac: (stage) => {
+    stage.append(el("div", { class: "eyebrow t-label", text: "The almanac" }), el("h2", { class: "t-title", text: "Not yet kept" }));
+    stage.append(el("p", { class: "t-prose",
+      text: "The almanac is not yet kept. In time it will hold the household's journals and the plain record of the year gone by. For now the fields, the hands, and the ledger will have to tell the story." }));
+  },
 };
 export { SCREENS };
 
@@ -117,3 +160,15 @@ function htmlProse(html) { const d = el("div", { class: "t-prose" }); d.innerHTM
 function line(label, value) {
   return el("div", { class: "bookline" }, [el("span", { class: "t-sub", text: label }), el("span", { class: "t-choice", text: value })]);
 }
+
+// Plain-language task words for the Hands tab (the week screen's own TASKS array is
+// choice-button labels, not read-only prose, so this is a small, separate map).
+const TASK_LABEL = { rest: "resting", tend: "tending a field", harvest: "bringing in the harvest", chop: "chopping wood" };
+
+// The Ledger tab explains the four figures the masthead only shows as numbers.
+const LEDGER_ROWS = [
+  ["Coin", "Marks in the strongbox. Coin buys seed, settles what is owed the bank, and is the only figure the wider world will take in trade."],
+  ["Larder", "Food laid by. Every mouth on the place, yours and each living hand's, eats from the larder every week. Let it run thin and hunger starts to wear on the household."],
+  ["Fuel", "Wood cut and stacked. It sits idle through spring and summer, then is burned each week of fall and winter to keep the cold off the household."],
+  ["Seed", "Stock for the planting. Spend it at dawn to set a field, or hold it back and it carries forward to the next season's sowing."],
+];

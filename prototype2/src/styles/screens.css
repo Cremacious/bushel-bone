@@ -1,0 +1,116 @@
+/* Layout + type for the screens rendered by src/render/screens.js (Tasks 8-12).
+   Colors are token vars only (tokens.css); spacing matches shell.css's scale. */
+
+.eyebrow { margin-bottom: 6px; }
+h2.t-title { margin: 0 0 12px; }
+
+/* --- choicecard (Screens 04-06: Morning Brief / Dusk / verdict actions) --- */
+.choicecard {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  cursor: pointer;
+  border: 1px solid var(--rule-fine);
+  padding: 12px 14px;
+  min-height: 56px;
+  margin-top: 8px;
+}
+.choicecard:first-of-type { margin-top: 14px; }
+.choicecard:focus-visible { outline: 2px solid var(--lamp); outline-offset: -2px; }
+.choicecard.primary { border-color: var(--lamp); background: color-mix(in srgb, var(--lamp) 13%, transparent); }
+.choicecard.disabled { opacity: .55; cursor: not-allowed; }
+.choicecard .ctitle { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; }
+.choicecard .ctag { font-family: "Courier Prime", monospace; font-style: normal; font-size: 0.82rem; color: var(--accent); white-space: nowrap; }
+.choicecard .csub { display: block; margin-top: 2px; }
+.choicecard.disabled .csub { color: var(--bad); font-style: normal; }
+
+/* --- fieldrow (Screen 05: Planting; also the read-only Fields tab) --- */
+.fieldrow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  border: 1px solid var(--rule-fine);
+  padding: 11px 16px;
+  margin-bottom: 10px;
+}
+.fieldrow .fieldname { flex: 0 1 auto; }
+.fieldrow .fert { flex: 0 0 auto; font-size: 0.88rem; color: var(--ink-faint); }
+.fieldrow > .t-sub { flex: 1 0 100%; margin-top: 8px; }
+.croppick { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 8px; margin-top: 10px; flex: 1 0 100%; }
+.cropchip {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: 1px solid var(--rule-fine);
+  padding: 9px 5px;
+  text-align: center;
+  color: var(--ink);
+}
+.cropchip:focus-visible { outline: 2px solid var(--lamp); outline-offset: -2px; }
+.cropchip.disabled { opacity: .45; cursor: not-allowed; color: var(--ink-faint); }
+.linkbtn {
+  all: unset;
+  cursor: pointer;
+  color: var(--ink-faint);
+  font-style: italic;
+  text-decoration: underline;
+  margin-left: 10px;
+}
+.linkbtn:focus-visible { outline: 2px solid var(--lamp); outline-offset: -2px; }
+
+/* --- handrow (Screen 07: the roster; the weekly plan and the Hands tab) --- */
+.handrow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  border: 1px solid var(--rule-fine);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.handrow .hname { flex: 0 1 auto; }
+.handrow .hcond { flex: 0 0 auto; }
+.handrow > .taskpick, .handrow > .t-sub { flex: 1 0 100%; margin-top: 10px; }
+
+/* .taskbtn is its own compact pill row, deliberately NOT a choicecard: a task pick is a
+   small many-way toggle, not a full scene decision, so it reads lighter and denser. */
+.taskpick { display: flex; flex-wrap: wrap; gap: 8px; }
+.taskbtn {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: 1px solid var(--rule-fine);
+  border-radius: 2px;
+  padding: 6px 14px;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+.taskbtn:focus-visible { outline: 2px solid var(--lamp); outline-offset: -2px; }
+.taskbtn.sel { border-color: var(--lamp); color: var(--ink); background: color-mix(in srgb, var(--lamp) 16%, transparent); }
+.taskbtn.disabled { opacity: .5; cursor: not-allowed; }
+
+/* --- ledgerrow (the Ledger tab: plain-language explanation of the four figures) --- */
+.ledgerrow { border-bottom: 1px solid var(--rule-fine); padding: 12px 0; }
+.ledgerrow:first-of-type { border-top: 1px solid var(--rule-fine); }
+.ledgerrow > .t-sub { display: block; margin-top: 4px; }
+
+/* --- daybook (Screen 06: the Dusk Report) --- */
+.daybook { margin-top: 12px; }
+.bookline { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dotted var(--rule); }
+.bookline:last-child { border-bottom: none; }
+
+/* --- warnings + the reckoning's omen line --- */
+.warnlines { display: flex; flex-direction: column; gap: 4px; padding: 8px 20px; border-bottom: 1px solid var(--rule-fine); background: color-mix(in srgb, var(--bad) 7%, transparent); }
+.warnline { color: var(--bad); border-left: 3px solid var(--bad); padding-left: 10px; font-style: normal; }
+.omen { color: var(--omen); border-left: 4px solid var(--omen); background: color-mix(in srgb, var(--omen) 8%, transparent); padding: 10px 14px; margin-top: 10px; }
+
+/* --- verdict (the year-end screen) --- */
+.verdict { display: block; margin-bottom: 6px; }
+
+@media (min-width: 1100px) {
+  .croppick, .taskpick { max-width: 620px; }
+}

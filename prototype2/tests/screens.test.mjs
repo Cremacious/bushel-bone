@@ -102,6 +102,33 @@ describe("dusk + year end", () => {
   });
 });
 
+describe("tab views", () => {
+  it("the Hands tab lists each living hand with a condition", () => {
+    const root = document.createElement("div");
+    let state = initialState(1);
+    state = { ...state, screen: "hands" };
+    const dispatch = () => {};
+    const stage = renderShell(root, state, dispatch);
+    renderScreen(stage, state, dispatch);
+    const rows = root.querySelectorAll(".handrow");
+    expect(rows.length).toBe(1); // Reuben, the only living hand at the start
+    expect(root.querySelector(".hname").textContent).toContain("Reuben");
+    expect(root.querySelector(".hcond").textContent).toBe("steady");
+  });
+
+  it("the Fields tab lists all four fields", () => {
+    const root = document.createElement("div");
+    let state = initialState(1);
+    state = { ...state, screen: "fields" };
+    const dispatch = () => {};
+    const stage = renderShell(root, state, dispatch);
+    renderScreen(stage, state, dispatch);
+    const rows = root.querySelectorAll(".fieldrow");
+    expect(rows.length).toBe(4);
+    expect(root.textContent).toContain("fallow");
+  });
+});
+
 describe("weekly plan — dead tasks and lost hands", () => {
   function weekView(mutate) {
     const root = document.createElement("div");
