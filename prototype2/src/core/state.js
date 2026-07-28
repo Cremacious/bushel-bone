@@ -6,7 +6,7 @@ export function makeHand(id, name, { body = "average", mind = "average" } = {}) 
 
 export function initialState(seed = 1, lineageName = "Crane") {
   return {
-    seed: seed >>> 0,
+    rngSeed: seed >>> 0,
     rngState: seed >>> 0,
     lineageName,
     year: 1,

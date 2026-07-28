@@ -10,6 +10,8 @@ describe("initial state", () => {
     expect(WEEKS_PER_SEASON).toBe(5);
     expect(s.coin).toBe(100);
     expect(s.larder).toBe(80);
+    expect(s.seed).toBe(20); // planting-seed resource, distinct from the rng seed
+    expect(s.rngSeed).toBe(123); // the original rng seed survives, unshadowed
     expect(livingHands(s).map((h) => h.name)).toEqual(["Reuben"]);
     expect(s.lineageName).toBe("Mackall");
   });
