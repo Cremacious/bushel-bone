@@ -178,3 +178,73 @@ The next code work is a **rebuild of the prototype against the Claude Design V0.
 **Two conflicts, resolved:**
 - **The opening letter → hybrid.** Keep canon facts (≈1884 so it fits Malachi's 1864 journals; the Sallows Charter Company; the mortgage; "absent," no body) and fold in the design's tighter lines ("not dead in law, he is absent"). The design's placeholder "1841 / S. Ridley signs for the Company" is not adopted (1841 breaks the journal chronology; Silas is the separate banker). Reconciled copy to be drafted for approval during the rebuild.
 - **The day model → "Day X of 20" over the 6-action economy.** The counter and pips are the calendar display; underneath, ~6 discretionary actions each advance the counter several days, with fixed beats on set days.
+
+---
+
+## 10. The minute-to-minute: the weekly homestead loop
+
+*Added after a second brainstorm ("interesting but not fun — flesh out the minute-to-minute"). The Mechanics Bible already specs 19 systems in depth (clone economics, the cruelty ledger, weather, events, and more); what was missing was the **loop that ties them into a fun moment-to-moment rhythm.** This section is that loop. It refines §1: the flat "6 action-days" becomes ~5 **weekly beats**, each spending two interlocking economies.*
+
+### 10.1 Two economies, interlocking
+
+The player is a farmer running a small crew, so two scarce things are spent every week:
+- **Crew labor (clone-days)** — each living hand is assigned one task for the week.
+- **Your own week** — one thing only *you* do (work a field alongside the crew, ride to town, handle a caller, sit with a failing hand, make the season's big call).
+
+Neither is ever enough. The core tension is that the fields, the woodpile, the sick hand, and the town all want a labor you don't have.
+
+### 10.2 The weekly beat
+
+A season is **~5 weeks** (over the design's 20-day counter; a week ≈ 4 days). Each week:
+1. **The read** — a morning report: the weather forecast, each hand's condition, the state of the fields and crops, the four ledger figures, and any telegraphed threat (a storm a week out, taint creeping, a hand starting to fail).
+2. **Assign the crew** — one task per hand (§10.3).
+3. **Choose your action** — your own week.
+4. **Advance** — the week resolves (crops grow, wood and food tick, morale shifts); an event may interrupt with a hard choice.
+
+Fixed beats anchor the season: planting at the front, the festival mid-season, and Harvest + the Dusk reckoning at the end.
+
+### 10.3 Crew tasks (farming + survival)
+
+Each with real yield variability, so allocating labor is a bet, not a rote assignment: **tend a field** (growth/quality, harden against a coming threat), **harvest**, **chop/gather fuel**, **break new ground**, **forage & hunt** (variable wild food — the gamble), **preserve/process** (convert perishable harvest to keeping food, racing spoilage), and **rest**. Livestock and building are designed (Bible §16, §8) and layer in later.
+
+### 10.4 The hands, as mortal individuals
+
+- **Condition** is one legible, staged track — **Steady → Worn → Failing → Lost** — that rolls up the underlying drivers (hunger, cold, overwork, sickness, witnessing cruelty). You read who's slipping and triage; recovery is possible until the last stage.
+- **Needs:** fed, warm (winter), rested, fairly treated. Neglect degrades the track.
+- **Traits** surface through play (*sees things, sickly, devout, strong back*, Bible §3), changing who's right for a task and who breaks under cruelty.
+- **Death has ritual and memory:** losing a hand triggers a choice — **bury them proper** (costs a day, eases the household's grief, settles the ground) or **discard them** (save the day, but the survivors darken and the land remembers, feeding the reckoning; cf. Malachi's journals, "I will lay it in proper… cheaper than it cost Pruitt"). Hands earn a **name of their own** and grow loyal, so loss hurts.
+- **Cruelty** (overwork, skimped food, working one to death for gain) is available and profitable *now*, witnessed by the others (household morale) and logged by the ground (the reckoning). This is the moral engine, felt per person.
+
+### 10.5 Crops — a three-tier gamble
+
+Planting is a risk portfolio each season: **staples** (turnip/potato/wheat — safe food, low value, the survival floor), **cash crops** (corn/cotton — higher pay, weather/market risk, no food value), and **Weird crops** (moon barley, bone-root, whisper wheat — pay strangely well or do strange things, need a hand who "sees things," risk omens and taint, and feed the reckoning). The Weird tier ties farming to the game's soul.
+
+### 10.6 The four resources, made alive
+
+No new top-level numbers; the ledger stays Coin · Larder · Fuel · Seed, but they move:
+- **Larder** — harvested food **spoils** unless preserved (a fat autumn larder can rot away), and winter drains it hard.
+- **Fuel** — drains **every winter day** and spikes in a cold snap; come up short and the frailest hand freezes.
+- **Coin** — the mortgage, hiring, buying, contracts.
+- **Seed** — planting; it can run out.
+- **Cold and sickness** land **per hand**, treated by rest or medicine (Doc Bell).
+
+### 10.7 Threats and events
+
+- **Cadence — forecast + surprise.** Most threats are telegraphed a week out (a storm, a cold snap, spreading taint, a failing hand), so the tension is racing to be ready and the difficulty never feels like a random spike (upholds D-045); a minority are true shocks (a sudden blight, a walker, an unexpected caller) for drama.
+- **Consequences are lasting and compounding** — a storm-scarred field, a frostbitten hand at reduced strength for good, a slighted NPC's door closed for a season, a walker that takes a hand — so the run accrues its own emergent story. Seven event families (weather, pests, wildlife, opportunities, town, personal, reckoning; Bible §9).
+
+### 10.8 The reckoning, biting
+
+The hidden meter (never a number, read through omens, Old Nan, and Reuben's alarm — D-027) manifests as **escalating tangible consequences** up its tiers (Whispers → Warnings → Walkers → the Reckoning Proper, Bible §6): fields turn tainted and spread, hands see things or won't work haunted ground, walkers come at night and cost labor, days, or a hand, until the Proper can take the land outright (a run-end). The player can **atone** — the Long Vigil, kind acts, Nan's rites, proper burials — so cruelty is a debt you feel building and fight to manage, not a hammer from nowhere.
+
+### 10.9 Why it's fun (and the four failure modes)
+
+The loop is: **never enough hands or days · every choice a real cost · people you can lose · a debt in the ground that grows when you cut corners** — Oregon Trail's attrition and hard weeks, wearing a farm and a conscience. The economic squeeze (§3) tightens the labor/time budget year over year.
+- **Miscalibration** — one legible read each week; threats telegraphed; numbers owned by the balance model.
+- **Dominant strategy** — the two economies and the crop/task risk portfolio mean the best allocation shifts with weather, crew, and year; no build carries every season.
+- **Cheese** — labor can't be banked; food spoils; overwork caps at 1.5× and drags the household; the reckoning can't be quarantined to a "disposable" hand.
+- **Emotional flatness** — named mortal hands, burials that matter, and compounding consequences generate the emergent story the flat prototype lacked.
+
+### 10.10 To detail during planning / in the Mechanics Bible
+
+The player's own weekly action menu (the "self" economy) in full; food-spoilage and cold-snap curves; a possible tools/equipment wear layer (deferred); the map from this loop onto Bible §1–§19; and all numbers, owned by the balance model (Q-003).
