@@ -7,6 +7,24 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 11 — 2026-07-28 — Names config as source of truth (#45)
+
+**Worked on:** Issue #45 — one config file that is the single source of truth for every NPC and location name, so a placeholder rename is a one-line edit that propagates everywhere. Chris chose the two shaping calls up front: a real YAML file consumed via a generator (over an inline JS object), and tokenizing the prototype's prose now while deferring the `content/events/*.yaml` prose to #46 (dialogue extraction), which will reuse the same token scheme.
+
+**What shipped:**
+- **`content/names.yaml`** — the canonical config: `places` (town, region, well), `terms` (shared family surnames: ridley, halloway, grange, vane), `characters` (id → name/first/role/desc), `locations` (id → cap/sub/desc). Full names are composed from the shared surname (`meredith.name: "Meredith {{term.vane}}"`), so renaming a family is one edit.
+- **`prototype/gen-names.mjs`** + `npm run gen:names` — injects the config into `year1.html` between `/* names:start */`…`/* names:end */` markers as a generated `NAMES` object (the single-file prototype can't `fetch()` at runtime). Has a `--check` mode used by a test to guard drift; newline-aware so it's stable on CRLF. `NPCS`/`SETTINGS` are now aliases of the generated config, not a second copy. Includes a deliberately minimal YAML reader (throws on anything outside the documented shape); the Next.js port will load the same YAML with a real parser.
+- **Render-time resolver** `tok()` — replaces `{{npc.id[.field]}}`, `{{loc.id[.field]}}`, `{{place.id}}`, `{{term.id}}`, `{{lineage}}` against the config, multi-pass so composed names resolve. Wired into every render sink: `paint()` (stage cards), `openOverlay()` (all overlays), `setPlate()` (plate/nameplate), `renderIntroPage()` (the #44 letter), the folded tut-tip branch, and the static chrome (askbar, colophon, aria-label) at boot. The starting hand's name now comes from the config too (`mkHand("reuben", tok("{{npc.reuben}}"), …)`).
+- **Prose tokenized** — every NPC/location display name across `year1.html`'s scripted beats, systemic events, choices, results, dirs, help text, tutor, and the intro letter now references a token. Handled the landmines by hand: names whose literal equals the config value (Reuben, Doc Bell, Old Nan, Sheriff Coldwater, Malachi) and `openAskReuben` (a function name containing "Reuben") ruled out blanket replaces; first-name/surname forms (Silas/Bess/Ruth, Ridley/Vane/Grange) resolve via `.first` fields and `term.*`.
+
+**Verified:** full Vitest suite green at 28 files / 97 tests, incl. new `tests/names-config.test.mjs` (7: namespace resolution, family-rename propagation, static-chrome resolution, a no-`{{`-leak scan across a full year + overlays + intro + tut-tip, a no-hardcoded-literal source guard, and the generator `--check` sync). Also did a live round-trip proof: edited two lines in `names.yaml` (Ridley→Thorne, Silas→Josiah), ran the generator, and the nameplate, card title, body prose, and dialogue all changed together; then reverted.
+
+**Deferred (noted for #46):** the ~120 name literals across `content/events/*.yaml` (not yet loaded by the prototype, so no visible seam) will be tokenized with the same scheme when dialogue is extracted.
+
+**Next up:** #46 (dialogue extraction, shares this token scheme), then the rest of #43, and the standing milestone-2 items (#24 art direction, #48 mobile canvas, a Vercel proof-of-concept).
+
+---
+
 ## Session 10 — 2026-07-28 — New Game opening letter (#44), Day-1 inheritance reframe (part of #43), Sull→Sallows scrub
 
 **Worked on:** Built the **New Game opening** (issue #44) into `prototype/year1.html`, then, at Chris's direction, folded in two adjacent pieces: the **Day-1 inheritance reframe** (the first task of #43) and a full **Sull→Sallows** rename across all player-facing content.
