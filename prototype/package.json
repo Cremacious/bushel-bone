@@ -5,10 +5,14 @@
   "scripts": {
     "test": "vitest run",
     "gen:names": "node gen-names.mjs",
-    "gen:script": "node gen-script.mjs"
+    "gen:script": "node gen-script.mjs",
+    "script:docx": "node script-docx.mjs",
+    "script:import": "node script-import.mjs"
   },
   "devDependencies": {
+    "docx": "^9.7.1",
     "jsdom": "^24.0.0",
+    "mammoth": "^1.12.0",
     "vitest": "^2.0.0",
     "yaml": "^2.9.0"
   }

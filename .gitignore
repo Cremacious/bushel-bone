@@ -72,3 +72,7 @@ docs/balance-model/*.html
 
 # Brainstorming visual companion (local mockups)
 .superpowers/
+
+# Generated script export (regenerate with `npm run script:docx`)
+docs/script.docx
+~$*.docx

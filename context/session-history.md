@@ -7,6 +7,30 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 12 — 2026-07-28 — Dialogue extraction + .docx round-trip (#46)
+
+**Worked on:** Issue #46 — pull every line of the game's writing out of the code into one editable screenplay, and support a Word round-trip (export to `.docx`, tighten by hand, hand back, apply). Chris chose scope up front: `year1.html` narrative prose only for now (the `content/events/*.yaml` files aren't loaded by the prototype yet), and narrative dialogue only (mechanical UI microcopy and help panels stay in code). Built and committed in two parts.
+
+**Part 1 — extraction (commit d70136e):**
+- **`content/script.yaml`** — the single screenplay: one entry per scene (eyebrow, title, dir, body, and choices with text/sub/why/result), laid out readably, tokenized with the #45 name tokens. ~205 lines across 23 scenes (all 28 card beats collapse into these — the four season opens, Silas, the Fair, Vane's wagon, the moral fork, Harvest Home, Sour, Ruth's basket, the Long Vigil, the year-end verdict, and all 11 systemic events).
+- **`prototype/gen-script.mjs`** (`npm run gen:script`) — parses the YAML with the `yaml` lib, flattens scenes to `<scene>.<field>` / `<scene>.<choice>.<field>` ids, and injects a `SCRIPT` map into `year1.html` between markers (same pattern as gen-names; the single-file prototype can't fetch at runtime). `--check` mode guards drift.
+- **`L(id[, vars])`** in `year1.html` returns a line from `SCRIPT`; `{{name}}` tokens resolve later at paint via `tok()`, and the handful of runtime-interpolated lines splice a value through a single-brace `{slot}` (e.g. the Fair's `{field}`/`{blessing}`, the moral fork's `{field}`, the year-end's `{names}`). Every beat, event, and the verdict were refactored to `L()`.
+- The mechanical action screens (planting, assignment, market, dusk report, provisioning) stay in code by design — procedural UI, not screenplay.
+
+**Part 2 — the .docx round-trip (this commit):**
+- **`prototype/script-lib.mjs`** — shared helpers: load the YAML, resolve `{{name}}` tokens against `names.yaml` (mirrors the game's `tok()`), and flatten a stored HTML line to the readable prose that appears in Word.
+- **`npm run script:docx`** (`script-docx.mjs`) — writes `docs/script.docx` (gitignored, regenerable), a screenplay with each line under a small `[scene.field]` label, names filled in, HTML flattened, spoken lines kept.
+- **`npm run script:import`** (`script-import.mjs`) — reads an edited `.docx` with `mammoth`, matches lines back by their stable `[id]` labels, and reports exactly which changed (old vs new, plus the raw YAML value that still carries tokens/markup to preserve) and a JSON block. It does **not** write the YAML itself: the apply is Claude-mediated, so tokens and inline markup (spoken lines, emphasis) that the readable Word text drops are re-applied by hand and reviewed before landing.
+- Stage-direction brackets like `[a wagon-rutted road…]` contain spaces, so they never collide with the dotted, space-free `[scene.field]` id labels.
+
+**Verified:** full suite green at **30 files / 106 tests**. New `tests/script-dialogue.test.mjs` (7: SCRIPT populated, `L()` slot-fill and missing-id, beats render from the script, an edit propagates, a no-token-leak full-year playthrough, a guard that ten distinctive extracted phrases are no longer inline in the source, and the generator `--check` sync) and `tests/script-docx.test.mjs` (2: export produces a labelled/name-resolved docx, and a pristine export re-imports with zero changes). Also proved the edit path live: changed two lines in a copy of the docx and the importer flagged exactly those two with correct old/new. Added `yaml`, `docx`, `mammoth` devdeps. Workflow written up in `docs/script-workflow.md`.
+
+**Deferred (noted for later):** the ~120 name literals / dialogue across `content/events/*.yaml` — not loaded by the prototype yet — can fold into the same screenplay + token scheme when the production port loads them.
+
+**Next up:** the rest of #43 (the founder-story feature: journals, the Old Well payoff, the reunion ending, the Codex field), and the standing milestone-2 items (#24 art direction, #48 mobile canvas, a Vercel proof-of-concept for testers).
+
+---
+
 ## Session 11 — 2026-07-28 — Names config as source of truth (#45)
 
 **Worked on:** Issue #45 — one config file that is the single source of truth for every NPC and location name, so a placeholder rename is a one-line edit that propagates everywhere. Chris chose the two shaping calls up front: a real YAML file consumed via a generator (over an inline JS object), and tokenizing the prototype's prose now while deferring the `content/events/*.yaml` prose to #46 (dialogue extraction), which will reuse the same token scheme.
