@@ -4,10 +4,12 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
-    "gen:names": "node gen-names.mjs"
+    "gen:names": "node gen-names.mjs",
+    "gen:script": "node gen-script.mjs"
   },
   "devDependencies": {
     "jsdom": "^24.0.0",
-    "vitest": "^2.0.0"
+    "vitest": "^2.0.0",
+    "yaml": "^2.9.0"
   }
 }

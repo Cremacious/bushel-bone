@@ -1148,6 +1148,227 @@
     }
     return s;
   }
+  /* ==== narrative dialogue — GENERATED from content/script.yaml (#46).
+     Edit that file, then run `npm run gen:script`. Do not edit between the markers. ==== */
+  /* script:start */
+  const SCRIPT = {
+    "spring_open.eyebrow": "Year One begins",
+    "spring_open.title": "Your uncle's ground",
+    "spring_open.dir": "[a wagon-rutted road, four fields gone to seed, a lean-to, and a well capped in iron at the property's edge]",
+    "spring_open.body": "<div class=\"prose\"><p class=\"dropcap\">The place is yours now, come to you as the nearest blood of an uncle you never met. {{npc.malachi}} worked this ground the better part of twenty years, and what he left when he vanished this past winter comes to no more than the land itself: four small fields the weeds have taken back, a lean-to that sleeps two, a hundred marks, and {{npc.reuben}}, who worked beside him and has stayed on. It is Spring. The larder holds eighty measures against the year, and there is no fuel laid in at all.</p><p>They say the ground here keeps accounts, and your uncle is not here to say how. You will have the year to learn what that can mean.</p></div>",
+    "spring_open.advance": "Walk the fields",
+    "spring_open.advance_sub": "begin the year",
+    "silas_welcome.eyebrow": "A caller · Day 1",
+    "silas_welcome.title": "{{npc.silas.first}}'s Welcome",
+    "silas_welcome.dir": "[a man in a good coat on a poor road, a ledger in his saddlebag, not dismounting]",
+    "silas_welcome.body": "<div class=\"prose\"><p>{{npc.silas}} reins up at your gate and does not get down. <span class=\"said\">“{{term.ridley}}. I hold the paper on this place, the same as I held it for your uncle.”</span> He says it the way another man might say the weather. <span class=\"said\">“A hundred and fifty a year to the bank, and the debt came down to you along with the land. Not this year, nor the next: the charter allows a new holder his feet. After that, it minds its dates, and so will I.”</span> He looks a long moment at the soft ground by the east field, and something crosses his face he does not explain.</p></div>",
+    "silas_welcome.obliged.text": "“Obliged, Mr. {{term.ridley}}.”",
+    "silas_welcome.obliged.sub": "keep the peace with your banker",
+    "silas_welcome.obliged.result": "He nods and rides off. You are, it seems, a man with a deadline, two years out.",
+    "silas_welcome.needle.text": "“You believe the stories about this ground?”",
+    "silas_welcome.needle.sub": "needle him; he does not care for it",
+    "silas_welcome.needle.result": "He pauses. <span class=\"said\">“I believe in the ledger,”</span> he says. <span class=\"said\">“The stories are the ledger's business.”</span> He rides off faster than he came.",
+    "fair.eyebrow": "The First Furrow · Spring Fair",
+    "fair.title": "The town turns out",
+    "fair.dir": "[a green between a white church and a low saloon; the whole of {{place.town}} gathered to bless the planting]",
+    "fair.body": "<div class=\"prose\"><p>{{npc.halloway}} makes an expansive welcome and presses a small wheat contract on you: eight units, at a fair locked price, come the harvest. {{npc.grange}} walks the new man’s fields and says the old words over them. {{npc.meredith}} watches from the saloon step; the Sheriff watches from the shade.</p><p>Attending costs you a working day of {{npc.reuben}}’s, but a newcomer is only new once.</p></div>",
+    "fair.attend.text": "Attend the Fair",
+    "fair.attend.sub": "a blessed field, the wheat contract, but {{npc.reuben}} rests today",
+    "fair.attend.why": "{{npc.reuben}} spends the whole day at your side in town. No field gets tended today, but the wheat contract locks in and the town takes note.",
+    "fair.attend.result": "You stand the day among them. {{term.grange}} walks {field} and says the old words over it{blessing}. The town has seen your face now, and that counts for something in the {{place.region}}.",
+    "fair.attend.blessing": ", and that ground will come ripe a touch sooner for the blessing",
+    "fair.skip.text": "Skip it and work",
+    "fair.skip.sub": "the town notes the newcomer who wouldn't come",
+    "fair.skip.why": "{{npc.reuben}} keeps working the fields as usual. You lose nothing today, but {{place.town}} remembers who stayed away.",
+    "fair.skip.result": "You keep to your fields while the fiddles carry across the green. {{place.town}} notices a man who will not sit with it. It always does.",
+    "summer_open.eyebrow": "Summer · the market opens",
+    "summer_open.title": "The long light",
+    "summer_open.body": "<div class=\"prose\"><p class=\"dropcap\">The days stretch and the first crops come on. Word reaches you of Regional buyers who send a wagon for a real load, and of the saloon where {{npc.meredith}} sells the one thing dearer than whiskey: knowing things. The heat sits heavy on the fields.</p></div>",
+    "summer_open.advance": "To work",
+    "summer_open.advance_sub": "begin the season",
+    "vane_wagon.eyebrow": "An opportunity · ~Day 25",
+    "vane_wagon.title": "{{term.vane}}'s Wagon",
+    "vane_wagon.dir": "[a black wagon hung with lanterns, and a courteous man who does not quite meet the eye]",
+    "vane_wagon.body": "<div class=\"prose\"><p>{{npc.ambrose}} brings his wagon up the track. Behind the canvas, a shape that breathes. <span class=\"said\">“A grower,”</span> he says, <span class=\"said\">“strong in the ground, gentle with the seed. A hundred and ten marks, and cheap at it.”</span> He can see you counting. <span class=\"said\">“Or a field hand, sixty: a plainer sort of help.”</span></p><p class=\"note\">A second body is a second mouth. It must eat all winter, or it does not last the winter.</p></div>",
+    "vane_wagon.grower.text": "Buy the Grower, 110 m",
+    "vane_wagon.grower.sub": "strong labor; a heavy winter mouth",
+    "vane_wagon.grower.result": "The canvas comes back. She steps down slow, blinking at the light, and does not yet know your name or her own. You will have to feed her now, through everything.",
+    "vane_wagon.hand.text": "Buy the Field Hand, 60 m",
+    "vane_wagon.hand.sub": "cheaper help; still a mouth to winter",
+    "vane_wagon.hand.result": "Sixty marks, and a plain quiet worker climbs down from the wagon. {{term.vane}} counts the coin twice and is gone before you can ask where such a one comes from.",
+    "vane_wagon.haggle.text": "Haggle",
+    "vane_wagon.haggle.sub": "{{term.vane}} likes to be liked",
+    "vane_wagon.haggle.result_won": "He sighs, charmed despite himself. <span class=\"said\">“A hundred, then, for a face I like.”</span> The grower steps down. Ten marks saved, and a mouth to feed.",
+    "vane_wagon.haggle.result_lost": "<span class=\"said\">“A hundred and ten is the kindness,”</span> he says, and the price does not move. You let the wagon go on.",
+    "vane_wagon.decline.text": "Decline",
+    "vane_wagon.decline.sub": "one hand, one mouth: the safe winter",
+    "vane_wagon.decline.result": "You let the wagon roll on toward the next homestead. One hand is a lean crew, but a lean crew is a fed crew.",
+    "moral_fork.eyebrow": "The fork · late Summer",
+    "moral_fork.title_harvest": "The Harvest Won't Wait",
+    "moral_fork.title_cotton": "The Cotton Won't Wait",
+    "moral_fork.dir": "[a field standing full, a bruise of storm two days out on the horizon, and a hand swaying on his feet]",
+    "moral_fork.body": "<div class=\"prose\"><p>{field} stands ready, and the forecast reads storm within two days. {{npc.reuben}} has been on his feet since before light and is grey with it. Push him through the night and you save the crop whole. Let him lie down and you lose a third of it to the weather.</p></div>",
+    "moral_fork.work.text": "Work him through the night",
+    "moral_fork.work.sub": "save the crop · {{npc.reuben}} loses heart",
+    "moral_fork.work.result": "The crop comes in whole under a black sky. {{npc.reuben}} does not speak for a day. <span class=\"whisper\">The land takes no notice of a hard day, not yet. A hard day is only a hard day.</span>",
+    "moral_fork.rest.text": "Let him rest",
+    "moral_fork.rest.sub": "lose a third · {{npc.reuben}} mends",
+    "moral_fork.rest.result": "You send him to his cot. The storm takes what it takes. In the morning he works the wet field with something like loyalty, and you find you do not regret the third you lost.",
+    "fall_open.eyebrow": "Fall · the scramble",
+    "fall_open.title": "Bring it in, and lay it by",
+    "fall_open.body": "<div class=\"prose\"><p class=\"dropcap\">The year tips over into taking-in. Every ripe field wants harvesting and the winter wants fuel, and both want the same short days. From here the almanac keeps a running count in the margin: larder against need, wood against the cold.</p></div>",
+    "fall_open.advance": "Begin",
+    "fall_open.advance_sub": "begin the season",
+    "harvest_home.eyebrow": "Harvest Home · the Fall feast",
+    "harvest_home.title": "The town lights the long tables",
+    "harvest_home.dir": "[lanterns strung over the green, and {{npc.nan}} at the dark edge of it, watching the newcomer]",
+    "harvest_home.body": "<div class=\"prose\"><p>Harvest Home falls square in the crunch. {{npc.bess}} asks you one sharp, honest question and reads your face for the answer. {{npc.ruth}} notes how your hands look, fed or not. The Sheriff offers a cool word about soft ground. To go is to lose a working day; to stay away is to be the man who wouldn’t.</p></div>",
+    "harvest_home.go.text": "Go to the feast",
+    "harvest_home.go.sub": "heart mends, a day not worked",
+    "harvest_home.go.result": "You sit at the long tables. {{npc.bess.first}} decides something about you; you cannot tell what. It is warm, and there is bread, and for an evening the ground keeps its accounts to itself.",
+    "harvest_home.stay.text": "Stay and bring in the crop",
+    "harvest_home.stay.sub": "the work gets done",
+    "harvest_home.stay.result": "You work while the fiddles carry over the fields. The crop is safe and the town is a shade cooler to you. You can live on a safe crop; you cannot eat regard.",
+    "sour.eyebrow": "An omen",
+    "sour.title": "Sour",
+    "sour.body": "<div class=\"prose\"><p class=\"whisper\">The milk turns though the cow is sound and the pail was clean. It turns again the next morning, and the next. When you ask {{npc.nan}} she does not touch it. <span class=\"said\">“You’ve laid something down,”</span> she says, <span class=\"said\">“that the ground did not care for. It remembers the shape of it.”</span></p></div>",
+    "sour.advance": "Say nothing",
+    "sour.advance_sub": "continue",
+    "winter_open.eyebrow": "Winter · the crucible",
+    "winter_open.title": "The short days close in",
+    "winter_open.dir": "[frost on the well-cap; the whole valley gone quiet and white]",
+    "winter_open.body": "<div class=\"prose\"><p class=\"dropcap\">Winter in the {{place.region}} is the year’s true test. There is no planting now, only the larder, the woodpile, and the long dark between them. What you laid by is what you have.</p></div>",
+    "winter_open.advance": "Face it",
+    "winter_open.advance_sub": "begin winter",
+    "ruth_basket.eyebrow": "A knock at the door",
+    "ruth_basket.title": "{{npc.ruth}}'s Basket",
+    "ruth_basket.dir": "[a plain woman with a covered basket and a look that misses nothing]",
+    "ruth_basket.body": "<div class=\"prose\"><p>{{npc.ruth}} {{term.grange}} comes up the frozen track with a basket on her arm. <span class=\"said\">“The church keeps a little back,”</span> she says, <span class=\"said\">“for a hard first winter. It is not charity. It is what a town is for.”</span> Her eyes go once around your yard, counting mouths and measuring the fire.</p></div>",
+    "ruth_basket.accept.text": "Accept the basket",
+    "ruth_basket.accept.sub": "a small debt of regard",
+    "ruth_basket.accept.result": "She sets it down and will not stay for thanks. Bread, salt pork, a sack of coal. It is the difference, this year, between a grave and a spring.",
+    "ruth_basket.decline.text": "“We'll manage, Sister.”",
+    "ruth_basket.decline.sub": "pride; the fire stays low",
+    "ruth_basket.decline.result": "She looks at you a long moment, then nods once and takes the basket back down the track. <span class=\"said\">“The offer keeps,”</span> she says, without turning. You hope you will not need it.",
+    "long_vigil.eyebrow": "Midwinter · the longest night",
+    "long_vigil.title": "The Long Vigil",
+    "long_vigil.dir": "[the whole town in the church at midnight, every candle lit, an old capped well-head through the open door]",
+    "long_vigil.body": "<div class=\"prose\"><p>On the longest night the town does not sleep. They fill the church and they watch, and near midnight {{term.grange}} reads the names of everyone who died in the {{place.region}} this year, slow, one by one, so that none is forgotten and left to be. The liturgy does not say <em>taken.</em> Everyone hears it anyway. Outside, past the graves, the old well-head sits under its cap of iron and salt, and the watching is for it.</p></div>",
+    "long_vigil.watch.text": "Watch the night through with them",
+    "long_vigil.watch.sub": "the ground eases its accounting",
+    "long_vigil.watch.result": "You watch. You do not know what you are watching for, and by dawn you understand no one else quite does either, and that they watch anyway. It is the truest thing you have seen in the {{place.region}}.",
+    "long_vigil.home.text": "Go home to your fire",
+    "long_vigil.home.sub": "keep your own watch",
+    "long_vigil.home.result": "You keep your own watch, alone, over your own ground. In the morning the town is a little colder to the man who wouldn't sit the Vigil.",
+    "yearend.headline": "“I survived another year.”",
+    "yearend.epi": "The frost breaks along the river first. The household wakes to a dripping eave and a thin bright sun, and the year turns over like a page. You made it. Not everyone does.",
+    "yearend.lost_none": "The whole household woke to the thaw. Not everyone in the {{place.region}} can say the same.",
+    "yearend.lost_some": "The winter took: {names}. The graves are marked; the ground was given its due.",
+    "yearend.ground_whispers": "The ground kept its whispers to itself this year: crows and cold spots and nothing worse.",
+    "yearend.ground_warnings": "The ground muttered more than whispers this year. It has your measure now, and a longer memory than you.",
+    "yearend.ground_walkers": "Something walked the frost this year that should not walk. The {{place.region}} will not forget it, and neither, now, will you.",
+    "yearend.codex": "A Vigil is entered in the Codex for the year you survived. Year Two would bring the market’s regional wagon, the Vat, the deeper reckoning, and, in three more years, {{npc.silas}}’s first collected debt.",
+    "yearend.again": "Play another first year",
+    "yearend.again_sub": "new seed, new weather, new choices",
+    "ev_soft_rain.eyebrow": "A growing rain",
+    "ev_soft_rain.title": "A Soft Rain",
+    "ev_soft_rain.body": "<div class=\"prose\"><p>Three days of soft, warm rain walk up the valley. The seed drinks it in and the fields come on a shade faster than the almanac promised.</p></div>",
+    "ev_soft_rain.good.text": "Good.",
+    "ev_soft_rain.good.sub": "the planted fields grow a little faster",
+    "ev_soft_rain.good.result": "Everything planted takes a step toward ripe.",
+    "ev_crows.eyebrow": "An unfenced field",
+    "ev_crows.title": "Crows in the Corn",
+    "ev_crows.body": "<div class=\"prose\"><p>A wing of crows settles on one of your fields and sets to work with a will. There is no fence to turn them.</p></div>",
+    "ev_crows.scare.text": "Set {{npc.reuben}} to scaring them",
+    "ev_crows.scare.sub": "a day's labor spent",
+    "ev_crows.scare.why": "{{npc.reuben}} spends the day at this field, so every other field goes untended today too, not just this one.",
+    "ev_crows.scare.result": "{{npc.reuben}} spends the day waving and shouting. The crows leave insulted; the crop is whole.",
+    "ev_crows.fence.text": "Fence it, 15 m",
+    "ev_crows.fence.sub": "lasting; costs coin",
+    "ev_crows.fence.result": "Posts and wire go up. The crows try it once, twice, and give it up. The fence will stand for years.",
+    "ev_crows.feed.text": "Let them feed",
+    "ev_crows.feed.sub": "lose a share of that field",
+    "ev_crows.feed.result": "You let them have their tithe. It is only a share. You will remember the fence come next planting.",
+    "ev_name.eyebrow": "A hand asks",
+    "ev_name.title": "A Name of His Own",
+    "ev_name.body": "<div class=\"prose\"><p>{{npc.reuben}} stands at the door with his hat in his hands and asks, haltingly, whether he might have a name that is <em>his</em>, not the one that came stamped on the charter papers, but one you’d call him by.</p></div>",
+    "ev_name.grant.text": "Grant it gladly",
+    "ev_name.grant.sub": "he works the harder for it",
+    "ev_name.grant.result": "He says the name over twice, quietly, like a thing he is afraid to drop. He works differently after, like a man, not a tool.",
+    "ev_name.refuse.text": "Refuse him",
+    "ev_name.refuse.sub": "the asking never comes again",
+    "ev_name.refuse.result": "<span class=\"said\">“As you say,”</span> he answers, and goes back to the field. He does not ask again, and something in him closes for good. <span class=\"whisper\">The ground, somewhere, makes a small note of it.</span>",
+    "ev_hot_wind.eyebrow": "A dry heat",
+    "ev_hot_wind.title": "The Hot Wind",
+    "ev_hot_wind.body": "<div class=\"prose\"><p>A hot wind comes off the flats and sits on the valley for a week. The work is punishing under it.</p></div>",
+    "ev_hot_wind.rest.text": "Rest the worst of it",
+    "ev_hot_wind.rest.sub": "a slow week",
+    "ev_hot_wind.rest.result": "You keep to the shade through the killing hours. The work waits; the crew keeps its strength.",
+    "ev_hot_wind.work.text": "Work straight through",
+    "ev_hot_wind.work.sub": "the crop keeps, but {{npc.reuben}} wilts",
+    "ev_hot_wind.work.result": "The rows get worked in the full glare. {{npc.reuben}} comes in each night hollow-eyed. The land, for now, takes no notice of a hard week.",
+    "ev_pedlar.eyebrow": "A traveller",
+    "ev_pedlar.title": "The Pedlar",
+    "ev_pedlar.body": "<div class=\"prose\"><p>A pedlar with a swaybacked mule offers cheap seed by the roadside, and, when pressed, something else, wrapped in oilcloth, that he will not name and will not unwrap.</p></div>",
+    "ev_pedlar.buy.text": "Buy the seed, 8 m",
+    "ev_pedlar.buy.sub": "+8 seed",
+    "ev_pedlar.buy.result": "Good seed at a fair price. The oilcloth stays wrapped, and the pedlar goes on his way looking almost relieved.",
+    "ev_pedlar.send.text": "Send him on",
+    "ev_pedlar.send.sub": "want nothing of it",
+    "ev_pedlar.send.result": "You wave him past. The mule complains; the pedlar tips his hat; the oilcloth bundle rides on to trouble someone else.",
+    "ev_rats.eyebrow": "In the granary",
+    "ev_rats.title": "Rats in the Stores",
+    "ev_rats.body": "<div class=\"prose\"><p>Something has been in the larder. You find the tell-tale spill of grain and the small dark droppings along the wall.</p></div>",
+    "ev_rats.trap.text": "Trap them, 4 m",
+    "ev_rats.trap.sub": "stop the loss",
+    "ev_rats.trap.result": "Traps and a barn cat borrowed from {{npc.bell}}. The stores hold.",
+    "ev_rats.ignore.text": "Ignore it",
+    "ev_rats.ignore.sub": "lose food over the season",
+    "ev_rats.ignore.result": "You let it ride. Ten measures of larder go down small throats before the season's out.",
+    "ev_foundling.eyebrow": "At the gate",
+    "ev_foundling.title": "A Foundling",
+    "ev_foundling.dir": "[a thin figure at the fence-line at dusk, not quite a child, not quite not]",
+    "ev_foundling.body": "<div class=\"prose\"><p>A stray hand stands at your gate as the light goes, one of the {{place.region}}’ foundlings, grown wild from no wagon and no vat anyone will own to. It watches you and does not speak.</p></div>",
+    "ev_foundling.take.text": "Take them in",
+    "ev_foundling.take.sub": "free labor, and another winter mouth",
+    "ev_foundling.take.why": "Another hand works the fields, but winter's food and fuel needs grow to match, for good.",
+    "ev_foundling.take.result": "You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field, and one more belly to carry to spring.",
+    "ev_foundling.ruth.text": "Send them to {{npc.ruth}}",
+    "ev_foundling.ruth.sub": "+her regard",
+    "ev_foundling.ruth.result": "You point the way to the church, where {{npc.ruth.first}} keeps a cot for such as these. She will remember that you sent them fed, not away.",
+    "ev_foundling.turn.text": "Turn them out",
+    "ev_foundling.turn.sub": "the ground marks it",
+    "ev_foundling.turn.result": "You close the gate. The figure stands a while in the cold, then is not there. <span class=\"whisper\">Something in the ground turns over in its long sleep.</span>",
+    "ev_bell_word.eyebrow": "A rumor at the saloon",
+    "ev_bell_word.title": "{{npc.bell}}'s Word",
+    "ev_bell_word.body": "<div class=\"prose\"><p>{{npc.bell}}, dry as ever, lets fall over a glass that a Regional buyer will pay above the local price for grain this fall, if you have a wagon-load worth carrying, and the coin to wait for the wagon.</p></div>",
+    "ev_bell_word.note.text": "Note it and thank him",
+    "ev_bell_word.note.sub": "good to know for Year Two",
+    "ev_bell_word.note.result": "You file it away. The Regional wagon is a Year-Two concern, but the knowing of it is worth a drink, and Bell is worth cultivating.",
+    "ev_early_frost.eyebrow": "An early frost",
+    "ev_early_frost.title": "Frost on the Low Ground",
+    "ev_early_frost.body": "<div class=\"prose\"><p>A hard frost comes a week early to the low fields. Anything ripe should come in now or risk the cold.</p></div>",
+    "ev_early_frost.bring.text": "Bring in what's ready",
+    "ev_early_frost.bring.sub": "safe, but rushed",
+    "ev_early_frost.bring.result": "You get the ripe fields in ahead of the white. It is rough work in the cold, but the harvest is safe under roof.",
+    "ev_cabin_fever.eyebrow": "The long dark",
+    "ev_cabin_fever.title": "Cabin Fever",
+    "ev_cabin_fever.body": "<div class=\"prose\"><p>The snow shuts the valley in. Days pass without a face from town, and the household grows short-tempered in the close air of the lean-to.</p></div>",
+    "ev_cabin_fever.keep.text": "Keep them busy and fed",
+    "ev_cabin_fever.keep.sub": "if you can spare it",
+    "ev_cabin_fever.keep.result": "You ration out small comforts: a better supper, a task with an end to it. The crew holds together through the worst of the quiet."
+  };
+  /* script:end */
+  // L(id[, vars]) returns a line of dialogue from the generated SCRIPT. {{name}}
+  // tokens inside it resolve later at paint()/openOverlay() via tok(); {var} slots
+  // (the few runtime-interpolated lines) are filled from vars here. A missing id
+  // renders as {id}, so a typo is caught by eye and by the tests.
+  function L(id, vars){
+    let s = SCRIPT[id];
+    if(s==null) return "{"+id+"}";
+    if(vars) for(const k in vars) s = s.split("{"+k+"}").join(vars[k]);
+    return s;
+  }
   function setPlate(settingId, speakerId, descOverride){
     if(settingId) S.currentSetting = settingId;
     const s = SETTINGS[S.currentSetting] || SETTINGS.homestead;
@@ -1487,48 +1708,46 @@
 
   // ---- SPRING ----
   function springFlow(b){
-    b.push(()=>card({ eyebrow:"Year One begins", title:"Your uncle's ground",
+    b.push(()=>card({ eyebrow:L("spring_open.eyebrow"), title:L("spring_open.title"),
       setting:"homestead",
-      dir:"[a wagon-rutted road, four fields gone to seed, a lean-to, and a well capped in iron at the property's edge]",
-      body:'<div class="prose"><p class="dropcap">The place is yours now, come to you as the nearest blood of an uncle you never met. {{npc.malachi}} worked this ground the better part of twenty years, and what he left when he vanished this past winter comes to no more than the land itself: four small fields the weeds have taken back, a lean-to that sleeps two, a hundred marks, and {{npc.reuben}}, who worked beside him and has stayed on. It is Spring. The larder holds eighty measures against the year, and there is no fuel laid in at all.</p><p>They say the ground here keeps accounts, and your uncle is not here to say how. You will have the year to learn what that can mean.</p></div>',
-      choices:[{t:"Walk the fields", sub:"begin the year", primary:true, go:next}] }));
+      dir:L("spring_open.dir"),
+      body:L("spring_open.body"),
+      choices:[{t:L("spring_open.advance"), sub:L("spring_open.advance_sub"), primary:true, go:next}] }));
 
     // Silas's Welcome (scripted, Day 1)
-    b.push(()=>card({ eyebrow:"A caller · Day 1", title:"{{npc.silas.first}}'s Welcome",
+    b.push(()=>card({ eyebrow:L("silas_welcome.eyebrow"), title:L("silas_welcome.title"),
       setting:"homestead", speaker:"silas",
-      dir:"[a man in a good coat on a poor road, a ledger in his saddlebag, not dismounting]",
-      body:'<div class="prose"><p>{{npc.silas}} reins up at your gate and does not get down. <span class="said">“{{term.ridley}}. I hold the paper on this place, the same as I held it for your uncle.”</span> He says it the way another man might say the weather. <span class="said">“A hundred and fifty a year to the bank, and the debt came down to you along with the land. Not this year, nor the next: the charter allows a new holder his feet. After that, it minds its dates, and so will I.”</span> He looks a long moment at the soft ground by the east field, and something crosses his face he does not explain.</p></div>',
+      dir:L("silas_welcome.dir"),
+      body:L("silas_welcome.body"),
       choices:[
-        {t:"“Obliged, Mr. {{term.ridley}}.”", sub:"keep the peace with your banker", go:()=>resolve(()=>{S.flags.silas="civil";}, "He nods and rides off. You are, it seems, a man with a deadline, two years out.")},
-        {t:"“You believe the stories about this ground?”", sub:"needle him; he does not care for it", tag:"−regard", go:()=>resolve(()=>{S.regard-=1;}, "He pauses. <span class=\"said\">“I believe in the ledger,”</span> he says. <span class=\"said\">“The stories are the ledger's business.”</span> He rides off faster than he came.")},
+        {t:L("silas_welcome.obliged.text"), sub:L("silas_welcome.obliged.sub"), go:()=>resolve(()=>{S.flags.silas="civil";}, L("silas_welcome.obliged.result"))},
+        {t:L("silas_welcome.needle.text"), sub:L("silas_welcome.needle.sub"), tag:"−regard", go:()=>resolve(()=>{S.regard-=1;}, L("silas_welcome.needle.result"))},
       ] }));
 
     b.push(plantStep);
     b.push(()=>assignStep(["tend","rest"]));
 
     // First Furrow festival
-    b.push(()=>card({ eyebrow:"The First Furrow · Spring Fair", title:"The town turns out",
+    b.push(()=>card({ eyebrow:L("fair.eyebrow"), title:L("fair.title"),
       setting:"town", speaker:"halloway",
-      dir:"[a green between a white church and a low saloon; the whole of {{place.town}} gathered to bless the planting]",
-      body:'<div class="prose"><p>{{npc.halloway}} makes an expansive welcome and presses a small wheat contract on you: eight units, at a fair locked price, come the harvest. {{npc.grange}} walks the new man’s fields and says the old words over them. {{npc.meredith}} watches from the saloon step; the Sheriff watches from the shade.</p><p>Attending costs you a working day of {{npc.reuben}}’s, but a newcomer is only new once.</p></div>',
+      dir:L("fair.dir"),
+      body:L("fair.body"),
       choices:[
-        {t:"Attend the Fair", sub:"a blessed field, the wheat contract, but {{npc.reuben}} rests today", tag:"+regard",
-         why:"{{npc.reuben}} spends the whole day at your side in town. No field gets tended today, but the wheat contract locks in and the town takes note.",
+        {t:L("fair.attend.text"), sub:L("fair.attend.sub"), tag:"+regard",
+         why:L("fair.attend.why"),
          primary:true, go:()=>{
           // a blessed field: nudge one planted field's progress; name it plainly
-          // in the result so a first-time player sees exactly which field it was
-          // and why, rather than a vague "the near ground" with no reference.
+          // in the result so a first-time player sees exactly which field it was.
           const f=S.fields.find(x=>x.crop);
           resolve(()=>{
             S.regard+=6; S.flags.wheatContract=true; const fm=fore(); if(fm&&fm.morale<5)fm.morale++;
             if(f)f.progress+=0.5;
-            // clearing Reuben's tend if he'd been tending (he's at the fair)
             S.fields.forEach(x=>x.tended=false);
-          }, "You stand the day among them. {{term.grange}} walks "+(f?fieldName(f):"the fields")+" and says the old words over it"+(f?", and that ground will come ripe a touch sooner for the blessing":"")+". The town has seen your face now, and that counts for something in the {{place.region}}.");
+          }, L("fair.attend.result", {field: f?fieldName(f):"the fields", blessing: f?L("fair.attend.blessing"):""}));
         }},
-        {t:"Skip it and work", sub:"the town notes the newcomer who wouldn't come", tag:"−regard",
-         why:"{{npc.reuben}} keeps working the fields as usual. You lose nothing today, but {{place.town}} remembers who stayed away.",
-         go:()=>resolve(()=>{S.regard-=3;}, "You keep to your fields while the fiddles carry across the green. {{place.town}} notices a man who will not sit with it. It always does.")},
+        {t:L("fair.skip.text"), sub:L("fair.skip.sub"), tag:"−regard",
+         why:L("fair.skip.why"),
+         go:()=>resolve(()=>{S.regard-=3;}, L("fair.skip.result"))},
       ] }));
 
     // one systemic spring event
@@ -1541,47 +1760,47 @@
 
   // ---- SUMMER ----
   function summerFlow(b){
-    b.push(()=>card({ eyebrow:"Summer · the market opens", title:"The long light",
+    b.push(()=>card({ eyebrow:L("summer_open.eyebrow"), title:L("summer_open.title"),
       setting:"fields",
-      body:'<div class="prose"><p class="dropcap">The days stretch and the first crops come on. Word reaches you of Regional buyers who send a wagon for a real load, and of the saloon where {{npc.meredith}} sells the one thing dearer than whiskey: knowing things. The heat sits heavy on the fields.</p></div>',
-      choices:[{t:"To work", sub:"begin the season", primary:true, go:next}] }));
+      body:L("summer_open.body"),
+      choices:[{t:L("summer_open.advance"), sub:L("summer_open.advance_sub"), primary:true, go:next}] }));
 
     b.push(plantStep);
     b.push(()=>assignStep(["tend","chop","rest"]));
 
     // Vane's Wagon
-    b.push(()=>card({ eyebrow:"An opportunity · ~Day 25", title:"{{term.vane}}'s Wagon",
+    b.push(()=>card({ eyebrow:L("vane_wagon.eyebrow"), title:L("vane_wagon.title"),
       setting:"wagon", speaker:"ambrose",
-      dir:"[a black wagon hung with lanterns, and a courteous man who does not quite meet the eye]",
-      body:'<div class="prose"><p>{{npc.ambrose}} brings his wagon up the track. Behind the canvas, a shape that breathes. <span class="said">“A grower,”</span> he says, <span class="said">“strong in the ground, gentle with the seed. A hundred and ten marks, and cheap at it.”</span> He can see you counting. <span class="said">“Or a field hand, sixty: a plainer sort of help.”</span></p><p class="note">A second body is a second mouth. It must eat all winter, or it does not last the winter.</p></div>',
+      dir:L("vane_wagon.dir"),
+      body:L("vane_wagon.body"),
       choices:[
-        {t:"Buy the Grower, 110 m", sub:"strong labor; a heavy winter mouth", why:"needs 110m, have "+S.marks+"m", disabled:S.marks<110, go:()=>resolve(()=>{S.marks-=110; S.hands.push(mkHand(null, pick(["Della","Tace","Wick","Merrit"]), "Grower", 3, {body:"strong",mind:"plain"}));}, "The canvas comes back. She steps down slow, blinking at the light, and does not yet know your name or her own. You will have to feed her now, through everything.")},
-        {t:"Buy the Field Hand, 60 m", sub:"cheaper help; still a mouth to winter", why:"needs 60m, have "+S.marks+"m", disabled:S.marks<60, go:()=>resolve(()=>{S.marks-=60; S.hands.push(mkHand(null, pick(["Amos","Pell","Bry","Cass"]), "Field Hand", 3, {}));}, "Sixty marks, and a plain quiet worker climbs down from the wagon. {{term.vane}} counts the coin twice and is gone before you can ask where such a one comes from.")},
-        {t:"Haggle", sub:"{{term.vane}} likes to be liked", go:()=>resolve(()=>{
+        {t:L("vane_wagon.grower.text"), sub:L("vane_wagon.grower.sub"), why:"needs 110m, have "+S.marks+"m", disabled:S.marks<110, go:()=>resolve(()=>{S.marks-=110; S.hands.push(mkHand(null, pick(["Della","Tace","Wick","Merrit"]), "Grower", 3, {body:"strong",mind:"plain"}));}, L("vane_wagon.grower.result"))},
+        {t:L("vane_wagon.hand.text"), sub:L("vane_wagon.hand.sub"), why:"needs 60m, have "+S.marks+"m", disabled:S.marks<60, go:()=>resolve(()=>{S.marks-=60; S.hands.push(mkHand(null, pick(["Amos","Pell","Bry","Cass"]), "Field Hand", 3, {}));}, L("vane_wagon.hand.result"))},
+        {t:L("vane_wagon.haggle.text"), sub:L("vane_wagon.haggle.sub"), go:()=>resolve(()=>{
           if(S.regard>=55 && S.marks>=100){ S.marks-=100; S.hands.push(mkHand(null, pick(["Della","Tace","Wick"]), "Grower", 3, {body:"strong",mind:"plain"})); S._hag="won"; }
           else S._hag="lost";
-        }, S._hag==="won" ? "He sighs, charmed despite himself. <span class=\"said\">“A hundred, then, for a face I like.”</span> The grower steps down. Ten marks saved, and a mouth to feed." : "<span class=\"said\">“A hundred and ten is the kindness,”</span> he says, and the price does not move. You let the wagon go on.")},
-        {t:"Decline", sub:"one hand, one mouth: the safe winter", go:()=>resolve(null,"You let the wagon roll on toward the next homestead. One hand is a lean crew, but a lean crew is a fed crew.")},
+        }, S._hag==="won" ? L("vane_wagon.haggle.result_won") : L("vane_wagon.haggle.result_lost"))},
+        {t:L("vane_wagon.decline.text"), sub:L("vane_wagon.decline.sub"), go:()=>resolve(null,L("vane_wagon.decline.result"))},
       ] }));
 
     // The moral fork
     b.push(()=>{
       const ripeField = S.fields.find(f=>ripe(f)) || S.fields.find(f=>f.crop);
       const isCotton = ripeField && ripeField.crop==="cotton";
-      card({ eyebrow:"The fork · late Summer", title: isCotton?"The Cotton Won't Wait":"The Harvest Won't Wait",
+      card({ eyebrow:L("moral_fork.eyebrow"), title: isCotton?L("moral_fork.title_cotton"):L("moral_fork.title_harvest"),
         setting:"fields", speaker:"reuben",
-        dir:"[a field standing full, a bruise of storm two days out on the horizon, and a hand swaying on his feet]",
-        body:'<div class="prose"><p>'+(ripeField?fieldName(ripeField):"A field")+' stands ready, and the forecast reads storm within two days. {{npc.reuben}} has been on his feet since before light and is grey with it. Push him through the night and you save the crop whole. Let him lie down and you lose a third of it to the weather.</p></div>',
+        dir:L("moral_fork.dir"),
+        body:L("moral_fork.body", {field: ripeField?fieldName(ripeField):"A field"}),
         choices:[
-          {t:"Work him through the night", sub:"save the crop · {{npc.reuben}} loses heart", tag:"−heart", primary:true, go:()=>resolve(()=>{
+          {t:L("moral_fork.work.text"), sub:L("moral_fork.work.sub"), tag:"−heart", primary:true, go:()=>resolve(()=>{
             const f=fore(); if(f&&f.morale>0)f.morale--;
             if(ripeField){ ripeField.tended=true; ripeField.progress=Math.max(ripeField.progress,CROPS[ripeField.crop].seasons); }
             S.flags.overworked=true;
-          }, "The crop comes in whole under a black sky. {{npc.reuben}} does not speak for a day. <span class=\"whisper\">The land takes no notice of a hard day, not yet. A hard day is only a hard day.</span>")},
-          {t:"Let him rest", sub:"lose a third · {{npc.reuben}} mends", tag:"−fertility", go:()=>resolve(()=>{
+          }, L("moral_fork.work.result"))},
+          {t:L("moral_fork.rest.text"), sub:L("moral_fork.rest.sub"), tag:"−fertility", go:()=>resolve(()=>{
             const f=fore(); if(f&&f.morale<5)f.morale++;
             if(ripeField)ripeField.fert=Math.max(0,ripeField.fert-1);
-          }, "You send him to his cot. The storm takes what it takes. In the morning he works the wet field with something like loyalty, and you find you do not regret the third you lost.")},
+          }, L("moral_fork.rest.result"))},
         ] });
     });
 
@@ -1593,23 +1812,23 @@
 
   // ---- FALL ----
   function fallFlow(b){
-    b.push(()=>card({ eyebrow:"Fall · the scramble", title:"Bring it in, and lay it by",
+    b.push(()=>card({ eyebrow:L("fall_open.eyebrow"), title:L("fall_open.title"),
       setting:"fields",
-      body:'<div class="prose"><p class="dropcap">The year tips over into taking-in. Every ripe field wants harvesting and the winter wants fuel, and both want the same short days. From here the almanac keeps a running count in the margin: larder against need, wood against the cold.</p></div>',
-      choices:[{t:"Begin", sub:"begin the season", primary:true, go:next}] }));
+      body:L("fall_open.body"),
+      choices:[{t:L("fall_open.advance"), sub:L("fall_open.advance_sub"), primary:true, go:next}] }));
 
     b.push(plantStep);
     // the scramble: tend vs chop
     b.push(()=>assignStep(["tend","chop","rest"]));
 
     // Harvest Home
-    b.push(()=>card({ eyebrow:"Harvest Home · the Fall feast", title:"The town lights the long tables",
+    b.push(()=>card({ eyebrow:L("harvest_home.eyebrow"), title:L("harvest_home.title"),
       setting:"town", speaker:"bess",
-      dir:"[lanterns strung over the green, and {{npc.nan}} at the dark edge of it, watching the newcomer]",
-      body:'<div class="prose"><p>Harvest Home falls square in the crunch. {{npc.bess}} asks you one sharp, honest question and reads your face for the answer. {{npc.ruth}} notes how your hands look, fed or not. The Sheriff offers a cool word about soft ground. To go is to lose a working day; to stay away is to be the man who wouldn’t.</p></div>',
+      dir:L("harvest_home.dir"),
+      body:L("harvest_home.body"),
       choices:[
-        {t:"Go to the feast", sub:"heart mends, a day not worked", tag:"+regard", primary:true, go:()=>resolve(()=>{S.regard+=5; const f=fore(); if(f&&f.morale<5)f.morale++; S.fields.forEach(x=>x.tended=false);}, "You sit at the long tables. {{npc.bess.first}} decides something about you; you cannot tell what. It is warm, and there is bread, and for an evening the ground keeps its accounts to itself.")},
-        {t:"Stay and bring in the crop", sub:"the work gets done", tag:"−regard", go:()=>resolve(()=>{S.regard-=3;}, "You work while the fiddles carry over the fields. The crop is safe and the town is a shade cooler to you. You can live on a safe crop; you cannot eat regard.")},
+        {t:L("harvest_home.go.text"), sub:L("harvest_home.go.sub"), tag:"+regard", primary:true, go:()=>resolve(()=>{S.regard+=5; const f=fore(); if(f&&f.morale<5)f.morale++; S.fields.forEach(x=>x.tended=false);}, L("harvest_home.go.result"))},
+        {t:L("harvest_home.stay.text"), sub:L("harvest_home.stay.sub"), tag:"−regard", go:()=>resolve(()=>{S.regard-=3;}, L("harvest_home.stay.result"))},
       ] }));
 
     b.push(()=>drawSystemic("fall"));
@@ -1617,10 +1836,10 @@
     // Sour: only if reckoning has risen
     b.push(()=>{
       if(S.reckoning>=25){
-        card({ eyebrow:"An omen", title:"Sour",
+        card({ eyebrow:L("sour.eyebrow"), title:L("sour.title"),
           setting:"homestead", speaker:"nan",
-          body:'<div class="prose"><p class="whisper">The milk turns though the cow is sound and the pail was clean. It turns again the next morning, and the next. When you ask {{npc.nan}} she does not touch it. <span class="said">“You’ve laid something down,”</span> she says, <span class="said">“that the ground did not care for. It remembers the shape of it.”</span></p></div>',
-          choices:[{t:"Say nothing", sub:"continue", primary:true, go:next}] });
+          body:L("sour.body"),
+          choices:[{t:L("sour.advance"), sub:L("sour.advance_sub"), primary:true, go:next}] });
       } else next();
     });
 
@@ -1634,12 +1853,11 @@
 
   // ---- WINTER ----
   function winterFlow(b){
-    b.push(()=>card({ eyebrow:"Winter · the crucible", title:"The short days close in",
+    b.push(()=>card({ eyebrow:L("winter_open.eyebrow"), title:L("winter_open.title"),
       setting:"fields",
-      dir:"[frost on the well-cap; the whole valley gone quiet and white]",
-      body:'<div class="prose"><p class="dropcap">Winter in the {{place.region}} is the year’s true test. There is no planting now, only the larder, the woodpile, and the long dark between them. What you laid by is what you have.</p></div>'+
-        needBar(),
-      choices:[{t:"Face it", sub:"begin winter", primary:true, go:next}] }));
+      dir:L("winter_open.dir"),
+      body:L("winter_open.body")+needBar(),
+      choices:[{t:L("winter_open.advance"), sub:L("winter_open.advance_sub"), primary:true, go:next}] }));
 
     b.push(()=>assignStep(["chop","rest"]));
 
@@ -1650,30 +1868,30 @@
     b.push(()=>{
       const short = S.food < winterFoodNeed() || S.fuel < winterFuelNeed();
       if(short && !S.flags.tookCharity){
-        card({ eyebrow:"A knock at the door", title:"{{npc.ruth}}'s Basket",
+        card({ eyebrow:L("ruth_basket.eyebrow"), title:L("ruth_basket.title"),
           setting:"homestead", speaker:"ruth",
-          dir:"[a plain woman with a covered basket and a look that misses nothing]",
-          body:'<div class="prose"><p>{{npc.ruth}} {{term.grange}} comes up the frozen track with a basket on her arm. <span class="said">“The church keeps a little back,”</span> she says, <span class="said">“for a hard first winter. It is not charity. It is what a town is for.”</span> Her eyes go once around your yard, counting mouths and measuring the fire.</p></div>',
+          dir:L("ruth_basket.dir"),
+          body:L("ruth_basket.body"),
           choices:[
             // Deliberate two-value tag, the one exception to this file's
             // "one representative tag" rule: this is the game's single
             // emergency-relief choice, and it genuinely grants both tracked
             // stats (S.food, S.fuel) at once. Collapsing it to one tag would
             // understate what accepting the basket actually does.
-            {t:"Accept the basket", sub:"a small debt of regard", tag:"+food, +fuel", primary:true, go:()=>resolve(()=>{S.food+=18;S.fuel+=14;S.flags.tookCharity=true;S.regard+=2;}, "She sets it down and will not stay for thanks. Bread, salt pork, a sack of coal. It is the difference, this year, between a grave and a spring.")},
-            {t:"“We'll manage, Sister.”", sub:"pride; the fire stays low", tag:"+regard", go:()=>resolve(()=>{S.regard+=1;}, "She looks at you a long moment, then nods once and takes the basket back down the track. <span class=\"said\">“The offer keeps,”</span> she says, without turning. You hope you will not need it.")},
+            {t:L("ruth_basket.accept.text"), sub:L("ruth_basket.accept.sub"), tag:"+food, +fuel", primary:true, go:()=>resolve(()=>{S.food+=18;S.fuel+=14;S.flags.tookCharity=true;S.regard+=2;}, L("ruth_basket.accept.result"))},
+            {t:L("ruth_basket.decline.text"), sub:L("ruth_basket.decline.sub"), tag:"+regard", go:()=>resolve(()=>{S.regard+=1;}, L("ruth_basket.decline.result"))},
           ] });
       } else next();
     });
 
     // The Long Vigil
-    b.push(()=>card({ eyebrow:"Midwinter · the longest night", title:"The Long Vigil",
+    b.push(()=>card({ eyebrow:L("long_vigil.eyebrow"), title:L("long_vigil.title"),
       setting:"church", speaker:"grange",
-      dir:"[the whole town in the church at midnight, every candle lit, an old capped well-head through the open door]",
-      body:'<div class="prose"><p>On the longest night the town does not sleep. They fill the church and they watch, and near midnight {{term.grange}} reads the names of everyone who died in the {{place.region}} this year, slow, one by one, so that none is forgotten and left to be. The liturgy does not say <em>taken.</em> Everyone hears it anyway. Outside, past the graves, the old well-head sits under its cap of iron and salt, and the watching is for it.</p></div>',
+      dir:L("long_vigil.dir"),
+      body:L("long_vigil.body"),
       choices:[
-        {t:"Watch the night through with them", sub:"the ground eases its accounting", tag:"+regard", primary:true, go:()=>resolve(()=>{S.regard+=6; S.reckoning=Math.max(0,S.reckoning-4);}, "You watch. You do not know what you are watching for, and by dawn you understand no one else quite does either, and that they watch anyway. It is the truest thing you have seen in the {{place.region}}.")},
-        {t:"Go home to your fire", sub:"keep your own watch", tag:"−regard", go:()=>resolve(()=>{S.regard-=4;}, "You keep your own watch, alone, over your own ground. In the morning the town is a little colder to the man who wouldn't sit the Vigil.")},
+        {t:L("long_vigil.watch.text"), sub:L("long_vigil.watch.sub"), tag:"+regard", primary:true, go:()=>resolve(()=>{S.regard+=6; S.reckoning=Math.max(0,S.reckoning-4);}, L("long_vigil.watch.result"))},
+        {t:L("long_vigil.home.text"), sub:L("long_vigil.home.sub"), tag:"−regard", go:()=>resolve(()=>{S.regard-=4;}, L("long_vigil.home.result"))},
       ] }));
 
     b.push(winterResolve);
@@ -1785,16 +2003,12 @@
     setScreenType("yearend");
     S.ended=true;
     renderHeader(); renderLedger();
-    const lostLine = S.lost && S.lost.length ? '<p class="note">The winter took: '+S.lost.join(", ")+'. The graves are marked; the ground was given its due.</p>' : '<p class="note">The whole household woke to the thaw. Not everyone in the {{place.region}} can say the same.</p>';
+    const lostLine = S.lost && S.lost.length ? '<p class="note">'+L("yearend.lost_some",{names:S.lost.join(", ")})+'</p>' : '<p class="note">'+L("yearend.lost_none")+'</p>';
     const band=reckBand();
-    const groundLine = band==="Whispers"
-      ? "The ground kept its whispers to itself this year: crows and cold spots and nothing worse."
-      : band==="Warnings"
-        ? "The ground muttered more than whispers this year. It has your measure now, and a longer memory than you."
-        : "Something walked the frost this year that should not walk. The {{place.region}} will not forget it, and neither, now, will you.";
+    const groundLine = band==="Whispers" ? L("yearend.ground_whispers") : band==="Warnings" ? L("yearend.ground_warnings") : L("yearend.ground_walkers");
     paint('<div class="end"><div class="verdict">Spring · Year Two · Day 1</div>'+
-      '<h2>“I survived another year.”</h2>'+
-      '<p class="epi">The frost breaks along the river first. The household wakes to a dripping eave and a thin bright sun, and the year turns over like a page. You made it. Not everyone does.</p>'+
+      '<h2>'+L("yearend.headline")+'</h2>'+
+      '<p class="epi">'+L("yearend.epi")+'</p>'+
       '<hr class="hr-hatch">'+
       lostLine+
       '<p class="prose">'+groundLine+'</p>'+
@@ -1804,94 +2018,94 @@
         line("The crew that lived", allHands().map(h=>h.name).join(", ")||"only you","flat")+
         line("Standing in {{place.town}}", regardWord(),"flat")+
       '</div>'+
-      '<p class="note" style="margin-top:14px">A Vigil is entered in the Codex for the year you survived. Year Two would bring the market’s regional wagon, the Vat, the deeper reckoning, and, in three more years, {{npc.silas}}’s first collected debt.</p>'+
-      '<div class="choices" style="max-width:340px;margin:16px auto 0"><button class="btn primary" id="again"><span class="t">Play another first year</span><span class="sub">new seed, new weather, new choices</span></button></div></div>');
+      '<p class="note" style="margin-top:14px">'+L("yearend.codex")+'</p>'+
+      '<div class="choices" style="max-width:340px;margin:16px auto 0"><button class="btn primary" id="again"><span class="t">'+L("yearend.again")+'</span><span class="sub">'+L("yearend.again_sub")+'</span></button></div></div>');
     document.getElementById("again").addEventListener("click",()=>newGame((Math.random()*1e9)>>>0),0);
   }
 
   /* ---------------- systemic events ---------------- */
   const SYSTEMIC = {
     spring:[
-      ()=>card({eyebrow:"A growing rain",title:"A Soft Rain",
+      ()=>card({eyebrow:L("ev_soft_rain.eyebrow"),title:L("ev_soft_rain.title"),
         setting:"fields",
-        body:'<div class="prose"><p>Three days of soft, warm rain walk up the valley. The seed drinks it in and the fields come on a shade faster than the almanac promised.</p></div>',
-        choices:[{t:"Good.",sub:"the planted fields grow a little faster",primary:true,go:()=>resolve(()=>{S.fields.forEach(f=>{if(f.crop)f.progress+=0.5;});},"Everything planted takes a step toward ripe.")}]}),
-      ()=>card({eyebrow:"An unfenced field",title:"Crows in the Corn",
+        body:L("ev_soft_rain.body"),
+        choices:[{t:L("ev_soft_rain.good.text"),sub:L("ev_soft_rain.good.sub"),primary:true,go:()=>resolve(()=>{S.fields.forEach(f=>{if(f.crop)f.progress+=0.5;});},L("ev_soft_rain.good.result"))}]}),
+      ()=>card({eyebrow:L("ev_crows.eyebrow"),title:L("ev_crows.title"),
         setting:"fields",
-        body:'<div class="prose"><p>A wing of crows settles on one of your fields and sets to work with a will. There is no fence to turn them.</p></div>',
+        body:L("ev_crows.body"),
         choices:[
-          {t:"Set {{npc.reuben}} to scaring them",sub:"a day's labor spent",tag:"all fields",why:"{{npc.reuben}} spends the day at this field, so every other field goes untended today too, not just this one.",go:()=>resolve(()=>{S.fields.forEach(x=>x.tended=false);},"{{npc.reuben}} spends the day waving and shouting. The crows leave insulted; the crop is whole.")},
-          {t:"Fence it, 15 m",sub:"lasting; costs coin",why:"needs 15m, have "+S.marks+"m",disabled:S.marks<15,go:()=>resolve(()=>{S.marks-=15;},"Posts and wire go up. The crows try it once, twice, and give it up. The fence will stand for years.")},
-          {t:"Let them feed",sub:"lose a share of that field",tag:"−fertility",go:()=>resolve(()=>{const f=S.fields.find(x=>x.crop);if(f)f.fert=Math.max(0,f.fert-1);},"You let them have their tithe. It is only a share. You will remember the fence come next planting.")},
+          {t:L("ev_crows.scare.text"),sub:L("ev_crows.scare.sub"),tag:"all fields",why:L("ev_crows.scare.why"),go:()=>resolve(()=>{S.fields.forEach(x=>x.tended=false);},L("ev_crows.scare.result"))},
+          {t:L("ev_crows.fence.text"),sub:L("ev_crows.fence.sub"),why:"needs 15m, have "+S.marks+"m",disabled:S.marks<15,go:()=>resolve(()=>{S.marks-=15;},L("ev_crows.fence.result"))},
+          {t:L("ev_crows.feed.text"),sub:L("ev_crows.feed.sub"),tag:"−fertility",go:()=>resolve(()=>{const f=S.fields.find(x=>x.crop);if(f)f.fert=Math.max(0,f.fert-1);},L("ev_crows.feed.result"))},
         ]}),
-      ()=>card({eyebrow:"A hand asks",title:"A Name of His Own",
+      ()=>card({eyebrow:L("ev_name.eyebrow"),title:L("ev_name.title"),
         setting:"homestead", speaker:"reuben",
-        body:'<div class="prose"><p>{{npc.reuben}} stands at the door with his hat in his hands and asks, haltingly, whether he might have a name that is <em>his</em>, not the one that came stamped on the charter papers, but one you’d call him by.</p></div>',
+        body:L("ev_name.body"),
         choices:[
-          {t:"Grant it gladly",sub:"he works the harder for it",tag:"+heart",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;S.regard+=1;},"He says the name over twice, quietly, like a thing he is afraid to drop. He works differently after, like a man, not a tool.")},
-          {t:"Refuse him",sub:"the asking never comes again",tag:"−heart",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;markCruelty();},"<span class=\"said\">“As you say,”</span> he answers, and goes back to the field. He does not ask again, and something in him closes for good. <span class=\"whisper\">The ground, somewhere, makes a small note of it.</span>")},
+          {t:L("ev_name.grant.text"),sub:L("ev_name.grant.sub"),tag:"+heart",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;S.regard+=1;},L("ev_name.grant.result"))},
+          {t:L("ev_name.refuse.text"),sub:L("ev_name.refuse.sub"),tag:"−heart",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;markCruelty();},L("ev_name.refuse.result"))},
         ]}),
     ],
     summer:[
-      ()=>card({eyebrow:"A dry heat",title:"The Hot Wind",
+      ()=>card({eyebrow:L("ev_hot_wind.eyebrow"),title:L("ev_hot_wind.title"),
         setting:"fields",
-        body:'<div class="prose"><p>A hot wind comes off the flats and sits on the valley for a week. The work is punishing under it.</p></div>',
+        body:L("ev_hot_wind.body"),
         choices:[
-          {t:"Rest the worst of it",sub:"a slow week",tag:"+heart",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;},"You keep to the shade through the killing hours. The work waits; the crew keeps its strength.")},
-          {t:"Work straight through",sub:"the crop keeps, but {{npc.reuben}} wilts",tag:"−heart",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;},"The rows get worked in the full glare. {{npc.reuben}} comes in each night hollow-eyed. The land, for now, takes no notice of a hard week.")},
+          {t:L("ev_hot_wind.rest.text"),sub:L("ev_hot_wind.rest.sub"),tag:"+heart",primary:true,go:()=>resolve(()=>{const f=fore(); if(f&&f.morale<5)f.morale++;},L("ev_hot_wind.rest.result"))},
+          {t:L("ev_hot_wind.work.text"),sub:L("ev_hot_wind.work.sub"),tag:"−heart",go:()=>resolve(()=>{const f=fore(); if(f&&f.morale>0)f.morale--;},L("ev_hot_wind.work.result"))},
         ]}),
-      ()=>card({eyebrow:"A traveller",title:"The Pedlar",
+      ()=>card({eyebrow:L("ev_pedlar.eyebrow"),title:L("ev_pedlar.title"),
         setting:"fields",
-        body:'<div class="prose"><p>A pedlar with a swaybacked mule offers cheap seed by the roadside, and, when pressed, something else, wrapped in oilcloth, that he will not name and will not unwrap.</p></div>',
+        body:L("ev_pedlar.body"),
         choices:[
-          {t:"Buy the seed, 8 m",sub:"+8 seed",tag:"+8 seed",why:"needs 8m, have "+S.marks+"m",disabled:S.marks<8,primary:true,go:()=>resolve(()=>{S.marks-=8;S.seed+=8;},"Good seed at a fair price. The oilcloth stays wrapped, and the pedlar goes on his way looking almost relieved.")},
-          {t:"Send him on",sub:"want nothing of it",go:()=>resolve(null,"You wave him past. The mule complains; the pedlar tips his hat; the oilcloth bundle rides on to trouble someone else.")},
+          {t:L("ev_pedlar.buy.text"),sub:L("ev_pedlar.buy.sub"),tag:"+8 seed",why:"needs 8m, have "+S.marks+"m",disabled:S.marks<8,primary:true,go:()=>resolve(()=>{S.marks-=8;S.seed+=8;},L("ev_pedlar.buy.result"))},
+          {t:L("ev_pedlar.send.text"),sub:L("ev_pedlar.send.sub"),go:()=>resolve(null,L("ev_pedlar.send.result"))},
         ]}),
-      ()=>card({eyebrow:"In the granary",title:"Rats in the Stores",
+      ()=>card({eyebrow:L("ev_rats.eyebrow"),title:L("ev_rats.title"),
         setting:"fields",
-        body:'<div class="prose"><p>Something has been in the larder. You find the tell-tale spill of grain and the small dark droppings along the wall.</p></div>',
+        body:L("ev_rats.body"),
         choices:[
-          {t:"Trap them, 4 m",sub:"stop the loss",why:"needs 4m, have "+S.marks+"m",disabled:S.marks<4,primary:true,go:()=>resolve(()=>{S.marks-=4;},"Traps and a barn cat borrowed from {{npc.bell}}. The stores hold.")},
-          {t:"Ignore it",sub:"lose food over the season",tag:"−10 food",go:()=>resolve(()=>{S.food=Math.max(0,S.food-10);},"You let it ride. Ten measures of larder go down small throats before the season's out.")},
+          {t:L("ev_rats.trap.text"),sub:L("ev_rats.trap.sub"),why:"needs 4m, have "+S.marks+"m",disabled:S.marks<4,primary:true,go:()=>resolve(()=>{S.marks-=4;},L("ev_rats.trap.result"))},
+          {t:L("ev_rats.ignore.text"),sub:L("ev_rats.ignore.sub"),tag:"−10 food",go:()=>resolve(()=>{S.food=Math.max(0,S.food-10);},L("ev_rats.ignore.result"))},
         ]}),
     ],
     fall:[
-      ()=>card({eyebrow:"At the gate",title:"A Foundling",
+      ()=>card({eyebrow:L("ev_foundling.eyebrow"),title:L("ev_foundling.title"),
         setting:"gate",
-        dir:"[a thin figure at the fence-line at dusk, not quite a child, not quite not]",
-        body:'<div class="prose"><p>A stray hand stands at your gate as the light goes, one of the {{place.region}}’ foundlings, grown wild from no wagon and no vat anyone will own to. It watches you and does not speak.</p></div>',
+        dir:L("ev_foundling.dir"),
+        body:L("ev_foundling.body"),
         choices:[
-          {t:"Take them in",sub:"free labor, and another winter mouth",tag:"+1 mouth",why:"Another hand works the fields, but winter's food and fuel needs grow to match, for good.",primary:true,go:()=>resolve(()=>{S.hands.push(mkHand(null, pick(["Wren","Cob","Lark","Fen"]), "Foundling", 2, {mind:"wary"}));},"You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field, and one more belly to carry to spring.")},
+          {t:L("ev_foundling.take.text"),sub:L("ev_foundling.take.sub"),tag:"+1 mouth",why:L("ev_foundling.take.why"),primary:true,go:()=>resolve(()=>{S.hands.push(mkHand(null, pick(["Wren","Cob","Lark","Fen"]), "Foundling", 2, {mind:"wary"}));},L("ev_foundling.take.result"))},
           // sub deliberately kept close to the tag here: this choice's only
           // effect is +regard, so "+her regard" (whose regard) and the
           // "+regard" tag are naturally near-identical, unlike the trimmed
           // cases above where sub still carried an extra, non-tag detail.
-          {t:"Send them to {{npc.ruth}}",sub:"+her regard",tag:"+regard",go:()=>resolve(()=>{S.regard+=3;},"You point the way to the church, where {{npc.ruth.first}} keeps a cot for such as these. She will remember that you sent them fed, not away.")},
+          {t:L("ev_foundling.ruth.text"),sub:L("ev_foundling.ruth.sub"),tag:"+regard",go:()=>resolve(()=>{S.regard+=3;},L("ev_foundling.ruth.result"))},
           // No tag here, deliberately: this raises the hidden Reckoning meter
           // (S.reckoning) via markCruelty(), and that meter must never be
           // named, numbered, or hinted at in a tag/badge. The oblique sub
           // ("the ground marks it") stays; the tag stays absent.
-          {t:"Turn them out",sub:"the ground marks it",go:()=>resolve(()=>{S.reckoning+=1;markCruelty();},"You close the gate. The figure stands a while in the cold, then is not there. <span class=\"whisper\">Something in the ground turns over in its long sleep.</span>")},
+          {t:L("ev_foundling.turn.text"),sub:L("ev_foundling.turn.sub"),go:()=>resolve(()=>{S.reckoning+=1;markCruelty();},L("ev_foundling.turn.result"))},
         ]}),
-      ()=>card({eyebrow:"A rumor at the saloon",title:"{{npc.bell}}'s Word",
+      ()=>card({eyebrow:L("ev_bell_word.eyebrow"),title:L("ev_bell_word.title"),
         setting:"saloon", speaker:"bell",
-        body:'<div class="prose"><p>{{npc.bell}}, dry as ever, lets fall over a glass that a Regional buyer will pay above the local price for grain this fall, if you have a wagon-load worth carrying, and the coin to wait for the wagon.</p></div>',
+        body:L("ev_bell_word.body"),
         choices:[
-          {t:"Note it and thank him",sub:"good to know for Year Two",tag:"+regard",primary:true,go:()=>resolve(()=>{S.regard+=1;},"You file it away. The Regional wagon is a Year-Two concern, but the knowing of it is worth a drink, and Bell is worth cultivating.")},
+          {t:L("ev_bell_word.note.text"),sub:L("ev_bell_word.note.sub"),tag:"+regard",primary:true,go:()=>resolve(()=>{S.regard+=1;},L("ev_bell_word.note.result"))},
         ]}),
-      ()=>card({eyebrow:"An early frost",title:"Frost on the Low Ground",
+      ()=>card({eyebrow:L("ev_early_frost.eyebrow"),title:L("ev_early_frost.title"),
         setting:"fields",
-        body:'<div class="prose"><p>A hard frost comes a week early to the low fields. Anything ripe should come in now or risk the cold.</p></div>',
+        body:L("ev_early_frost.body"),
         choices:[
-          {t:"Bring in what's ready",sub:"safe, but rushed",primary:true,go:()=>resolve(()=>{S.fields.forEach(f=>{if(ripe(f))f.tended=false;});},"You get the ripe fields in ahead of the white. It is rough work in the cold, but the harvest is safe under roof.")},
+          {t:L("ev_early_frost.bring.text"),sub:L("ev_early_frost.bring.sub"),primary:true,go:()=>resolve(()=>{S.fields.forEach(f=>{if(ripe(f))f.tended=false;});},L("ev_early_frost.bring.result"))},
         ]}),
     ],
     winter:[
-      ()=>card({eyebrow:"The long dark",title:"Cabin Fever",
+      ()=>card({eyebrow:L("ev_cabin_fever.eyebrow"),title:L("ev_cabin_fever.title"),
         setting:"homestead",
-        body:'<div class="prose"><p>The snow shuts the valley in. Days pass without a face from town, and the household grows short-tempered in the close air of the lean-to.</p></div>',
+        body:L("ev_cabin_fever.body"),
         choices:[
-          {t:"Keep them busy and fed",sub:"if you can spare it",tag:"+heart",primary:true,go:()=>resolve(()=>{const f=fore(); if(S.food>20&&f&&f.morale<5)f.morale++;},"You ration out small comforts: a better supper, a task with an end to it. The crew holds together through the worst of the quiet.")},
+          {t:L("ev_cabin_fever.keep.text"),sub:L("ev_cabin_fever.keep.sub"),tag:"+heart",primary:true,go:()=>resolve(()=>{const f=fore(); if(S.food>20&&f&&f.morale<5)f.morale++;},L("ev_cabin_fever.keep.result"))},
         ]}),
     ],
   };
@@ -2287,7 +2501,7 @@
   applyDesktopScale();
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP, beginNewGame, continueGame, confirmNewGame, hasSave, saveGame, loadGame, clearSave, showGame, refreshContinueButton, showHowToPlay, showSettings, musicOn, sfxOn, setMusicOn, setSfxOn, applyDesktopScale, startIntro, finishIntro, normLineage, tok, lookupName, NAMES, NPCS, SETTINGS };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP, beginNewGame, continueGame, confirmNewGame, hasSave, saveGame, loadGame, clearSave, showGame, refreshContinueButton, showHowToPlay, showSettings, musicOn, sfxOn, setMusicOn, setSfxOn, applyDesktopScale, startIntro, finishIntro, normLineage, tok, lookupName, NAMES, NPCS, SETTINGS, L, SCRIPT };
   }
 })();
 </script>
