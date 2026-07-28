@@ -2,6 +2,19 @@ import { BALANCE } from "./balance.js";
 import { ripe } from "./crops.js";
 import { livingHands, season } from "./state.js";
 
+// The season's closing figures for the Dusk Report (Screen 06). Pure read.
+export function duskSummary(s) {
+  return {
+    season: season(s),
+    coin: s.coin,
+    larder: Math.floor(s.larder),
+    fuel: s.fuel,
+    crew: livingHands(s).map((h) => h.name),
+    lostThisSeason: s.log.filter((l) => /did not last/.test(l)),
+    warnings: warnings(s),
+  };
+}
+
 // The one legible condition track (spec §10.4), derived from strain. No stored field:
 // steady <25, worn 25..49, failing 50..99, lost at 100 (or !alive). Cut points live in
 // balance.js so tuning is a single-file edit.

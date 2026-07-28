@@ -29,6 +29,8 @@ export function reduce(state, action) {
       return { ...state, playerAction: { kind: action.kind, target: action.target } };
     case "RESOLVE_WEEK":
       return resolveWeek(state);
+    case "END_SEASON":
+      return endSeason(state);
     default:
       return state;
   }
@@ -117,6 +119,12 @@ function resolveWeek(s) {
 function strainFrailestFirst(hands, amount) {
   const living = hands.filter((h) => h.alive).sort((a, b) => b.strain - a.strain); // worst first
   for (const h of living) h.strain += amount; // a shared bite; the already-worst tip over first
+}
+
+function endSeason(s) {
+  if (season(s) === "winter") return { ...s, phase: "yearend", ended: true }; // Year-1 slice ends here (multi-year = Plan 5)
+  let seasonIndex = s.seasonIndex + 1;
+  return { ...s, seasonIndex, week: 1, phase: "brief" };
 }
 
 function plant(s, id, cropKey) {
