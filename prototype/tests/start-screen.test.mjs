@@ -28,12 +28,15 @@ describe("start screen", () => {
     expect(btn.querySelector("small").textContent).toBe("resume where you left off");
   });
 
-  it("New Game with no existing save starts immediately, no confirmation", () => {
-    const { doc, T } = boot({ atStartScreen: true });
+  it("New Game with no existing save opens the intro letter, not the game directly (#44)", () => {
+    const { doc } = boot({ atStartScreen: true });
     doc.getElementById("btn-new-game").click();
-    expect(doc.getElementById("desk").style.display).not.toBe("none");
+    // The inheritance-letter intro comes first now: no confirmation, but the
+    // game board is not shown until the letter's Begin.
     expect(doc.getElementById("start-screen").style.display).toBe("none");
-    expect(T.getState().year).toBe(1);
+    expect(doc.getElementById("intro-screen").classList.contains("on")).toBe(true);
+    expect(doc.getElementById("desk").style.display).toBe("none");
+    expect(doc.getElementById("intro-name").classList.contains("on")).toBe(true);
   });
 
   it("autosaves at the start of a season, enabling Continue on a fresh boot", () => {
@@ -50,13 +53,17 @@ describe("start screen", () => {
     expect(doc.getElementById("overlay-panel").textContent.toLowerCase()).toContain("erase it");
   });
 
-  it("confirming New Game clears the old save and starts fresh", () => {
+  it("confirming New Game clears the old save and starts fresh (through the intro)", () => {
     const { doc, T } = boot();
     const before = T.getState();
     before.marks = 12345; // mutate so we can tell a fresh game apart from the old one
     T.saveGame();
     doc.getElementById("btn-new-game").click();
-    doc.getElementById("newgame-yes").click();
+    doc.getElementById("newgame-yes").click(); // confirm → opens the intro
+    // walk the intro: name step → letter page 1 → page 2 → Begin
+    doc.getElementById("lineage-continue").click();
+    doc.getElementById("intro-next").click();
+    doc.getElementById("intro-next").click();
     expect(T.getState().marks).toBe(100); // back to newGame()'s starting marks, not 12345
   });
 

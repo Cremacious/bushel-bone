@@ -265,10 +265,10 @@
   title: "The Man from the East"
   family: opportunities
   severity: major
-  illustration: "a clean-shaven agent in a grey suit at your table, a leather folio and a fountain pen, out of place in the Sull"
+  illustration: "a clean-shaven agent in a grey suit at your table, a leather folio and a fountain pen, out of place in the Sallows"
   setup: >
     A man comes up the new Rail in a suit that cost more than your barn, and asks for you by
-    name. He represents an eastern concern, the Cawdor Mill, with an interest in the Sull's
+    name. He represents an eastern concern, the Cawdor Mill, with an interest in the Sallows'
     ground. He is very polite. He would like to buy, or to contract, and he is used to getting
     what he asks for.
   conditions:
@@ -283,7 +283,7 @@
       effects:
         - flag: { set: cawdor-approached, to: true }
     - id: send-him-off
-      text: "Tell him the Sull's not for sale."
+      text: "Tell him the Sallows isn't for sale."
       result: '"Everything is for sale, Mr. Farmer," he says, standing, unhurried. "It is only a question of the year." He leaves his card. You do not throw it away, which troubles you.'
       effects:
         - flag: { set: cawdor-refused, to: true }
@@ -367,7 +367,7 @@
   illustration: "a dead man's tools laid out on a wagon-bed for sale: a good plough, a scythe, a churn"
   setup: >
     A farm up the valley failed, and its tools are on the block cheap: a good plough, a scythe with
-    life left in it, a churn. One man's ruin outfits another's start. That's the Sull.
+    life left in it, a churn. One man's ruin outfits another's start. That's the Sallows.
   recency_suppress: 16
   on_ignore: dismiss
   choices:
@@ -388,7 +388,7 @@
   illustration: "a newspaper column read by lamplight, the word BLIGHT in heavy type, a farmer's grim satisfaction"
   setup: >
     The paper says blight has taken the potato in the south counties, whole harvests lost. Hard on
-    them. And every sound potato in the Sull is worth more this week for it. A man feels a little low,
+    them. And every sound potato in the Sallows is worth more this week for it. A man feels a little low,
     profiting off another county's ruin, and counts the coin anyway.
   recency_suppress: 15
   on_ignore: dismiss
@@ -470,7 +470,7 @@
         - flag: { set: has-livestock, to: true }
     - id: pass-on-pigs
       text: "Pass. You've mouths enough."
-      result: "You let the pigs go to another barn. A herd's a fine thing, but it's fodder and work and one more thing to keep alive through a Sull winter, and you've enough of those already."
+      result: "You let the pigs go to another barn. A herd's a fine thing, but it's fodder and work and one more thing to keep alive through a Sallows winter, and you've enough of those already."
 
 - id: the-corn-factor
   title: "The Corn Factor"

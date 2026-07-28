@@ -38,7 +38,7 @@
   illustration: "the summer market crowded with buyers' wagons, prices chalked on a board, a factor calling numbers"
   setup: >
     Midsummer brings the buyers up from Ledbury and the market runs hot for three days.
-    Prices lift, contracts change hands, and every rumor in the Sull passes through the
+    Prices lift, contracts change hands, and every rumor in the Sallows passes through the
     square at least twice before the dust settles.
   conditions:
     - season: Summer
@@ -79,7 +79,7 @@
     - id: all-attend
       text: "Everyone goes. The crop can wait a night."
       cost: { rest_day: true }
-      result: "You lose a harvest day you couldn't spare, and gain a household that would follow you into a hard winter, which, this being the Sull, they will."
+      result: "You lose a harvest day you couldn't spare, and gain a household that would follow you into a hard winter, which, this being the Sallows, they will."
       effects:
         - morale: { target: household, amount: +8 }
         - reputation: +2
@@ -96,7 +96,7 @@
   illustration: "the whole town in the church at midnight, every candle lit, an old capped well-head visible through the open door"
   setup: >
     On the longest night the town does not sleep. They fill the church and they watch, and
-    near midnight Grange reads the names of everyone who died in the Sull this year, slow,
+    near midnight Grange reads the names of everyone who died in the Sallows this year, slow,
     one by one, so none are forgotten and left to be. The liturgy does not say taken, but
     everyone hears it. Outside, past the graves, the old well-head sits under its cap of
     iron and salt, and the watching is for it.
@@ -108,7 +108,7 @@
     - id: watch-through
       text: "Watch the night through with them."
       cost: { rest_day: true }
-      result: "You watch. You do not know what you are watching for, and by dawn you understand that no one else quite does either, and that they watch anyway. It is the truest thing you have seen in the Sull."
+      result: "You watch. You do not know what you are watching for, and by dawn you understand that no one else quite does either, and that they watch anyway. It is the truest thing you have seen in the Sallows."
       effects:
         - reputation: +2
         - reckoning: -2
@@ -163,7 +163,7 @@
   setup: >
     Halloway rides out himself, which he only does when he wants something. The town needs
     grain for the winter stores, he says, a civic matter, a neighborly one, and who better
-    to ask than the Sull's most promising farm? He never quite says no is an option.
+    to ask than the Sallows' most promising farm? He never quite says no is an option.
   recency_suppress: 16
   on_ignore: dismiss
   choices:
@@ -238,7 +238,7 @@
   severity: major
   illustration: "an abandoned farmhouse down the valley, a for-sale stake leaning at its gate, curtains still in the windows"
   setup: >
-    Another Kettle Bottom family has given up on the Sull and gone east, the third this year.
+    Another Kettle Bottom family has given up on the Sallows and gone east, the third this year.
     Their land goes cheap, their tools cheaper, and their two vessels are standing in the
     empty yard with nowhere to be. Somebody will take them. The only question is who, and how.
   weight: 10
@@ -261,7 +261,7 @@
         - relationship: { npc: ruth_grange, delta: +1 }
     - id: leave-it
       text: "Leave it be. Not your affair."
-      result: "You leave the land to whoever wants it worse. By spring someone crueler than you has the field and the hands both, and the Sull is a little colder for it."
+      result: "You leave the land to whoever wants it worse. By spring someone crueler than you has the field and the hands both, and the Sallows is a little colder for it."
 
 - id: bess-at-the-fair
   title: "Bess Halloway"
@@ -281,7 +281,7 @@
       text: "Answer her honestly."
       requires:
         - reputation: { min: 40 }
-      result: "You tell her the truth of the Sull as you've found it, hard ground and all. She listens the whole way through, which no one at that fair has done for her in years. Something is decided, on her side, that she does not say aloud."
+      result: "You tell her the truth of the Sallows as you've found it, hard ground and all. She listens the whole way through, which no one at that fair has done for her in years. Something is decided, on her side, that she does not say aloud."
       effects:
         - relationship: { npc: bess_halloway, delta: +1 }
     - id: give-the-speech
@@ -380,7 +380,7 @@
         - reputation: +1
     - id: stay-out
       text: "Stay out of it entirely."
-      result: "You keep your voice to yourself and your hands clean. Both sides mark you for a man who wouldn't stand up when the valley needed standing. Clean hands, in the Sull, are just hands nobody trusts."
+      result: "You keep your voice to yourself and your hands clean. Both sides mark you for a man who wouldn't stand up when the valley needed standing. Clean hands, in the Sallows, are just hands nobody trusts."
       effects:
         - reputation: -2
 

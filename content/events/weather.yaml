@@ -25,7 +25,7 @@
   severity: flavor
   illustration: "a high clean sky over the homestead, wash on the line, the diorama bright"
   setup: >
-    A stretch of fair weather settles over the Sull: dry mornings, warm afternoons, the
+    A stretch of fair weather settles over the Sallows: dry mornings, warm afternoons, the
     kind of days that make a man forget, for a while, what the ground is.
   on_ignore: dismiss
 
@@ -171,7 +171,7 @@
   illustration: "flat grey light, no wind, the wash hanging dead-straight on the line, a crow not moving"
   setup: >
     There is no wind. Not a breath of it, all day. The wash hangs straight, the crows sit
-    the fence and do not call, and the whole Sull holds its breath over something you cannot see.
+    the fence and do not call, and the whole Sallows holds its breath over something you cannot see.
   conditions:
     - reckoning_tier: { min: warnings }
   on_ignore: dismiss
@@ -265,7 +265,7 @@
   severity: minor
   illustration: "frost silvering the young spring shoots at dawn, a farmer's breath smoking over the ruined green"
   setup: >
-    Winter's not done with the Sull. A late frost comes down in the night, well after it had any right
+    Winter's not done with the Sallows. A late frost comes down in the night, well after it had any right
     to, and silvers the young shoots that were the whole of your spring hope. Cover what you can before
     the sun makes it worse; some of it will pull through, and some of it won't.
   conditions:
@@ -322,7 +322,7 @@
   severity: flavor
   illustration: "a clear high autumn sky, gold light across a ripe field, the whole household out cutting with a will"
   setup: >
-    Now and then the Sull hands you a perfect one: a clear high sky, gold light lying long across the
+    Now and then the Sallows hands you a perfect one: a clear high sky, gold light lying long across the
     ripe fields, the air just cool enough to work in all day and never tire. The whole household's out
     cutting with a will, and for a few golden hours the ground feels less like a creditor and more like
     a gift. You'll take it. Out here you learn to take the good days whole.

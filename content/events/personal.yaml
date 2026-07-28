@@ -424,12 +424,12 @@
     - id: give-him-reason
       text: "Sit with him. Find him a reason to stay."
       cost: { labor: 0.5 }
-      result: "You sit with him in the dark of the bunkhouse and don't leave until he's talking, and it's slow and it's hard and it works: you find him a small reason, a task that's his, a name said kind, a place. He eats. He stays. It cost you a day and it saved a life, and you'd not have called those a fair trade before you came to the Sull."
+      result: "You sit with him in the dark of the bunkhouse and don't leave until he's talking, and it's slow and it's hard and it works: you find him a small reason, a task that's his, a name said kind, a place. He eats. He stays. It cost you a day and it saved a life, and you'd not have called those a fair trade before you came to the Sallows."
       effects:
         - morale: { target: household, amount: +3 }
     - id: let-him-go
       text: "You can't nurse a hand who won't be nursed."
-      result: "You tell yourself you can't force a soul to want its own life, and you let him slip, and one grey morning the bowl's still full and the cot's cold. You bury him. The others watched you let it happen, and each of them privately reckons how much fight they'd have in them, the day the Sull comes for their own reason to stay."
+      result: "You tell yourself you can't force a soul to want its own life, and you let him slip, and one grey morning the bowl's still full and the cot's cold. You bury him. The others watched you let it happen, and each of them privately reckons how much fight they'd have in them, the day the Sallows comes for their own reason to stay."
       effects:
         - clone: { kill: this, disposal: marked }
         - morale: { target: household, amount: -4 }

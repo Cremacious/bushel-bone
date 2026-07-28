@@ -400,6 +400,70 @@
     .start-btn{ padding:14px 16px; font-size:16px; }
   }
 
+  /* ---- New Game opening: the inheritance letter (#44) ----
+     A black screen with paged text, read at the player's own pace. Its own
+     dark palette on purpose (the letter is a black screen regardless of the
+     day/night theme, per the issue), warm ink on near-black. */
+  .intro-screen{
+    position:fixed; inset:0; z-index:60; display:none;
+    background:#0b0906; color:#e6d8b8;
+    padding:28px 22px; overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .intro-screen.on{ display:flex; align-items:center; justify-content:center; }
+  .intro-inner{ width:100%; max-width:520px; margin:auto; }
+  .intro-view{ display:none; }
+  .intro-view.on{ display:block; }
+
+  .intro-eyebrow{ font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:#8f7e5c; text-align:center; margin-bottom:14px; }
+  .intro-name-h{ font-size:22px; font-variant:small-caps; letter-spacing:.04em; text-align:center; color:#f0e4c6; margin:0 0 10px; }
+  .intro-name-lede{ font-size:15px; line-height:1.55; color:#c3b087; text-align:center; margin:0 auto 22px; max-width:400px; }
+  .intro-field{ display:flex; flex-direction:column; gap:8px; max-width:340px; margin:0 auto 8px; }
+  .intro-field label{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#8f7e5c; text-align:center; }
+  #lineage-input{
+    all:unset; box-sizing:border-box; width:100%; text-align:center;
+    font-family:inherit; font-size:22px; letter-spacing:.04em; color:#f0e4c6;
+    padding:9px 12px; border:1px solid #4b3f2b; border-radius:2px; background:#12100b;
+  }
+  #lineage-input:focus{ border-color:#b9a86a; }
+  .intro-hint{ font-size:12px; color:#8f7e5c; text-align:center; max-width:340px; margin:6px auto 22px; line-height:1.5; }
+
+  /* the letter itself: an aged-paper leaf floated on the black screen */
+  .letter{
+    background:#efe3c6; color:#2a2216; border:1px solid #6b5a3c;
+    box-shadow:0 10px 40px rgba(0,0,0,.6);
+    padding:30px 28px; border-radius:2px;
+    font-size:16px; line-height:1.62;
+  }
+  .letter-head{ text-align:center; border-bottom:1px solid #a3906c; padding-bottom:14px; margin-bottom:18px; }
+  .letter-head .co{ font-size:15px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; }
+  .letter-head .office{ font-size:13px; font-style:italic; color:#5f5138; margin-top:4px; }
+  .letter-head .date{ font-size:12.5px; letter-spacing:.06em; color:#5f5138; margin-top:6px; }
+  .letter p{ margin:0 0 13px; }
+  .letter p:last-child{ margin-bottom:0; }
+  .letter .signoff{ font-style:italic; color:#5f5138; }
+  .letter .said{ color:#2a2216; }
+  .letter-h{ font-size:14px; letter-spacing:.18em; text-transform:uppercase; color:#8f7e5c; text-align:center; margin:0 0 16px; }
+
+  /* page 2 is narration, not a document: plain cream text on the black screen */
+  .intro-prose{ max-width:460px; margin:0 auto; color:#e6d8b8; font-size:17px; line-height:1.72; }
+  .intro-prose p{ margin:0 0 16px; }
+  .intro-prose p:last-child{ margin-bottom:0; }
+  .intro-prose .said{ color:#f4ead0; }
+
+  .intro-nav{ display:flex; gap:10px; justify-content:space-between; align-items:center; max-width:none; margin:20px auto 0; }
+  .intro-btn{
+    all:unset; box-sizing:border-box; cursor:pointer; text-align:center;
+    padding:11px 18px; border:1px solid #4b3f2b; border-radius:2px;
+    color:#c3b087; font-size:14px; letter-spacing:.04em; min-width:110px;
+  }
+  .intro-btn:hover{ border-color:#b9a86a; color:#f0e4c6; }
+  .intro-btn:focus-visible{ outline:2px solid #b9a86a; outline-offset:2px; }
+  .intro-btn.pri{ border-color:#b9a86a; background:rgba(185,168,106,.16); color:#f0e4c6; font-weight:600; }
+  .intro-btn[disabled]{ opacity:.35; cursor:not-allowed; }
+  .intro-btn.ghost{ visibility:hidden; }
+  .intro-pageno{ font-size:11px; letter-spacing:.14em; color:#6f5f42; }
+
   /* ---- desktop/web split (#35) + fixed-size canvas (#47 phase 1) ---- */
   @media (min-width: 1100px){
     #desk{ overflow:hidden; }
@@ -529,6 +593,36 @@
   </div>
 </div>
 
+<!-- New Game opening: the inheritance letter (#44). Own dark register. -->
+<div id="intro-screen" class="intro-screen" aria-hidden="true">
+  <div class="intro-inner">
+    <!-- Step 1: name the line -->
+    <div class="intro-view on" id="intro-name">
+      <div class="intro-eyebrow">Before the letter comes</div>
+      <h1 class="intro-name-h">Name your line</h1>
+      <p class="intro-name-lede">A family holds this land, season on season, and gives it their name. What is the name they will carry?</p>
+      <div class="intro-field">
+        <label for="lineage-input">Family surname</label>
+        <input id="lineage-input" type="text" autocomplete="off" spellcheck="false" maxlength="18" value="Crane">
+      </div>
+      <p class="intro-hint">This becomes your line's name on the land, in the ground, and in every heir who comes after.</p>
+      <div class="intro-nav">
+        <button type="button" class="intro-btn ghost" tabindex="-1">Back</button>
+        <button type="button" class="intro-btn pri" id="lineage-continue">Continue</button>
+      </div>
+    </div>
+    <!-- Step 2: the two-page letter -->
+    <div class="intro-view" id="intro-letter">
+      <div id="intro-page"></div>
+      <div class="intro-nav">
+        <button type="button" class="intro-btn" id="intro-prev">Previous</button>
+        <span class="intro-pageno" id="intro-pageno"></span>
+        <button type="button" class="intro-btn pri" id="intro-next">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="desk" style="display:none">
   <div id="almanac" data-season="Spring">
     <div class="masthead">
@@ -567,7 +661,7 @@
     </div>
 
     <footer class="colophon">
-      <span>An Illustrated Almanac of the Sull</span>
+      <span>An Illustrated Almanac of the Sallows</span>
       <span class="seed" id="seedtag"></span>
     </footer>
 
@@ -616,10 +710,11 @@
 
   /* ---------------- game state ---------------- */
   let S;
-  function newGame(seed){
+  function newGame(seed, lineageName){
     SEED = seed>>>0; PRNG = mulberry32(SEED);
     S = {
       year:1, si:0,                 // season index
+      lineageName: normLineage(lineageName),
       currentSetting:"homestead",
       marks:100, food:80, fuel:0, seed:20,
       fields:[0,1,2,3].map(i=>({ id:i, crop:null, progress:0, fert:3 })),
@@ -655,6 +750,7 @@
         alarmedTiers:S.alarmedTiers, regard:S.regard, reckoning:S.reckoning,
         flags:S.flags, weather:S.weather, coldsnap:S.coldsnap,
         dead:S.dead, lost:S.lost, ended:S.ended, tutShown:S.tutShown,
+        lineageName:S.lineageName,
         seedDisplay:SEED, rngState:PRNG.getState(),
       };
       localStorage.setItem(SAVE_KEY, JSON.stringify(snap));
@@ -1264,17 +1360,17 @@
 
   // ---- SPRING ----
   function springFlow(b){
-    b.push(()=>card({ eyebrow:"Year One begins", title:"The charter, and the cold ground",
+    b.push(()=>card({ eyebrow:"Year One begins", title:"Your uncle's ground",
       setting:"homestead",
-      dir:"[a wagon-rutted road, four cleared fields, a lean-to, and a well capped in iron at the property's edge]",
-      body:'<div class="prose"><p class="dropcap">You have taken the charter on a homestead in the Sull: four small fields, a lean-to that sleeps two, a hundred marks, and one field hand named Reuben who came with the land as customs there require. It is Spring. The larder holds eighty measures against the year, and there is no fuel laid in at all.</p><p>They say the ground here keeps accounts. You will have a year to learn what that can mean.</p></div>',
+      dir:"[a wagon-rutted road, four fields gone to seed, a lean-to, and a well capped in iron at the property's edge]",
+      body:'<div class="prose"><p class="dropcap">The place is yours now, come to you as the nearest blood of an uncle you never met. Malachi worked this ground the better part of twenty years, and what he left when he vanished this past winter comes to no more than the land itself: four small fields the weeds have taken back, a lean-to that sleeps two, a hundred marks, and Reuben, who worked beside him and has stayed on. It is Spring. The larder holds eighty measures against the year, and there is no fuel laid in at all.</p><p>They say the ground here keeps accounts, and your uncle is not here to say how. You will have the year to learn what that can mean.</p></div>',
       choices:[{t:"Walk the fields", sub:"begin the year", primary:true, go:next}] }));
 
     // Silas's Welcome (scripted, Day 1)
     b.push(()=>card({ eyebrow:"A caller · Day 1", title:"Silas's Welcome",
       setting:"homestead", speaker:"silas",
       dir:"[a man in a good coat on a poor road, a ledger in his saddlebag, not dismounting]",
-      body:'<div class="prose"><p>Silas Ridley reins up at your gate and does not get down. <span class="said">“Ridley. I hold your charter.”</span> He says it the way another man might say the weather. <span class="said">“A hundred and fifty a year to the bank. Not this year, nor the next: the charter allows a new man his feet. After that, it minds its dates, and so will I.”</span> He looks a long moment at the soft ground by the east field, and something crosses his face he does not explain.</p></div>',
+      body:'<div class="prose"><p>Silas Ridley reins up at your gate and does not get down. <span class="said">“Ridley. I hold the paper on this place, the same as I held it for your uncle.”</span> He says it the way another man might say the weather. <span class="said">“A hundred and fifty a year to the bank, and the debt came down to you along with the land. Not this year, nor the next: the charter allows a new holder his feet. After that, it minds its dates, and so will I.”</span> He looks a long moment at the soft ground by the east field, and something crosses his face he does not explain.</p></div>',
       choices:[
         {t:"“Obliged, Mr. Ridley.”", sub:"keep the peace with your banker", go:()=>resolve(()=>{S.flags.silas="civil";}, "He nods and rides off. You are, it seems, a man with a deadline, two years out.")},
         {t:"“You believe the stories about this ground?”", sub:"needle him; he does not care for it", tag:"−regard", go:()=>resolve(()=>{S.regard-=1;}, "He pauses. <span class=\"said\">“I believe in the ledger,”</span> he says. <span class=\"said\">“The stories are the ledger's business.”</span> He rides off faster than he came.")},
@@ -1301,7 +1397,7 @@
             if(f)f.progress+=0.5;
             // clearing Reuben's tend if he'd been tending (he's at the fair)
             S.fields.forEach(x=>x.tended=false);
-          }, "You stand the day among them. Grange walks "+(f?fieldName(f):"the fields")+" and says the old words over it"+(f?", and that ground will come ripe a touch sooner for the blessing":"")+". The town has seen your face now, and that counts for something in the Sull.");
+          }, "You stand the day among them. Grange walks "+(f?fieldName(f):"the fields")+" and says the old words over it"+(f?", and that ground will come ripe a touch sooner for the blessing":"")+". The town has seen your face now, and that counts for something in the Sallows.");
         }},
         {t:"Skip it and work", sub:"the town notes the newcomer who wouldn't come", tag:"−regard",
          why:"Reuben keeps working the fields as usual. You lose nothing today, but Marrow's Cross remembers who stayed away.",
@@ -1414,7 +1510,7 @@
     b.push(()=>card({ eyebrow:"Winter · the crucible", title:"The short days close in",
       setting:"fields",
       dir:"[frost on the well-cap; the whole valley gone quiet and white]",
-      body:'<div class="prose"><p class="dropcap">Winter in the Sull is the year’s true test. There is no planting now, only the larder, the woodpile, and the long dark between them. What you laid by is what you have.</p></div>'+
+      body:'<div class="prose"><p class="dropcap">Winter in the Sallows is the year’s true test. There is no planting now, only the larder, the woodpile, and the long dark between them. What you laid by is what you have.</p></div>'+
         needBar(),
       choices:[{t:"Face it", sub:"begin winter", primary:true, go:next}] }));
 
@@ -1447,9 +1543,9 @@
     b.push(()=>card({ eyebrow:"Midwinter · the longest night", title:"The Long Vigil",
       setting:"church", speaker:"grange",
       dir:"[the whole town in the church at midnight, every candle lit, an old capped well-head through the open door]",
-      body:'<div class="prose"><p>On the longest night the town does not sleep. They fill the church and they watch, and near midnight Grange reads the names of everyone who died in the Sull this year, slow, one by one, so that none is forgotten and left to be. The liturgy does not say <em>taken.</em> Everyone hears it anyway. Outside, past the graves, the old well-head sits under its cap of iron and salt, and the watching is for it.</p></div>',
+      body:'<div class="prose"><p>On the longest night the town does not sleep. They fill the church and they watch, and near midnight Grange reads the names of everyone who died in the Sallows this year, slow, one by one, so that none is forgotten and left to be. The liturgy does not say <em>taken.</em> Everyone hears it anyway. Outside, past the graves, the old well-head sits under its cap of iron and salt, and the watching is for it.</p></div>',
       choices:[
-        {t:"Watch the night through with them", sub:"the ground eases its accounting", tag:"+regard", primary:true, go:()=>resolve(()=>{S.regard+=6; S.reckoning=Math.max(0,S.reckoning-4);}, "You watch. You do not know what you are watching for, and by dawn you understand no one else quite does either, and that they watch anyway. It is the truest thing you have seen in the Sull.")},
+        {t:"Watch the night through with them", sub:"the ground eases its accounting", tag:"+regard", primary:true, go:()=>resolve(()=>{S.regard+=6; S.reckoning=Math.max(0,S.reckoning-4);}, "You watch. You do not know what you are watching for, and by dawn you understand no one else quite does either, and that they watch anyway. It is the truest thing you have seen in the Sallows.")},
         {t:"Go home to your fire", sub:"keep your own watch", tag:"−regard", go:()=>resolve(()=>{S.regard-=4;}, "You keep your own watch, alone, over your own ground. In the morning the town is a little colder to the man who wouldn't sit the Vigil.")},
       ] }));
 
@@ -1544,7 +1640,7 @@
         ? "The wood ran out in the black of February and the cold came in under the door and did not leave. They found the fire long dead."
         : "The larder came up empty with weeks of winter still to run. A man can work a field he has not eaten from; he cannot do it long.";
       paint('<div class="end"><div class="verdict" style="color:var(--bad)">The run ends</div>'+
-        '<h2>The Sull keeps the land</h2>'+
+        '<h2>The Sallows keeps the land</h2>'+
         '<p class="epi">'+how+'</p>'+
         (S.lost.length?'<p class="note">Lost this winter: '+S.lost.join(", ")+'.</p>':'')+
         '<hr class="hr-hatch">'+
@@ -1562,13 +1658,13 @@
     setScreenType("yearend");
     S.ended=true;
     renderHeader(); renderLedger();
-    const lostLine = S.lost && S.lost.length ? '<p class="note">The winter took: '+S.lost.join(", ")+'. The graves are marked; the ground was given its due.</p>' : '<p class="note">The whole household woke to the thaw. Not everyone in the Sull can say the same.</p>';
+    const lostLine = S.lost && S.lost.length ? '<p class="note">The winter took: '+S.lost.join(", ")+'. The graves are marked; the ground was given its due.</p>' : '<p class="note">The whole household woke to the thaw. Not everyone in the Sallows can say the same.</p>';
     const band=reckBand();
     const groundLine = band==="Whispers"
       ? "The ground kept its whispers to itself this year: crows and cold spots and nothing worse."
       : band==="Warnings"
         ? "The ground muttered more than whispers this year. It has your measure now, and a longer memory than you."
-        : "Something walked the frost this year that should not walk. The Sull will not forget it, and neither, now, will you.";
+        : "Something walked the frost this year that should not walk. The Sallows will not forget it, and neither, now, will you.";
     paint('<div class="end"><div class="verdict">Spring · Year Two · Day 1</div>'+
       '<h2>“I survived another year.”</h2>'+
       '<p class="epi">The frost breaks along the river first. The household wakes to a dripping eave and a thin bright sun, and the year turns over like a page. You made it. Not everyone does.</p>'+
@@ -1636,7 +1732,7 @@
       ()=>card({eyebrow:"At the gate",title:"A Foundling",
         setting:"gate",
         dir:"[a thin figure at the fence-line at dusk, not quite a child, not quite not]",
-        body:'<div class="prose"><p>A stray hand stands at your gate as the light goes, one of the Sull’s foundlings, grown wild from no wagon and no vat anyone will own to. It watches you and does not speak.</p></div>',
+        body:'<div class="prose"><p>A stray hand stands at your gate as the light goes, one of the Sallows’ foundlings, grown wild from no wagon and no vat anyone will own to. It watches you and does not speak.</p></div>',
         choices:[
           {t:"Take them in",sub:"free labor, and another winter mouth",tag:"+1 mouth",why:"Another hand works the fields, but winter's food and fuel needs grow to match, for good.",primary:true,go:()=>resolve(()=>{S.hands.push(mkHand(null, pick(["Wren","Cob","Lark","Fen"]), "Foundling", 2, {mind:"wary"}));},"You open the gate. It comes in like a cat, wary and grateful at once. Free hands in the field, and one more belly to carry to spring.")},
           // sub deliberately kept close to the tag here: this choice's only
@@ -1827,7 +1923,7 @@
     const html =
       '<div class="talkport"><div class="silh"><div class="head"></div><div class="neck"></div><div class="shoulders"></div></div>'+
       '<div class="nameplate"><b>Reuben</b><span>your foreman</span></div></div>'+
-      '<div class="askpanel-body"><div class="answer">I am Reuben, and I will be your foreman. New to the Sull, are you. The first year is the hard one. Let me walk you through it and you will have the way of it by spring.</div>'+
+      '<div class="askpanel-body"><div class="answer">I am Reuben, and I will be your foreman. New to the Sallows, are you. The first year is the hard one. Let me walk you through it and you will have the way of it by spring.</div>'+
       '<div class="askq" id="tut-yes">Walk me through it</div>'+
       '<div class="askq" id="tut-no">I will find my own way</div></div>';
     openOverlay(html, panel=>{
@@ -1870,20 +1966,100 @@
     const small = btn.querySelector("small");
     if(small) small.textContent = has ? "resume where you left off" : "no game in progress";
   }
-  function beginNewGame(){
-    newGame((Math.random()*1e9)>>>0);
+  /* ---------------- New Game opening: the inheritance letter (#44) ----------------
+     Every New Game runs a lineage-naming step and a two-page letter (a black
+     screen, read at the player's own pace with Previous/Next) before handing
+     into the first Morning Brief. beginNewGame() below is the real start; the
+     intro is a front porch onto it, and the test harness calls beginNewGame()
+     directly to skip it. */
+  // Trim, collapse inner whitespace, cap length, capitalize the first letter so
+  // the surname reads right in the letter. Falls back to a default so the line
+  // is never blank (including when the harness calls beginNewGame() with no name).
+  function normLineage(name){
+    let s = (name==null ? "" : String(name)).replace(/\s+/g," ").trim().slice(0,18);
+    if(!s) s = "Crane";
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+  let introName = "Crane", introPage = 0;
+  function introPages(){
+    const lp = normLineage(introName), lu = lp.toUpperCase();
+    return [
+      '<div class="letter-h">A letter reaches you, back east</div>'+
+      '<div class="letter">'+
+        '<div class="letter-head">'+
+          '<div class="co">The Sallows Charter Company</div>'+
+          '<div class="office">Land Office at Marrow&rsquo;s Cross</div>'+
+          '<div class="date">March 3rd, 1884</div>'+
+        '</div>'+
+        '<p>To the next of kin of <b>MALACHI '+lu+'</b>, holder of the '+lp+' place:</p>'+
+        '<p>The above holder is entered in the Charter rolls as deceased, this past winter. No remains were recovered.</p>'+
+        '<p>A holding left without a resident heir reverts to the Company after one full year. Our records name you his nearest blood. Should you take up the parcel, you take up its obligations, and the mortgage against the land passes to you entire.</p>'+
+        '<p>The Company makes no representation as to the condition of the ground, the buildings, or the season.</p>'+
+        '<p>We do not advise. We record.</p>'+
+        '<p class="signoff">Clerk of the Rolls, Marrow&rsquo;s Cross</p>'+
+      '</div>',
+      '<div class="intro-prose">'+
+        '<p>You had never met the man. You went anyway.</p>'+
+        '<p>The Sallows lies a long way past where the rail gives out: low country, pale and wet, the grass the color of old bone. Folk you asked for the way went quiet when you named the place. You came to the '+lp+' place at dusk, to a house with dark windows, four small fields gone to seed, and crows that did not startle when you passed.</p>'+
+        '<p>At first light, an old man was waiting at the fence. <span class="said">&ldquo;You&rsquo;ll be the blood, then,&rdquo;</span> he said. <span class="said">&ldquo;Reuben. I worked this ground for your uncle, near twenty year. There&rsquo;s a deal wants doing before winter. Best we start.&rdquo;</span></p>'+
+      '</div>',
+    ];
+  }
+  function showIntroView(id){
+    document.querySelectorAll('#intro-screen .intro-view').forEach(v=>v.classList.toggle('on', v.id===id));
+  }
+  function renderIntroPage(){
+    const pages = introPages();
+    if(introPage<0) introPage=0; if(introPage>pages.length-1) introPage=pages.length-1;
+    document.getElementById('intro-page').innerHTML = pages[introPage];
+    document.getElementById('intro-pageno').textContent = 'Page '+(introPage+1)+' of '+pages.length;
+    document.getElementById('intro-next').textContent = introPage>=pages.length-1 ? 'Begin' : 'Next';
+    document.getElementById('intro-screen').scrollTop = 0;
+  }
+  function updateContinueEnabled(){
+    document.getElementById('lineage-continue').disabled = !document.getElementById('lineage-input').value.trim();
+  }
+  function startIntro(){
+    document.getElementById('start-screen').style.display = 'none';
+    const scr = document.getElementById('intro-screen');
+    scr.classList.add('on'); scr.setAttribute('aria-hidden','false');
+    introPage = 0; showIntroView('intro-name');
+    updateContinueEnabled();
+    const inp = document.getElementById('lineage-input');
+    try { inp.focus(); inp.select(); } catch(e){}
+  }
+  function introToLetter(){
+    introName = document.getElementById('lineage-input').value;
+    showIntroView('intro-letter'); renderIntroPage();
+  }
+  function introNext(){
+    if(introPage >= introPages().length-1){ finishIntro(); return; }
+    introPage++; renderIntroPage();
+  }
+  function introPrev(){
+    if(introPage===0){ showIntroView('intro-name'); return; }
+    introPage--; renderIntroPage();
+  }
+  function finishIntro(){
+    const scr = document.getElementById('intro-screen');
+    scr.classList.remove('on'); scr.setAttribute('aria-hidden','true');
+    beginNewGame(introName);
+  }
+
+  function beginNewGame(lineageName){
+    newGame((Math.random()*1e9)>>>0, lineageName);
     showGame();
     runStep();
     tutInit();
   }
   function confirmNewGame(){
-    if(!hasSave()){ beginNewGame(); return; }
+    if(!hasSave()){ startIntro(); return; }
     const html = '<div class="rosterhdr"><b>Start a new game</b></div>'+
       '<div class="prose" style="padding:0 16px 8px"><p>You have a game in progress. Starting new will erase it. There is no way back once you do.</p></div>'+
       '<div class="tip-nav"><button class="wbtn" id="newgame-no">No, keep my game</button><button class="wbtn pri" id="newgame-yes">Yes, start new</button></div>';
     openOverlay(html, panel=>{
       panel.querySelector('#newgame-no').addEventListener('click', closeOverlay);
-      panel.querySelector('#newgame-yes').addEventListener('click', ()=>{ closeOverlay(); clearSave(); beginNewGame(); });
+      panel.querySelector('#newgame-yes').addEventListener('click', ()=>{ closeOverlay(); clearSave(); startIntro(); });
     });
   }
   function continueGame(){
@@ -1942,6 +2118,16 @@
   document.getElementById("btn-how-to-play").addEventListener("click", showHowToPlay);
   document.getElementById("btn-settings").addEventListener("click", showSettings);
 
+  // intro (the inheritance letter, #44)
+  (function(){
+    const inp = document.getElementById("lineage-input");
+    inp.addEventListener("input", updateContinueEnabled);
+    inp.addEventListener("keydown", e=>{ if(e.key==="Enter" && inp.value.trim()) introToLetter(); });
+    document.getElementById("lineage-continue").addEventListener("click", ()=>{ if(inp.value.trim()) introToLetter(); });
+    document.getElementById("intro-prev").addEventListener("click", introPrev);
+    document.getElementById("intro-next").addEventListener("click", introNext);
+  })();
+
   /* ---------------- fixed-size desktop canvas (#47 phase 1) ---------------- */
   const DESKTOP_BREAKPOINT = 1100, CANVAS_W = 1920, CANVAS_H = 1080;
   function applyDesktopScale(){
@@ -1966,7 +2152,7 @@
   applyDesktopScale();
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP, beginNewGame, continueGame, confirmNewGame, hasSave, saveGame, loadGame, clearSave, showGame, refreshContinueButton, showHowToPlay, showSettings, musicOn, sfxOn, setMusicOn, setSfxOn, applyDesktopScale };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP, beginNewGame, continueGame, confirmNewGame, hasSave, saveGame, loadGame, clearSave, showGame, refreshContinueButton, showHowToPlay, showSettings, musicOn, sfxOn, setMusicOn, setSfxOn, applyDesktopScale, startIntro, finishIntro, normLineage };
   }
 })();
 </script>

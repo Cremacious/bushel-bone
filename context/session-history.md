@@ -7,6 +7,27 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 10 — 2026-07-28 — New Game opening letter (#44), Day-1 inheritance reframe (part of #43), Sull→Sallows scrub
+
+**Worked on:** Built the **New Game opening** (issue #44) into `prototype/year1.html`, then, at Chris's direction, folded in two adjacent pieces: the **Day-1 inheritance reframe** (the first task of #43) and a full **Sull→Sallows** rename across all player-facing content.
+
+**The opening (#44), to the locked copy in the issue:**
+- A **lineage-naming step** ("Name your line"): a surname field prefilled `Crane`, editable, capped at 18 chars, Continue disabled on a blank, Enter also advances. Stored as `S.lineageName` and persisted in the save (survives a save/load round-trip), ready for the later Codex/graveyard/heir uses.
+- A **two-page letter**, its own black-screen register regardless of the day/night theme, paged with Previous/Next and a page counter, Next becoming **Begin** on page 2. Page 1 is the Sallows Charter Company letter styled as black ink on an aged-paper leaf; **page 2 is plain cream-on-dark narration** (not a letter, so it deliberately does not wear the paper — Chris's call). `{LINEAGE NAME}` fills uppercase beside MALACHI and title-case in "the {name} place" on both pages.
+- Plays on **every** New Game (Continue skips it); routes through `startIntro()` → `beginNewGame(name)`, leaving the test-harness entry point (`beginNewGame()` with no args) intact.
+
+**Day-1 reframe (part of #43):** the opening Morning Brief card went from a generic charter ("You have taken the charter on a homestead…") to **"Your uncle's ground"**: inherited as Malachi's nearest blood, he *vanished this past winter*, Reuben stays on as the hand who worked beside him. All mechanical starting facts preserved. **Silas's Welcome** now hands over the inherited mortgage (*"I hold the paper on this place, the same as I held it for your uncle… the debt came down to you along with the land"*), still cold and transactional, keeping the eerie "soft ground by the east field" beat. The rest of the #43 epic (journals, Old Well payoff, reunion ending, Codex field) remains its own work.
+
+**Sull→Sallows scrub:** the docs were renamed Sull→Sallows in a prior commit but the prototype and content still said "Sull". Renamed all 11 prototype references and ~24 across the seven `content/events/*.yaml` files. Done as a careful proper-noun rename (case-sensitive, so lowercase "sullen" was left alone), with the three tricky forms handled by hand: two possessives → "the Sallows'", and one contraction ("the Sull's not for sale" = "the Sull is") expanded to "the Sallows isn't for sale". All seven YAML files re-parsed clean.
+
+**Verified:** full Vitest suite green at 27 files / 90 tests (new `tests/intro-opening.test.mjs`, 9 tests; two start-screen tests updated for the intro; no test referenced the old copy or the word "Sull"). Walked the whole flow live in the browser (start → name → letter p1 → p2 → Begin → reframed Morning Brief → Silas), no console errors.
+
+**Artifacts changed:** `prototype/year1.html`, `prototype/tests/intro-opening.test.mjs` (new), `prototype/tests/start-screen.test.mjs`, all seven `content/events/*.yaml`, `CLAUDE.md`, this file.
+
+**Next up:** #45 (names config) and #46 (dialogue extraction) are the natural plumbing before more narrative pours in; then the rest of #43, plus the standing milestone-2 items (#24 art direction, #48 mobile canvas, a Vercel proof-of-concept for testers).
+
+---
+
 ## Session 9 — 2026-07-27 — Onboarding clarity pass, part 2 (issues #27 to #42, D-039)
 
 **Worked on:** Chris ran a full playtest of the just-shipped onboarding clarity pass (`docs/superpowers/specs/2026-07-27-onboarding-clarity-pass-design.md`) and reported a long list of remaining confusion points. Rather than a single design doc, this session filed 16 GitHub issues (#27 to #42) covering every point, agreed an implementation order with Chris, then worked through them one at a time: implement, report exactly what changed and how to see it, wait for explicit approval, close the issue only on a yes.

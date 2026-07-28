@@ -268,7 +268,7 @@
   illustration: "the whole household at the windows in the dark, and beyond the glass the burial ground standing up, all of it, at once"
   setup: >
     There is no omen tonight. There is only the ground, standing up: the whole burial field,
-    the whole low Sull, every name you laid down and did not name, coming home together across
+    the whole low Sallows, every name you laid down and did not name, coming home together across
     the frost toward the only light left burning. The Vigil that held it since the Salting has
     failed, and it has failed on your account.
   crisis_gate:
@@ -290,7 +290,7 @@
             - flag: { set: land-lost, to: true }
     - id: stand-in-the-door
       text: "Stand in the door and meet it."
-      result: "You stand in your own door as the ground comes home, and you meet it, and it is the last thing you do on land that was never truly yours to keep. The Sull takes the homestead back into itself before the spring."
+      result: "You stand in your own door as the ground comes home, and you meet it, and it is the last thing you do on land that was never truly yours to keep. The Sallows takes the homestead back into itself before the spring."
       effects:
         - flag: { set: land-lost, to: true }
 
