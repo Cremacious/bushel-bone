@@ -7,6 +7,22 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 14 — 2026-07-28 — Gameplay-depth design, Claude Design reconciliation, and the prototype rebuild (Plan 1 built & merged)
+
+**Worked on:** Chris flagged the prototype as "interesting but not fun — no real gameplay, players get bored." A long design-first session (no code until a plan was approved), then a subagent-driven build of the foundation.
+
+**Design (brainstorming skill, all locked as D-042→D-048; spec `docs/superpowers/specs/2026-07-28-gameplay-depth-design.md`):**
+- The root cause: no scarce resource spent on competing choices. Fix = a **season action-economy** (D-043) — ~5 weekly beats, always over-subscribed — plus **Marrow's Cross exploration** (D-044, the TOWN tab: a menu of NPC scenes, per-NPC standing + rotating deck), an **economic-squeeze difficulty curve** (D-045, flat budget, one telegraphed pressure per year), and a reframe to a **legacy/dynasty survival sim** (D-042) with a **legacy-ledger score** and succession economics (D-046) — the game is endless, you play to last, kind legacy = a gift to your heir, cruelty = a curse. Content-not-power meta upheld.
+- A follow-up deep-dive fleshed out the **minute-to-minute weekly loop** (D-048, spec §10): two interlocking economies (assign the crew's clone-days + spend your own week), farming+survival crew tasks, hands as mortal individuals (staged condition Steady→Worn→Failing→Lost, burial ritual, cruelty witnessed and logged), a three-tier crop gamble incl. the Weird crops, the four ledger resources made alive (spoilage/winter fuel/per-hand cold), forecast+surprise events with lasting compounding consequences, and a reckoning that bites. The Mechanics Bible already had 19 systems; the *loop* was the gap.
+
+**Claude Design reconciliation (D-047):** Chris built a new UI ("V0.3") in `design/version-1/`. Reviewed it against the design: strong alignment (two form factors; a six-tab phone bar that realizes the locked portrait-primary decision and already reserves the Town and Almanac tabs). Two conflicts resolved: the opening letter becomes a **hybrid** (canon ≈1884 facts + the design's tighter lines; the design's placeholder 1841/S.Ridley not adopted), and the **"Day X of 20" counter sits over the ~6/weekly action economy.** The prototype is to be **rebuilt** against V0.3 (modular vanilla, no framework, prototype-first before the Next.js production build).
+
+**Build (writing-plans → subagent-driven-development):** wrote a staged plan (`docs/superpowers/plans/2026-07-28-prototype-rebuild-foundation.md`, Plans 1→5) and executed **Plan 1 (foundation)** subagent-driven — fresh implementer + spec-compliance + code-quality review per unit, on branch `feat/prototype2-foundation`, now **merged to main**. Result: **`prototype2/`** — a pure `(state, action) => state` core (state model + reducer + week/season/year clock), a render layer drawing the V0.3 shell (masthead, brass ledger, six-tab nav, night/day, phone + desktop), and the `content/*.yaml` pipeline ported to ES-module data (reuses #45/#46). **22 tests green (8 files)**; `prototype/year1.html` untouched. Reviews caught real bugs (a duplicate `seed` key and a `:root` theme-scope issue in the plan itself; added a generator drift-guard, a PRNG determinism test, and `el()` boolean-attr hardening) — the plan doc was corrected to match.
+
+**Next:** **Plan 2 — the weekly loop & the hands** (read → assign crew → your action → resolve; hand condition tracks; crops; the four live resources), then Plans 3-5 (town, the squeeze/years, polish + the Almanac). All numbers owned by the balance model (Q-003).
+
+---
+
 ## Session 13 — 2026-07-28 — Founder story, Year-1 prototype parts: Malachi's journals + Reuben's thread (#43)
 
 **Worked on:** The buildable-now slice of #43 (the founder story, "The Inherited Vigil"). Most of #43 — the Old Well payoff (Years 7/10), the earned-reunion ending, the Codex "how much of the truth was uncovered" field, and the fixed-anchor-vs-new-lineage succession logic — lives in years and systems the Year-1 vertical slice doesn't have, so those stay production-port-gated (their prose is already canon in narrative-bible §0.12–§0.14). The Year-1-appropriate pieces are the **journals feature** and **Reuben's "knew Malachi" thread**; Chris picked both, plus a masthead book control with an unread dot. The Day-1 inheritance framing was already done in Session 10.
