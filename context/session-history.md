@@ -7,6 +7,25 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 15 — 2026-07-28 — Prototype rebuild Plan 2: the weekly loop & the hands (built & merged)
+
+**Worked on:** Executed **Plan 2** of the prototype rebuild subagent-driven, on branch `feat/prototype2-weekly-loop`, now **merged to main** (merge `f04dc93`). Makes one full **Year 1 (Spring → Winter) playable** in `prototype2/`: plant the four fields, assign each hand a weekly task and spend your own week, watch crops grow and the larder drain, keep the crew fed and warm, and lose a hand to a bad winter if you fail. This is the fun engine (the season time-economy, D-043/D-048) rendered in the V0.3 design.
+
+**Built (five units, each spec- + code-quality-reviewed with fix loops, then browser-verified):**
+- **Pure core** (DOM-free, unit-tested): `crops.js` (staple/cash tiers + `ripe`/`weeklyGrowth`), `balance.js` (first-pass tuning, all Q-003-owned), the season/week **phase machine** (brief → planting → week → dusk → next season; yearend at winter's close), the hand **strain/condition track** (Steady→Worn→Failing→Lost, derived from strain), and the reducer actions (`BEGIN_SEASON`, `PLANT`, `FALLOW`, `SOW`, `ASSIGN`, `SET_PLAYER_ACTION`, `RESOLVE_WEEK`, `END_SEASON`). `resolveWeek` is the heart: labor → growth → eating → winter cold → strain → loss.
+- **Render layer:** a phase **router** + one screen per phase (Morning Brief, Planting, the two-economy **Weekly Plan**, Dusk day-book, the Year-1 verdict) and read-only **Fields/Hands/Ledger/Almanac** tab views, on the Plan-1 shell/tokens/`el()`, styled in `screens.css` (token vars only, V0.3 language).
+- **A full-year headless playthrough** proves the loop never wedges and a cautious line survives; the pressure lands on the **hand's condition** (a solo hand worked all 20 weeks ends at strain 80/failing) not the resources, which is exactly the "keep your people alive" core.
+
+**Reviews caught real issues (all fixed before merge):** a hand was silently tired for empty motion (tend on bare ground / harvest with nothing ripe) — fixed in both layers (`resolveWeek` only charges strain for real work; the Weekly Plan disables a dead task with a plain reason, per D-039); a hardcoded season length → `WEEKS_PER_SEASON`; `.prose > .prose` nesting; season-label duplication single-sourced to `seasonLabel()`. First-pass balance nudge (`hardLabor` 6→4, `fuelPerChopWeek` 5→10, documented in `balance.js`) so a naive solo line survives the year.
+
+**19 files / 74 tests green.** `prototype/year1.html` untouched.
+
+**Known follow-ups (deferred, noted for later):** the Dusk CTA reads "Turn the page" (plan/test text) vs the design mockup's "Turn the year" — a one-line copy reconciliation; per-field task targeting is simplified (tend/harvest default to the first sensible field) — a genuine Plan-3 refinement; seed doesn't yet vary a run (no RNG consumed until events land in Plan 3).
+
+**Next:** **Plan 3 — depth & drama** (events with lasting consequences, the reckoning biting, death's burial ritual + traits + moral weight, forage/hunt/preserve, spoilage), then Plan 4 (the town), Plan 5 (the year & the squeeze), Plan 6 (polish & the Almanac). Plus the standing milestone-2 items (#24 art direction, #48, a Vercel proof-of-concept).
+
+---
+
 ## Session 14 — 2026-07-28 — Gameplay-depth design, Claude Design reconciliation, and the prototype rebuild (Plan 1 built & merged)
 
 **Worked on:** Chris flagged the prototype as "interesting but not fun — no real gameplay, players get bored." A long design-first session (no code until a plan was approved), then a subagent-driven build of the foundation.
