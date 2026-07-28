@@ -1,0 +1,27 @@
+import { describe, it, expect } from "vitest";
+import { initialState, season } from "../src/core/state.js";
+import { reduce } from "../src/core/reducer.js";
+
+function toDusk(s) {
+  s = reduce(s, { type: "BEGIN_SEASON" });
+  if (s.phase === "planting") s = reduce(s, { type: "SOW" });
+  for (let i = 0; i < 5; i++) s = reduce(s, { type: "RESOLVE_WEEK" });
+  return s; // phase dusk
+}
+
+describe("season transition", () => {
+  it("END_SEASON from spring's dusk begins summer at the brief", () => {
+    let s = toDusk(initialState(1));
+    expect(s.phase).toBe("dusk");
+    s = reduce(s, { type: "END_SEASON" });
+    expect(season(s)).toBe("summer");
+    expect(s.phase).toBe("brief");
+  });
+  it("END_SEASON from winter's dusk ends Year 1 (phase yearend)", () => {
+    let s = initialState(1); s.seasonIndex = 3; // winter
+    s = toDusk(s);
+    s = reduce(s, { type: "END_SEASON" });
+    expect(s.phase).toBe("yearend");
+    expect(s.ended).toBe(true);
+  });
+});
