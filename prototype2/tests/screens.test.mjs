@@ -31,3 +31,17 @@ describe("shell + router", () => {
     expect(root.querySelector(".warnline")).toBeTruthy();
   });
 });
+
+describe("morning brief", () => {
+  it("year-1 spring shows the uncle's-ground brief and Begin advances to planting", () => {
+    const root = document.createElement("div");
+    let state = initialState(1, "Mackall");
+    const dispatch = (a) => { state = reduce(state, a); };
+    const stage = renderShell(root, state, dispatch);
+    renderScreen(stage, state, dispatch);
+    expect(root.textContent).toContain("Your uncle's ground");
+    expect(root.textContent).toContain("Malachi"); // {{npc.malachi}} resolved
+    root.querySelector(".choicecard").click();
+    expect(state.phase).toBe("planting");
+  });
+});
