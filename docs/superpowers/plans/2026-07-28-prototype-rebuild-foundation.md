@@ -427,8 +427,8 @@ export function makeHand(id, name, { body = "average", mind = "average" } = {}) 
 
 export function initialState(seed = 1, lineageName = "Crane") {
   return {
-    seed: seed >>> 0,
-    rngState: seed >>> 0,
+    rngSeed: seed >>> 0,   // the original game seed (display/restart)
+    rngState: seed >>> 0,  // the PRNG's resumable cursor
     lineageName,
     year: 1,
     seasonIndex: 0,          // 0=spring..3=winter
@@ -611,8 +611,9 @@ const TABS = ["Home", "Fields", "Hands", "Town", "Ledger", "Almanac"];
 // Renders the persistent chrome around whatever screen is active. Reads state,
 // writes DOM into `root`, and calls back on dispatchable UI (theme, tabs, advance).
 export function renderShell(root, state, dispatch) {
-  root.setAttribute("data-theme", state.theme);
-  root.setAttribute("data-season", season(state));
+  // theme/season live on <html> so tokens.css's :root[data-theme] selectors match
+  document.documentElement.setAttribute("data-theme", state.theme);
+  document.documentElement.setAttribute("data-season", season(state));
   clear(root);
 
   const dayOf20 = (state.week - 1) * 4 + 1; // week 1 -> day 1; a week is 4 days
@@ -688,7 +689,7 @@ describe("shell render", () => {
     expect(root.querySelectorAll(".ledger .cell").length).toBe(4);
     expect([...root.querySelectorAll(".tabbar .tab")].map((t) => t.textContent)).toEqual(TABS);
     expect(root.querySelector(".when").textContent).toContain("Day 1 of 20");
-    expect(root.getAttribute("data-season")).toBe("spring");
+    expect(document.documentElement.getAttribute("data-season")).toBe("spring");
   });
   it("the theme toggle dispatches SET_THEME and re-renders to day", () => {
     const root = document.createElement("div");
@@ -697,7 +698,7 @@ describe("shell render", () => {
     renderShell(root, state, dispatch);
     root.querySelector(".themetog").click();
     expect(state.theme).toBe("day");
-    expect(root.getAttribute("data-theme")).toBe("day");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("day");
   });
 });
 ```
