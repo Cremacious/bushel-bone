@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
+<style>
+  html,body{ margin:0; padding:0; background:#0b0906; }
+  *{ box-sizing:border-box; }
+  a{ color:#d9a441; text-decoration:none; }
+  a:hover{ color:#f0e4c6; }
+  @keyframes bb-turn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+  @keyframes bb-rule{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+  @keyframes bb-line{ from{ opacity:0; transform:translateX(-8px); } to{ opacity:1; transform:none; } }
+  @keyframes bb-lineB{ from{ opacity:0; transform:translateX(-8px); } to{ opacity:1; transform:none; } }
+  @keyframes bb-turnB{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+  @keyframes bb-tick{ 0%{ transform:translateY(0); opacity:1; } 40%{ transform:translateY(-7px); opacity:0; } 41%{ transform:translateY(7px); } 100%{ transform:translateY(0); opacity:1; } }
+  @keyframes bb-tickB{ 0%{ transform:translateY(0); opacity:1; } 40%{ transform:translateY(-7px); opacity:0; } 41%{ transform:translateY(7px); } 100%{ transform:translateY(0); opacity:1; } }
+  @keyframes bb-rain{ from{ transform:translateY(-40px); } to{ transform:translateY(520px); } }
+  @keyframes bb-snow{ from{ transform:translateY(-30px) translateX(0); } to{ transform:translateY(520px) translateX(26px); } }
+  @keyframes bb-stain{ 0%,100%{ opacity:.28; transform:translate(-50%,-50%) scale(1); } 50%{ opacity:.6; transform:translate(-50%,-50%) scale(1.07); } }
+  @keyframes bb-crow{ 0%,92%,100%{ opacity:1; } 94%,98%{ opacity:.12; } }
+  @keyframes bb-bleed{ from{ opacity:0; transform:translateY(-50%) scale(.5); } to{ opacity:1; transform:translateY(-50%) scale(1); } }
+  @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
+</helmet>
+
+<div style="height:100vh;min-height:640px;display:flex;flex-direction:column;background:#17130d;color:#e9dcbe;font-family:Spectral,Georgia,serif;overflow:hidden;position:relative">
+
+  <div style="height:4px;flex:0 0 auto;background:{{ accent }}"></div>
+
+  <div style="flex:0 0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:11px 26px;background:linear-gradient(rgba(11,9,6,.9),rgba(11,9,6,.55));border-bottom:1px solid #3a3020">
+    <span style="font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#c3b087;font-weight:600;white-space:nowrap">Bushel &amp; Bone</span>
+    <span style="width:1px;height:30px;background:#3a3020"></span>
+    <span style="font-family:'IM Fell English SC',serif;font-size:31px;line-height:1;color:#f0e4c6">{{ seasonName }}</span>
+    <span style="font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;white-space:nowrap;color:{{ accent }}">{{ dayLine }}</span>
+    <span style="display:flex;gap:4px">
+      <sc-for list="{{ pips }}" as="p" hint-placeholder-count="4">
+        <span style="width:8px;height:8px;border:1px solid #4b3f2b;background:{{ p.bg }}"></span>
+      </sc-for>
+    </span>
+    <span style="margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <span style="display:flex;align-items:center;gap:9px">
+        <sc-if value="{{ isRain }}" hint-placeholder-val="{{ true }}">
+          <svg width="26" height="26" viewBox="0 0 30 30"><path d="M7 15 h14 a4.5 4.5 0 0 0 0-9 a5.5 5.5 0 0 0-10.5-1.6 A4.5 4.5 0 0 0 7 15 Z" stroke="#c3b087" stroke-width="1.6" fill="none" stroke-linecap="round"></path><g stroke="#c3b087" stroke-width="1.6" stroke-linecap="round"><line x1="10" y1="19" x2="8.5" y2="25"></line><line x1="15" y1="19" x2="13.5" y2="25"></line><line x1="20" y1="19" x2="18.5" y2="25"></line></g></svg>
+        </sc-if>
+        <sc-if value="{{ isSun }}" hint-placeholder-val="{{ false }}">
+          <svg width="26" height="26" viewBox="0 0 30 30"><circle cx="15" cy="15" r="5.5" stroke="#c3b087" stroke-width="1.6" fill="none"></circle><g stroke="#c3b087" stroke-width="1.6" stroke-linecap="round"><line x1="15" y1="3.5" x2="15" y2="7"></line><line x1="15" y1="23" x2="15" y2="26.5"></line><line x1="3.5" y1="15" x2="7" y2="15"></line><line x1="23" y1="15" x2="26.5" y2="15"></line><line x1="7" y1="7" x2="9.5" y2="9.5"></line><line x1="20.5" y1="20.5" x2="23" y2="23"></line><line x1="20.5" y1="9.5" x2="23" y2="7"></line><line x1="7" y1="23" x2="9.5" y2="20.5"></line></g></svg>
+        </sc-if>
+        <sc-if value="{{ isCloud }}" hint-placeholder-val="{{ false }}">
+          <svg width="26" height="26" viewBox="0 0 30 30"><path d="M7 20 h14 a4.5 4.5 0 0 0 0-9 a5.5 5.5 0 0 0-10.5-1.6 A4.5 4.5 0 0 0 7 20 Z" stroke="#c3b087" stroke-width="1.6" fill="none" stroke-linecap="round"></path></svg>
+        </sc-if>
+        <sc-if value="{{ isSnow }}" hint-placeholder-val="{{ false }}">
+          <svg width="26" height="26" viewBox="0 0 30 30"><g stroke="#c3b087" stroke-width="1.6" stroke-linecap="round"><line x1="15" y1="5" x2="15" y2="25"></line><line x1="6.5" y1="9.8" x2="23.5" y2="20.2"></line><line x1="23.5" y1="9.8" x2="6.5" y2="20.2"></line></g></svg>
+        </sc-if>
+        <span style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#c3b087;white-space:nowrap">{{ weatherLabel }}</span>
+      </span>
+      <span style="width:1px;height:30px;background:#3a3020"></span>
+      <span onClick="{{ openHelp }}" style="display:grid;place-items:center;width:34px;height:34px;border:1px solid #4b3f2b;font-size:16px;color:#c3b087;cursor:pointer" style-hover="border-color:#d9a441;color:#f0e4c6">?</span>
+      <span onClick="{{ restart }}" style="display:grid;place-items:center;height:34px;padding:0 12px;border:1px solid #4b3f2b;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#c3b087;cursor:pointer;white-space:nowrap" style-hover="border-color:#d9a441;color:#f0e4c6">New run</span>
+    </span>
+  </div>
+
+  <div style="flex:0 0 auto;display:flex;align-items:center;gap:16px;padding:9px 26px;background:rgba(11,9,6,.72);border-bottom:1px solid #3a3020;min-width:0">
+    <span style="width:4px;height:26px;flex:0 0 auto;background:{{ accent }}"></span>
+    <span style="font-family:'IM Fell English SC',serif;font-size:21px;letter-spacing:.04em;color:#f0e4c6;white-space:nowrap;flex:0 0 auto">{{ placeName }}</span>
+    <span style="font-family:'IM Fell English',serif;font-style:italic;font-size:15px;color:#c3b087;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ placeSub }}</span>
+  </div>
+
+  <div style="flex:1;min-height:0;display:flex">
+
+    <div style="flex:1.05;min-width:0;position:relative;overflow:hidden;background:repeating-linear-gradient(135deg,#26201a 0 4px,#2e2720 4px 8px)">
+      <div style="position:absolute;inset:0;background:radial-gradient(130% 120% at 50% 45%,transparent 42%,rgba(0,0,0,.72) 100%)"></div>
+
+      <sc-if value="{{ isRain }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <span style="position:absolute;left:14%;top:0;width:2px;height:24px;background:#5a7d99;opacity:.3;animation:bb-rain 2.2s linear infinite"></span>
+          <span style="position:absolute;left:33%;top:0;width:2px;height:30px;background:#5a7d99;opacity:.24;animation:bb-rain 2.7s .4s linear infinite"></span>
+          <span style="position:absolute;left:57%;top:0;width:2px;height:20px;background:#5a7d99;opacity:.28;animation:bb-rain 2s .9s linear infinite"></span>
+          <span style="position:absolute;left:78%;top:0;width:2px;height:28px;background:#5a7d99;opacity:.2;animation:bb-rain 2.5s 1.3s linear infinite"></span>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isSnow }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <span style="position:absolute;left:18%;top:0;width:4px;height:4px;border-radius:50%;background:#e9dcbe;opacity:.7;animation:bb-snow 8s linear infinite"></span>
+          <span style="position:absolute;left:44%;top:0;width:3px;height:3px;border-radius:50%;background:#e9dcbe;opacity:.6;animation:bb-snow 10s 1.5s linear infinite"></span>
+          <span style="position:absolute;left:71%;top:0;width:5px;height:5px;border-radius:50%;background:#e9dcbe;opacity:.55;animation:bb-snow 9s 3s linear infinite"></span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showStain }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <span style="position:absolute;left:30%;top:42%;width:230px;height:130px;border-radius:50%;background:radial-gradient(circle,#a892c4 0%,transparent 66%);animation:bb-stain {{ stainCycle }} ease-in-out infinite"></span>
+          <span style="position:absolute;left:11%;top:14%;font-size:26px;color:#0d0b07;animation:bb-crow 7s linear infinite">&#9679;</span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isPlant }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;inset:20px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:12px">
+          <sc-for list="{{ fieldMap }}" as="f" hint-placeholder-count="4">
+            <div style="position:relative;overflow:hidden;padding:14px 16px;display:flex;flex-direction:column;border:{{ f.border }};background:{{ f.bg }}">
+              <div style="position:absolute;inset:0;background:radial-gradient(110% 100% at 50% 100%,transparent 55%,rgba(0,0,0,.5) 100%)"></div>
+              <div style="position:relative;display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+                <span style="font-family:'IM Fell English SC',serif;font-size:17px;letter-spacing:.04em;color:#f0e4c6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</span>
+                <span style="font-size:12px;color:#c3b087;white-space:nowrap">fert <span style="letter-spacing:2px;color:{{ f.fertColor }}">{{ f.fertDots }}</span></span>
+              </div>
+              <div style="position:relative;margin-top:auto">
+                <sc-if value="{{ f.chipLabel }}" hint-placeholder-val="{{ true }}">
+                  <span style="display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding:2px 8px;color:{{ f.chipInk }};background:{{ f.chipBg }};border:1px solid {{ f.chipInk }}">{{ f.chipLabel }}</span>
+                </sc-if>
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:7px">
+                  <span style="font-size:17px;color:#f0e4c6;white-space:nowrap">{{ f.state }}</span>
+                  <span style="font-family:'Courier Prime',monospace;font-size:12px;color:#c3b087;white-space:nowrap">{{ f.cost }}</span>
+                </div>
+                <div style="font-family:'IM Fell English',serif;font-style:italic;font-size:13px;color:#c3b087;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.note }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasSpeaker }}" hint-placeholder-val="{{ true }}">
+        <div style="position:absolute;right:26px;bottom:0;width:230px;height:330px;max-height:68%">
+          <div style="position:absolute;left:0;right:0;bottom:0;top:26px;background:linear-gradient(#3a3229,#1d1710);border-bottom:0;border-left:1px solid #d9a441;border-right:1px solid #d9a441;border-top:1px solid #d9a441"></div>
+          <div style="position:absolute;left:50%;bottom:0;transform:translateX(-50%)">
+            <div style="width:92px;height:96px;border-radius:50% 50% 47% 47%;background:#0d0b07;margin:0 auto"></div>
+            <div style="width:46px;height:26px;background:#0d0b07;margin:-4px auto 0"></div>
+            <div style="width:186px;height:132px;background:#0d0b07;border-radius:82px 82px 0 0;margin-top:-3px"></div>
+          </div>
+          <div style="position:absolute;left:10px;bottom:10px;background:rgba(11,9,6,.92);border:1px solid #d9a441;padding:6px 12px">
+            <div style="font-family:'IM Fell English SC',serif;font-size:17px;color:#f0e4c6;white-space:nowrap">{{ speakerName }}</div>
+            <div style="font-size:12px;letter-spacing:.08em;color:#d9a441;white-space:nowrap">{{ speakerRole }}</div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="flex:1;min-width:0;max-width:660px;display:flex;flex-direction:column;background:linear-gradient(#221c13,#1b1610);border-left:1px solid #4b3f2b;position:relative">
+      <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:{{ accent }}"></div>
+
+      <div style="flex:0 0 auto;display:flex;align-items:center;border-bottom:1px solid #4b3f2b;background:linear-gradient(#2a2216,#211a11);padding:10px 18px 10px 22px;gap:0">
+        <sc-for list="{{ ledger }}" as="l" hint-placeholder-count="4">
+          <span onClick="{{ l.go }}" style="flex:1;display:flex;flex-direction:column;gap:1px;cursor:pointer;padding:2px 6px" style-hover="background:rgba(217,164,65,.08)">
+            <span style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#c3b087;font-weight:600">{{ l.k }}</span>
+            <span style="display:flex;align-items:baseline;gap:4px">
+              <span style="font-size:25px;line-height:1;font-variant-numeric:tabular-nums;animation:{{ tickAnim }};color:{{ l.color }}">{{ l.v }}</span>
+              <span style="font-size:12px;color:#c3b087">{{ l.u }}</span>
+              <span style="font-size:12px;animation:{{ deltaAnim }};color:{{ l.deltaColor }}">{{ l.delta }}</span>
+            </span>
+          </span>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ hasWarnings }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:0 0 auto;display:flex;flex-direction:column;gap:5px;padding:9px 18px 9px 22px;border-bottom:1px solid #3a3020;background:rgba(207,106,78,.08)">
+          <sc-for list="{{ warnings }}" as="w" hint-placeholder-count="1">
+            <span style="font-size:13px;line-height:1.4;padding-left:9px;color:{{ w.color }};border-left:2px solid {{ w.color }}">{{ w.text }}</span>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <div style="flex:0 0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:9px 18px 9px 22px;border-bottom:1px solid #4b3f2b;background:rgba(42,34,22,.34)">
+        <span style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#c3b087;font-weight:600">Household</span>
+        <sc-for list="{{ handsBrief }}" as="h" hint-placeholder-count="1">
+          <span style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:15px;color:#e9dcbe;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px">{{ h.name }}</span>
+            <span style="letter-spacing:2px;font-size:12px;flex:0 0 auto;color:{{ h.dotColor }}">{{ h.filled }}<span style="color:#4b3f2b">{{ h.empty }}</span></span>
+          </span>
+        </sc-for>
+        <span style="display:flex;align-items:baseline;gap:7px"><span style="font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#c3b087;font-weight:600">Regard</span><span style="font-family:'IM Fell English SC',serif;font-size:17px;color:#e9dcbe">{{ regardWord }}</span></span>
+        <span onClick="{{ openRoster }}" style="margin-left:auto;border:1px solid #d9a441;color:#d9a441;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:7px 13px;cursor:pointer;white-space:nowrap" style-hover="background:rgba(217,164,65,.14);color:#f0e4c6">Show roster</span>
+      </div>
+
+      <div style="flex:1;min-height:0;overflow-y:auto;padding:18px 22px 0 26px;animation:{{ turnAnim }}">
+        <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:{{ accent }}">{{ eyebrow }}</div>        <div style="font-family:'IM Fell English SC',serif;font-size:30px;line-height:1.1;color:#f0e4c6;margin:7px 0 0">{{ title }}</div>
+        <div style="height:9px;background:repeating-linear-gradient(45deg,#4b3f2b 0 1px,transparent 1px 5px);margin:11px 0 13px;opacity:.65;transform-origin:left;animation:bb-rule .6s .2s ease-out both"></div>
+
+        <sc-for list="{{ paras }}" as="p" hint-placeholder-count="2">
+          <p style="margin:0 0 12px;font-size:18px;line-height:1.6;color:{{ p.color }}">{{ p.text }}</p>
+        </sc-for>
+
+        <sc-if value="{{ isPlant }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:9px;margin-top:4px">
+            <sc-for list="{{ fieldRows }}" as="f" hint-placeholder-count="4">
+              <div style="padding:10px 13px;border:{{ f.border }};background:{{ f.bg }}">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+                  <span style="font-family:'IM Fell English SC',serif;font-size:18px;letter-spacing:.04em;color:#f0e4c6">{{ f.name }}</span>
+                  <span style="font-size:12px;color:#c3b087;white-space:nowrap">{{ f.right }}</span>
+                </div>
+                <sc-if value="{{ f.pickable }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px">
+                    <sc-for list="{{ f.chips }}" as="c" hint-placeholder-count="6">
+                      <span onClick="{{ c.go }}" style="text-align:center;padding:8px 4px;cursor:pointer;border:{{ c.border }};background:{{ c.bg }};opacity:{{ c.opacity }}" style-hover="border-color:#d9a441">
+                        <span style="display:block;font-size:15px;color:{{ c.ink }}">{{ c.name }}</span>
+                        <span style="display:block;font-size:12px;color:#c3b087">{{ c.cost }}</span>
+                      </span>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isMarket }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:0;margin-top:2px">
+            <sc-for list="{{ lots }}" as="l" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dotted #38301f;flex-wrap:wrap">
+                <span><span style="font-size:18px;color:#e9dcbe">{{ l.name }}</span><span style="font-family:'IM Fell English',serif;font-style:italic;font-size:14px;color:#8f7e5c">{{ l.units }}</span></span>
+                <span style="display:flex;gap:7px">
+                  <span onClick="{{ l.toLarder }}" style="cursor:pointer;font-size:14px;padding:7px 12px;border:{{ l.larderBorder }};background:{{ l.larderBg }};color:#e9dcbe;white-space:nowrap">{{ l.larderLabel }}</span>
+                  <span onClick="{{ l.toMarket }}" style="cursor:pointer;font-size:14px;padding:7px 12px;border:{{ l.sellBorder }};background:{{ l.sellBg }};color:#e9dcbe;white-space:nowrap">{{ l.sellLabel }}</span>
+                </span>
+              </div>
+            </sc-for>
+            <div style="font-size:14px;color:#c3b087;padding:10px 0 0;line-height:1.5">{{ marketNeedLine }}</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isDusk }}" hint-placeholder-val="{{ false }}">
+          <div>
+            <sc-for list="{{ report }}" as="r" hint-placeholder-count="4">
+              <div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dotted #38301f;animation:bb-line .35s ease-out both;animation-delay:{{ r.delay }}">
+                <span style="font-size:16px;color:#c3b087">{{ r.d }}</span>
+                <span style="font-size:16px;font-variant-numeric:tabular-nums;color:{{ r.color }}">{{ r.n }}</span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ omen }}" hint-placeholder-val="{{ true }}">
+              <div style="border-left:3px solid #a892c4;background:rgba(168,146,196,.09);padding:12px 14px;margin-top:14px;animation:bb-line .5s 1s ease-out both">
+                <div style="font-family:'IM Fell English',serif;font-style:italic;font-size:16px;line-height:1.5;color:#a892c4">{{ omen }}</div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <div style="display:flex;flex-direction:column;gap:9px;margin:16px 0 18px">
+          <sc-for list="{{ choices }}" as="c" hint-placeholder-count="2">
+            <div onClick="{{ c.go }}" style="position:relative;padding:11px 16px;cursor:{{ c.cursor }};border:{{ c.border }};background:{{ c.bg }};opacity:{{ c.opacity }}" style-hover="border-color:#d9a441">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px">
+                <span style="font-size:18px;font-weight:500;color:{{ c.ink }}">{{ c.t }}</span>
+                <span style="font-family:'Courier Prime',monospace;font-size:13px;white-space:nowrap;color:{{ c.tagColor }}">{{ c.tag }}</span>
+              </div>
+              <div style="font-family:'IM Fell English',serif;font-style:italic;font-size:14px;margin-top:3px;color:{{ c.subColor }}">{{ c.sub }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div onClick="{{ askReuben }}" style="flex:0 0 auto;display:flex;align-items:center;gap:11px;border-top:1px solid #4b3f2b;background:rgba(42,34,22,.5);padding:10px 18px 10px 22px;cursor:pointer" style-hover="background:rgba(42,34,22,.8)">
+        <span style="width:22px;height:22px;border-radius:50%;background:#0e0c09;flex:0 0 auto;border:1px solid {{ accent }}"></span>
+        <span style="font-size:15px;color:#c3b087"><b style="color:#e9dcbe;font-weight:600">Ask Reuben</b> what to do</span>
+        <span style="margin-left:auto;font-size:18px;color:{{ accent }}">?</span>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ overlayOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;z-index:20">
+      <div onClick="{{ closeOverlay }}" style="position:absolute;inset:0;background:rgba(11,9,6,.76)"></div>
+      <div style="position:absolute;inset:0;display:grid;place-items:center;padding:28px;pointer-events:none">
+        <div style="position:relative;pointer-events:auto;width:100%;max-width:{{ overlayWidth }};max-height:100%;overflow-y:auto;background:linear-gradient(#221c13,#1b1610);border:1px solid #4b3f2b;box-shadow:0 30px 80px rgba(0,0,0,.7);animation:bb-turn .4s cubic-bezier(.2,.7,.2,1) both">
+          <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:{{ accent }}"></div>
+          <div style="display:flex;align-items:center;gap:16px;padding:13px 14px 11px 26px;border-bottom:3px double #4b3f2b">
+            <span style="font-family:'IM Fell English SC',serif;font-size:24px;color:#f0e4c6">{{ overlayTitle }}</span>
+            <span style="font-size:14px;color:#c3b087;white-space:nowrap">{{ overlaySub }}</span>
+            <span onClick="{{ closeOverlay }}" style="margin-left:auto;display:grid;place-items:center;width:38px;height:38px;border:1px solid #4b3f2b;font-size:17px;color:#c3b087;cursor:pointer;flex:0 0 auto" style-hover="border-color:#d9a441;color:#f0e4c6">&#10005;</span>
+          </div>
+
+          <sc-if value="{{ overlayBody }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:16px 26px 4px;font-size:17px;line-height:1.6;color:#c3b087">{{ overlayBody }}</div>
+          </sc-if>
+
+          <sc-if value="{{ overlayVoice }}" hint-placeholder-val="{{ false }}">
+            <div style="margin:16px 26px 0;padding:11px 15px;border-left:3px solid {{ accent }};background:rgba(255,255,255,.03)">
+              <div style="font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#c3b087;font-weight:600">{{ overlayVoiceWho }}</div>
+              <div style="font-family:'IM Fell English',serif;font-style:italic;font-size:17px;line-height:1.5;color:#e9dcbe;margin-top:4px">{{ overlayVoice }}</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isRosterOverlay }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 26px 6px">
+              <sc-for list="{{ rosterRows }}" as="h" hint-placeholder-count="2">
+                <div onClick="{{ h.go }}" style="padding:12px 14px;cursor:pointer;border:{{ h.border }};background:{{ h.bg }}" style-hover="border-color:#d9a441">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <span style="font-size:19px;color:#f0e4c6">{{ h.name }}</span>
+                    <sc-if value="{{ h.isForeman }}" hint-placeholder-val="{{ true }}">
+                      <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;color:#17130d;background:{{ accent }}">Foreman</span>
+                    </sc-if>
+                    <span style="font-size:12px;letter-spacing:.1em;text-transform:uppercase;border:1px solid #4b3f2b;color:#c3b087;padding:2px 7px">{{ h.trait }}</span>
+                    <span style="margin-left:auto;letter-spacing:3px;font-size:15px;flex:0 0 auto;color:{{ h.dotColor }}">{{ h.filled }}<span style="color:#4b3f2b">{{ h.empty }}</span></span>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap">
+                    <span style="border:1px solid #4b3f2b;padding:4px 10px;font-size:14px;color:#e9dcbe">{{ h.task }}</span>
+                    <span style="font-family:'IM Fell English',serif;font-style:italic;font-size:14px;white-space:nowrap;color:{{ h.condColor }}">{{ h.cond }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ graveLine }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:12px;margin:10px 26px 0;border-top:1px solid #38301f;padding-top:10px">
+                <span style="font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#c3b087;font-weight:600">In the ground</span>
+                <span style="font-family:'IM Fell English',serif;font-style:italic;font-size:15px;color:#cf6a4e">{{ graveLine }}</span>
+              </div>
+            </sc-if>
+          </sc-if>
+
+          <sc-if value="{{ hasOverlayOpts }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:8px;padding:14px 26px 4px">
+              <sc-for list="{{ overlayOpts }}" as="o" hint-placeholder-count="3">
+                <div onClick="{{ o.go }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 15px;border:1px solid #4b3f2b;cursor:pointer" style-hover="border-color:#d9a441">
+                  <span><span style="display:block;font-size:17px;color:#e9dcbe">{{ o.t }}</span><span style="font-family:'IM Fell English',serif;font-style:italic;font-size:14px;color:#8f7e5c">{{ o.sub }}</span></span>
+                  <span style="font-size:15px;color:{{ accent }}">&#9656;</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <div style="display:flex;justify-content:flex-end;padding:14px 26px 18px">
+            <span onClick="{{ closeOverlay }}" style="border:1px solid #d9a441;background:rgba(217,164,65,.14);color:#f0e4c6;font-size:16px;padding:11px 28px;cursor:pointer" style-hover="background:rgba(217,164,65,.26)">Close</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:860}}">
+const SEASONS = ["Spring", "Summer", "Fall", "Winter"];
+const ACCENT = { Spring: "#6f8a3f", Summer: "#c0892a", Fall: "#a4482a", Winter: "#5a7d99" };
+const CROPS = {
+  turnip: { name: "Turnip", seed: 3, seasons: 1, yield: 7, food: 1.5, base: 2, cash: false, note: "a fast root, cheap to put in" },
+  potato: { name: "Potato", seed: 6, seasons: 1, yield: 10, food: 2, base: 2, cash: false, note: "cheap and filling" },
+  wheat:  { name: "Wheat", seed: 4, seasons: 2, yield: 8, food: 1.5, base: 3, cash: false, note: "two seasons, and it keeps" },
+  corn:   { name: "Corn", seed: 5, seasons: 2, yield: 9, food: 2, base: 4, cash: false, note: "two seasons, feeds well" },
+  cotton: { name: "Cotton", seed: 10, seasons: 2, yield: 5, food: 0, base: 12, cash: true, note: "all coin, no supper" },
+};
+const CROP_HELP = {
+  turnip: "Turnip. Three seed to plant, ready in one season. A fast root that fills the larder quick.",
+  potato: "Potato. Six seed to plant, ready in one season. Cheap and filling, the surest way to see the household through the year.",
+  wheat: "Wheat. Four seed to plant, ready in two seasons. A grain that keeps well and can be sold, though it wants two seasons.",
+  corn: "Corn. Five seed to plant, ready in two seasons. Feeds well and sells fair.",
+  cotton: "Cotton. Ten seed to plant, ready in two seasons. Pays best of anything you can grow, and no food value at all.",
+};
+const MULT = { Spring: { crop: 1.1, cash: 0.9 }, Summer: { crop: 1.0, cash: 1.2 }, Fall: { crop: 0.8, cash: 1.05 }, Winter: { crop: 1.25, cash: 0.95 } };
+const FIELD_NAMES = ["The East Field", "The River Strip", "The Near Acre", "The Stone Lot"];
+const LEDGER_HELP = {
+  Coin: "Marks. Coin buys seed, coal, and hands. It will not feed anyone on its own.",
+  Larder: "Stored food. The household eats from it every season whether the fields gave anything or not. Come up short and the hands go hungry, and hungry hands work poorly.",
+  Fuel: "Firewood. The fires burn through winter whether you laid wood in or not. Come up short and the cold takes hands.",
+  Seed: "Planting stock. Seed goes in the ground before coin ever does. Run out and you pay in marks instead.",
+};
+const OMENS = {
+  Whispers: [
+    "Crows line the far fence at dusk and do not call. You count nine, then eight, though none fly off.",
+    "The dog will not go near the east field after dark, and cannot say why, being a dog.",
+    "You dream of a well you have never seen, and wake with the taste of iron.",
+    "A cold seam runs through the lean-to that the fire does not reach. By morning it is gone.",
+  ],
+  Warnings: [
+    "The milk turns though the cow is sound. Old Nan, asked, says you have laid something down the ground did not care for.",
+    "Reuben will not sleep. He sits up watching the door, and in the morning says only that the door was watching back.",
+    "A corner of the near field blights overnight in the shape of a hand. Nothing grows there again this year.",
+  ],
+  Walkers: [
+    "There are footprints in the frost that begin at the graves and end at your door, and do not turn back.",
+  ],
+};
+
+function mulberry32(a) {
+  let s = a | 0;
+  return function () { s = (s + 0x6D2B79F5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = this.freshRun(Date.now() >>> 0);
+  }
+
+  freshRun(seed) {
+    this.rng = mulberry32(seed);
+    const s = {
+      seed0: seed, si: 0, day: 1, beat: "brief", beatKey: 0, tickKey: 0,
+      marks: 100, food: 80, fuel: 0, seedStock: 20,
+      fields: [0, 1, 2, 3].map((i) => ({ id: i, name: FIELD_NAMES[i], crop: null, progress: 0, fert: 3, justSet: false, tended: false })),
+      hands: [{ id: "reuben", name: "Reuben", trait: "Steady", morale: 3, alive: true, task: "Tending the fields", ill: false, hungry: false }],
+      graves: [], foremanId: "reuben", regard: 50, reckoning: 0,
+      picks: {}, lotChoice: {}, lots: [], deltas: {}, report: [], omen: null,
+      weather: null, coldsnap: false, overlay: null, resultText: null, boughtHand: false,
+    };
+    s.weather = this.rollWeather(s);
+    return s;
+  }
+
+  rnd() { return this.rng ? this.rng() : Math.random(); }
+  pick(a) { return a[Math.floor(this.rnd() * a.length)]; }
+
+  rollWeather(s) {
+    const r = 1 + Math.floor(this.rnd() * 6);
+    const season = SEASONS[s.si];
+    s.coldsnap = false;
+    if (r === 1) return { key: "sun", label: "Dry", grow: -0.5 };
+    if (r <= 3) return { key: "cloud", label: "Mild", grow: 0 };
+    if (r <= 5) return { key: "rain", label: season === "Winter" ? "Cold rain" : "Good rain", grow: 0.5 };
+    if (season === "Winter") { s.coldsnap = true; return { key: "snow", label: "Cold snap", grow: 0 }; }
+    return { key: "cloud", label: "Rough sky", grow: 0 };
+  }
+
+  season(s) { return SEASONS[s.si]; }
+  living(s) { return s.hands.filter((h) => h.alive); }
+  extra(s) { return Math.max(0, this.living(s).length - 1); }
+  foodNeed(s) { return this.season(s) === "Winter" ? 35 + 15 * this.extra(s) : 30 + 10 * this.extra(s); }
+  fuelNeed(s) { return 45 + (s.coldsnap ? 10 : 0) + 8 * this.extra(s); }
+  band(s) { return s.reckoning >= 55 ? "Walkers" : s.reckoning >= 25 ? "Warnings" : "Whispers"; }
+  regardWord(s) { const r = s.regard; return r >= 80 ? "Kin" : r >= 62 ? "Welcome" : r >= 44 ? "Known" : r >= 28 ? "Stranger" : "Suspect"; }
+  ripe(f) { return f.crop && f.progress >= CROPS[f.crop].seasons; }
+
+  set(fn) { this.setState((prev) => { const s = Object.assign({}, prev); fn(s); return s; }); }
+  goBeat(s, beat) { s.beat = beat; s.beatKey = s.beatKey + 1; }
+
+  /* ---------- flow ---------- */
+  advance() {
+    this.set((s) => {
+      const season = this.season(s);
+      if (s.beat === "brief") {
+        if (season === "Winter" || s.fields.every((f) => f.crop)) { s.day = 6; this.goBeat(s, "event"); }
+        else { s.day = 2; s.picks = {}; this.goBeat(s, "plant"); }
+      } else if (s.beat === "plant") {
+        s.day = 6; this.goBeat(s, "event");
+      } else if (s.beat === "result") {
+        s.day = 14; this.harvest(s);
+        if (s.lots.length) { this.goBeat(s, "market"); } else { this.dusk(s); }
+      } else if (s.beat === "market") {
+        this.settleMarket(s); this.dusk(s);
+      } else if (s.beat === "dusk") {
+        this.turnSeason(s);
+      }
+    });
+  }
+
+  commitPlant() {
+    this.set((s) => {
+      Object.keys(s.picks).forEach((fid) => {
+        const f = s.fields.find((x) => String(x.id) === String(fid));
+        const c = CROPS[s.picks[fid]];
+        if (!f || !c) return;
+        let cost = c.seed;
+        const fromSeed = Math.min(s.seedStock, cost);
+        s.seedStock -= fromSeed; cost -= fromSeed; s.marks -= cost;
+        f.crop = s.picks[fid]; f.progress = 0; f.justSet = true;
+      });
+      s.picks = {}; s.tickKey = s.tickKey + 1;
+      s.day = 6; this.goBeat(s, "event");
+    });
+  }
+
+  harvest(s) {
+    const lots = []; const hands = this.living(s).length;
+    s.fields.forEach((f) => {
+      if (f.crop) { f.progress += 1 + s.weather.grow; f.justSet = false; }
+    });
+    s.fields.forEach((f) => {
+      if (this.ripe(f)) {
+        const c = CROPS[f.crop];
+        let units = Math.round(c.yield * (f.fert / 3) * (c.cash && hands < 2 ? 0.5 : 1));
+        if (units > 0) lots.push({ crop: f.crop, units, cash: c.cash });
+        f.fert = Math.max(0, f.fert - 1); f.crop = null; f.progress = 0;
+      } else if (!f.crop) { f.fert = Math.min(3, f.fert + 1); }
+    });
+    s.lots = lots; s.lotChoice = {};
+    lots.forEach((l) => { s.lotChoice[l.crop] = l.cash ? "sell" : "larder"; });
+  }
+
+  sellValue(s, crop, units) {
+    const c = CROPS[crop]; const m = MULT[this.season(s)][c.cash ? "cash" : "crop"];
+    const full = Math.min(units, 10); const glut = Math.max(0, units - 10);
+    return Math.round(full * c.base * m + glut * c.base * m * 0.7);
+  }
+
+  settleMarket(s) {
+    let coin = 0, food = 0;
+    s.lots.forEach((l) => {
+      if (l.cash || s.lotChoice[l.crop] === "sell") coin += this.sellValue(s, l.crop, l.units);
+      else food += Math.round(l.units * CROPS[l.crop].food);
+    });
+    s.marks += coin; s.food += food; s.gain = { coin, food };
+  }
+
+  dusk(s) {
+    const g = s.gain || { coin: 0, food: 0 };
+    const need = this.foodNeed(s);
+    const before = Math.floor(s.food);
+    s.food -= need;
+    let hungry = false;
+    if (s.food < 0) { this.living(s).forEach((h) => { if (h.morale > 0) h.morale--; h.hungry = true; }); s.food = 0; hungry = true; }
+    let fuelBurn = 0;
+    if (this.season(s) === "Winter") {
+      fuelBurn = Math.min(s.fuel, this.fuelNeed(s));
+      const short = this.fuelNeed(s) - s.fuel;
+      s.fuel = Math.max(0, s.fuel - fuelBurn);
+      if (short > 20 && this.living(s).length > 1) {
+        const victim = this.living(s).slice().sort((a, b) => a.morale - b.morale)[0];
+        victim.alive = false; s.graves.push(victim.name); s.reckoning += 6;
+      }
+    }
+    s.reckoning = s.crueltyThisSeason ? s.reckoning + 8 : Math.max(0, s.reckoning - 2);
+    s.crueltyThisSeason = false;
+
+    const rows = [];
+    rows.push({ d: "Weather", n: s.weather.label, kind: "flat" });
+    rows.push({ d: "Brought to market", n: g.coin ? "+" + g.coin + " m" : "none", kind: g.coin ? "up" : "flat" });
+    rows.push({ d: "Into the larder", n: g.food ? "+" + g.food + " food" : "none", kind: g.food ? "up" : "flat" });
+    rows.push({ d: "The household ate", n: "\u2212" + need + " food", kind: "down" });
+    if (fuelBurn) rows.push({ d: "The fires burned", n: "\u2212" + fuelBurn + " fuel", kind: "down" });
+    rows.push({ d: "Larder now", n: Math.floor(s.food) + " food", kind: s.food <= 25 ? "down" : "flat" });
+    if (hungry) rows.push({ d: "The hands went to bed hungry", n: "morale down", kind: "down" });
+    s.report = rows;
+    s.deltas = { Coin: g.coin ? "+" + g.coin : "", Larder: (g.food - need) >= 0 ? "+" + (g.food - need) : "\u2212" + (need - g.food), Fuel: fuelBurn ? "\u2212" + fuelBurn : "", Seed: "" };
+    s.omen = (this.season(s) === "Fall" || this.band(s) !== "Whispers") ? this.pick(OMENS[this.band(s)]) : null;
+    s.gain = null; s.tickKey = s.tickKey + 1; s.day = 20;
+    this.goBeat(s, "dusk");
+  }
+
+  turnSeason(s) {
+    s.si += 1;
+    if (s.si > 3) { s.si = 0; s.yearTurned = true; }
+    s.day = 1; s.deltas = {}; s.omen = null;
+    this.living(s).forEach((h) => { h.hungry = false; if (h.morale < 5 && this.rnd() > 0.6) h.morale++; });
+    s.weather = this.rollWeather(s);
+    this.goBeat(s, "brief");
+  }
+
+  /* ---------- content ---------- */
+  briefContent(s) {
+    const season = this.season(s);
+    if (season === "Spring") return {
+      eyebrow: "Morning Brief \u00b7 " + season, title: "Your uncle's ground",
+      place: { name: "The Homestead", sub: "four fields, a house, and a woodpile that will not do" },
+      speaker: { name: "Reuben", role: "your foreman" },
+      paras: [
+        { text: "The thaw is a week old and the ground is open. Four fields lie fallow, and the woodpile behind the house would not see a cat through a cold night." },
+        { text: "\u201cGround's ready when you are,\u201d he says. \u201cI'd not leave it long.\u201d", quote: true },
+      ],
+      choices: [{ t: "Set the fields", tag: s.seedStock + " seed in hand", sub: "choose a crop for each field", primary: true, go: () => this.advance() }],
+    };
+    if (season === "Summer") return {
+      eyebrow: "Morning Brief \u00b7 " + season, title: "The long light",
+      place: { name: "The Homestead", sub: "heat standing over the fields by nine in the morning" },
+      speaker: { name: "Reuben", role: "your foreman" },
+      paras: [
+        { text: "The days run long and the work runs longer. What went in the ground in spring is either coming on or it is not, and there is still room for more." },
+        { text: "\u201cWe could put more in,\u201d he says. \u201cOr we could keep what we have alive.\u201d", quote: true },
+      ],
+      choices: [{ t: "See to the season", tag: "day 1 of 20", sub: "set what is bare and put the hands to work", primary: true, go: () => this.advance() }],
+    };
+    if (season === "Fall") return {
+      eyebrow: "Morning Brief \u00b7 " + season, title: "The ground turns cold",
+      place: { name: "The Homestead", sub: "an early frost on the low ground, and the crows come back" },
+      speaker: { name: "Reuben", role: "your foreman" },
+      paras: [
+        { text: "Fall is the crunch. Everything you meant to do has one season left to be done in, and the woodpile is a number now, not a chore." },
+        { text: "\u201cThere is not near enough wood laid in for the cold,\u201d he says, and does not soften it.", quote: true },
+      ],
+      choices: [{ t: "Face the season", tag: "day 1 of 20", sub: "bring in what there is and lay in what you can", primary: true, go: () => this.advance() }],
+    };
+    return {
+      eyebrow: "Morning Brief \u00b7 " + season, title: "The short days close in",
+      place: { name: "The Homestead", sub: "frost on the well-cap, and the valley gone quiet and white" },
+      speaker: { name: "Reuben", role: "your foreman" },
+      paras: [
+        { text: "Winter is the year's true test. There is no planting now, only the larder, the woodpile, and the long dark between them. What you laid by is what you have." },
+        { text: "The larder holds " + Math.floor(s.food) + " and the household will eat about " + this.foodNeed(s) + ". The fires want " + this.fuelNeed(s) + " and you have " + s.fuel + "." },
+      ],
+      choices: [{ t: "Face it", tag: "day 1 of 20", sub: "begin the winter", primary: true, go: () => this.advance() }],
+    };
+  }
+
+  eventContent(s) {
+    const season = this.season(s);
+    const cruel = () => { s.crueltyThisSeason = true; };
+    if (season === "Spring") return {
+      eyebrow: "First Furrow \u00b7 the Spring fair", title: "The town blesses the ground",
+      place: { name: "Marrow's Cross", sub: "bunting on the chapel rail, and a plough dressed in ribbon" },
+      speaker: { name: "Mayor Halloway", role: "the mayor" },
+      paras: [
+        { text: "Halloway finds you at the rail and talks for a full minute without asking a question. The town blesses a field at First Furrow, and the man whose field is blessed is a man the town has decided to know." },
+        { text: "\u201cYou will want to be seen here,\u201d he says warmly. \u201cIt costs a day. Days are cheap in spring.\u201d", quote: true },
+      ],
+      choices: [
+        { t: "Go, and be seen", tag: "+regard", tagKind: "good", sub: "a working day spent, and a field blessed", primary: true,
+          go: () => this.resolve((s2) => { s2.regard += 6; const f = s2.fields.find((x) => x.crop); if (f) f.progress += 0.5; }, "You shake more hands than you can name. Someone blesses the near field with river water and everyone agrees it took.") },
+        { t: "Stay and work the ground", tag: "\u2212regard", tagKind: "bad", sub: "the day is not wasted, but you are not seen",
+          go: () => this.resolve((s2) => { s2.regard -= 3; s2.seedStock += 2; }, "You work while the fiddles carry over the fields. You gain two seed out of it and lose something you cannot count.") },
+      ],
+    };
+    if (season === "Summer") return {
+      eyebrow: "An opportunity \u00b7 the dusk road", title: "Vane's wagon at the gate",
+      place: { name: "The Homestead", sub: "a painted wagon halted at the gate, one lantern lit" },
+      speaker: { name: "Dr. Ambrose Vane", role: "the clone merchant" },
+      paras: [
+        { text: "Ambrose Vane's wagon stops at your gate as the light goes. \u201cA Grower,\u201d he says, warm as a parlor. \u201cSharp-minded, strong-backed. I would not sell her cheap to just anyone.\u201d" },
+        { text: "Under the tarp, something shifts, and is still." },
+      ],
+      choices: [
+        { t: "Buy her", tag: "110 m", tagKind: "cost", sub: "a second pair of hands, and a second mouth", primary: true,
+          disabled: s.marks < 110 || s.boughtHand, why: s.boughtHand ? "You have taken on a hand this year already." : "You have " + s.marks + " marks. This wants 110.",
+          go: () => this.resolve((s2) => { s2.marks -= 110; s2.boughtHand = true; s2.hands.push({ id: "jo", name: "Josephine", trait: "Sullen", morale: 3, alive: true, task: "Resting", ill: false, hungry: false }); }, "She steps down when he says her name. She has a name. He tells it to you like a courtesy, and moves straight on to the price.") },
+        { t: "Take her at his price, and work her hard", tag: "110 m \u00b7 the ground notices", tagKind: "bad", sub: "you will get your money back out of her by Fall",
+          disabled: s.marks < 110 || s.boughtHand, why: s.boughtHand ? "You have taken on a hand this year already." : "You have " + s.marks + " marks. This wants 110.",
+          go: () => this.resolve((s2) => { s2.marks -= 110; s2.boughtHand = true; s2.crueltyThisSeason = true; s2.hands.push({ id: "jo", name: "Josephine", trait: "Sullen", morale: 1, alive: true, task: "Tending the east field", ill: false, hungry: false }); const f = s2.fields.find((x) => x.crop); if (f) f.progress += 0.6; }, "The work gets done. It gets done faster than it should. On the third night the dog will not go near the east field, and you tell yourself it is the heat.") },
+        { t: "\u201cNot tonight.\u201d", tag: "no cost", tagKind: "flat", sub: "the wagon rolls on into the dark",
+          go: () => this.resolve(null, "\u201cAnother season, then. The ground is only getting quicker.\u201d He tips his hat, and the wagon goes on down the dusk road.") },
+      ],
+    };
+    if (season === "Fall") return {
+      eyebrow: "Harvest Home \u00b7 the Fall feast", title: "The town lights the long tables",
+      place: { name: "Marrow's Cross", sub: "lanterns strung over the green, and Old Nan at the dark edge of it" },
+      speaker: { name: "Bess Halloway", role: "the mayor's daughter" },
+      paras: [
+        { text: "Harvest Home falls square in the crunch. Bess asks you one sharp, honest question and reads your face for the answer. Sister Ruth notes how your hands look, fed or not." },
+        { text: "To go is to lose a working day. To stay away is to be the man who wouldn't." },
+      ],
+      choices: [
+        { t: "Go to the feast", tag: "+regard", tagKind: "good", sub: "hearts mend, and a day is not worked", primary: true,
+          go: () => this.resolve((s2) => { s2.regard += 5; this.living(s2).forEach((h) => { if (h.morale < 5) h.morale++; }); }, "You sit at the long tables. Bess decides something about you and you cannot tell what. It is warm, and there is bread, and for an evening the ground keeps its accounts to itself.") },
+        { t: "Stay and bring in the crop", tag: "\u2212regard", tagKind: "bad", sub: "the work gets done and the town is cooler to you",
+          go: () => this.resolve((s2) => { s2.regard -= 4; s2.fuel += 10; }, "You work while the fiddles carry over the fields. Ten more of wood is stacked by dark. You can live on a safe crop. You cannot eat regard.") },
+        { t: "Send the hands, and keep working", tag: "the ground notices", tagKind: "bad", sub: "they go in your name and come back late",
+          go: () => this.resolve((s2) => { s2.crueltyThisSeason = true; s2.regard -= 1; s2.fuel += 14; this.living(s2).forEach((h) => { if (h.morale > 0) h.morale--; }); }, "They go, and they are back before the fiddles stop, because you told them when to be back. Sister Ruth watched them leave early and said nothing at all.") },
+      ],
+    };
+    return {
+      eyebrow: "A knock at the door", title: "Sister Ruth's basket",
+      place: { name: "The Homestead", sub: "a frozen track, and a plain woman with a covered basket" },
+      speaker: { name: "Sister Ruth", role: "the church's charity" },
+      paras: [
+        { text: "Sister Ruth comes up the frozen track with a basket on her arm. \u201cThe church keeps a little back,\u201d she says, \u201cfor a hard first winter. It is not charity. It is what a town is for.\u201d" },
+        { text: "Her eyes go once around your yard, counting mouths and measuring the fire." },
+      ],
+      choices: [
+        { t: "Accept the basket", tag: "+20 food \u00b7 +12 fuel", tagKind: "good", sub: "a small debt of regard, and a spring", primary: true,
+          go: () => this.resolve((s2) => { s2.food += 20; s2.fuel += 12; s2.regard += 2; }, "She sets it down and will not stay for thanks. Bread, salt pork, a sack of coal. It is the difference, this year, between a grave and a spring.") },
+        { t: "\u201cWe'll manage, Sister.\u201d", tag: "pride", tagKind: "flat", sub: "the fire stays low",
+          go: () => this.resolve((s2) => { s2.regard += 1; }, "She looks at you a long moment, then nods once and takes the basket back down the track. \u201cThe offer keeps,\u201d she says, without turning.") },
+      ],
+    };
+  }
+
+  resolve(effect, text) {
+    this.set((s) => {
+      if (effect) effect(s);
+      s.resultText = text; s.tickKey = s.tickKey + 1;
+      this.goBeat(s, "result");
+    });
+  }
+
+  /* ---------- overlays ---------- */
+  openInfo(title, body) { this.set((s) => { s.overlay = { kind: "info", title, body }; }); }
+  openRoster() { this.set((s) => { s.overlay = { kind: "roster" }; }); }
+  openHand(id) {
+    this.set((s) => {
+      const h = s.hands.find((x) => x.id === id);
+      s.overlay = { kind: "hand", id, title: h ? h.name : "A hand" };
+    });
+  }
+  closeOverlay() { this.set((s) => { s.overlay = null; }); }
+  assign(id, task, effect) {
+    this.set((s) => {
+      const h = s.hands.find((x) => x.id === id);
+      if (h) { h.task = task; if (effect) effect(s, h); }
+      s.overlay = { kind: "roster" }; s.tickKey = s.tickKey + 1;
+    });
+  }
+
+  askReuben() {
+    const s = this.state;
+    const bare = s.fields.filter((f) => !f.crop).length;
+    const low = this.living(s).filter((h) => h.morale <= 1 || h.hungry);
+    let line;
+    if (this.season(s) !== "Winter" && bare > 0 && s.beat === "plant") line = "You have " + bare + " field" + (bare > 1 ? "s" : "") + " lying bare and a larder that will not see us to spring on its own. Get seed in the ground. Something that fills a belly, to start.";
+    else if ((this.season(s) === "Fall" || this.season(s) === "Winter") && s.fuel < this.fuelNeed(s)) line = "There is not near enough wood laid in for the cold. Put a hand on the woodline before winter closes the road.";
+    else if (low.length) line = "The hands are low. " + low[0].name + " most of all. A rest, or a full supper, and they will work the better for it.";
+    else if (s.food < 30) line = "The larder is running thin. Keep more of what the fields give, or we go hungry come the dark months.";
+    else line = "We are holding for now. Keep the fields worked and the larder filling, and mind the town's regard. I will speak up if the ground turns.";
+    this.openInfo("Reuben's read", line);
+  }
+
+  openHelp() {
+    const s = this.state;
+    const b = s.beat;
+    const map = {
+      brief: "The Morning Brief opens each season. Read it, then choose. Every day runs Morning Brief, then play, then the Dusk Report.",
+      plant: "Pick one crop for each bare field. Seed is spent first, then coin. Roots ripen in one season, grain and cotton want two. Harvesting costs a field a point of fertility, and leaving it fallow mends one.",
+      event: "An event card. Each choice states its cost plainly. Costs to coin, food and regard are shown. What the land makes of your choice is never shown as a number.",
+      result: "What came of your choice. Go on when you are ready.",
+      market: "What the fields gave up. Grain and roots can go to the larder to eat, or to town for coin. Coin buys much. A full belly is what carries you through the dark.",
+      dusk: "The Dusk Report closes the season. It shows what came in, what was eaten, and what the ground has to say about how you have been living.",
+    };
+    this.openInfo("Where you are", map[b] || map.brief);
+  }
+
+  restart() { this.setState(this.freshRun((Math.random() * 4294967296) >>> 0)); }
+
+  /* ---------- render ---------- */
+  renderVals() {
+    const s = this.state;
+    const season = this.season(s);
+    const a = ACCENT[season];
+    const content = s.beat === "brief" ? this.briefContent(s) : s.beat === "event" ? this.eventContent(s) : null;
+
+    let eyebrow, title, paras = [], choices = [], place, speaker;
+    if (content) {
+      eyebrow = content.eyebrow; title = content.title; place = content.place; speaker = content.speaker;
+      paras = content.paras.map((p) => ({ text: p.text, color: p.quote ? "#f4ead0" : "#e9dcbe" }));
+      choices = content.choices;
+    } else if (s.beat === "plant") {
+      eyebrow = "Dawn \u00b7 Planting"; title = "Set the fields";
+      place = { name: "The Four Fields", sub: "turned earth, and what you make of it" }; speaker = null;
+      const spend = Object.keys(s.picks).reduce((n, k) => n + CROPS[s.picks[k]].seed, 0);
+      const fromSeed = Math.min(s.seedStock, spend); const coin = spend - fromSeed;
+      paras = [{ text: spend ? "Spending " + fromSeed + " of " + s.seedStock + " seed" + (coin ? ", plus " + coin + " marks in coin" : "") + "." : "A newcomer plants his belly first. Potato and turnip fill a larder. Wheat and corn sell but want two seasons. Cotton is all coin and no supper.", color: "#c3b087" }];
+      choices = [{ t: "Sow it so", tag: spend ? fromSeed + " seed" + (coin ? " + " + coin + " m" : "") : "nothing set", sub: "pay seed first, then coin", primary: true, go: () => this.commitPlant() }];
+    } else if (s.beat === "result") {
+      eyebrow = "What came of it"; title = "The day turns";
+      place = { name: "The Homestead", sub: "the light going, and the work not finished" }; speaker = null;
+      paras = [{ text: s.resultText, color: "#e9dcbe" }];
+      choices = [{ t: "Go on", tag: "to the harvest", sub: "bring in what is ripe", primary: true, go: () => this.advance() }];
+    } else if (s.beat === "market") {
+      eyebrow = "The Market \u00b7 " + season; title = "What the fields gave up";
+      place = { name: "Marrow's Cross", sub: "a scale, a day-book, and a man who knows your name now" }; speaker = null;
+      paras = [{ text: "Grain and roots keep a belly through winter. Coin buys coal and hands. Choose for each lot.", color: "#c3b087" }];
+      choices = [{ t: "Close the day-book", tag: "apply every choice", sub: "settle the season", primary: true, go: () => this.advance() }];
+    } else {
+      eyebrow = "Dusk \u00b7 " + season; title = "The day-book, closed";
+      place = { name: "The Homestead", sub: "the lamp lit, and the year one season shorter" }; speaker = null;
+      choices = [{ t: season === "Winter" ? "Turn the year" : "Turn the season", tag: season === "Winter" ? "you survived it" : "on to " + SEASONS[(s.si + 1) % 4], sub: "move on", primary: true, go: () => this.advance() }];
+    }
+
+    const dotColor = (m) => (m >= 4 ? "#9fb262" : m >= 2 ? "#c0892a" : "#cf6a4e");
+    const dots = (m) => ({ filled: "\u25cf".repeat(Math.max(0, m)), empty: "\u25cf".repeat(Math.max(0, 5 - m)), dotColor: dotColor(m) });
+
+    const warnings = [];
+    if ((season === "Fall" || season === "Winter") && s.fuel < this.fuelNeed(s)) warnings.push({ text: "Fuel is " + (this.fuelNeed(s) - s.fuel) + " short of what the fires will want", color: "#cf6a4e" });
+    if (s.food < this.foodNeed(s)) warnings.push({ text: "The larder will not carry " + this.living(s).length + " mouth" + (this.living(s).length > 1 ? "s" : "") + " through the season", color: "#d0a54a" });
+    const spent = this.living(s).filter((h) => h.morale <= 1);
+    if (spent.length) warnings.push({ text: spent.map((h) => h.name).join(", ") + (spent.length > 1 ? " are spent" : " is spent") + ". Work will go undone", color: "#d0a54a" });
+
+    const foodColor = s.food <= 15 ? "#cf6a4e" : s.food <= 30 ? "#d0a54a" : "#e9dcbe";
+    const fuelWarn = (season === "Fall" || season === "Winter") && s.fuel < this.fuelNeed(s);
+    const ledger = [
+      { k: "Coin", v: String(s.marks), u: "m", color: "#e9dcbe" },
+      { k: "Larder", v: String(Math.floor(s.food)), u: "", color: foodColor },
+      { k: "Fuel", v: String(s.fuel), u: "", color: fuelWarn ? "#cf6a4e" : "#e9dcbe" },
+      { k: "Seed", v: String(s.seedStock), u: "", color: s.seedStock <= 4 ? "#d0a54a" : "#e9dcbe" },
+    ].map((l) => Object.assign(l, {
+      delta: s.deltas[l.k] || "",
+      deltaColor: (s.deltas[l.k] || "").charAt(0) === "+" ? "#9fb262" : "#cf6a4e",
+      go: () => this.openInfo(l.k, LEDGER_HELP[l.k]),
+    }));
+
+    const affordable = (key, exceptField) => {
+      let seedLeft = s.seedStock, marks = s.marks;
+      s.fields.forEach((f) => {
+        const ck = f.id === exceptField ? key : s.picks[f.id];
+        if (!ck || f.crop) return;
+        const cost = CROPS[ck].seed; const fromSeed = Math.min(seedLeft, cost);
+        seedLeft -= fromSeed; marks -= cost - fromSeed;
+      });
+      return marks >= 0;
+    };
+
+    const fieldRows = s.fields.map((f) => {
+      if (f.crop) {
+        const c = CROPS[f.crop];
+        return {
+          name: f.name, pickable: false, chips: [],
+          right: c.name + ", " + (this.ripe(f) ? "ripe" : Math.min(100, Math.round((f.progress / c.seasons) * 100)) + "%"),
+          border: "1px solid #4b3f2b", bg: "rgba(42,34,22,.4)",
+        };
+      }
+      const sel = s.picks[f.id];
+      const chips = Object.keys(CROPS).map((k) => {
+        const c = CROPS[k]; const can = affordable(k, f.id); const isSel = sel === k;
+        return {
+          name: c.name, cost: c.seed + " seed",
+          border: isSel ? "1px solid " + a : "1px solid #4b3f2b",
+          bg: isSel ? "rgba(217,164,65,.14)" : "transparent",
+          ink: isSel ? "#f0e4c6" : "#e9dcbe",
+          opacity: !can && !isSel ? "0.4" : "1",
+          go: () => { if (!can && !isSel) { this.openInfo("Cannot plant that", CROP_HELP[k] + " You have " + s.seedStock + " seed and " + s.marks + " marks, and this planting would run you past both."); return; } this.set((s2) => { if (s2.picks[f.id] === k) delete s2.picks[f.id]; else s2.picks[f.id] = k; }); },
+        };
+      });
+      chips.push({
+        name: "Fallow", cost: f.fert < 3 ? "mends 1" : "rest",
+        border: sel == null ? "1px solid " + a : "1px solid #4b3f2b",
+        bg: sel == null ? "rgba(159,178,98,.12)" : "transparent",
+        ink: "#e9dcbe", opacity: "1",
+        go: () => this.set((s2) => { delete s2.picks[f.id]; }),
+      });
+      return {
+        name: f.name, pickable: true, chips,
+        right: "fert " + "\u25cf".repeat(f.fert) + "\u25cb".repeat(3 - f.fert) + (f.fert === 0 ? " \u00b7 spent, returns nothing" : ""),
+        border: sel ? "1px solid " + a : "1px solid #4b3f2b",
+        bg: sel ? "rgba(192,137,42,.07)" : "transparent",
+      };
+    });
+
+    const fieldMap = s.fields.map((f) => {
+      const sel = s.picks[f.id];
+      const c = f.crop ? CROPS[f.crop] : sel ? CROPS[sel] : null;
+      const spentField = f.fert === 0;
+      return {
+        name: f.name,
+        fertDots: "\u25cf".repeat(f.fert) + "\u25cb".repeat(3 - f.fert),
+        fertColor: f.fert === 0 ? "#cf6a4e" : f.fert < 3 ? "#c0892a" : "#9fb262",
+        border: sel ? "2px solid " + a : "1px solid #4b3f2b",
+        bg: spentField
+          ? "repeating-linear-gradient(45deg,rgba(150,138,116,.14) 0 2px,transparent 2px 10px),linear-gradient(#242019,#191510)"
+          : f.crop
+            ? "repeating-linear-gradient(88deg,rgba(111,138,63,.24) 0 3px,transparent 3px 15px),linear-gradient(#2b2517,#1d1810)"
+            : "repeating-linear-gradient(78deg,rgba(126,94,50,.34) 0 4px,transparent 4px 16px),linear-gradient(#302617,#211a0f)",
+        chipLabel: sel ? "Just set" : f.crop ? "In the ground" : spentField ? "Harvested dry" : "",
+        chipInk: sel ? "#d9a441" : f.crop ? "#9fb262" : "#cf6a4e",
+        chipBg: sel ? "rgba(217,164,65,.16)" : "transparent",
+        state: c ? c.name : spentField ? "Nothing will take" : "Bare ground",
+        cost: sel ? CROPS[sel].seed + " seed" : f.crop ? Math.min(100, Math.round((f.progress / CROPS[f.crop].seasons) * 100)) + "%" : "",
+        note: c ? c.note : spentField ? "leave it fallow and it mends a point" : "waiting on a decision",
+      };
+    });
+
+    const lots = s.lots.map((l) => {
+      const c = CROPS[l.crop]; const coin = this.sellValue(s, l.crop, l.units); const food = Math.round(l.units * c.food);
+      const choice = s.lotChoice[l.crop];
+      return {
+        name: c.name, units: "  " + l.units + (c.cash ? " bales" : " units"),
+        larderLabel: c.cash ? "feeds no one" : "larder \u00b7 +" + food + " food",
+        sellLabel: "sell \u00b7 +" + coin + " m",
+        larderBorder: choice === "larder" ? "1px solid " + a : "1px solid #4b3f2b",
+        larderBg: choice === "larder" ? "rgba(217,164,65,.14)" : "transparent",
+        sellBorder: choice === "sell" ? "1px solid " + a : "1px solid #4b3f2b",
+        sellBg: choice === "sell" ? "rgba(217,164,65,.14)" : "transparent",
+        toLarder: () => { if (c.cash) return; this.set((s2) => { s2.lotChoice[l.crop] = "larder"; }); },
+        toMarket: () => this.set((s2) => { s2.lotChoice[l.crop] = "sell"; }),
+      };
+    });
+
+    let marketNeedLine = "";
+    if (s.beat === "market") {
+      const need = this.foodNeed(s);
+      const toLarder = s.lots.filter((l) => !CROPS[l.crop].cash && s.lotChoice[l.crop] === "larder").reduce((n, l) => n + Math.round(l.units * CROPS[l.crop].food), 0);
+      const projected = Math.floor(s.food) + toLarder; const short = need - projected;
+      marketNeedLine = "The household will eat about " + need + " this season. Counting the larder and what heads there now, that " + (short > 0 ? "falls short by " + short + "." : "is covered with " + -short + " to spare.");
+    }
+
+    const ov = s.overlay || {};
+    const rosterRows = this.living(s).map((h) => Object.assign({
+      name: h.name, trait: h.trait, isForeman: h.id === s.foremanId, task: h.task || "no task set",
+      cond: h.ill ? "ill" : h.hungry ? "hungry" : h.morale <= 1 ? "worn" : h.morale >= 4 ? "in good heart" : "steady",
+      condColor: h.ill || h.hungry ? "#cf6a4e" : h.morale <= 1 ? "#d0a54a" : h.morale >= 4 ? "#9fb262" : "#c3b087",
+      border: h.id === s.foremanId ? "1px solid " + a : "1px solid #4b3f2b",
+      bg: h.id === s.foremanId ? "rgba(255,255,255,.03)" : "transparent",
+      go: () => this.openHand(h.id),
+    }, dots(h.morale)));
+
+    let overlayOpts = [];
+    if (ov.kind === "hand") {
+      const id = ov.id;
+      overlayOpts = [
+        { t: "Let them rest", sub: "their heart mends", go: () => this.assign(id, "Resting", (s2, h) => { if (h.morale < 5) h.morale++; }) },
+        { t: "Tend a field", sub: "the crop comes on the faster", go: () => this.assign(id, "Tending a field", (s2) => { const f = s2.fields.find((x) => x.crop); if (f) f.progress += 0.25; }) },
+        { t: "Chop wood", sub: "+16 fuel", go: () => this.assign(id, "Chopping wood", (s2) => { s2.fuel += 16; }) },
+        { t: "Work them past dark", sub: "more done. the ground notices", go: () => this.assign(id, "Working past dark", (s2, h) => { s2.fuel += 22; s2.crueltyThisSeason = true; if (h.morale > 0) h.morale--; }) },
+      ];
+    }
+
+    const handForVoice = this.living(s).find((h) => h.id === ov.id);
+    const fm = s.hands.find((h) => h.id === s.foremanId && h.alive);
+    let overlayVoice = "", overlayVoiceWho = "";
+    if (ov.kind === "roster" && fm) {
+      overlayVoiceWho = fm.name + " speaks for the hands";
+      const low = this.living(s).slice().sort((x, y) => x.morale - y.morale)[0];
+      overlayVoice = low && (low.morale <= 1 || low.hungry)
+        ? "We will hold, but " + low.name + " is in a bad way. A kind word, or a full plate, would not go amiss."
+        : this.living(s).length === 1
+          ? "It is just me for now. I will tell you true when the ground turns or the work gets past one pair of hands."
+          : this.living(s).every((h) => h.morale >= 4) ? "The crew is in good heart. Fed, rested, and willing. Long may it last."
+            : "The hands are steady enough. No complaints worth carrying to you, not today.";
+    } else if (ov.kind === "hand" && fm && handForVoice && fm.id !== handForVoice.id) {
+      overlayVoiceWho = fm.name + "'s read";
+      overlayVoice = handForVoice.morale <= 1 ? "\u201c" + handForVoice.name + " is spent. A rest would do them good.\u201d"
+        : handForVoice.hungry ? "\u201c" + handForVoice.name + " is going hungry. Feed them before you spend them.\u201d"
+          : "\u201c" + handForVoice.name + " is willing. Put them where you need them.\u201d";
+    }
+
+    const pips = [0, 1, 2, 3, 4].map((i) => ({ bg: s.day > i * 4 ? a : "transparent" }));
+
+    return {
+      accent: a, seasonName: season,
+      dayLine: "Year One \u00b7 Day " + s.day + " of 20",
+      pips,
+      weatherLabel: s.weather.label,
+      isRain: s.weather.key === "rain", isSun: s.weather.key === "sun", isCloud: s.weather.key === "cloud", isSnow: s.weather.key === "snow",
+      showStain: this.band(s) !== "Whispers",
+      stainCycle: (this.band(s) === "Walkers" ? 2.8 : 4.2) + "s",
+      placeName: place.name, placeSub: place.sub,
+      hasSpeaker: !!speaker && !(s.beat === "plant"),
+      speakerName: speaker ? speaker.name : "", speakerRole: speaker ? speaker.role : "",
+      ledger, warnings, hasWarnings: warnings.length > 0,
+      handsBrief: this.living(s).map((h) => Object.assign({ name: h.name }, dots(h.morale))),
+      regardWord: this.regardWord(s),
+      eyebrow, title, paras,
+      beatKey: s.beatKey, tickKey: s.tickKey,
+      turnAnim: (s.beatKey % 2 ? "bb-turnB" : "bb-turn") + " .45s cubic-bezier(.2,.7,.2,1) both",
+      tickAnim: (s.tickKey % 2 ? "bb-tickB" : "bb-tick") + " .42s ease-in-out both",
+      deltaAnim: (s.tickKey % 2 ? "bb-lineB" : "bb-line") + " .5s .3s ease-out both",
+      isPlant: s.beat === "plant", isMarket: s.beat === "market", isDusk: s.beat === "dusk",
+      fieldRows, fieldMap, lots, marketNeedLine,
+      report: s.report.map((r, i) => ({ d: r.d, n: r.n, delay: (i * 0.16).toFixed(2) + "s", color: r.kind === "up" ? "#9fb262" : r.kind === "down" ? "#cf6a4e" : "#8f7e5c" })),
+      omen: s.beat === "dusk" ? s.omen : null,
+      choices: choices.map((c) => ({
+        t: c.t, tag: c.tag, sub: c.disabled ? c.why : c.sub, primary: !!c.primary && !c.disabled,
+        border: c.disabled ? "1px solid #2f2718" : c.primary ? "1px solid #d9a441" : "1px solid #4b3f2b",
+        bg: c.disabled ? "transparent" : c.primary ? "rgba(217,164,65,.13)" : "transparent",
+        ink: c.disabled ? "#8f7e5c" : c.primary ? "#f0e4c6" : "#e9dcbe",
+        subColor: c.disabled ? "#cf6a4e" : "#8f7e5c",
+        tagColor: c.disabled ? "#8f7e5c" : c.tagKind === "good" ? "#9fb262" : c.tagKind === "bad" ? "#cf6a4e" : "#c3b087",
+        opacity: c.disabled ? "0.55" : "1",
+        cursor: c.disabled ? "not-allowed" : "pointer",
+        go: c.disabled ? () => this.openInfo(c.t, c.why) : c.go,
+      })),
+      overlayOpen: !!s.overlay,
+      overlayWidth: ov.kind === "roster" ? "720px" : "480px",
+      overlayTitle: ov.kind === "roster" ? "The Hands" : ov.title || "",
+      overlaySub: ov.kind === "roster" ? this.living(s).length + " housed" + (s.graves.length ? " \u00b7 " + s.graves.length + " marked grave" + (s.graves.length > 1 ? "s" : "") : "") : ov.kind === "hand" ? (rosterRows.find((r) => r.name === ov.title) || {}).cond || "" : "",
+      overlayBody: ov.kind === "info" ? ov.body : "",
+      isRosterOverlay: ov.kind === "roster",
+      rosterRows, graveLine: s.graves.length ? s.graves.join(", ") : "",
+      overlayOpts, hasOverlayOpts: overlayOpts.length > 0,
+      overlayVoice, overlayVoiceWho,
+      openRoster: () => this.openRoster(),
+      closeOverlay: () => this.closeOverlay(),
+      askReuben: () => this.askReuben(),
+      openHelp: () => this.openHelp(),
+      restart: () => this.restart(),
+    };
+  }
+}
+</script>
+</body>
+</html>
