@@ -27,7 +27,7 @@ describe("shell render", () => {
     expect(root.querySelectorAll(".ledger .cell").length).toBe(4);
     expect([...root.querySelectorAll(".tabbar .tab")].map((t) => t.textContent)).toEqual(TABS);
     expect(root.querySelector(".when").textContent).toContain("Day 1 of 20");
-    expect(root.getAttribute("data-season")).toBe("spring");
+    expect(document.documentElement.getAttribute("data-season")).toBe("spring");
   });
   it("the theme toggle dispatches SET_THEME and re-renders to day", () => {
     const root = document.createElement("div");
@@ -36,6 +36,6 @@ describe("shell render", () => {
     renderShell(root, state, dispatch);
     root.querySelector(".themetog").click();
     expect(state.theme).toBe("day");
-    expect(root.getAttribute("data-theme")).toBe("day");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("day");
   });
 });

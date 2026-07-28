@@ -8,8 +8,10 @@ const TABS = ["Home", "Fields", "Hands", "Town", "Ledger", "Almanac"];
 // Renders the persistent chrome around whatever screen is active. Reads state,
 // writes DOM into `root`, and calls back on dispatchable UI (theme, tabs, advance).
 export function renderShell(root, state, dispatch) {
-  root.setAttribute("data-theme", state.theme);
-  root.setAttribute("data-season", season(state));
+  // Theme/season live on <html> so tokens.css's :root[data-theme=...] and
+  // [data-season=...] selectors actually match (:root is always <html>, never `root`).
+  document.documentElement.setAttribute("data-theme", state.theme);
+  document.documentElement.setAttribute("data-season", season(state));
   clear(root);
 
   const dayOf20 = (state.week - 1) * 4 + 1; // week 1 -> day 1; a week is 4 days
