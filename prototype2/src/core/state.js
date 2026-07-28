@@ -1,7 +1,9 @@
 // The whole game state is one plain, serializable object (per project convention).
 // This is the Year-1 starting state; later plans extend it (events, town, years).
+import { BALANCE } from "./balance.js";
+
 export function makeHand(id, name, { body = "average", mind = "average" } = {}) {
-  // strain 0..100 drives the condition track (Steady→Worn→Failing→Lost); see selectors.condition.
+  // strain 0..100 drives the condition track (Steady→Worn→Failing→Lost); see selectors.conditionOf.
   return { id, name, body, mind, task: "rest", strain: 0, morale: 4, alive: true, traits: [] };
 }
 
@@ -31,6 +33,6 @@ export function initialState(seed = 1, lineageName = "Crane") {
 }
 
 export const SEASONS = ["spring", "summer", "fall", "winter"];
-export const WEEKS_PER_SEASON = 5;
+export const WEEKS_PER_SEASON = BALANCE.weeksPerSeason; // single source of truth (balance.js)
 export const season = (s) => SEASONS[s.seasonIndex];
 export const livingHands = (s) => s.hands.filter((h) => h.alive);

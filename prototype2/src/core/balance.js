@@ -13,6 +13,8 @@ export const BALANCE = {
     careRecovery: 12,           // the player spending their week caring for one hand
     hungerPerWeek: 12,          // added to a hand short of food
     coldPerWeek: 12,            // added to a hand short of fuel (fall/winter)
+    wornAt: 25,                 // strain >= this → condition track reads "worn"
+    failingAt: 50,              // strain >= this → condition track reads "failing"
     lostAt: 100,                // strain >= this → the hand is lost
   },
 };
