@@ -1,20 +1,46 @@
-/* The V0.3 portrait shell (design reference §10, §8.6, §8.1, §8.7).
-   One continuous surface on phone: spine, masthead, brass ledger, warnings, stage,
-   six-tab bar. The desktop floating-leaf treatment is layered on in Stage 5. */
+/* The V0.3 shell in two form factors (design reference §10).
+   Phone: one continuous stacked column. Desktop: a full-bleed plate with the
+   masthead/location as floating chrome, Reuben on the plate, and a floating leaf. */
 
 html, body { height: 100%; }
-#app {
-  min-height: 100vh;
-  min-height: 100dvh;
+.shell {
+  min-height: 100vh; min-height: 100dvh;
   display: flex; flex-direction: column;
   background: var(--paper);
 }
 
-/* ---- masthead ---- */
+/* ===================== the illustration plate ===================== */
+.plate { position: relative; height: 136px; overflow: hidden; border-bottom: 1px solid var(--rule); background: var(--paper); }
+.plate-tex { position: absolute; inset: 0; background: repeating-linear-gradient(135deg, #26201a 0 4px, #2e2720 4px 8px); }
+.plate-vignette { position: absolute; inset: 0; background: radial-gradient(120% 110% at 50% 40%, transparent 46%, rgba(0,0,0,.66) 100%); }
+.plate-art { position: absolute; inset: 0; display: grid; place-items: center; padding: 14px 90px 14px 16px;
+  text-align: center; color: var(--art-brief); font-family: "IM Fell English", Georgia, serif; font-style: italic;
+  font-size: 0.8rem; opacity: .8; }
+
+/* speaker portrait — a small inset on phone, a standing figure on desktop */
+.portrait { position: absolute; right: 12px; bottom: 0; width: 92px; height: 112px; z-index: 2;
+  background: linear-gradient(#3a3229, #1d1710); border: 1px solid var(--accent); border-bottom: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end; overflow: hidden; }
+.portrait.empty { display: none; }
+.portrait .sil { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+.portrait .sil-head { width: 46%; aspect-ratio: 1; background: #0d0b07; border-radius: 50% 50% 47% 47%; margin-bottom: 4%; }
+.portrait .sil-body { width: 84%; height: 46%; background: #0d0b07; border-radius: 60% 60% 0 0; }
+.portrait .nameplate { position: relative; z-index: 1; width: 100%; box-sizing: border-box;
+  background: rgba(11,9,6,.9); border-top: 1px solid var(--lamp); padding: 4px 6px; text-align: center; }
+.portrait .np-name { font-size: 0.8rem; color: var(--ink-hi); line-height: 1.1; }
+.portrait .np-role { font-family: "IM Fell English", Georgia, serif; font-style: italic; font-size: 0.6rem;
+  letter-spacing: .06em; color: var(--lamp); }
+
+/* ===================== masthead + location band ===================== */
 .masthead { position: relative; background: linear-gradient(var(--ledger-top), var(--ledger-bot)); }
-.masthead .spine { height: 4px; background: var(--accent); }        /* the season, on the binding edge */
-.mast-row { display: flex; align-items: center; gap: 12px; padding: 11px 20px 6px; }
-.mast-row .brand { font-size: 0.72rem; }
+.spine { height: 4px; background: var(--accent); }
+.mast-inner { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; padding: 9px 20px 11px; }
+.mast-inner .brand { font-size: 0.72rem; }
+.mast-inner .season { line-height: 1; }
+.mast-inner .when { color: var(--accent); letter-spacing: .2em; }
+.pips { display: inline-flex; gap: 5px; align-self: center; }
+.pip { width: 9px; height: 9px; border: 1px solid var(--rule); box-sizing: border-box; }
+.pip.on { background: var(--accent); border-color: var(--accent); }
 .mast-tools { margin-left: auto; display: flex; align-items: center; gap: 12px; }
 .wx { display: flex; align-items: center; gap: 7px; color: var(--accent); }
 .wx .wx-label { color: var(--ink-soft); letter-spacing: .14em; }
@@ -22,48 +48,103 @@ html, body { height: 100%; }
   border: 1px solid var(--rule); color: var(--ink-soft); font-size: 1rem; }
 .iconbtn:hover, .iconbtn:focus-visible { color: var(--lamp); border-color: var(--lamp); outline: none; }
 
-.mast-when { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
-  padding: 0 20px 12px; border-bottom: 3px double var(--rule); }
-.mast-when .season { line-height: 1; }
-.mast-when .when { color: var(--accent); letter-spacing: .2em; }
-.pips { display: inline-flex; gap: 5px; align-self: center; margin-left: auto; }
-.pip { width: 9px; height: 9px; border: 1px solid var(--rule); box-sizing: border-box; }
-.pip.on { background: var(--accent); border-color: var(--accent); }
+.locband { display: flex; align-items: center; gap: 12px; padding: 9px 20px; border-bottom: 1px solid var(--rule);
+  background: linear-gradient(var(--ledger-top), var(--ledger-bot)); }
+.loc-spine { width: 4px; height: 22px; background: var(--accent); flex: 0 0 auto; }
+.loc-name { line-height: 1; }
+.loc-cap { font-family: "IM Fell English", Georgia, serif; font-style: italic; color: var(--ink-soft); font-size: 0.94rem; }
 
-/* ---- brass ledger bar ---- */
-.ledger { display: flex; background: linear-gradient(var(--ledger-top), var(--ledger-bot));
-  border-bottom: 1px solid var(--rule); }
+/* ===================== the leaf ===================== */
+.leaf { display: flex; flex-direction: column; flex: 1; position: relative; }
+.leaf-spine { display: none; }
+
+.ledger { display: flex; background: linear-gradient(var(--ledger-top), var(--ledger-bot)); border-bottom: 1px solid var(--rule); }
 .ledger .cell { flex: 1; padding: 9px 6px; text-align: center; border-right: 1px solid var(--rule-hair); }
 .ledger .cell:last-child { border-right: 0; }
 .cell-k { display: block; font-size: 0.65rem; }
 .cell-v { font-size: 1.41rem; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--ink); line-height: 1.1; }
 .cell-v .unit { font-size: 0.7rem; color: var(--ink-faint); margin-left: 3px; }
 .cell-v.warn { color: var(--warn); }
-.cell-v.bad  { color: var(--bad); }
+.cell-v.bad { color: var(--bad); }
 
-/* ---- warnings band (rides under the ledger) ---- */
-.warnband { display: flex; gap: 8px 20px; flex-wrap: wrap; padding: 9px 20px;
-  border-bottom: 1px solid var(--rule-fine); background: color-mix(in srgb, var(--bad) 7%, transparent); }
+.household { display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; padding: 9px 20px;
+  border-bottom: 1px solid var(--rule-fine); }
+.household .hh-k { font-size: 0.62rem; }
+.household .hh-name { color: var(--ink); }
+.morale { display: inline-flex; gap: 4px; align-items: center; }
+.mdot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--rule); box-sizing: border-box; }
+.mdot.on.good { background: var(--good); border-color: var(--good); }
+.mdot.on.warn { background: var(--warn); border-color: var(--warn); }
+.mdot.on.bad { background: var(--bad); border-color: var(--bad); }
+.hh-regard { display: inline-flex; align-items: baseline; gap: 8px; margin-left: auto; }
+.hh-regard-v { font-size: 1rem; }
+.rosterbtn { all: unset; cursor: pointer; color: var(--ink-soft); border: 1px solid var(--rule); padding: 5px 10px; }
+.rosterbtn:hover, .rosterbtn:focus-visible { color: var(--lamp); border-color: var(--lamp); outline: none; }
+
+.warnband { display: flex; gap: 8px 20px; flex-wrap: wrap; padding: 9px 20px; border-bottom: 1px solid var(--rule-fine);
+  background: color-mix(in srgb, var(--bad) 7%, transparent); }
 .warnband.stacked { flex-direction: column; }
 .warnband .warnline { color: var(--bad); border-left: 3px solid var(--bad); padding-left: 10px; font-style: normal; }
 
-/* ---- stage (the scrolling content region) ---- */
+.leaf-scroll { flex: 1; display: flex; flex-direction: column; }
 .stage { flex: 1; padding: 20px; overflow-y: auto; }
 
-/* ---- six-tab bottom bar ---- */
+/* Ask Reuben bar */
+.askbar { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-top: 1px solid var(--rule);
+  background: var(--card); color: var(--ink-soft); }
+.ask-dot { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--lamp); flex: 0 0 auto; }
+.ask-label { color: var(--lamp); font-variant: small-caps; letter-spacing: .04em; }
+.ask-hint { font-style: italic; }
+.ask-q { margin-left: auto; color: var(--ink-faint); }
+
+/* ===================== six-tab bottom bar (phone only) ===================== */
 .tabbar { display: flex; border-top: 1px solid var(--rule); background: var(--card);
   padding-bottom: max(6px, env(safe-area-inset-bottom)); }
-.tabbar .tab { all: unset; cursor: pointer; flex: 1; display: flex; flex-direction: column;
-  align-items: center; gap: 4px; padding: 9px 2px 6px; min-height: 56px; box-sizing: border-box;
-  color: var(--ink-faint); border-top: 2px solid transparent; }
+.tabbar .tab { all: unset; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 9px 2px 6px; min-height: 56px; box-sizing: border-box; color: var(--ink-faint); border-top: 2px solid transparent; }
 .tabbar .tab .icon { display: grid; place-items: center; height: 24px; }
 .tabbar .tab-label { font-size: 0.6rem; letter-spacing: .1em; text-transform: uppercase; }
 .tabbar .tab.sel { color: var(--accent); border-top-color: var(--accent); }
 .tabbar .tab.sel .tab-label { font-weight: 600; }
 .tabbar .tab:focus-visible { outline: 2px solid var(--lamp); outline-offset: -2px; }
 
-/* ---- desktop: widen and center the reading column; the full floating-leaf
-   treatment lands in Stage 5. ---- */
+/* ===================== DESKTOP: full-bleed plate + floating leaf ===================== */
 @media (min-width: 1100px) {
-  .stage { max-width: 1004px; margin: 0 auto; width: 100%; }
+  .shell { height: 100vh; overflow: hidden; position: relative; background: var(--ground); }
+
+  /* the plate is the whole canvas */
+  .plate { position: absolute; inset: 0; height: auto; border: 0; z-index: 0; }
+  .plate-art { place-items: end start; text-align: left; padding: 0 0 40px 56px; font-size: 0.95rem; max-width: 40%; }
+
+  /* Reuben stands on the plate, left of centre */
+  .portrait { left: 7%; right: auto; bottom: 0; width: 220px; height: 420px; }
+  .portrait .np-name { font-size: 1.15rem; }
+  .portrait .np-role { font-size: 0.72rem; }
+  .portrait .nameplate { border: 1px solid var(--lamp); background: rgba(11,9,6,.9); padding: 6px 12px; width: auto; left: 12px; }
+
+  /* masthead + location as translucent chrome floating on the plate */
+  .chrome { position: absolute; left: 0; right: 0; top: 0; z-index: 2; }
+  .masthead { background: none; }
+  .masthead .spine { height: 5px; }
+  .mast-inner { flex-wrap: nowrap; align-items: center; gap: 18px; height: 60px; padding: 0 40px;
+    background: linear-gradient(rgba(11,9,6,.9), rgba(11,9,6,.55)); border-bottom: 1px solid rgba(75,63,43,.9); }
+  .mast-inner .brand { font-size: 0.72rem; }
+  .mast-tools { gap: 18px; }
+  .locband { padding: 0 40px; height: 48px; border-bottom: 1px solid rgba(75,63,43,.9);
+    background: linear-gradient(rgba(11,9,6,.82), rgba(11,9,6,.42)); }
+
+  /* the floating leaf: the one opaque paper object, on the right */
+  .leaf { position: absolute; right: 40px; top: 128px; bottom: 36px; width: 44vw; max-width: 900px; min-width: 540px;
+    flex: none; background: linear-gradient(var(--leaf-top), var(--leaf-bot)); border: 1px solid var(--rule);
+    box-shadow: 0 30px 80px rgba(0,0,0,.6); z-index: 3; animation: bb-turn .55s cubic-bezier(.2,.7,.2,1) both; }
+  .leaf-spine { display: block; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--accent); }
+  .leaf-scroll { overflow: hidden; }
+  .leaf .stage { overflow-y: auto; }
+
+  .tabbar { display: none; }
+}
+
+/* wider desks: cap the plate art measure, keep the leaf from swallowing the plate */
+@media (min-width: 1600px) {
+  .leaf { width: 40vw; }
 }

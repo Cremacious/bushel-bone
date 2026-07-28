@@ -35,7 +35,10 @@
 [data-season="fall"]{ --accent:#a4482a; }
 [data-season="winter"]{ --accent:#5a7d99; }
 
-@media (min-width: 1100px) { :root { --root: 20px; } }
+/* Desktop root is fluid: the V0.3 ramp is calibrated for a 1920 canvas (20px root),
+   but on a smaller desk the leaf is narrower, so scale the root with the viewport and
+   only reach 20px near 1920. Keeps type legible without feeling oversized. */
+@media (min-width: 1100px) { :root { --root: clamp(14px, 1.04vw, 20px); } }
 
 html { font-size: var(--root); }
 body {
