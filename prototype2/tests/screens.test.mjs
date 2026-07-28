@@ -60,3 +60,17 @@ describe("planting screen", () => {
     expect(state.phase).toBe("week");
   });
 });
+
+describe("weekly plan screen", () => {
+  it("assigns a hand and resolves the week", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" }); // phase week
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    expect(root.querySelectorAll(".handrow").length).toBe(1); // Reuben
+    root.querySelector('.handrow .taskbtn').click(); // pick a task
+    [...root.querySelectorAll(".choicecard")].find((b) => /Put them/.test(b.textContent)).click();
+    expect(state.week).toBe(2);
+  });
+});
