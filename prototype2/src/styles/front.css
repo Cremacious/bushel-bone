@@ -1,0 +1,75 @@
+/* The pre-game front porch (title / naming / letter), in the V0.3 dark register.
+   A black ground on purpose, before the season calendar has anything to say. */
+
+.front { min-height: 100vh; min-height: 100dvh; background: var(--ground); color: var(--ink);
+  display: flex; flex-direction: column; }
+.fr-screen { flex: 1; display: flex; flex-direction: column; }
+
+/* ---- title ---- */
+.fr-title { position: relative; }
+.fr-title .fr-hero { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6vw;
+  padding: 40px 24px; flex-wrap: wrap; }
+.fr-crow { filter: drop-shadow(0 20px 40px rgba(0,0,0,.7)); }
+.fr-crow svg { width: clamp(120px, 18vw, 220px); height: auto; }
+.fr-herotext { max-width: 560px; width: 100%; }
+.fr-eyebrow { letter-spacing: .34em; }
+.fr-wordmark { font-size: clamp(52px, 8vw, 92px); line-height: 1; color: var(--ink-hi); margin-top: 14px; }
+.fr-wordmark .amp { color: var(--lamp); margin: 0 .04em; }
+.fr-rule { margin: 22px 0; }
+.fr-tagline { font-family: "IM Fell English", Georgia, serif; font-style: italic;
+  font-size: clamp(18px, 2.2vw, 26px); line-height: 1.5; color: var(--ink-soft); }
+.fr-menu { display: flex; flex-direction: column; gap: 14px; margin-top: 40px; }
+.fr-menu-row { display: flex; gap: 14px; }
+.fr-menuitem { all: unset; cursor: pointer; box-sizing: border-box; display: flex; align-items: center;
+  justify-content: space-between; gap: 16px; min-height: 56px; padding: 16px 22px;
+  border: 1px solid var(--rule); color: var(--ink-soft); }
+.fr-menuitem .fr-mi-label { font-size: clamp(20px, 2.4vw, 28px); color: var(--ink-hi); }
+.fr-menuitem.primary { border-color: var(--lamp); background: color-mix(in srgb, var(--lamp) 14%, transparent); }
+.fr-menuitem.primary .fr-mi-glyph { color: var(--lamp); font-size: 1.4rem; }
+.fr-menuitem.disabled { opacity: .45; cursor: default; }
+.fr-menuitem.disabled .fr-mi-label { color: var(--ink-soft); }
+.fr-menuitem.half { flex: 1; }
+.fr-menuitem:not(.disabled):hover, .fr-menuitem:not(.disabled):focus-visible { border-color: var(--lamp); outline: none; }
+.fr-mi-aside { font-style: italic; color: var(--ink-faint); }
+.fr-foot { text-align: center; padding: 16px; color: var(--ink-faint); letter-spacing: .16em; }
+
+/* ---- naming + info screens ---- */
+.fr-narrow { max-width: 620px; width: 100%; margin: 0 auto; padding: 8vh 24px 40px; box-sizing: border-box; }
+.fr-body { font-size: 1.06rem; line-height: 1.7; color: var(--ink-soft); margin: 0 0 1em; }
+.fr-label { display: block; margin: 4px 0 8px; }
+.fr-input { width: 100%; box-sizing: border-box; background: transparent; color: var(--ink-hi);
+  border: 1px solid var(--lamp); padding: 12px 14px; outline: none; }
+.fr-input:focus { box-shadow: 0 0 0 1px var(--lamp); }
+.fr-hint { margin-top: 10px; }
+.fr-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 28px; }
+.fr-back { all: unset; cursor: pointer; color: var(--ink-faint); text-decoration: underline; font-style: italic; }
+.fr-back:hover, .fr-back:focus-visible { color: var(--lamp); outline: none; }
+.fr-btn { flex: 0 0 auto; min-width: 160px; text-align: center; }
+.fr-btn[disabled] { opacity: .45; cursor: not-allowed; }
+
+/* ---- the letter ---- */
+.fr-letterwrap { max-width: 720px; width: 100%; margin: 0 auto; padding: 6vh 24px 40px; box-sizing: border-box; }
+.fr-page { animation: bb-line .28s ease-out both; }
+.fr-letter-h { font-family: "IM Fell English", Georgia, serif; font-style: italic; color: var(--ink-faint);
+  text-align: center; margin-bottom: 18px; font-size: 1rem; }
+/* page 1 is a real paper document (light leaf on the black ground) */
+.fr-letter { background: #efe3c6; color: #2a2216; border: 1px solid #6b5a3c; border-left: 5px solid var(--fall, #a4482a);
+  box-shadow: 0 30px 80px rgba(0,0,0,.6); padding: 40px 44px 36px; }
+.fr-letter-head { text-align: center; border-bottom: 1px solid #b9a684; padding-bottom: 16px; margin-bottom: 20px; }
+.fr-co { font-family: "IM Fell English SC", Georgia, serif; font-size: 1.5rem; color: #2a2216; }
+.fr-office { font-family: "IM Fell English", Georgia, serif; font-style: italic; color: #5f5138; margin-top: 4px; }
+.fr-date { font-variant-numeric: tabular-nums; color: #5f5138; margin-top: 6px; font-size: 0.9rem; }
+.fr-letter p { font-size: 1.06rem; line-height: 1.62; margin: 0 0 0.9em; }
+.fr-signoff { font-family: "IM Fell English", Georgia, serif; font-style: italic; text-align: right; color: #5f5138; }
+/* page 2 is plain cream narration on the black ground, not a letter */
+.fr-narration p { font-size: 1.12rem; line-height: 1.78; color: var(--ink); margin: 0 0 1.1em; }
+.fr-narration .said { color: var(--dialogue); font-style: italic; }
+.fr-paging { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 28px; }
+.fr-prev { all: unset; cursor: pointer; color: var(--ink-faint); text-decoration: underline; font-style: italic; }
+.fr-prev.off { opacity: .35; cursor: default; text-decoration: none; }
+.fr-prev:not(.off):hover { color: var(--lamp); }
+.fr-pageno { letter-spacing: .18em; }
+
+@media (min-width: 1100px) {
+  .fr-title .fr-hero { gap: 8vw; }
+}

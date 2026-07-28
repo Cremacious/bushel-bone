@@ -116,8 +116,8 @@ html, body { height: 100%; }
   .plate { position: absolute; inset: 0; height: auto; border: 0; z-index: 0; }
   .plate-art { place-items: end start; text-align: left; padding: 0 0 40px 56px; font-size: 0.95rem; max-width: 40%; }
 
-  /* Reuben stands on the plate, left of centre */
-  .portrait { left: 7%; right: auto; bottom: 0; width: 220px; height: 420px; }
+  /* Reuben stands at the bottom-right of the plate, tucked against the leaf's edge */
+  .portrait { left: auto; right: calc(44vw + 24px); bottom: 0; width: 220px; height: 420px; }
   .portrait .np-name { font-size: 1.15rem; }
   .portrait .np-role { font-size: 0.72rem; }
   .portrait .nameplate { border: 1px solid var(--lamp); background: rgba(11,9,6,.9); padding: 6px 12px; width: auto; left: 12px; }
