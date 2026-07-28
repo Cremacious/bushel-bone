@@ -359,3 +359,36 @@ scenes:
         text: "Keep them busy and fed"
         sub: "if you can spare it"
         result: "You ration out small comforts: a better supper, a task with an end to it. The crew holds together through the worst of the quiet."
+
+  # ---------------- MALACHI'S JOURNALS (#43) ----------------
+  # The uncle's almanac-notebooks, canon from narrative-bible §0.11. One entry
+  # unlocks per season across Year 1 (spring on arrival, then one each season).
+  # His voice is a flat almanac-keeper's; the flatness is the horror.
+
+  journal_spring:
+    heading: "The first spring, 1864"
+    body: >-
+      <p>Signed the charter today. Four fields and a lean-to by the slow river, off a Company man who would not stay for supper. He was gone before the light went.</p><p>The parcel has no name on the roll, only a number. In time it will take mine, I suppose, the way places do.</p><p>The ground is the strange thing. The east field was warm to the hand, though the frost is not a week gone, warm as a fresh loaf. A good sign, the agent said. Quick ground, grows twice for half the labor. He said it the way a man says a thing he has been told to say.</p><p>I have a field to break and no arms but my own to break it. Tomorrow I see about a hand.</p>
+
+  journal_summer:
+    heading: "Summer, 1864"
+    body: >-
+      <p>Bought a hand off the wagon. A field man, strong, slow to speak. {{npc.reuben}}, the merchant called him. I have never held with the way they are made, but a man cannot work four fields with two arms, and I will not pretend otherwise.</p><p>I told him he eats what I eat and sleeps under the same roof until the barn is raised. He looked at me as if I had spoken in some other tongue. Perhaps I had.</p><p>The quick ground gave up potatoes the size of my fist by August. Half a season. I should be gladder of it than I am.</p>
+
+  journal_fall:
+    heading: "Fall, 1864"
+    body: >-
+      <p>First harvest in, and it is a good one. Better than good. Better than the land has any right to give a man who does not yet know what he is doing.</p><p>The crows came for the gleanings and stayed. They are always here now: on the fence, on the well-sweep, on the ridge of the roof. {{npc.reuben}} says they were here before we were.</p><p>An old woman came up the road at dusk and stood at the edge of the east field without setting foot in it. I called a greeting. She did not answer, only looked a long while at the ground, and then at me, and went back the way she came. {{npc.nan}}, the town calls her. I am told to pay her no mind. I paid her some.</p>
+
+  journal_winter:
+    heading: "The first winter, 1864"
+    body: >-
+      <p>Cold such as I have not known. But the east field does not wholly freeze. There is a patch of it, no bigger than a grave, that stays soft and dark clean through, and steams a little at first light, like something taking slow breaths.</p><p>I put my hand to it on the worst night, when the wind was up and sleep would not come. It was warm. I did not care for how warm.</p><p>{{npc.reuben}} found me out there and did not ask what I was about. He only said, <span class="said">“Best come in, Mister {{npc.malachi}}. Ground keeps its own counsel.”</span> I have thought on that since.</p><p>We are alive. That is the whole of the account this year.</p>
+
+  # Reuben's "knew Malachi" thread (#43): a topic on the Ask Reuben panel. He
+  # remembers the uncle and grieves him, and points to the journals. Restrained,
+  # no spoiler of the Old Well or the sacrifice (the journals reveal that slowly).
+  reuben_malachi:
+    topic: "Did you know my uncle?"
+    reply: >-
+      <p>{{npc.reuben}} goes still, and turns his hat over in his hands. <span class="said">“Mister {{npc.malachi}}. Aye. Near twenty year I worked this ground beside him.”</span></p><p><span class="said">“He was the first ever told me I ate what he ate, slept under his roof. I did not know what to make of it, at the first. He waited while I learned.”</span> He is quiet a moment. <span class="said">“He kept a lamp lit over the east field, some nights. Watching, he said, though he would not say for what. The winter he went, he set me to hold the fields till his blood came. Then he was gone, and no grave to show for it, only the books he left on the shelf.”</span></p><p>He looks at you, steadier than his voice is. <span class="said">“Read them, when the pages come to you. He wrote them for whoever would follow. Reckon that is you now.”</span></p>

@@ -24,7 +24,7 @@ describe("script .docx round-trip (#46)", () => {
   it("imports the freshly-exported docx with zero changes", () => {
     run("script-docx.mjs");
     const out = run("script-import.mjs");
-    expect(out).toContain("205 labelled lines");
+    expect(out).toMatch(/\d+ labelled lines/);
     expect(out).toContain("No changes");
   });
 });

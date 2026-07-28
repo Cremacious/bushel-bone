@@ -7,6 +7,22 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 13 — 2026-07-28 — Founder story, Year-1 prototype parts: Malachi's journals + Reuben's thread (#43)
+
+**Worked on:** The buildable-now slice of #43 (the founder story, "The Inherited Vigil"). Most of #43 — the Old Well payoff (Years 7/10), the earned-reunion ending, the Codex "how much of the truth was uncovered" field, and the fixed-anchor-vs-new-lineage succession logic — lives in years and systems the Year-1 vertical slice doesn't have, so those stay production-port-gated (their prose is already canon in narrative-bible §0.12–§0.14). The Year-1-appropriate pieces are the **journals feature** and **Reuben's "knew Malachi" thread**; Chris picked both, plus a masthead book control with an unread dot. The Day-1 inheritance framing was already done in Session 10.
+
+**Built (all in `content/script.yaml` + `year1.html`, on the #45/#46 infra):**
+- **Malachi's journals.** The four canon 1864 arrival entries (narrative-bible §0.11) — *The first spring / Summer / Fall / The first winter* — added to `content/script.yaml` (tokenized: `{{npc.reuben}}`, `{{npc.nan}}`, `{{npc.malachi}}`). One unlocks per season across Year 1 (`journalUnlockedCount()` = `S.si+1`). A small **book control in the masthead** (engraved SVG, beside the ?/theme toggles) opens an overlay of the unlocked entries, styled as aged italic pages; sealed later pages are noted. An **unread dot** (`renderJournalDot()` in `refresh()`) marks a new page; `S.journalSeen` tracks read state and persists in the save. A one-time guided-mode tip points at the book, fired from `endSeason()` (a season turn, never during boot, so it can't collide with the opening prompt or another tip).
+- **Reuben's "knew Malachi" thread.** A new *"Did you know my uncle?"* topic on the Ask Reuben panel: Reuben grieves Malachi, remembers his kindness, and points to the journals — restrained, no spoiler of the Old Well or the sacrifice (the journals reveal that slowly across later years). This reply is newly authored (the journals are canon; Reuben's spoken thread wasn't pre-scripted) — in voice, dash-free — and lives in `content/script.yaml`, so it also flows through the #46 .docx round-trip and the #45 name tokens.
+
+**Verified:** full suite green at **31 files / 110 tests**, incl. new `tests/journals.test.mjs` (4: one entry unlocks per season, the unread dot toggles and clears on open, only unlocked entries show with tokens resolved and no leaks, and Reuben's uncle topic renders his remembrance). Fixed a real interaction bug caught by the existing `tip.test.mjs`: firing the journal tip from `refresh()` (which runs on every paint) collided with other tips — moved it to the discrete `endSeason()` season-turn instead. Confirmed the overlay renders correctly by DOM inspection (the browser preview's static-snapshot mode wouldn't composite live changes).
+
+**Still open on #43 (production-port scope, canon-written):** the Old Well beats at Years 7 and 10, the earned-reunion ending in the Year-10 verdict, the Codex truth-uncovered field, and the first-lineage-vs-later-lineage framing across succession. Left the issue open with the Year-1 boxes checked.
+
+**Next up:** the rest of #43 when the production port exists; and the standing milestone-2 items (#24 art direction, #48 mobile fixed-canvas, a Vercel proof-of-concept for testers).
+
+---
+
 ## Session 12 — 2026-07-28 — Dialogue extraction + .docx round-trip (#46)
 
 **Worked on:** Issue #46 — pull every line of the game's writing out of the code into one editable screenplay, and support a Word round-trip (export to `.docx`, tighten by hand, hand back, apply). Chris chose scope up front: `year1.html` narrative prose only for now (the `content/events/*.yaml` files aren't loaded by the prototype yet), and narrative dialogue only (mechanical UI microcopy and help panels stay in code). Built and committed in two parts.

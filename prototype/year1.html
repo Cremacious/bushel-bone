@@ -129,6 +129,23 @@
     margin-right:6px;
   }
   .masthead .helptog:hover{ color:var(--ink); border-color:var(--rule); }
+  .masthead .booktog{
+    all:unset; cursor:pointer; position:relative; display:inline-flex; align-items:center;
+    color:var(--ink-faint); padding:2px 7px; border:1px solid var(--rule-fine); border-radius:2px;
+    margin-right:6px;
+  }
+  .masthead .booktog:hover{ color:var(--ink); border-color:var(--rule); }
+  .masthead .booktog .jdot{
+    position:absolute; top:-3px; right:-3px; width:7px; height:7px; border-radius:50%;
+    background:var(--accent); border:1px solid var(--paper); display:none;
+  }
+  .masthead .booktog.unread .jdot{ display:block; }
+  /* Malachi's journals overlay: aged pages in his hand */
+  .journal-entry{ padding:2px 16px 14px; }
+  .journal-entry + .journal-entry{ border-top:1px solid var(--rule-fine); padding-top:14px; }
+  .journal-entry .jhead{ font-variant:small-caps; letter-spacing:.06em; color:var(--accent-ink); font-size:15px; margin-bottom:8px; }
+  .journal-entry .prose{ font-style:italic; }
+  .journal-sealed{ padding:8px 16px 16px; color:var(--ink-faint); font-size:13px; }
   .masthead .plate{
     display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
     margin-top:8px; padding-bottom:10px;
@@ -629,6 +646,7 @@
       <div class="brand">
         <span>Bushel &amp; Bone · The Newcomer</span>
         <span style="margin-left:auto;display:flex;gap:6px">
+          <button class="booktog" id="booktog" aria-label="Malachi's journals"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 2.6 C5.5 1.7 3 1.7 1.4 2.3 V11.1 C3 10.5 5.5 10.5 7 11.4 C8.5 10.5 11 10.5 12.6 11.1 V2.3 C11 1.7 8.5 1.7 7 2.6 Z M7 2.6 V11.4" fill="none" stroke="currentColor" stroke-width="1"/></svg><span class="jdot" aria-hidden="true"></span></button>
           <button class="helptog" id="helptog" aria-label="What do I do here?">?</button>
           <button class="themetog" id="themetog" aria-label="Toggle day and night">☾ night</button>
         </span>
@@ -728,6 +746,7 @@
       lost:[],                      // clones lost this winter
       flow:[], fi:0, ended:false,
       tutShown:{},
+      journalSeen:-1,              // highest journal index the player has opened
     };
     rollWeather();
     buildSeason();
@@ -750,7 +769,7 @@
         alarmedTiers:S.alarmedTiers, regard:S.regard, reckoning:S.reckoning,
         flags:S.flags, weather:S.weather, coldsnap:S.coldsnap,
         dead:S.dead, lost:S.lost, ended:S.ended, tutShown:S.tutShown,
-        lineageName:S.lineageName,
+        lineageName:S.lineageName, journalSeen:S.journalSeen,
         seedDisplay:SEED, rngState:PRNG.getState(),
       };
       localStorage.setItem(SAVE_KEY, JSON.stringify(snap));
@@ -872,7 +891,7 @@
     const bar = document.getElementById("askbar");
     if(bar){ const rtx = bar.querySelector(".rtx"); if(rtx) rtx.innerHTML = tok(needsForeman() ? '<b>Name a new foreman</b>' : '<b>Ask {{npc.reuben}}</b> what to do'); }
   }
-  function refresh(){ renderHeader(); renderLedger(); document.getElementById("seedtag").textContent = "seed "+SEED.toString(16); }
+  function refresh(){ renderHeader(); renderLedger(); renderJournalDot(); document.getElementById("seedtag").textContent = "seed "+SEED.toString(16); }
 
   /* ---------------- roster overlay ---------------- */
   function moraleDots(n){ return '<span class="dots">'+"●".repeat(Math.max(0,n))+'<span class="off">'+"●".repeat(Math.max(0,5-n))+'</span></span>'; }
@@ -1356,7 +1375,17 @@
     "ev_cabin_fever.body": "<div class=\"prose\"><p>The snow shuts the valley in. Days pass without a face from town, and the household grows short-tempered in the close air of the lean-to.</p></div>",
     "ev_cabin_fever.keep.text": "Keep them busy and fed",
     "ev_cabin_fever.keep.sub": "if you can spare it",
-    "ev_cabin_fever.keep.result": "You ration out small comforts: a better supper, a task with an end to it. The crew holds together through the worst of the quiet."
+    "ev_cabin_fever.keep.result": "You ration out small comforts: a better supper, a task with an end to it. The crew holds together through the worst of the quiet.",
+    "journal_spring.heading": "The first spring, 1864",
+    "journal_spring.body": "<p>Signed the charter today. Four fields and a lean-to by the slow river, off a Company man who would not stay for supper. He was gone before the light went.</p><p>The parcel has no name on the roll, only a number. In time it will take mine, I suppose, the way places do.</p><p>The ground is the strange thing. The east field was warm to the hand, though the frost is not a week gone, warm as a fresh loaf. A good sign, the agent said. Quick ground, grows twice for half the labor. He said it the way a man says a thing he has been told to say.</p><p>I have a field to break and no arms but my own to break it. Tomorrow I see about a hand.</p>",
+    "journal_summer.heading": "Summer, 1864",
+    "journal_summer.body": "<p>Bought a hand off the wagon. A field man, strong, slow to speak. {{npc.reuben}}, the merchant called him. I have never held with the way they are made, but a man cannot work four fields with two arms, and I will not pretend otherwise.</p><p>I told him he eats what I eat and sleeps under the same roof until the barn is raised. He looked at me as if I had spoken in some other tongue. Perhaps I had.</p><p>The quick ground gave up potatoes the size of my fist by August. Half a season. I should be gladder of it than I am.</p>",
+    "journal_fall.heading": "Fall, 1864",
+    "journal_fall.body": "<p>First harvest in, and it is a good one. Better than good. Better than the land has any right to give a man who does not yet know what he is doing.</p><p>The crows came for the gleanings and stayed. They are always here now: on the fence, on the well-sweep, on the ridge of the roof. {{npc.reuben}} says they were here before we were.</p><p>An old woman came up the road at dusk and stood at the edge of the east field without setting foot in it. I called a greeting. She did not answer, only looked a long while at the ground, and then at me, and went back the way she came. {{npc.nan}}, the town calls her. I am told to pay her no mind. I paid her some.</p>",
+    "journal_winter.heading": "The first winter, 1864",
+    "journal_winter.body": "<p>Cold such as I have not known. But the east field does not wholly freeze. There is a patch of it, no bigger than a grave, that stays soft and dark clean through, and steams a little at first light, like something taking slow breaths.</p><p>I put my hand to it on the worst night, when the wind was up and sleep would not come. It was warm. I did not care for how warm.</p><p>{{npc.reuben}} found me out there and did not ask what I was about. He only said, <span class=\"said\">“Best come in, Mister {{npc.malachi}}. Ground keeps its own counsel.”</span> I have thought on that since.</p><p>We are alive. That is the whole of the account this year.</p>",
+    "reuben_malachi.topic": "Did you know my uncle?",
+    "reuben_malachi.reply": "<p>{{npc.reuben}} goes still, and turns his hat over in his hands. <span class=\"said\">“Mister {{npc.malachi}}. Aye. Near twenty year I worked this ground beside him.”</span></p><p><span class=\"said\">“He was the first ever told me I ate what he ate, slept under his roof. I did not know what to make of it, at the first. He waited while I learned.”</span> He is quiet a moment. <span class=\"said\">“He kept a lamp lit over the east field, some nights. Watching, he said, though he would not say for what. The winter he went, he set me to hold the fields till his blood came. Then he was gone, and no grave to show for it, only the books he left on the shelf.”</span></p><p>He looks at you, steadier than his voice is. <span class=\"said\">“Read them, when the pages come to you. He wrote them for whoever would follow. Reckon that is you now.”</span></p>"
   };
   /* script:end */
   // L(id[, vars]) returns a line of dialogue from the generated SCRIPT. {{name}}
@@ -1450,6 +1479,7 @@
     rollWeather();
     buildSeason();
     runStep();
+    journalTip();   // guided nudge toward the journals, once, at the first season turn
   }
 
   /* ---------------- growth / harvest / market ---------------- */
@@ -2174,6 +2204,34 @@
     if(wire) wire(panel);
   }
   function closeOverlay(){ document.getElementById("overlay").classList.remove("on"); document.getElementById("overlay-panel").innerHTML=""; }
+  /* ---------------- Malachi's journals (#43) ---------------- */
+  const JOURNALS = ["journal_spring","journal_summer","journal_fall","journal_winter"];
+  // One entry per season of Year 1: entry k is unlocked once the player reaches
+  // season k (the year is always 1 in this vertical slice).
+  function journalUnlockedCount(){ return (S && S.year===1) ? Math.min(JOURNALS.length, S.si+1) : JOURNALS.length; }
+  function journalUnread(){ return (journalUnlockedCount()-1) > (S ? S.journalSeen : -1); }
+  function renderJournalDot(){
+    const b=document.getElementById("booktog"); if(!b) return;
+    b.classList.toggle("unread", journalUnread());
+  }
+  // A one-time, guided-mode nudge toward the book, fired at a season turn (not during
+  // boot) so it never collides with the opening prompt or another tip.
+  function journalTip(){
+    if(typeof tip==="function")
+      tip("journal",["Your uncle left a shelf of almanac-notebooks. A new page turns up with each season. Tap the book, up in the masthead, to read what he set down."],"#booktog");
+  }
+  function openJournals(){
+    const n=journalUnlockedCount();
+    let html='<div class="rosterhdr"><b>Malachi’s Journals</b></div>';
+    for(let i=0;i<n;i++)
+      html+='<div class="journal-entry"><div class="jhead">'+L(JOURNALS[i]+".heading")+'</div><div class="prose">'+L(JOURNALS[i]+".body")+'</div></div>';
+    if(n<JOURNALS.length) html+='<div class="journal-sealed">The later pages are still to come. They turn with the seasons.</div>';
+    html+='<div style="padding:8px 14px 14px"><button class="wbtn pri" id="journal-close" style="width:100%">Close the book</button></div>';
+    if(S) S.journalSeen=n-1;
+    openOverlay(html, panel=>{ const c=panel.querySelector('#journal-close'); if(c)c.addEventListener('click',closeOverlay); });
+    renderJournalDot();
+  }
+
   function openAskReuben(){
     if(needsForeman()){ openPromote(); return; }
     const fm = foreman();
@@ -2183,6 +2241,7 @@
     const asks = [
       {t:"What should I be doing?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = reubenGuidance(); }},
       {t:"How are the hands?", fn:()=>{ document.getElementById("reuben-answer").innerHTML = collectiveLine(); }},
+      {t:L("reuben_malachi.topic"), fn:()=>{ document.getElementById("reuben-answer").innerHTML = tok(L("reuben_malachi.reply")); }},
       {t:"How do I play this?", fn:showHowToPlay},
       (tutGuided()
         ? {t:"Stop the tips", fn:confirmStopTips}
@@ -2290,6 +2349,7 @@
 
   document.getElementById("overlay-scrim").addEventListener("click", closeOverlay);
   document.getElementById("askbar").addEventListener("click", openAskReuben);
+  document.getElementById("booktog").addEventListener("click", openJournals);
   document.getElementById("helptog").addEventListener("click", ()=>{
     openInfo("What do I do here?", SCREEN_HELP[S.screenType] || SCREEN_HELP.event);
   });
@@ -2501,7 +2561,7 @@
   applyDesktopScale();
 
   if (typeof window !== "undefined") {
-    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP, beginNewGame, continueGame, confirmNewGame, hasSave, saveGame, loadGame, clearSave, showGame, refreshContinueButton, showHowToPlay, showSettings, musicOn, sfxOn, setMusicOn, setSfxOn, applyDesktopScale, startIntro, finishIntro, normLineage, tok, lookupName, NAMES, NPCS, SETTINGS, L, SCRIPT };
+    window.__BB_TEST__ = { getState:()=>S, foreman, fore, livingHands, extraHands, condition, reckBand, mkHand, harvestStep, openOverlay, closeOverlay, openRoster, assignHand, applyLabor, openHand, reubenGuidance, openAskReuben, checkReckoningAlarm, showReckoningAlarm, needsForeman, promoteForeman, openPromote, collectiveLine, tutInit, tutGuided, tutSetGuided, tip, dismissTip, replayTips, setPlate, openInfo, SCREEN_HELP, LEDGER_HELP, beginNewGame, continueGame, confirmNewGame, hasSave, saveGame, loadGame, clearSave, showGame, refreshContinueButton, showHowToPlay, showSettings, musicOn, sfxOn, setMusicOn, setSfxOn, applyDesktopScale, startIntro, finishIntro, normLineage, tok, lookupName, NAMES, NPCS, SETTINGS, L, SCRIPT, openJournals, journalUnlockedCount, journalUnread, renderJournalDot };
   }
 })();
 </script>
