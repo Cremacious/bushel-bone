@@ -161,3 +161,20 @@ The exploration layer (§2) **is** the story's delivery system. Malachi's myster
 - The legacy-ledger scoring weights.
 - How far standing content is authored per NPC for the MVP vs. deferred.
 - The prototype build staging (single season → 2 years → 4).
+
+---
+
+## 9. Design reconciliation — Claude Design "V0.3" (`design/version-1/`)
+
+The next code work is a **rebuild of the prototype against the Claude Design V0.3 language**, not more patching of `year1.html` (D-047). The design is a large step up and aligns with this spec strongly.
+
+**Aligns / is the build target:**
+- **Two form factors** (Steam 1920×1080 + Portrait 390×844) — the phone layout is first-class, resolving any portrait-primary concern.
+- **Six-tab phone bar — Home · Fields · Hands · Town · Ledger · Almanac** — realizes the locked portrait-primary 6-tab decision, and already reserves **Town** (this spec's exploration, §2) and **Almanac** (the codex + Malachi's journals, #43).
+- The shell (full-bleed plate, floating leaf, brass ledger bar with warnings inline), the play-scene / planting / dusk / roster screens, the name-your-line + two-page-letter opening, the day legibility, and the type/color/motion system all carry forward.
+
+**Gaps to design *in* the V0.3 language** (named by the design, not yet detailed — they are this spec's new mechanics): the **Town exploration screen** (destination menu, NPC scenes, standing), the **action-day chooser**, the **Almanac screen** (codex/journals/help), and the **legacy-ledger / run-end** screen.
+
+**Two conflicts, resolved:**
+- **The opening letter → hybrid.** Keep canon facts (≈1884 so it fits Malachi's 1864 journals; the Sallows Charter Company; the mortgage; "absent," no body) and fold in the design's tighter lines ("not dead in law, he is absent"). The design's placeholder "1841 / S. Ridley signs for the Company" is not adopted (1841 breaks the journal chronology; Silas is the separate banker). Reconciled copy to be drafted for approval during the rebuild.
+- **The day model → "Day X of 20" over the 6-action economy.** The counter and pips are the calendar display; underneath, ~6 discretionary actions each advance the counter several days, with fixed beats on set days.
