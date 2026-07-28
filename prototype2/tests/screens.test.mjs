@@ -86,4 +86,41 @@ describe("dusk + year end", () => {
     [...root.querySelectorAll(".choicecard")].find((b) => /Turn the page/.test(b.textContent)).click();
     expect(state.phase).toBe("brief");
   });
+
+  it("winter's end reaches the year-1 verdict screen with a replay control", () => {
+    const root = document.createElement("div");
+    let state = initialState(1); state.seasonIndex = 3; // winter (no planting phase)
+    state = reduce(state, { type: "BEGIN_SEASON" });
+    for (let i = 0; i < 5; i++) state = reduce(state, { type: "RESOLVE_WEEK" });
+    const dispatch = (a) => { state = reduce(state, a); };
+    let stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    [...root.querySelectorAll(".choicecard")].find((b) => /Turn the page/.test(b.textContent)).click();
+    expect(state.phase).toBe("yearend");
+    stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    expect(root.textContent).toContain("survived another year");
+    expect([...root.querySelectorAll(".choicecard")].some((b) => /another first year/.test(b.textContent))).toBe(true);
+  });
+});
+
+describe("weekly plan — dead tasks and lost hands", () => {
+  function weekView(mutate) {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" }); // phase week, nothing planted
+    if (mutate) state = mutate(state);
+    const dispatch = (a) => { state = reduce(state, a); };
+    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    return { root, get: () => state };
+  }
+  it("disables Harvest (and Tend) when nothing is ripe or planted, and the button will not assign", () => {
+    const { root, get } = weekView();
+    const harvest = [...root.querySelectorAll(".handrow .taskbtn")].find((b) => b.textContent === "Harvest");
+    expect(harvest.disabled).toBe(true);
+    expect(harvest.getAttribute("title")).toMatch(/ripe/);
+    harvest.click(); // no-op: no onClick wired
+    expect(get().hands[0].task).toBe("rest"); // unchanged from the default
+  });
+  it("lists only living hands", () => {
+    const { root } = weekView((s) => ({ ...s, hands: [...s.hands, { id: "del", name: "Del", alive: false, strain: 100, task: "rest", morale: 0, traits: [] }] }));
+    expect(root.querySelectorAll(".handrow").length).toBe(1); // Del is lost, only Reuben stands
+  });
 });

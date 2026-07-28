@@ -1,5 +1,5 @@
 import { el } from "./dom.js";
-import { seasonLabel } from "../core/state.js";
+import { seasonLabel, WEEKS_PER_SEASON, livingHands } from "../core/state.js";
 import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard } from "./components.js";
@@ -50,28 +50,42 @@ const SCREENS = {
     stage.append(choiceCard({ text: "Sow it so", sub: "put the season in the ground", primary: true }, () => dispatch({ type: "SOW" })));
   },
   week: (stage, s, dispatch) => {
-    stage.append(el("div", { class: "eyebrow t-label", text: `Week ${s.week} of ${5}` }), el("h2", { class: "t-title", text: "Set the crew to work" }));
-    const TASKS = [["rest", "Rest"], ["tend", "Tend"], ["harvest", "Harvest"], ["chop", "Chop wood"]];
+    stage.append(el("div", { class: "eyebrow t-label", text: `Week ${s.week} of ${WEEKS_PER_SEASON}` }), el("h2", { class: "t-title", text: "Set the crew to work" }));
     const plantedFields = s.fields.filter((f) => f.crop);
-    for (const h of s.hands.filter((x) => x.alive)) {
+    const ripe = ripeFields(s);
+    const living = livingHands(s);
+    // A task is offered only when there is something to do it to; otherwise it is shown
+    // disabled with a plain reason, so a hand is never quietly tired for empty motion (D-039).
+    const why = { tend: plantedFields.length ? null : "no crop is in the ground to tend",
+      harvest: ripe.length ? null : "nothing is ripe to bring in" };
+    const TASKS = [["rest", "Rest"], ["tend", "Tend"], ["harvest", "Harvest"], ["chop", "Chop wood"]];
+    for (const h of living) {
       const row = el("div", { class: "handrow" }, [
         el("span", { class: "hname t-choice", text: h.name }),
         el("span", { class: "hcond t-sub", text: conditionOf(h) }),
       ]);
-      const sel = el("div", { class: "taskpick" }, TASKS.map(([task, label]) =>
-        el("button", { class: "taskbtn t-sub" + (h.task === task ? " sel" : ""), text: label,
-          onClick: () => dispatch({ type: "ASSIGN", handId: h.id, task,
-            targetFieldId: task === "tend" ? (plantedFields[0]?.id) : task === "harvest" ? (ripeFields(s)[0]?.id) : undefined }) })));
+      const sel = el("div", { class: "taskpick" }, TASKS.map(([task, label]) => {
+        const blocked = !!why[task];
+        return el("button", { class: "taskbtn t-sub" + (h.task === task ? " sel" : "") + (blocked ? " disabled" : ""),
+          ...(blocked ? { disabled: true, title: why[task] } : {}), text: label,
+          onClick: blocked ? undefined : () => dispatch({ type: "ASSIGN", handId: h.id, task,
+            targetFieldId: task === "tend" ? plantedFields[0].id : task === "harvest" ? ripe[0].id : undefined }) });
+      }));
       row.append(sel);
       stage.append(row);
     }
     // The player's own week
     stage.append(el("div", { class: "eyebrow t-label", text: "Your own week" }));
+    const pWhy = { work: plantedFields.length ? null : "no field is planted to work",
+      care: living.length ? null : "there is no one left to sit with" };
     const P = [["rest", "Rest"], ["work", "Work a field"], ["care", "Sit with a hand"]];
-    stage.append(el("div", { class: "taskpick" }, P.map(([kind, label]) =>
-      el("button", { class: "taskbtn t-sub" + (s.playerAction?.kind === kind ? " sel" : ""), text: label,
-        onClick: () => dispatch({ type: "SET_PLAYER_ACTION", kind,
-          target: kind === "work" ? (plantedFields[0]?.id) : kind === "care" ? (s.hands.find((x) => x.alive)?.id) : undefined }) }))));
+    stage.append(el("div", { class: "taskpick" }, P.map(([kind, label]) => {
+      const blocked = !!pWhy[kind];
+      return el("button", { class: "taskbtn t-sub" + (s.playerAction?.kind === kind ? " sel" : "") + (blocked ? " disabled" : ""),
+        ...(blocked ? { disabled: true, title: pWhy[kind] } : {}), text: label,
+        onClick: blocked ? undefined : () => dispatch({ type: "SET_PLAYER_ACTION", kind,
+          target: kind === "work" ? plantedFields[0].id : kind === "care" ? living[0].id : undefined }) });
+    })));
     stage.append(choiceCard({ text: "Put them to work", sub: "let the week play out", primary: true }, () => dispatch({ type: "RESOLVE_WEEK" })));
   },
   dusk: (stage, s, dispatch) => {

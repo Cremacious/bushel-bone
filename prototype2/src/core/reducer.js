@@ -67,10 +67,15 @@ function resolveWeek(s) {
   const byId = (id) => fields.find((f) => f.id === id);
 
   // 1) Labor: each living hand does its task; the player does theirs.
+  // Returns whether real work happened — a hand told to tend bare ground or harvest an
+  // unripe field did nothing, so it must NOT pay the hard-labor strain for empty motion.
   const doLabor = (task, targetFieldId) => {
-    if (task === "tend" && targetFieldId != null) { const f = byId(targetFieldId); if (f && f.crop) f.tended = true; }
-    else if (task === "chop") { fuel += BALANCE.fuelPerChopWeek; }
-    else if (task === "harvest" && targetFieldId != null) {
+    if (task === "tend" && targetFieldId != null) {
+      const f = byId(targetFieldId);
+      if (f && f.crop) { f.tended = true; return true; }
+    } else if (task === "chop") {
+      fuel += BALANCE.fuelPerChopWeek; return true;
+    } else if (task === "harvest" && targetFieldId != null) {
       const f = byId(targetFieldId);
       if (f && ripe(f)) {
         const c = CROPS[f.crop];
@@ -78,9 +83,10 @@ function resolveWeek(s) {
         if (c.food > 0) larder += units * c.food; else coin += units * c.sale;
         log.push(`Brought in ${f.crop === "cotton" ? "cotton" : c.name.toLowerCase()} from ${fieldLabel(f).toLowerCase()}.`);
         f.crop = null; f.progress = 0; f.fert = Math.max(0, f.fert - 1);
+        return true;
       }
     }
-    return task === "tend" || task === "chop" || task === "harvest";
+    return false;
   };
   for (const h of hands) if (h.alive) { const hard = doLabor(h.task, h.targetFieldId); h.strain += hard ? St.hardLabor : (h.task === "rest" ? -St.restRecovery : 0); }
   // The player's own week:
