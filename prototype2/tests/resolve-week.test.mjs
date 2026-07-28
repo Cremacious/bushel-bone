@@ -37,13 +37,17 @@ describe("resolve week", () => {
     expect(s.fields.find((f) => f.id === 0).crop).toBe(null);
   });
   it("a starving hand accrues strain and can be lost", () => {
-    let s = inWeek();
+    // Winter: burns fuel too, so an unfed, unwarmed, idle hand racks up hunger (12/wk)
+    // + cold (12/wk) and is lost within the season's 5 weeks. Off "rest" so restRecovery
+    // (18/wk) doesn't outpace hunger alone (12/wk) and mask the starvation entirely; a
+    // single season's worth of RESOLVE_WEEK calls also respects the RESOLVE_WEEK "week"
+    // phase guard (it no-ops past dusk), so the death has to land inside those 5 weeks.
+    let s = initialState(1); s.seasonIndex = 3; // winter
+    s = reduce(s, { type: "BEGIN_SEASON" }); // winter skips planting -> phase "week"
     s.larder = 0;
-    // Off "rest" so restRecovery (18/wk) doesn't outpace hungerPerWeek (12/wk) and mask
-    // the starvation entirely; an idle, unfed hand should still be able to starve.
     s.hands[0] = { ...s.hands[0], task: "idle" };
-    for (let i = 0; i < 12 && s.hands[0].alive; i++) s = reduce(s, { type: "RESOLVE_WEEK" });
-    expect(s.hands[0].alive).toBe(false); // Reuben starved
+    for (let i = 0; i < 5 && s.hands[0].alive; i++) s = reduce(s, { type: "RESOLVE_WEEK" });
+    expect(s.hands[0].alive).toBe(false); // Reuben starved (and froze)
     expect(s.log.some((l) => /Reuben/.test(l))).toBe(true);
   });
   it("resting recovers strain", () => {
@@ -56,5 +60,55 @@ describe("resolve week", () => {
     let s = inWeek();
     for (let i = 0; i < 5; i++) s = reduce(s, { type: "RESOLVE_WEEK" });
     expect(s.phase).toBe("dusk");
+  });
+  it("chop adds fuelPerChopWeek to the fuel store", () => {
+    let s = inWeek();
+    const before = s.fuel;
+    s = reduce(s, { type: "ASSIGN", handId: "reuben", task: "chop" });
+    s = reduce(s, { type: "RESOLVE_WEEK" });
+    expect(s.fuel).toBe(before + BALANCE.fuelPerChopWeek);
+  });
+  it("harvesting a cash crop (cotton) adds coin, not larder, and clears the field", () => {
+    let s = inWeek();
+    s.fields[0] = { ...s.fields[0], crop: "cotton", progress: 2.0, fert: 3 }; // ripe (cotton is 2 seasons)
+    s = reduce(s, { type: "ASSIGN", handId: "reuben", task: "harvest", targetFieldId: 0 });
+    const beforeCoin = s.coin;
+    s = reduce(s, { type: "RESOLVE_WEEK" });
+    expect(s.coin).toBeGreaterThan(beforeCoin);
+    expect(s.fields.find((f) => f.id === 0).crop).toBe(null);
+  });
+  it("winter cold strains a hand when fuel runs short", () => {
+    let s = initialState(1); s.seasonIndex = 3; // winter
+    s = reduce(s, { type: "BEGIN_SEASON" }); // winter skips planting -> phase "week"
+    s.fuel = 0;
+    s.hands[0] = { ...s.hands[0], task: "idle" }; // off "rest" so recovery doesn't mask it
+    s = reduce(s, { type: "RESOLVE_WEEK" });
+    expect(s.hands[0].strain).toBeGreaterThan(0);
+    expect(s.fuel).toBe(0);
+  });
+  it("enough fuel avoids cold strain and drops by mouths × fuel/week", () => {
+    let s = initialState(1); s.seasonIndex = 3; // winter
+    s = reduce(s, { type: "BEGIN_SEASON" });
+    s.fuel = 100; // plenty for the week
+    s.hands[0] = { ...s.hands[0], task: "idle" };
+    const before = s.fuel;
+    s = reduce(s, { type: "RESOLVE_WEEK" });
+    expect(s.fuel).toBe(before - 2 * BALANCE.fuelPerMouthPerWeek); // 2 mouths
+    expect(s.hands[0].strain).toBe(0); // no cold, and the default larder covers food too
+  });
+  it("SET_PLAYER_ACTION 'care' recovers strain on the target hand", () => {
+    let s = inWeek();
+    s.hands[0] = { ...s.hands[0], strain: 50, task: "idle" }; // off "rest" to isolate the care recovery
+    s = reduce(s, { type: "SET_PLAYER_ACTION", kind: "care", target: "reuben" });
+    s = reduce(s, { type: "RESOLVE_WEEK" });
+    expect(s.hands[0].strain).toBe(50 - BALANCE.strain.careRecovery);
+  });
+  it("SET_PLAYER_ACTION 'work' tends the targeted field even with no hand assigned to it", () => {
+    let s = inWeek();
+    s = reduce(s, { type: "PLANT", fieldId: 0, crop: "potato" });
+    s = reduce(s, { type: "SET_PLAYER_ACTION", kind: "work", target: 0 });
+    s = reduce(s, { type: "RESOLVE_WEEK" });
+    const f0 = s.fields.find((f) => f.id === 0);
+    expect(f0.progress).toBeCloseTo(BALANCE.growthPerWeek + BALANCE.tendGrowthBonus, 5);
   });
 });

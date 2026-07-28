@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { initialState, season } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
+import { duskSummary } from "../src/core/selectors.js";
 
 function toDusk(s) {
   s = reduce(s, { type: "BEGIN_SEASON" });

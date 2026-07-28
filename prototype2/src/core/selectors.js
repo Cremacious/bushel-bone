@@ -10,7 +10,7 @@ export function duskSummary(s) {
     larder: Math.floor(s.larder),
     fuel: s.fuel,
     crew: livingHands(s).map((h) => h.name),
-    lostThisSeason: s.log.filter((l) => /did not last/.test(l)),
+    lostThisSeason: s.log.slice(s.logSeasonStart).filter((l) => /did not last/.test(l)),
     warnings: warnings(s),
   };
 }

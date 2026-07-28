@@ -25,6 +25,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     hands: [makeHand("reuben", "Reuben")],
     foremanId: "reuben",
     log: [],
+    logSeasonStart: 0,        // index into log where the current season's entries begin (dusk scoping)
     phase: "brief",            // brief → planting → week → dusk → (next season) ; yearend at the end
     playerAction: { kind: "rest" }, // the player's own week: {kind:"rest"|"work"|"care", target?}
     screen: "home",            // the active tab (home shows the current phase)

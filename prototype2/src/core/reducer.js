@@ -1,7 +1,7 @@
 import { SEASONS, WEEKS_PER_SEASON, season } from "./state.js";
 import { CROPS, ripe, weeklyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
-import { burnsFuel } from "./selectors.js";
+import { burnsFuel, fieldLabel } from "./selectors.js";
 
 // Pure: (state, action) => nextState. Never mutates the input.
 // Later plans add cases (resolveEvent, ...). For now: theme + the week/season/year
@@ -16,7 +16,7 @@ export function reduce(state, action) {
     case "SET_SCREEN":
       return { ...state, screen: action.screen };
     case "BEGIN_SEASON":
-      return { ...state, phase: season(state) === "winter" ? "week" : "planting", week: 1 };
+      return { ...state, phase: season(state) === "winter" ? "week" : "planting", week: 1, logSeasonStart: state.log.length };
     case "PLANT":
       return plant(state, action.fieldId, action.crop);
     case "FALLOW":
@@ -58,6 +58,7 @@ function mapHand(s, id, fn) {
 }
 
 function resolveWeek(s) {
+  if (s.phase !== "week") return s; // guard against a stray double-dispatch applying an extra week
   let hands = s.hands.map((h) => ({ ...h }));       // work on copies
   let fields = s.fields.map((f) => ({ ...f }));
   let { larder, fuel, coin, seed } = s;
@@ -66,7 +67,7 @@ function resolveWeek(s) {
   const byId = (id) => fields.find((f) => f.id === id);
 
   // 1) Labor: each living hand does its task; the player does theirs.
-  const doLabor = (task, targetFieldId, isPlayer) => {
+  const doLabor = (task, targetFieldId) => {
     if (task === "tend" && targetFieldId != null) { const f = byId(targetFieldId); if (f && f.crop) f.tended = true; }
     else if (task === "chop") { fuel += BALANCE.fuelPerChopWeek; }
     else if (task === "harvest" && targetFieldId != null) {
@@ -75,26 +76,27 @@ function resolveWeek(s) {
         const c = CROPS[f.crop];
         const units = Math.round(c.yield * (f.fert / 3));
         if (c.food > 0) larder += units * c.food; else coin += units * c.sale;
-        log.push(`Brought in ${f.crop === "cotton" ? "cotton" : c.name.toLowerCase()} from ${["the east field", "the river strip", "the near acre", "the stone lot"][f.id]}.`);
+        log.push(`Brought in ${f.crop === "cotton" ? "cotton" : c.name.toLowerCase()} from ${fieldLabel(f).toLowerCase()}.`);
         f.crop = null; f.progress = 0; f.fert = Math.max(0, f.fert - 1);
       }
     }
     return task === "tend" || task === "chop" || task === "harvest";
   };
-  for (const h of hands) if (h.alive) { const hard = doLabor(h.task, h.targetFieldId, false); h.strain += hard ? St.hardLabor : (h.task === "rest" ? -St.restRecovery : 0); }
+  for (const h of hands) if (h.alive) { const hard = doLabor(h.task, h.targetFieldId); h.strain += hard ? St.hardLabor : (h.task === "rest" ? -St.restRecovery : 0); }
   // The player's own week:
   const pa = s.playerAction || { kind: "rest" };
-  if (pa.kind === "work") doLabor("tend", pa.target, true);
+  if (pa.kind === "work") doLabor("tend", pa.target);
   if (pa.kind === "care") { const h = hands.find((x) => x.id === pa.target && x.alive); if (h) h.strain -= St.careRecovery; }
 
   // 2) Crop growth (uses the tended flags set above), then reset tended.
   for (const f of fields) { if (f.crop) f.progress += weeklyGrowth(f, s.weather); f.tended = false; }
 
-  // 3) Eating: the household eats; a shortfall strains the frailest first.
+  // 3) Eating: the household eats; a shortfall strains everyone alike (the already-worn
+  // are the ones who then cross the loss threshold first — see the clamp/loss step below).
   const eaters = 1 + hands.filter((h) => h.alive).length;
   const foodWant = eaters * BALANCE.foodPerMouthPerWeek;
   if (larder >= foodWant) { larder -= foodWant; }
-  else { larder = 0; strainFrailestFirst(hands, St.hungerPerWeek); }
+  else { larder = 0; strainHungry(hands, St.hungerPerWeek); }
 
   // 4) Winter/fall cold: fuel burns; a shortfall strains everyone.
   if (burnsFuel(s)) {
@@ -116,9 +118,10 @@ function resolveWeek(s) {
   return { ...s, hands, fields, larder, fuel, coin, seed, week, phase, log: [...s.log, ...log] };
 }
 
-function strainFrailestFirst(hands, amount) {
-  const living = hands.filter((h) => h.alive).sort((a, b) => b.strain - a.strain); // worst first
-  for (const h of living) h.strain += amount; // a shared bite; the already-worst tip over first
+// A shared shortfall bites every living hand equally; the already-worn are the ones
+// who then cross the loss threshold first (emergent from the equal add, not from order).
+function strainHungry(hands, amount) {
+  for (const h of hands) if (h.alive) h.strain += amount;
 }
 
 function endSeason(s) {
