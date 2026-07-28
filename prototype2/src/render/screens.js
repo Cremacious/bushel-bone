@@ -4,7 +4,7 @@ import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard } from "./components.js";
 import { CROPS } from "../core/crops.js";
-import { fieldLabel, conditionOf, ripeFields } from "../core/selectors.js";
+import { fieldLabel, conditionOf, ripeFields, duskSummary } from "../core/selectors.js";
 
 // Fleshed out across Tasks 8-12. Renders the active screen into the shell's stage.
 export function renderScreen(stage, state, dispatch) {
@@ -74,10 +74,32 @@ const SCREENS = {
           target: kind === "work" ? (plantedFields[0]?.id) : kind === "care" ? (s.hands.find((x) => x.alive)?.id) : undefined }) }))));
     stage.append(choiceCard({ text: "Put them to work", sub: "let the week play out", primary: true }, () => dispatch({ type: "RESOLVE_WEEK" })));
   },
-  // dusk, yearend, fields, hands, ledger, almanac added in later tasks
+  dusk: (stage, s, dispatch) => {
+    const d = duskSummary(s);
+    stage.append(el("div", { class: "eyebrow t-label", text: `Dusk · ${seasonLabel(s)}` }), el("h2", { class: "t-title", text: "The day-book, closed" }));
+    const book = el("div", { class: "daybook" }, [
+      line("Coin in hand", `${d.coin} m`), line("Larder into next season", `${d.larder} food`),
+      line("Fuel laid by", `${d.fuel}`), line("The crew that stands", d.crew.join(", ") || "only you"),
+    ]);
+    stage.append(book);
+    for (const l of d.lostThisSeason) stage.append(el("p", { class: "omen t-sub", text: l }));
+    for (const w of d.warnings) stage.append(el("p", { class: "warnline t-sub", text: w }));
+    stage.append(choiceCard({ text: "Turn the page", sub: "on to what comes next", primary: true }, () => dispatch({ type: "END_SEASON" })));
+  },
+  yearend: (stage, s, dispatch) => {
+    stage.append(el("div", { class: "verdict t-label", text: "Year One · closed" }),
+      el("h2", { class: "t-title", text: "“I survived another year.”" }),
+      el("p", { class: "prose t-prose", text: "The Winter broke, and the household woke to the thaw. You made it. Not everyone does." }),
+      choiceCard({ text: "Play another first year", sub: "a new seed, a new weather", primary: true }, () => { try { location.reload && location.reload(); } catch { /* jsdom: no-op */ } }));
+  },
+  // fields, hands, ledger, almanac added in later tasks
 };
 export { SCREENS };
 
 // The script bodies are HTML (from #46) and carry their own `.prose` wrapper; render
 // them as real nodes in a plain typographic container (no second `.prose` to nest).
 function htmlProse(html) { const d = el("div", { class: "t-prose" }); d.innerHTML = html; return d; }
+
+function line(label, value) {
+  return el("div", { class: "bookline" }, [el("span", { class: "t-sub", text: label }), el("span", { class: "t-choice", text: value })]);
+}

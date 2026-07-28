@@ -74,3 +74,16 @@ describe("weekly plan screen", () => {
     expect(state.week).toBe(2);
   });
 });
+
+describe("dusk + year end", () => {
+  it("shows the day-book at dusk and turns the page to the next season", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    for (let i = 0; i < 5; i++) state = reduce(state, { type: "RESOLVE_WEEK" });
+    const dispatch = (a) => { state = reduce(state, a); };
+    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    expect(root.querySelector(".daybook")).toBeTruthy();
+    [...root.querySelectorAll(".choicecard")].find((b) => /Turn the page/.test(b.textContent)).click();
+    expect(state.phase).toBe("brief");
+  });
+});
