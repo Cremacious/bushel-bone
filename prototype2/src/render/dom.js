@@ -5,6 +5,7 @@ export function el(tag, attrs = {}, children = []) {
     if (k === "class") node.className = v;
     else if (k === "text") node.textContent = v;
     else if (k.startsWith("on") && typeof v === "function") node.addEventListener(k.slice(2).toLowerCase(), v);
+    else if (typeof v === "boolean") node.toggleAttribute(k, v);
     else if (v != null) node.setAttribute(k, v);
   }
   for (const c of [].concat(children)) if (c != null) node.append(c);

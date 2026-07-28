@@ -1,5 +1,5 @@
 import { el, clear } from "./dom.js";
-import { season, livingHands } from "../core/state.js";
+import { season } from "../core/state.js";
 
 const SEASON_LABEL = { spring: "Spring", summer: "Summer", fall: "Fall", winter: "Winter" };
 const YEAR_WORD = ["One", "Two", "Three", "Four"];

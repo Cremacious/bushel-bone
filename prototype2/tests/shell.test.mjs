@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -20,6 +20,11 @@ import { reduce } from "../src/core/reducer.js";
 import { renderShell, TABS } from "../src/render/shell.js";
 
 describe("shell render", () => {
+  afterEach(() => {
+    document.documentElement.removeAttribute("data-theme");
+    document.documentElement.removeAttribute("data-season");
+  });
+
   it("renders masthead, four ledger cells, six named tabs, and the day counter", () => {
     const root = document.createElement("div");
     let state = initialState(1, "Mackall");
