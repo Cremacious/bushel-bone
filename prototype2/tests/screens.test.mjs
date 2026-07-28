@@ -45,3 +45,18 @@ describe("morning brief", () => {
     expect(state.phase).toBe("planting");
   });
 });
+
+describe("planting screen", () => {
+  it("plants a crop from the picker and sows into the week", () => {
+    const root = document.createElement("div");
+    let state = reduce(initialState(1), { type: "BEGIN_SEASON" }); // planting
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    expect(root.querySelectorAll(".fieldrow").length).toBe(4);
+    root.querySelector(".cropchip:not(.disabled)").click(); // plant field 0
+    expect(state.fields[0].crop).toBeTruthy();
+    [...root.querySelectorAll(".choicecard")].find((b) => /Sow/.test(b.textContent)).click();
+    expect(state.phase).toBe("week");
+  });
+});
