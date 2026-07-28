@@ -1,0 +1,33 @@
+import { describe, it, expect } from "vitest";
+import { initialState } from "../src/core/state.js";
+import { reduce } from "../src/core/reducer.js";
+import { renderShell } from "../src/render/shell.js";
+import { renderScreen } from "../src/render/screens.js";
+
+function mount(state) {
+  const root = document.createElement("div");
+  const dispatch = () => {};
+  const stage = renderShell(root, state, dispatch);
+  renderScreen(stage, state, dispatch);
+  return root;
+}
+
+describe("shell + router", () => {
+  it("clicking a tab dispatches SET_SCREEN", () => {
+    const root = document.createElement("div");
+    let state = initialState(1);
+    const dispatch = (a) => { state = reduce(state, a); };
+    renderShell(root, state, dispatch);
+    root.querySelector('.tab[data-tab="hands"]').click();
+    expect(state.screen).toBe("hands");
+  });
+  it("renders a ledger warning line when the larder is short", () => {
+    // warnings() only speaks during an active playing week (selectors.js gates on
+    // phase === "week"); drive state past the brief/planting gate before checking it.
+    let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
+    if (s.phase === "planting") s = reduce(s, { type: "SOW" });
+    s.larder = 0;
+    const root = mount(s);
+    expect(root.querySelector(".warnline")).toBeTruthy();
+  });
+});

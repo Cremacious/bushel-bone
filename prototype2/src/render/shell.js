@@ -1,5 +1,7 @@
 import { el, clear } from "./dom.js";
 import { season } from "../core/state.js";
+import { warnings } from "../core/selectors.js";
+import { warnLines } from "./components.js";
 
 const SEASON_LABEL = { spring: "Spring", summer: "Summer", fall: "Fall", winter: "Winter" };
 const YEAR_WORD = ["One", "Two", "Three", "Four"];
@@ -28,14 +30,18 @@ export function renderShell(root, state, dispatch) {
     cell("Coin", state.coin, "m"), cell("Larder", Math.floor(state.larder)),
     cell("Fuel", state.fuel), cell("Seed", state.seed),
   ]);
+  const warns = warnLines(warnings(state));
 
   const stage = el("main", { class: "stage", id: "stage" });
 
-  const nav = el("nav", { class: "tabbar" }, TABS.map((t) =>
-    el("button", { class: "tab" + (t.toLowerCase() === (state.screen === "morning-brief" ? "home" : state.screen) ? " sel" : ""),
-      "data-tab": t.toLowerCase(), text: t })));
+  const nav = el("nav", { class: "tabbar" }, TABS.map((t) => {
+    const key = t.toLowerCase();
+    const active = (state.screen === "home" ? "home" : state.screen) === key;
+    return el("button", { class: "tab" + (active ? " sel" : ""), "data-tab": key,
+      onClick: () => dispatch({ type: "SET_SCREEN", screen: key }), text: t });
+  }));
 
-  root.append(masthead, ledger, stage, nav);
+  root.append(masthead, ledger, ...(warns ? [warns] : []), stage, nav);
   return stage;
 }
 
