@@ -31,7 +31,8 @@ export function renderShell(root, state, dispatch) {
   ]);
   const warns = warnLines(warnings(state));
 
-  const stage = el("main", { class: "stage", id: "stage" });
+  // A fresh <main> each render, so .m-turn replays the beat "Turn" on every screen change.
+  const stage = el("main", { class: "stage m-turn", id: "stage" });
 
   const nav = el("nav", { class: "tabbar" }, TABS.map((t) => {
     const key = t.toLowerCase();

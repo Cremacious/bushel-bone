@@ -92,8 +92,8 @@ const SCREENS = {
     const d = duskSummary(s);
     stage.append(el("div", { class: "eyebrow t-label", text: `Dusk · ${seasonLabel(s)}` }), el("h2", { class: "t-title", text: "The day-book, closed" }));
     const book = el("div", { class: "daybook" }, [
-      line("Coin in hand", `${d.coin} m`), line("Larder into next season", `${d.larder} food`),
-      line("Fuel laid by", `${d.fuel}`), line("The crew that stands", d.crew.join(", ") || "only you"),
+      line("Coin in hand", `${d.coin} m`, 0), line("Larder into next season", `${d.larder} food`, 1),
+      line("Fuel laid by", `${d.fuel}`, 2), line("The crew that stands", d.crew.join(", ") || "only you", 3),
     ]);
     stage.append(book);
     for (const l of d.lostThisSeason) stage.append(el("p", { class: "omen t-sub", text: l }));
@@ -157,8 +157,10 @@ export { SCREENS };
 // them as real nodes in a plain typographic container (no second `.prose` to nest).
 function htmlProse(html) { const d = el("div", { class: "t-prose" }); d.innerHTML = html; return d; }
 
-function line(label, value) {
-  return el("div", { class: "bookline" }, [el("span", { class: "t-sub", text: label }), el("span", { class: "t-choice", text: value })]);
+// A day-book line; `i` staggers the Dusk "Rule" reveal (reference §7), 160ms apart.
+function line(label, value, i = 0) {
+  return el("div", { class: "bookline m-line", style: `--i:${i}` },
+    [el("span", { class: "t-sub", text: label }), el("span", { class: "t-choice", text: value })]);
 }
 
 // Plain-language task words for the Hands tab (the week screen's own TASKS array is

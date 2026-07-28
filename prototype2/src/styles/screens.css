@@ -1,8 +1,33 @@
-/* Layout + type for the screens rendered by src/render/screens.js (Tasks 8-12).
-   Colors are token vars only (tokens.css); spacing matches shell.css's scale. */
+/* Layout + type for the screens rendered by src/render/screens.js.
+   Colors are token vars only (tokens.css); spacing matches shell.css's scale.
+   The V0.3 visual language (design reference): engraved leaf, rules, drop-cap. */
 
-.eyebrow { margin-bottom: 6px; }
-h2.t-title { margin: 0 0 12px; }
+.eyebrow { margin-bottom: 8px; }
+h2.t-title { margin: 0 0 14px; }
+
+/* --- the four rules, "the almanac's punctuation" (reference §5) --- */
+.rule-hair   { height: 1px; background: var(--rule); border: 0; }
+.rule-double { height: 3px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.rule-hatch  { height: 9px; background: repeating-linear-gradient(45deg, var(--rule) 0 1px, transparent 1px 5px); }
+.spine       { background: var(--accent); }   /* the season, on a leaf's binding edge */
+
+/* Under the eyebrow+title of a reading beat, a hatch rule sets the beat off. */
+.t-title + .rule-hatch { margin: 0 0 16px; }
+
+/* --- prose: drop-cap + dialogue color (reference §9 Morning Brief) --- */
+.t-prose { max-width: 68ch; }
+.prose p { margin: 0 0 0.9em; }
+.prose p:last-child { margin-bottom: 0; }
+/* The script's first paragraph carries .dropcap (from #46). A real dropped Fell SC
+   initial, ~3 lines tall, in the season accent. */
+.prose .dropcap::first-letter,
+.prose p.dropcap::first-letter {
+  font-family: "IM Fell English SC", Georgia, serif;
+  font-size: 3.1em; line-height: 0.82; float: left;
+  padding: 0.02em 0.09em 0 0; color: var(--accent);
+}
+/* Quoted NPC speech, brighter than ink (the design's dialogue tone). */
+.prose em, .prose i, .dialogue { color: var(--dialogue); font-style: italic; }
 
 /* --- choicecard (Screens 04-06: Morning Brief / Dusk / verdict actions) --- */
 .choicecard {
