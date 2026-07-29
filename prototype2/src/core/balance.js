@@ -1,35 +1,21 @@
-// First-pass tuning constants — ALL owned by the balance model (Q-003). One place
-// so tuning is a single-file edit and the loop code reads as intent, not magic numbers.
-//
-// hardLabor and fuelPerChopWeek were nudged from their original first-pass values
-// (6 and 5) after the Task 13 headless playthrough (tests/playthrough.test.mjs)
-// showed a solo hand working every single week of a Year-1 calendar, with no rest
-// turn ever offered by the cautious auto-player, crossed the loss threshold on
-// hardLabor alone (6 strain x 20 weeks = 120, past lostAt=100) before any event or
-// mismanagement entered into it. hardLabor 6->4 keeps a full year of continuous
-// solo labor under the loss threshold (4x20=80) with a margin for the ordinary cold
-// and hunger shortfalls a lone hand's task backlog produces (see below). Once that
-// alone still weren't enough (a lone hand chopping only opportunistically, between
-// a backlog of harvests, could still hit two or three weeks with no fuel banked),
-// fuelPerChopWeek 5->10 was raised so a single chopping week reliably bridges the
-// weeks a solo hand cannot spare for the woodpile. Neither is a new system, both
-// are within the model's own single-file tuning surface.
+// First-pass tuning, owned by the balance model (Q-003). One place for every number.
+// DAILY model (Phase A): a season is `daysPerSeason` days; growth, eating, cold, and
+// strain are all per-day. The player has `playerActionsPerDay` personal actions each day.
 export const BALANCE = {
-  weeksPerSeason: 5,
-  foodPerMouthPerWeek: 3,        // farmer + each living hand
-  fuelPerMouthPerWeek: 2,        // burned in fall & winter only
-  fuelPerChopWeek: 10,           // one hand chopping adds this much fuel per week
-  forageFood: 5,                 // food a hand gathers foraging the wild for a week
-  growthPerWeek: 0.2,            // a crop advances 0.2 "seasons" a week (1.0 over a 5-week season)
-  tendGrowthBonus: 0.1,          // an assigned tend adds this to that field's growth this week
+  daysPerSeason: 10,          // a season is 10 days (updates the old 20; tunable in playtest)
+  playerActionsPerDay: 2,     // the proprietor's own actions per day
+  foodPerMouthPerDay: 1,      // larder eaten per mouth per day
+  fuelPerMouthPerDay: 1,      // fuel burned per mouth per day (fall/winter only)
+  fuelPerChopDay: 4,          // fuel a hand lays in per day of chopping
+  forageFood: 3,              // food a hand/you gather per day of foraging
+  growthPerDay: 0.1,          // a 1-season crop ripens in ~10 days
+  tendGrowthBonus: 0.05,      // extra progress when a crop was tended that day
   strain: {
-    hardLabor: 4,                // tend/chop/harvest cost this much strain per week
-    restRecovery: 18,            // resting removes this much
-    careRecovery: 12,            // the player spending their week caring for one hand
-    hungerPerWeek: 12,           // added to a hand short of food
-    coldPerWeek: 12,             // added to a hand short of fuel (fall/winter)
-    wornAt: 25,                  // strain >= this → condition track reads "worn"
-    failingAt: 50,               // strain >= this → condition track reads "failing"
-    lostAt: 100,                 // strain >= this → the hand is lost
+    hardLabor: 2,             // per day of real work
+    restRecovery: 6,          // per day of rest
+    careRecovery: 5,          // when you sit with a hand (a personal action)
+    hungerPerDay: 5,          // per day the larder can't feed the household
+    coldPerDay: 5,            // per cold day with no fuel
+    wornAt: 25, failingAt: 50, lostAt: 100,
   },
 };

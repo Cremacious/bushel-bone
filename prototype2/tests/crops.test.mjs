@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { CROPS, ripe, weeklyGrowth } from "../src/core/crops.js";
+import { CROPS, ripe, dailyGrowth } from "../src/core/crops.js";
 
 describe("crops", () => {
   it("defines staple and cash tiers with the fields the loop needs", () => {
@@ -11,12 +11,12 @@ describe("crops", () => {
     expect(ripe({ crop: "wheat", progress: 1.0 })).toBe(false); // wheat is 2 seasons
     expect(ripe({ crop: null, progress: 5 })).toBe(false);
   });
-  it("weeklyGrowth adds a base step, a tended bonus, and the weather modifier", () => {
-    const base = weeklyGrowth({ crop: "potato", tended: false }, { grow: 0 });
-    const tended = weeklyGrowth({ crop: "potato", tended: true }, { grow: 0 });
-    const rainy = weeklyGrowth({ crop: "potato", tended: false }, { grow: 0.1 });
+  it("dailyGrowth adds a base step, a tended bonus, and the weather modifier", () => {
+    const base = dailyGrowth({ crop: "potato", tended: false }, { grow: 0 });
+    const tended = dailyGrowth({ crop: "potato", tended: true }, { grow: 0 });
+    const rainy = dailyGrowth({ crop: "potato", tended: false }, { grow: 0.1 });
     expect(tended).toBeGreaterThan(base);
     expect(rainy).toBeGreaterThan(base);
-    expect(weeklyGrowth({ crop: null, tended: false }, { grow: 0 })).toBe(0);
+    expect(dailyGrowth({ crop: null, tended: false }, { grow: 0 })).toBe(0);
   });
 });

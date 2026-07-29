@@ -24,7 +24,10 @@ export function ripe(field) {
   return !!c && field.progress >= c.seasons - 1e-9;
 }
 
-export function weeklyGrowth(field, weather) {
+// Progress a crop gains in one day: a base step, a tended bonus, and the weather modifier.
+// A fallow field (no crop) grows nothing.
+export function dailyGrowth(field, weather = { grow: 0 }) {
   if (!field.crop) return 0;
-  return BALANCE.growthPerWeek + (field.tended ? BALANCE.tendGrowthBonus : 0) + (weather?.grow || 0);
+  const bonus = field.tended ? BALANCE.tendGrowthBonus : 0;
+  return BALANCE.growthPerDay + bonus + (weather.grow || 0);
 }
