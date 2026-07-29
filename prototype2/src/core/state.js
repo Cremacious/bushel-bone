@@ -15,7 +15,8 @@ export function initialState(seed = 1, lineageName = "Crane") {
     lineageName,
     year: 1,
     seasonIndex: 0,          // 0=spring..3=winter
-    week: 1,                 // 1..5
+    day: 1,                  // 1..DAYS_PER_SEASON
+    playerActionsLeft: BALANCE.playerActionsPerDay, // your own actions this day (reset each dawn)
     theme: "night",
     weather: { key: "cold-rain", label: "Cold rain", grow: 0 },
     coin: 100, larder: 80, fuel: 0, seed: 20,
@@ -26,8 +27,8 @@ export function initialState(seed = 1, lineageName = "Crane") {
     foremanId: "reuben",
     log: [],
     logSeasonStart: 0,        // index into log where the current season's entries begin (dusk scoping)
-    phase: "brief",            // brief → planting → week → dusk → (next season) ; yearend at the end
-    playerAction: { kind: "rest" }, // the player's own week: {kind:"rest"|"work"|"care", target?}
+    phase: "brief",            // brief → planting → day → dusk → (next season) ; yearend at the end
+    daylog: [],                // what happened on the current day (shown at dusk of resolve)
     screen: "home",            // the active tab (home shows the current phase)
     scene: null,               // an active scripted scene: { id, result } (see content/scenes.js)
     overlay: null,             // a modal over the shell: { type, ... } (e.g. a Reuben tutorial prompt)
@@ -39,7 +40,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
 
 export const SEASONS = ["spring", "summer", "fall", "winter"];
 const SEASON_LABELS = { spring: "Spring", summer: "Summer", fall: "Fall", winter: "Winter" };
-export const WEEKS_PER_SEASON = BALANCE.weeksPerSeason; // single source of truth (balance.js)
+export const DAYS_PER_SEASON = BALANCE.daysPerSeason; // single source of truth (balance.js)
 export const season = (s) => SEASONS[s.seasonIndex];
 export const seasonLabel = (s) => SEASON_LABELS[season(s)]; // "Spring".. (single source; shell + screens share it)
 export const livingHands = (s) => s.hands.filter((h) => h.alive);

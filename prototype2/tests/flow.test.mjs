@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { initialState } from "../src/core/state.js";
+import { initialState, DAYS_PER_SEASON } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
 
 describe("phase flow", () => {
@@ -14,5 +14,15 @@ describe("phase flow", () => {
     s = reduce(s, { type: "SOW" });
     expect(s.phase).toBe("week");
     expect(s.week).toBe(1);
+  });
+});
+
+describe("daily state shape", () => {
+  it("starts on day 1 with a full personal action budget", () => {
+    const s = initialState(1);
+    expect(s.day).toBe(1);
+    expect(s.playerActionsLeft).toBe(2);
+    expect(s.phase).toBe("brief");
+    expect(DAYS_PER_SEASON).toBe(10);
   });
 });
