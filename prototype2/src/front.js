@@ -110,7 +110,7 @@ function letterPages(lineage) {
   const page1 = el("div", { class: "fr-page" });
   page1.innerHTML = tok(
     '<div class="fr-letter-h">A letter reaches you, back east</div>' +
-    '<div class="fr-letter">' +
+    '<div class="fr-doc">' +
       '<div class="fr-letter-head">' +
         '<div class="fr-co">The {{place.region}} Charter Company</div>' +
         '<div class="fr-office">Land Office at Marrow’s Cross</div>' +
@@ -143,13 +143,10 @@ function wordmark() {
   return w;
 }
 function crow() {
-  // A simple engraved crow-on-a-sun mark until real logo art drops in.
-  const c = el("div", { class: "fr-crow" });
-  c.innerHTML = '<svg viewBox="0 0 200 200" width="180" height="180" aria-hidden="true">' +
-    '<circle cx="100" cy="96" r="66" fill="var(--lamp)" opacity="0.9"/>' +
-    '<path d="M62 150 q20-70 58-86 q-6 16 -2 24 q18-6 30-2 q-26 10 -34 30 q-4 30 -18 40 q-16 4 -34-6 Z" fill="#0d0b07"/>' +
-    '<path d="M64 150 h72 l-6 14 h-60 Z" fill="#0d0b07"/></svg>';
-  return c;
+  // The real crow-on-bushel logo (the one illustration that carries the brand).
+  return el("div", { class: "fr-crow" }, [
+    el("img", { src: "assets/logoTransparent.png", alt: "Bushel & Bone", class: "fr-logo" }),
+  ]);
 }
 function menuItem(label, glyph, { primary, disabled, half, aside, onClick } = {}) {
   const cls = "fr-menuitem" + (primary ? " primary" : "") + (disabled ? " disabled" : "") + (half ? " half" : "");

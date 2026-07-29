@@ -9,8 +9,8 @@
 .fr-title { position: relative; }
 .fr-title .fr-hero { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6vw;
   padding: 40px 24px; flex-wrap: wrap; }
-.fr-crow { filter: drop-shadow(0 20px 40px rgba(0,0,0,.7)); }
-.fr-crow svg { width: clamp(120px, 18vw, 220px); height: auto; }
+.fr-crow { filter: drop-shadow(0 24px 44px rgba(0,0,0,.7)); flex: 0 0 auto; }
+.fr-logo { width: clamp(160px, 24vw, 340px); height: auto; display: block; }
 .fr-herotext { max-width: 560px; width: 100%; }
 .fr-eyebrow { letter-spacing: .34em; }
 .fr-wordmark { font-size: clamp(52px, 8vw, 92px); line-height: 1; color: var(--ink-hi); margin-top: 14px; }
@@ -52,14 +52,15 @@
 .fr-page { animation: bb-line .28s ease-out both; }
 .fr-letter-h { font-family: "IM Fell English", Georgia, serif; font-style: italic; color: var(--ink-faint);
   text-align: center; margin-bottom: 18px; font-size: 1rem; }
-/* page 1 is a real paper document (light leaf on the black ground) */
-.fr-letter { background: #efe3c6; color: #2a2216; border: 1px solid #6b5a3c; border-left: 5px solid var(--fall, #a4482a);
+/* page 1 is a real paper document (light leaf on the black ground). Its own class,
+   distinct from the .fr-letter screen section, so the cream never bleeds onto page 2. */
+.fr-doc { background: #efe3c6; color: #2a2216; border: 1px solid #6b5a3c; border-left: 5px solid #a4482a;
   box-shadow: 0 30px 80px rgba(0,0,0,.6); padding: 40px 44px 36px; }
 .fr-letter-head { text-align: center; border-bottom: 1px solid #b9a684; padding-bottom: 16px; margin-bottom: 20px; }
 .fr-co { font-family: "IM Fell English SC", Georgia, serif; font-size: 1.5rem; color: #2a2216; }
 .fr-office { font-family: "IM Fell English", Georgia, serif; font-style: italic; color: #5f5138; margin-top: 4px; }
 .fr-date { font-variant-numeric: tabular-nums; color: #5f5138; margin-top: 6px; font-size: 0.9rem; }
-.fr-letter p { font-size: 1.06rem; line-height: 1.62; margin: 0 0 0.9em; }
+.fr-doc p { font-size: 1.06rem; line-height: 1.62; margin: 0 0 0.9em; color: #2a2216; }
 .fr-signoff { font-family: "IM Fell English", Georgia, serif; font-style: italic; text-align: right; color: #5f5138; }
 /* page 2 is plain cream narration on the black ground, not a letter */
 .fr-narration p { font-size: 1.12rem; line-height: 1.78; color: var(--ink); margin: 0 0 1.1em; }
