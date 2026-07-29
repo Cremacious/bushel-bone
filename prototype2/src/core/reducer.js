@@ -3,6 +3,7 @@ import { CROPS, ripe, dailyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
 import { burnsFuel, fieldLabel, suggestPlan, interrupts } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
+import { ODD_JOBS } from "./town.js";
 
 // Pure: (state, action) => nextState. Never mutates the input.
 // Later plans add cases (resolveEvent, ...). For now: theme + the day/season/year
@@ -48,6 +49,10 @@ export function reduce(state, action) {
       return runDays(state);
     case "END_SEASON":
       return endSeason(state);
+    case "ACCEPT_JOB":
+      return acceptJob(state, action.id);
+    case "VISIT":
+      return visit(state, action.sceneId);
     default:
       return state;
   }
@@ -84,6 +89,24 @@ function doPlayerAction(s, { kind, target }) {
   return ns;
 }
 
+// Take a paid odd-job: spend one of the day's actions, take the coin, mark it done so it
+// cannot be double-claimed. A no-op off the day phase, with no actions, or if already done.
+function acceptJob(s, id) {
+  if (s.phase !== "day" || s.playerActionsLeft <= 0) return s;
+  const job = ODD_JOBS.find((j) => j.id === id);
+  if (!job || (s.jobsDoneToday || []).includes(id)) return s;
+  return { ...s, coin: s.coin + job.coin, playerActionsLeft: s.playerActionsLeft - 1,
+    jobsDoneToday: [...(s.jobsDoneToday || []), id] };
+}
+
+// Call on a townsperson: spend one action and open their talk scene. A no-op off the day
+// phase or with no actions left. The scene remembers to return to the Town screen on close.
+function visit(s, sceneId) {
+  if (s.phase !== "day" || s.playerActionsLeft <= 0) return s;
+  return { ...s, playerActionsLeft: s.playerActionsLeft - 1,
+    phase: "scene", scene: { id: sceneId, result: null }, screen: "home" };
+}
+
 // A scripted scene: apply the chosen option's state deltas and record the choice, so the
 // renderer can show the result prose and a "go on" that closes the scene.
 function chooseScene(s, choiceId) {
@@ -100,7 +123,9 @@ function chooseScene(s, choiceId) {
 function closeScene(s) {
   const sc = SCENES[s.scene && s.scene.id];
   const base = { ...s, scene: null };
-  return sc && sc.after === "BEGIN_SEASON" ? beginSeason(base) : { ...base, phase: "brief" };
+  if (sc && sc.after === "BEGIN_SEASON") return beginSeason(base);
+  if (sc && sc.returnTo) return { ...base, screen: sc.returnTo, phase: "day" }; // back to town, mid-day
+  return { ...base, phase: "brief" };
 }
 
 function mapField(s, id, fn) {
@@ -200,7 +225,7 @@ function resolveDay(s) {
   if (day > BALANCE.daysPerSeason) { day = BALANCE.daysPerSeason; phase = "dusk"; }
 
   return { ...s, hands, fields, larder, fuel, coin, seed, day, phase,
-    playerActionsLeft: BALANCE.playerActionsPerDay, daylog,
+    playerActionsLeft: BALANCE.playerActionsPerDay, daylog, jobsDoneToday: [],
     log: [...s.log, ...daylog] };
 }
 

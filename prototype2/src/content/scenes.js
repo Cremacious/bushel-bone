@@ -16,6 +16,9 @@ export const SCENES = {
     },
     after: "BEGIN_SEASON", // once closed, fall through into the season (planting)
   },
+  crake_intro:    { choices: ["go_on"], fx: {}, returnTo: "town" },
+  tolliver_intro: { choices: ["go_on"], fx: {}, returnTo: "town" },
+  meredith_rumor: { choices: ["go_on"], fx: {}, returnTo: "town" },
 };
 
 // The opening scene for a given state, if any. Year 1's Spring opens on Ridley's call.

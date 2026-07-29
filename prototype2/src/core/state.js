@@ -29,6 +29,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     logSeasonStart: 0,        // index into log where the current season's entries begin (dusk scoping)
     phase: "brief",            // brief → planting → day → dusk → (next season) ; yearend at the end
     daylog: [],                // what happened on the current day (shown at dusk of resolve)
+    jobsDoneToday: [],         // odd-job ids already claimed today (reset each dawn)
     screen: "home",            // the active tab (home shows the current phase)
     scene: null,               // an active scripted scene: { id, result } (see content/scenes.js)
     overlay: null,             // a modal over the shell: { type, ... } (e.g. a Reuben tutorial prompt)

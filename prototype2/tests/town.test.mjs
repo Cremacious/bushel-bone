@@ -4,6 +4,7 @@ import { LOCATIONS, ODD_JOBS } from "../src/core/town.js";
 import { initialState } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
 import { townOffers } from "../src/core/selectors.js";
+import { townOffers as offers2 } from "../src/core/selectors.js";
 
 function inTown(seed = 1) {
   let s = reduce(initialState(seed), { type: "BEGIN_SEASON" });
@@ -34,6 +35,39 @@ describe("town names", () => {
     expect(lookupName("npc.fenwick")).toBe("Mr. Fenwick");
     expect(lookupName("loc.smithy.sub")).toBe("the smithy");
     expect(tok("{{npc.crake}} at {{loc.smithy.sub}}")).toBe("Hollis Crake at the smithy");
+  });
+});
+
+describe("town actions", () => {
+  it("ACCEPT_JOB pays coin, spends one action, and marks the job done", () => {
+    let s = inTown(42);
+    const job = offers2(s).jobs[0];
+    const coin0 = s.coin, acts0 = s.playerActionsLeft;
+    s = reduce(s, { type: "ACCEPT_JOB", id: job.id });
+    expect(s.coin).toBe(coin0 + job.coin);
+    expect(s.playerActionsLeft).toBe(acts0 - 1);
+    expect(s.jobsDoneToday).toContain(job.id);
+  });
+  it("ACCEPT_JOB is a no-op with no actions left or off the day phase", () => {
+    let s = inTown(42); s = { ...s, playerActionsLeft: 0 };
+    expect(reduce(s, { type: "ACCEPT_JOB", id: offers2(s).jobs[0].id })).toEqual(s);
+    let b = reduce(initialState(1), { type: "BEGIN_SEASON" }); // planting phase
+    expect(reduce(b, { type: "ACCEPT_JOB", id: "haul_mill" })).toEqual(b);
+  });
+  it("VISIT spends an action and opens the location's talk scene", () => {
+    let s = inTown(42);
+    const acts0 = s.playerActionsLeft;
+    s = reduce(s, { type: "VISIT", sceneId: "crake_intro" });
+    expect(s.phase).toBe("scene");
+    expect(s.scene.id).toBe("crake_intro");
+    expect(s.playerActionsLeft).toBe(acts0 - 1);
+  });
+  it("closing a town scene returns to the Town screen, not the brief", () => {
+    let s = inTown(42);
+    s = reduce(s, { type: "VISIT", sceneId: "crake_intro" });
+    s = reduce(s, { type: "CLOSE_SCENE" });
+    expect(s.screen).toBe("town");
+    expect(s.phase).toBe("day");
   });
 });
 
