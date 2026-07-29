@@ -32,20 +32,19 @@ function tipModal(o, dispatch) {
   const p = Math.max(0, Math.min(o.page || 0, pages.length - 1));
   const last = p === pages.length - 1;
   const scrim = el("div", { class: "overlay-scrim" });
-  const nav = el("div", { class: "ov-tipnav" }, [
-    pages.length > 1 ? el("span", { class: "ov-pageno t-label", text: `${p + 1} of ${pages.length}` }) : null,
-    el("div", { class: "ov-tipbtns" }, [
-      pages.length > 1 ? el("button", { class: "fr-action ov-navbtn" + (p === 0 ? " off" : ""),
-        ...(p === 0 ? { disabled: true } : {}), text: "Previous",
-        onClick: () => dispatch({ type: "SET_OVERLAY", overlay: { ...o, page: p - 1 } }) }) : null,
-      el("button", { class: "fr-action primary ov-navbtn", text: last ? "Got it" : "Next",
-        onClick: () => dispatch(last ? { type: "DISMISS_TIP", id: o.tipId } : { type: "SET_OVERLAY", overlay: { ...o, page: p + 1 } }) }),
-    ]),
+  const pageno = pages.length > 1 ? el("div", { class: "ov-pageno t-label", text: `${p + 1} / ${pages.length}` }) : null;
+  const btns = el("div", { class: "ov-tipbtns" }, [
+    pages.length > 1 ? el("button", { class: "fr-action ov-navbtn" + (p === 0 ? " off" : ""),
+      ...(p === 0 ? { disabled: true } : {}), text: "Previous",
+      onClick: () => dispatch({ type: "SET_OVERLAY", overlay: { ...o, page: p - 1 } }) }) : null,
+    el("button", { class: "fr-action primary ov-navbtn", text: last ? "Got it" : "Next",
+      onClick: () => dispatch(last ? { type: "DISMISS_TIP", id: o.tipId } : { type: "SET_OVERLAY", overlay: { ...o, page: p + 1 } }) }),
   ]);
   return el("div", { class: "overlay" }, [scrim, el("div", { class: "overlay-panel m-turn" }, [
+    pageno, // top-right corner of the panel
     reubenSpeaker(),
     el("div", { class: "ov-body t-prose" }, [el("p", { text: tok(pages[p] || "") })]),
-    nav,
+    btns,
   ])]);
 }
 

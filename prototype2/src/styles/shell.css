@@ -125,9 +125,8 @@ html, body { height: 100%; }
 .ov-body { margin-bottom: 6px; }
 .ov-body p { margin: 0; }
 .ov-choices { display: flex; flex-direction: column; }
-.ov-tipnav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
-.ov-tipnav .ov-pageno { color: var(--ink-faint); letter-spacing: .18em; }
-.ov-tipbtns { display: flex; gap: 12px; margin-left: auto; }
+.ov-pageno { position: absolute; top: 16px; right: 18px; color: var(--ink-faint); letter-spacing: .18em; }
+.ov-tipbtns { display: flex; gap: 12px; justify-content: flex-end; margin-top: 16px; }
 .ov-navbtn { min-width: 120px; min-height: 44px; font-size: 0.95rem; }
 .ov-navbtn.off { opacity: .4; }
 
