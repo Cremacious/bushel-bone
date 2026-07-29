@@ -32,6 +32,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     scene: null,               // an active scripted scene: { id, result } (see content/scenes.js)
     overlay: null,             // a modal over the shell: { type, ... } (e.g. a Reuben tutorial prompt)
     tutorialsOn: false,        // Reuben's guided tips, opted into on New Game
+    tipsSeen: [],              // ids of guided tips already shown (each fires once)
     ended: false,
   };
 }

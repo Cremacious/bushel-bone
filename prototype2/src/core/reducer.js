@@ -22,6 +22,9 @@ export function reduce(state, action) {
       return { ...state, overlay: null };
     case "SET_TUTORIALS":
       return { ...state, tutorialsOn: !!action.on, overlay: null };
+    case "DISMISS_TIP":
+      return { ...state, overlay: null,
+        tipsSeen: state.tipsSeen.includes(action.id) ? state.tipsSeen : [...state.tipsSeen, action.id] };
     case "BEGIN_SEASON":
       return beginSeason(state);
     case "OPEN_SCENE":
