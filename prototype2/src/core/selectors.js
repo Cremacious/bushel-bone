@@ -1,5 +1,5 @@
 import { BALANCE } from "./balance.js";
-import { ripe } from "./crops.js";
+import { CROPS, ripe } from "./crops.js";
 import { livingHands, season } from "./state.js";
 
 // The season's closing figures for the Dusk Report (Screen 06). Pure read.
@@ -23,6 +23,28 @@ export function conditionOf(hand) {
   if (hand.strain >= BALANCE.strain.failingAt) return "failing";
   if (hand.strain >= BALANCE.strain.wornAt) return "worn";
   return "steady";
+}
+
+// A plain-language read of a planted field: when it ripens and what it will yield, at the
+// base growth rate (ignoring tend/weather, which only ever help). Pure. Weeks are counted
+// from the current playing week (or the season's start during planting).
+export function fieldProjection(state, field) {
+  const c = field.crop && CROPS[field.crop];
+  if (!c) return { crop: null };
+  const remaining = Math.max(0, c.seasons - field.progress);
+  const weeksToRipe = remaining <= 1e-9 ? 0 : Math.ceil(remaining / BALANCE.growthPerWeek);
+  const base = state.phase === "week" ? state.week : 0;   // planting: from week 0
+  const ripenWeek = base + weeksToRipe;
+  const units = Math.round(c.yield * (field.fert / 3));
+  const y = c.food > 0 ? { amount: Math.round(units * c.food), kind: "food" }
+                       : { amount: units * c.sale, kind: "coin" };
+  let when;
+  if (weeksToRipe === 0) when = "ripe";
+  else if (ripenWeek <= BALANCE.weeksPerSeason) when = `ripens wk ${ripenWeek}`;
+  else if (c.seasons > 1) when = "ripens next season";
+  else when = "won't ripen in time";
+  return { crop: field.crop, name: c.name, tier: c.tier, ripe: weeksToRipe === 0,
+    weeksToRipe, when, yield: y, needsTwo: !!c.needsTwo };
 }
 
 export const mouths = (s) => 1 + livingHands(s).length; // the farmer + living hands
