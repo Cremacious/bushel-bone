@@ -77,6 +77,12 @@ const SCREENS = {
   },
   week: (stage, s, dispatch) => {
     stage.append(el("div", { class: "eyebrow t-label", text: `Week ${s.week} of ${WEEKS_PER_SEASON}` }), el("h2", { class: "t-title", text: "Set the crew to work" }));
+    // The board first: read the fields before setting the crew.
+    const planted = s.fields.filter((f) => f.crop);
+    if (planted.length) {
+      stage.append(el("div", { class: "weekboard fieldgrid" },
+        planted.map((f) => fieldCard(f, fieldProjection(s, f)))));
+    }
     const plantedFields = s.fields.filter((f) => f.crop);
     const ripe = ripeFields(s);
     const living = livingHands(s);

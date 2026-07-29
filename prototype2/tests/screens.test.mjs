@@ -76,6 +76,22 @@ describe("planting grid", () => {
   });
 });
 
+describe("readable weekly plan", () => {
+  it("shows the field board with a projection and the pre-filled crew task", () => {
+    const root = document.createElement("div");
+    let state = reduce(initialState(1), { type: "BEGIN_SEASON" });
+    state = reduce(state, { type: "PLANT", fieldId: 0, crop: "potato" });
+    state = reduce(state, { type: "SOW" }); // week, pre-filled to tend field 0
+    const dispatch = (a) => { state = reduce(state, a); };
+    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    expect(root.querySelector(".weekboard .fieldcard")).toBeTruthy();
+    expect(root.textContent).toContain("ripens wk 5");
+    // Reuben's row shows Tend selected (the pre-filled suggestion)
+    const reubenRow = root.querySelector(".handrow");
+    expect(reubenRow.querySelector(".taskbtn.sel").textContent).toBe("Tend");
+  });
+});
+
 describe("weekly plan screen", () => {
   it("assigns a hand and resolves the week", () => {
     const root = document.createElement("div");
