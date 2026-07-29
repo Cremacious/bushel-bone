@@ -73,6 +73,24 @@ h2.t-title { margin: 0 0 14px; }
 @media (max-width: 700px) { .fieldgrid { grid-template-columns: 1fr; } }
 .weekboard { margin-bottom: 16px; }
 
+/* --- Reuben's counsel (always-on Year-1 guidance) --- */
+.counsel { border-left: 3px solid var(--lamp); background: color-mix(in srgb, var(--lamp) 8%, transparent);
+  padding: 10px 12px; margin: 0 0 14px; }
+.counsel-who { color: var(--lamp); margin-bottom: 4px; display: flex; align-items: center; }
+.counsel-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lamp); flex: 0 0 auto; }
+.counsel-text { font-style: italic; color: var(--ink-soft); line-height: 1.55; }
+
+/* --- the cold-months goal foreshadowing --- */
+.goals { border: 1px solid var(--rule-fine); padding: 10px 12px; margin-bottom: 14px; }
+.goals-h { margin-bottom: 6px; }
+.goalrow { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 0; }
+.goal-v { font-style: normal; }
+.goal-v.warn { color: var(--warn); }
+.goal-v.good { color: var(--good); }
+
+/* --- one-line "what this task does" under each crew picker --- */
+.taskdesc { color: var(--ink-faint); font-style: italic; margin: 4px 0 12px; }
+
 /* --- fieldrow (Screen 05: Planting; also the read-only Fields tab) --- */
 .fieldrow {
   display: flex;

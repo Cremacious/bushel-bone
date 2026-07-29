@@ -4,8 +4,10 @@ import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard, fieldCard } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
-import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection } from "../core/selectors.js";
+import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
+import { counselFor } from "../content/counsel.js";
+import { BALANCE } from "../core/balance.js";
 
 // Fleshed out across Tasks 8-12. Renders the active screen into the shell's stage.
 export function renderScreen(stage, state, dispatch) {
@@ -70,6 +72,7 @@ const SCREENS = {
     stage.append(
       el("div", { class: "eyebrow t-label", text: "Dawn · Planting" }),
       el("h2", { class: "t-title", text: "Set the fields" }),
+      ...counsel(s),
       el("div", { class: "plant-bar" }, [
         el("span", { class: "t-sub", text: `Seed ${s.seed} · Coin ${s.coin} · this planting costs ${spent}` }),
         choiceCard({ text: "Sow it so", sub: "put the season in the ground", primary: true }, () => dispatch({ type: "SOW" })),
@@ -79,7 +82,9 @@ const SCREENS = {
   },
   week: (stage, s, dispatch) => {
     stage.append(el("div", { class: "eyebrow t-label", text: `Week ${s.week} of ${WEEKS_PER_SEASON}` }), el("h2", { class: "t-title", text: "Set the crew to work" }));
-    // The board first: read the fields before setting the crew.
+    stage.append(...counsel(s));               // Reuben's plain-language guidance (Year 1)
+    stage.append(goalPanel(s));                // what the cold months will want (foreshadowing)
+    // The board: read the fields before setting the crew.
     const plantedFields = s.fields.filter((f) => f.crop);
     if (plantedFields.length) {
       stage.append(el("div", { class: "weekboard fieldgrid" },
@@ -91,7 +96,7 @@ const SCREENS = {
     // disabled with a plain reason, so a hand is never quietly tired for empty motion (D-039).
     const why = { tend: plantedFields.length ? null : "no crop is in the ground to tend",
       harvest: ripe.length ? null : "nothing is ripe to bring in" };
-    const TASKS = [["rest", "Rest"], ["tend", "Tend"], ["harvest", "Harvest"], ["chop", "Chop wood"]];
+    const TASKS = [["rest", "Rest"], ["tend", "Tend"], ["harvest", "Harvest"], ["forage", "Forage"], ["chop", "Chop wood"]];
     for (const h of living) {
       const row = el("div", { class: "handrow" }, [
         el("span", { class: "hname t-choice", text: h.name }),
@@ -105,13 +110,15 @@ const SCREENS = {
             targetFieldId: task === "tend" ? plantedFields[0].id : task === "harvest" ? ripe[0].id : undefined }) });
       }));
       row.append(sel);
+      // what the hand's chosen task does, so the player is never clicking blind
+      row.append(el("div", { class: "taskdesc t-sub", text: TASK_DESC[h.task] || "" }));
       stage.append(row);
     }
     // The player's own week
     stage.append(el("div", { class: "eyebrow t-label", text: "Your own week" }));
     const pWhy = { work: plantedFields.length ? null : "no field is planted to work",
       care: living.length ? null : "there is no one left to sit with" };
-    const P = [["rest", "Rest"], ["work", "Work a field"], ["care", "Sit with a hand"]];
+    const P = [["rest", "Rest"], ["work", "Work a field"], ["forage", "Forage"], ["care", "Sit with a hand"]];
     stage.append(el("div", { class: "taskpick" }, P.map(([kind, label]) => {
       const blocked = !!pWhy[kind];
       return el("button", { class: "taskbtn t-sub" + (s.playerAction?.kind === kind ? " sel" : "") + (blocked ? " disabled" : ""),
@@ -119,6 +126,7 @@ const SCREENS = {
         onClick: blocked ? undefined : () => dispatch({ type: "SET_PLAYER_ACTION", kind,
           target: kind === "work" ? plantedFields[0].id : kind === "care" ? living[0].id : undefined }) });
     })));
+    stage.append(el("div", { class: "taskdesc t-sub", text: PLAYER_DESC[s.playerAction?.kind] || "" }));
     stage.append(choiceCard({ text: "Put them to work", sub: "let the week play out", primary: true }, () => dispatch({ type: "RESOLVE_WEEK" })));
   },
   dusk: (stage, s, dispatch) => {
@@ -185,6 +193,49 @@ const SCREENS = {
   },
 };
 export { SCREENS };
+
+// --- weekly-work guidance: task descriptions, Reuben's counsel, the goal foreshadowing ---
+const TASK_DESC = {
+  rest: "mend a worn hand",
+  tend: "push a crop toward harvest",
+  harvest: "bring in a ripe field",
+  forage: `gather about ${BALANCE.forageFood} food from the wild`,
+  chop: `lay in ${BALANCE.fuelPerChopWeek} wood for winter`,
+};
+const PLAYER_DESC = {
+  rest: "you take the week easy",
+  work: "you tend a field alongside the crew",
+  forage: `you gather about ${BALANCE.forageFood} food from the wild`,
+  care: "you sit with a worn hand and ease them",
+};
+
+// Reuben's counsel block (Year 1), or nothing. Returned as an array to spread into append.
+function counsel(s) {
+  const c = counselFor(s);
+  if (!c) return [];
+  return [el("div", { class: "counsel" }, [
+    el("div", { class: "counsel-who t-label" }, [el("span", { class: "counsel-dot" }), document.createTextNode(" Reuben's counsel")]),
+    el("p", { class: "counsel-text t-sub", text: c.text }),
+  ])];
+}
+
+// The cold months' fuel + food targets, so the weekly work has a visible goal to plan toward.
+function goalPanel(s) {
+  const n = yearNeeds(s);
+  const row = (label, have, need, unit) => {
+    const short = Math.max(0, need - have);
+    return el("div", { class: "goalrow" }, [
+      el("span", { class: "goal-k t-label", text: label }),
+      el("span", { class: "goal-v t-sub" + (short > 0 ? " warn" : " good"),
+        text: short > 0 ? `${have} of ~${need} ${unit} · ${short} short` : `${have} of ~${need} ${unit} · laid in` }),
+    ]);
+  };
+  return el("div", { class: "goals" }, [
+    el("div", { class: "goals-h t-label", text: "The cold months will want" }),
+    row("Wood", n.fuel.have, n.fuel.need, "wood"),
+    row("Food", n.food.have, n.food.need, "food"),
+  ]);
+}
 
 // One field on the planting grid: its read (fieldCard), plus a crop picker while empty or a
 // "clear" while planted. Picking dispatches PLANT; with the beat-only Turn motion, only this
