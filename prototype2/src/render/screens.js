@@ -5,6 +5,7 @@ import { tok } from "../content/names.js";
 import { choiceCard } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
 import { fieldLabel, conditionOf, ripeFields, duskSummary } from "../core/selectors.js";
+import { SCENES, openingSceneId } from "../content/scenes.js";
 
 // Fleshed out across Tasks 8-12. Renders the active screen into the shell's stage.
 export function renderScreen(stage, state, dispatch) {
@@ -21,12 +22,43 @@ const SCREENS = {
     const eyebrow = isFirst ? tok(L("spring_open.eyebrow")) : `${seasonLabel(s)} · a new season`;
     const title = isFirst ? tok(L("spring_open.title")) : "The season turns";
     const body = isFirst ? tok(L("spring_open.body")) : `<div class="prose"><p>The work of ${seasonLabel(s)} is on you now.</p></div>`;
+    // If the season opens on a scripted scene (Year 1 → Ridley's call), Begin plays it
+    // first; otherwise it drops straight into the season.
+    const opener = openingSceneId(s);
+    const begin = opener
+      ? () => dispatch({ type: "OPEN_SCENE", id: opener })
+      : () => dispatch({ type: "BEGIN_SEASON" });
     stage.append(
       el("div", { class: "eyebrow t-label", text: eyebrow }),
       el("h2", { class: "t-title", text: title }),
       htmlProse(body),
-      choiceCard({ text: "Begin", sub: "set the season to its work", primary: true }, () => dispatch({ type: "BEGIN_SEASON" })),
+      choiceCard({ text: "Begin", sub: "set the season to its work", primary: true }, begin),
     );
+  },
+
+  // A scripted NPC scene: the speaker's beat, then either the choices or the chosen
+  // result and a way on. Prose comes from content/script.yaml via L(id + ".field").
+  scene: (stage, s, dispatch) => {
+    const id = s.scene.id, sc = SCENES[id] || { choices: [] };
+    stage.append(
+      el("div", { class: "eyebrow t-label", text: tok(L(id + ".eyebrow")) }),
+      el("h2", { class: "t-title", text: tok(L(id + ".title")) }),
+      htmlProse(tok(L(id + ".body"))),
+    );
+    if (!s.scene.result) {
+      for (const cid of sc.choices) {
+        stage.append(choiceCard(
+          { text: tok(L(id + "." + cid + ".text")), sub: tok(L(id + "." + cid + ".sub")) },
+          () => dispatch({ type: "CHOOSE_SCENE", choiceId: cid }),
+        ));
+      }
+    } else {
+      stage.append(
+        htmlProse(`<div class="prose"><p>${tok(L(id + "." + s.scene.result + ".result"))}</p></div>`),
+        choiceCard({ text: "Go on", sub: "to the work of the year", primary: true },
+          () => dispatch({ type: "CLOSE_SCENE" })),
+      );
+    }
   },
   planting: (stage, s, dispatch) => {
     stage.append(el("div", { class: "eyebrow t-label", text: "Dawn · Planting" }), el("h2", { class: "t-title", text: "Set the fields" }));

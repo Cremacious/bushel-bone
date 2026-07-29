@@ -2,6 +2,7 @@ import { SEASONS, WEEKS_PER_SEASON, season } from "./state.js";
 import { CROPS, ripe, weeklyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
 import { burnsFuel, fieldLabel } from "./selectors.js";
+import { SCENES } from "../content/scenes.js";
 
 // Pure: (state, action) => nextState. Never mutates the input.
 // Later plans add cases (resolveEvent, ...). For now: theme + the week/season/year
@@ -16,7 +17,13 @@ export function reduce(state, action) {
     case "SET_SCREEN":
       return { ...state, screen: action.screen };
     case "BEGIN_SEASON":
-      return { ...state, phase: season(state) === "winter" ? "week" : "planting", week: 1, logSeasonStart: state.log.length };
+      return beginSeason(state);
+    case "OPEN_SCENE":
+      return { ...state, phase: "scene", scene: { id: action.id, result: null } };
+    case "CHOOSE_SCENE":
+      return chooseScene(state, action.choiceId);
+    case "CLOSE_SCENE":
+      return closeScene(state);
     case "PLANT":
       return plant(state, action.fieldId, action.crop);
     case "FALLOW":
@@ -34,6 +41,31 @@ export function reduce(state, action) {
     default:
       return state;
   }
+}
+
+// Open the season into its first playable phase (planting, or straight to the week in
+// winter). Shared by BEGIN_SEASON and a scene closing with after: "BEGIN_SEASON".
+function beginSeason(s) {
+  return { ...s, phase: season(s) === "winter" ? "week" : "planting", week: 1, logSeasonStart: s.log.length };
+}
+
+// A scripted scene: apply the chosen option's state deltas and record the choice, so the
+// renderer can show the result prose and a "go on" that closes the scene.
+function chooseScene(s, choiceId) {
+  const sc = SCENES[s.scene && s.scene.id];
+  if (!sc || !sc.choices.includes(choiceId)) return s;
+  const fx = (sc.fx && sc.fx[choiceId]) || {};
+  let ns = { ...s };
+  if (fx.regard != null) ns.regard = Math.max(0, Math.min(100, ns.regard + fx.regard));
+  if (fx.coin != null) ns.coin = Math.max(0, ns.coin + fx.coin);
+  if (fx.reckoning != null) ns.reckoning = Math.max(0, ns.reckoning + fx.reckoning);
+  return { ...ns, scene: { ...s.scene, result: choiceId } };
+}
+
+function closeScene(s) {
+  const sc = SCENES[s.scene && s.scene.id];
+  const base = { ...s, scene: null };
+  return sc && sc.after === "BEGIN_SEASON" ? beginSeason(base) : { ...base, phase: "brief" };
 }
 
 function advanceWeek(s) {

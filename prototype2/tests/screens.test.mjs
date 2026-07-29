@@ -33,7 +33,7 @@ describe("shell + router", () => {
 });
 
 describe("morning brief", () => {
-  it("year-1 spring shows the uncle's-ground brief and Begin advances to planting", () => {
+  it("year-1 spring shows the uncle's-ground brief and Begin opens the Ridley scene", () => {
     const root = document.createElement("div");
     let state = initialState(1, "Mackall");
     const dispatch = (a) => { state = reduce(state, a); };
@@ -41,8 +41,10 @@ describe("morning brief", () => {
     renderScreen(stage, state, dispatch);
     expect(root.textContent).toContain("Your uncle's ground");
     expect(root.textContent).toContain("Malachi"); // {{npc.malachi}} resolved
-    root.querySelector(".choicecard").click();
-    expect(state.phase).toBe("planting");
+    root.querySelector("#stage .choicecard").click();
+    // Year 1 opens on Ridley's call before planting (the scripted scene layer)
+    expect(state.phase).toBe("scene");
+    expect(state.scene.id).toBe("silas_welcome");
   });
 });
 

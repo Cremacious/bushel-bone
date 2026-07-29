@@ -27,7 +27,9 @@ h2.t-title { margin: 0 0 14px; }
   padding: 0.02em 0.09em 0 0; color: var(--accent);
 }
 /* Quoted NPC speech, brighter than ink (the design's dialogue tone). */
-.prose em, .prose i, .dialogue { color: var(--dialogue); font-style: italic; }
+.prose em, .prose i, .dialogue, .prose .said { color: var(--dialogue); font-style: italic; }
+/* An aside/note line inside a scene (e.g. the Vane wagon's winter-mouth warning). */
+.prose .note { color: var(--ink-faint); font-style: italic; }
 
 /* --- choicecard (Screens 04-06: Morning Brief / Dusk / verdict actions) --- */
 .choicecard {

@@ -29,6 +29,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     phase: "brief",            // brief → planting → week → dusk → (next season) ; yearend at the end
     playerAction: { kind: "rest" }, // the player's own week: {kind:"rest"|"work"|"care", target?}
     screen: "home",            // the active tab (home shows the current phase)
+    scene: null,               // an active scripted scene: { id, result } (see content/scenes.js)
     ended: false,
   };
 }
