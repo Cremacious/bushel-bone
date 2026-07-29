@@ -19,8 +19,8 @@ export const CROPS = {
 
 export function ripe(field) {
   const c = field.crop && CROPS[field.crop];
-  // Epsilon guards against float drift: weeklyGrowth accumulates 0.2/week, so a
-  // 2-season crop can land on 1.9999999998 after 10 weeks instead of exactly 2.0.
+  // Epsilon guards against float drift: dailyGrowth accumulates 0.1/day, so a
+  // multi-season crop can land on 1.9999999998 instead of exactly 2.0.
   return !!c && field.progress >= c.seasons - 1e-9;
 }
 
