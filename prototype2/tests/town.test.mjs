@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { lookupName, tok } from "../src/content/names.js";
+import { L } from "../src/content/script.js";
 import { LOCATIONS, ODD_JOBS } from "../src/core/town.js";
 import { initialState } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
@@ -83,5 +84,18 @@ describe("town data", () => {
       expect(j).toMatchObject({ id: expect.any(String), giver: expect.any(String), coin: expect.any(Number) });
       expect(j.coin).toBeGreaterThan(0);
     }
+  });
+});
+
+describe("town scenes resolve", () => {
+  it("has body prose for each town talk, with names resolving", () => {
+    for (const id of ["tolliver_intro", "meredith_rumor"]) {
+      const body = tok(L(id + ".body"));
+      expect(body.length).toBeGreaterThan(20);
+      expect(body).not.toContain("{{");
+    }
+    const crake = tok(L("crake_intro.body"));
+    expect(crake).toContain("Hollis Crake");   // npc token resolved
+    expect(crake).toContain("{{lineage}}");     // lineage resolves later, from save state
   });
 });

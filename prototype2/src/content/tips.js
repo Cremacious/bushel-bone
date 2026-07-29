@@ -17,6 +17,9 @@ export const TIPS = {
   winter: [
     "Winter is the test. Every mouth needs food in the larder and wood on the pile, every day of it. Watch those two figures close. Come up short on wood, and the frailest of us freezes first.",
   ],
+  town: [
+    "This is Marrow's Cross. Riding in is how a day gets spent when the fields can spare you. There is paid work going most days, coin in hand by dusk, and folk worth knowing. Each errand or call costs you a piece of the day, same as work at home, so choose what is worth your while.",
+  ],
 };
 
 // The tip owed for the current context, or null. Fires once each (tracked in tipsSeen),
@@ -30,6 +33,7 @@ export function pendingTip(state) {
   if (state.phase === "day") cands.push("assign");
   if (isWinter && (state.phase === "day" || state.phase === "brief")) cands.push("winter");
   if (state.phase === "dusk") cands.push("dusk");
+  if (state.screen === "town") cands.push("town");
   const id = cands.find((c) => !seen.includes(c));
   return id ? { id, pages: TIPS[id] } : null;
 }

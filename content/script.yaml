@@ -392,3 +392,38 @@ scenes:
     topic: "Did you know my uncle?"
     reply: >-
       <p>{{npc.reuben}} goes still, and turns his hat over in his hands. <span class="said">“Mister {{npc.malachi}}. Aye. Near twenty year I worked this ground beside him.”</span></p><p><span class="said">“He was the first ever told me I ate what he ate, slept under his roof. I did not know what to make of it, at the first. He waited while I learned.”</span> He is quiet a moment. <span class="said">“He kept a lamp lit over the east field, some nights. Watching, he said, though he would not say for what. The winter he went, he set me to hold the fields till his blood came. Then he was gone, and no grave to show for it, only the books he left on the shelf.”</span></p><p>He looks at you, steadier than his voice is. <span class="said">“Read them, when the pages come to you. He wrote them for whoever would follow. Reckon that is you now.”</span></p>
+
+  # Town talk scenes (Phase B task 6): three NPC intros reachable via the TOWN
+  # tab menu (D-042 to D-047 exploration). Each is a single-beat "go_on" card.
+  crake_intro:
+    eyebrow: "The smithy"
+    title: "Hollis Crake"
+    body: >-
+      <div class="prose"><p>{{npc.crake}} does not stop his hammer at once. When he does, he sets the piece down with the one hand he has and looks you over. “You would be the one took the old {{lineage}} place,” he says. “Ground like that eats tools. When you are ready to work it proper, a plow, a well, a barn raised, you come to me. I do not give credit, mind.”</p></div>
+    choices:
+      go_on:
+        text: "“I will remember that.”"
+        sub: "leave the smith to his iron"
+        result: "He is already back at the anvil before you reach the door."
+
+  tolliver_intro:
+    eyebrow: "The general store"
+    title: "Prudence Tolliver"
+    body: >-
+      <div class="prose"><p>{{npc.tolliver}} watches your hands more than your face, the way a woman does who has been paid in promises before. “Seed, salt, lamp oil, nails,” she says, naming her shelves without pointing at them. “I carry what a place needs and not one thing it merely wants. Coin on the counter, and we will get on fine. You will find I remember a debt longer than most remember a kindness.”</p></div>
+    choices:
+      go_on:
+        text: "“Fair enough, Mrs. Tolliver.”"
+        sub: "take your leave of the counter"
+        result: "She has already turned to square a shelf that did not need squaring."
+
+  meredith_rumor:
+    eyebrow: "The saloon"
+    title: "Meredith Vane"
+    body: >-
+      <div class="prose"><p>{{npc.meredith}} pours for a man who has stopped listening and leans your way instead. “You hear things, keeping a bar,” she says, low. “The rail is hungry for grain this year, and what the rail wants, the rail pays for, come the depot. Wheat and corn, if you have the patience to grow them. The roots? Everyone has roots. A glut on a market is a poor man's harvest.” She straightens. “Worth knowing, when you decide what to put in the ground.”</p></div>
+    choices:
+      go_on:
+        text: "“I will keep it in mind.”"
+        sub: "let her get back to the bar"
+        result: "She is already three faces down the counter, pouring and listening."
