@@ -32,7 +32,7 @@ scenes:
     title: "{{npc.silas.first}}'s Welcome"
     dir: "[a man in a good coat on a poor road, a ledger in his saddlebag, not dismounting]"
     body: >-
-      <div class="prose"><p>{{npc.silas}} reins up at your gate and does not get down. <span class="said">“{{npc.silas}}. Mr. {{term.ridley}}, to a man who owes the bank, which you are now. I hold the paper on this place, the same as I held it for your uncle.”</span> He says it the way another man might say the weather. <span class="said">“A hundred and fifty a year to the bank, and the debt came down to you along with the land. Not this year, nor the next: the charter allows a new holder his feet. After that, it minds its dates, and so will I.”</span> He looks a long moment at the soft ground by the east field, and something crosses his face he does not explain.</p></div>
+      <div class="prose"><p>{{npc.silas}} reins up at your gate and does not get down. <span class="said">“My name is {{npc.silas}}, of the bank in {{place.town}}. I held the paper on this place for your uncle, and now that it has passed to you, I hold it on you.”</span> He says it the way another man might remark on the weather. <span class="said">“A hundred and fifty a year to the bank. The debt came down to you along with the land. Not this year, nor the next: the charter allows a new holder his feet under him. After that it minds its dates, and so will I.”</span> He looks a long moment at the soft ground by the east field, and something crosses his face he does not explain.</p></div>
     choices:
       obliged:
         text: "“Obliged, Mr. {{term.ridley}}.”"
