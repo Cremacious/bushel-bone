@@ -151,6 +151,8 @@ function resolveWeek(s) {
       if (f && f.crop) { f.tended = true; return true; }
     } else if (task === "chop") {
       fuel += BALANCE.fuelPerChopWeek; return true;
+    } else if (task === "forage") {
+      larder += BALANCE.forageFood; return true; // gather wild food onto the table now
     }
     return false;
   };
@@ -162,6 +164,7 @@ function resolveWeek(s) {
   // The player's own week:
   const pa = s.playerAction || { kind: "rest" };
   if (pa.kind === "work") doLabor("tend", pa.target);
+  if (pa.kind === "forage") larder += BALANCE.forageFood; // the player gathers food too
   if (pa.kind === "care") { const h = hands.find((x) => x.id === pa.target && x.alive); if (h) h.strain -= St.careRecovery; }
 
   // 2) Crop growth (uses the tended flags set above), then reset tended.

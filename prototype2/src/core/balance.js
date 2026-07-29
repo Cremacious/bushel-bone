@@ -19,6 +19,7 @@ export const BALANCE = {
   foodPerMouthPerWeek: 3,        // farmer + each living hand
   fuelPerMouthPerWeek: 2,        // burned in fall & winter only
   fuelPerChopWeek: 10,           // one hand chopping adds this much fuel per week
+  forageFood: 5,                 // food a hand gathers foraging the wild for a week
   growthPerWeek: 0.2,            // a crop advances 0.2 "seasons" a week (1.0 over a 5-week season)
   tendGrowthBonus: 0.1,          // an assigned tend adds this to that field's growth this week
   strain: {

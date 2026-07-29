@@ -1,6 +1,6 @@
 import { BALANCE } from "./balance.js";
 import { CROPS, ripe } from "./crops.js";
-import { livingHands, season } from "./state.js";
+import { livingHands, season, SEASONS } from "./state.js";
 
 // The season's closing figures for the Dusk Report (Screen 06). Pure read.
 export function duskSummary(s) {
@@ -50,6 +50,24 @@ export function fieldProjection(state, field) {
 }
 
 export const mouths = (s) => 1 + livingHands(s).length; // the farmer + living hands
+
+// The household's survival targets for the cold months (fall + winter) still to come this
+// year — what you must lay in — so the weekly work has a visible goal instead of chopping or
+// foraging blind. Pure. `have` is your current stock, `need` the cold-season consumption.
+export function yearNeeds(state) {
+  const m = mouths(state);
+  const weeksLeftInSeason = state.phase === "week" ? BALANCE.weeksPerSeason - state.week + 1 : BALANCE.weeksPerSeason;
+  let coldWeeks = 0;
+  for (let si = state.seasonIndex; si < SEASONS.length; si++) {
+    if (SEASONS[si] !== "fall" && SEASONS[si] !== "winter") continue;
+    coldWeeks += si === state.seasonIndex ? weeksLeftInSeason : BALANCE.weeksPerSeason;
+  }
+  return {
+    coldWeeks,
+    fuel: { have: state.fuel, need: m * BALANCE.fuelPerMouthPerWeek * coldWeeks },
+    food: { have: Math.floor(state.larder), need: m * BALANCE.foodPerMouthPerWeek * coldWeeks },
+  };
+}
 export const fieldLabel = (f) => ["The East Field", "The River Strip", "The Near Acre", "The Stone Lot"][f.id] || `Field ${f.id + 1}`;
 export const isWinter = (s) => season(s) === "winter";
 export const burnsFuel = (s) => season(s) === "fall" || season(s) === "winter";
@@ -66,6 +84,8 @@ export function suggestPlan(state) {
   const ripeList = ripeFields(state); // field objects, so we can see needsTwo
   const growingQueue = growingFields(state, ripeList).map((f) => f.id);
   const cold = burnsFuel(state);
+  const weeksLeft = state.phase === "week" ? BALANCE.weeksPerSeason - state.week + 1 : BALANCE.weeksPerSeason;
+  const foodShort = state.larder < mouths(state) * BALANCE.foodPerMouthPerWeek * weeksLeft; // won't carry the season
   const fuelShort = cold && state.fuel < mouths(state) * BALANCE.fuelPerMouthPerWeek;
   const hands = {};
   let i = 0; // next unassigned living hand
@@ -75,10 +95,12 @@ export function suggestPlan(state) {
     hands[living[i++].id] = { task: "harvest", targetFieldId: f.id };
     if (CROPS[f.crop].needsTwo && i < living.length) hands[living[i++].id] = { task: "harvest", targetFieldId: f.id };
   }
-  // Remaining hands: chop against the cold, else tend a distinct growing field, else rest.
+  // Remaining hands: forage if the table is going short, else chop against the cold, else
+  // tend a distinct growing field, else rest.
   for (; i < living.length; i++) {
     const h = living[i];
-    if (fuelShort) hands[h.id] = { task: "chop", targetFieldId: undefined };
+    if (foodShort) hands[h.id] = { task: "forage", targetFieldId: undefined };
+    else if (fuelShort) hands[h.id] = { task: "chop", targetFieldId: undefined };
     else if (growingQueue.length) hands[h.id] = { task: "tend", targetFieldId: growingQueue.shift() };
     else hands[h.id] = { task: "rest", targetFieldId: undefined };
   }
