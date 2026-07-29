@@ -1,7 +1,7 @@
 import { season } from "./state.js";
 import { CROPS, ripe, dailyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
-import { burnsFuel, fieldLabel, suggestPlan, interrupts } from "./selectors.js";
+import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
 import { ODD_JOBS } from "./town.js";
 
@@ -53,6 +53,8 @@ export function reduce(state, action) {
       return acceptJob(state, action.id);
     case "VISIT":
       return visit(state, action.sceneId);
+    case "CLEAR_FIELD":
+      return clearField(state, action.fieldId);
     default:
       return state;
   }
@@ -248,10 +250,21 @@ function endSeason(s) {
   return { ...s, seasonIndex, day: 1, phase: "brief" };
 }
 
+// Clear an overgrown field for coin, at the escalating price. A no-op if the field is
+// already cleared, unknown, or unaffordable. Clearing is a capital purchase (coin only),
+// not one of the day's actions.
+function clearField(s, id) {
+  const f = s.fields.find((x) => x.id === id);
+  if (!f || f.cleared) return s;
+  const cost = clearCost(s);
+  if (cost == null || s.coin < cost) return s;
+  return { ...mapField(s, id, (x) => ({ ...x, cleared: true })), coin: s.coin - cost };
+}
+
 function plant(s, id, cropKey) {
   const field = s.fields.find((f) => f.id === id);
   const crop = CROPS[cropKey];
-  if (!field || field.crop || !crop) return s;           // taken or unknown crop
+  if (!field || !field.cleared || field.crop || !crop) return s; // uncleared, taken, or unknown crop
   const seedSpent = Math.min(s.seed, crop.seed);
   const coinSpent = crop.seed - seedSpent;               // seed first, then coin
   if (coinSpent > s.coin) return s;                      // cannot afford

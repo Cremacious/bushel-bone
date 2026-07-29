@@ -22,7 +22,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     coin: 100, larder: 80, fuel: 0, seed: 20,
     regard: 20,
     reckoning: 0,            // hidden
-    fields: [0, 1, 2, 3].map((i) => ({ id: i, crop: null, progress: 0, fert: 3, taint: 0, tended: false })),
+    fields: [0, 1, 2, 3].map((i) => ({ id: i, crop: null, progress: 0, fert: 3, taint: 0, tended: false, cleared: i === 0 })),
     hands: [makeHand("reuben", "Reuben")],
     foremanId: "reuben",
     log: [],

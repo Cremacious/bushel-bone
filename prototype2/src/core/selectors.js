@@ -70,6 +70,16 @@ export function yearNeeds(state) {
   };
 }
 export const fieldLabel = (f) => ["The East Field", "The River Strip", "The Near Acre", "The Stone Lot"][f.id] || `Field ${f.id + 1}`;
+export const clearedFields = (s) => s.fields.filter((f) => f.cleared);
+
+// The coin price to clear the NEXT field, escalating with how many are already cleared.
+// Returns null when every field is cleared. One field cleared at the start, so the first
+// price is clearCosts[0].
+export function clearCost(state) {
+  const already = clearedFields(state).length;
+  const idx = already - 1; // 1 cleared → index 0 (the 2nd field's price)
+  return idx >= 0 && idx < BALANCE.clearCosts.length ? BALANCE.clearCosts[idx] : null;
+}
 export const isWinter = (s) => season(s) === "winter";
 export const burnsFuel = (s) => season(s) === "fall" || season(s) === "winter";
 export const ripeFields = (s) => s.fields.filter(ripe);
