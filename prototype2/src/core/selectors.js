@@ -1,6 +1,6 @@
 import { BALANCE } from "./balance.js";
 import { CROPS, ripe } from "./crops.js";
-import { livingHands, season, SEASONS } from "./state.js";
+import { livingHands, season, SEASONS, DAYS_PER_SEASON } from "./state.js";
 
 // The season's closing figures for the Dusk Report (Screen 06). Pure read.
 export function duskSummary(s) {
@@ -26,46 +26,46 @@ export function conditionOf(hand) {
 }
 
 // A plain-language read of a planted field: when it ripens and what it will yield, at the
-// base growth rate (ignoring tend/weather, which only ever help). Pure. Weeks are counted
-// from the current playing week (or the season's start during planting).
+// base growth rate (ignoring tend/weather, which only ever help). Pure. Days are counted
+// from the current playing day (or the season's start during planting).
 export function fieldProjection(state, field) {
   const c = field.crop && CROPS[field.crop];
   if (!c) return { crop: null };
   const remaining = Math.max(0, c.seasons - field.progress);
-  const weeksToRipe = remaining <= 1e-9 ? 0 : Math.ceil(remaining / BALANCE.growthPerWeek);
-  // Weeks already ELAPSED this season (0 during planting; state.week is the current,
-  // not-yet-resolved week, so subtract one). ripenWeek is that plus the weeks still needed.
-  const base = state.phase === "week" ? state.week - 1 : 0;
-  const ripenWeek = base + weeksToRipe;
+  const daysToRipe = remaining <= 1e-9 ? 0 : Math.ceil(remaining / BALANCE.growthPerDay);
+  // Days already ELAPSED this season (0 during planting; state.day is the current,
+  // not-yet-resolved day, so subtract one). ripenDay is that plus the days still needed.
+  const base = state.phase === "day" ? state.day - 1 : 0;
+  const ripenDay = base + daysToRipe;
   const units = Math.round(c.yield * (field.fert / 3));
   const y = c.food > 0 ? { amount: Math.round(units * c.food), kind: "food" }
                        : { amount: units * c.sale, kind: "coin" };
   let when;
-  if (weeksToRipe === 0) when = "ripe";
-  else if (ripenWeek <= BALANCE.weeksPerSeason) when = `ripens wk ${ripenWeek}`;
+  if (daysToRipe === 0) when = "ripe";
+  else if (ripenDay <= DAYS_PER_SEASON) when = `ripens day ${ripenDay}`;
   else if (c.seasons > 1) when = "ripens next season";
   else when = "won't ripen in time";
-  return { crop: field.crop, name: c.name, tier: c.tier, ripe: weeksToRipe === 0,
-    weeksToRipe, when, yield: y, needsTwo: !!c.needsTwo };
+  return { crop: field.crop, name: c.name, tier: c.tier, ripe: daysToRipe === 0,
+    weeksToRipe: daysToRipe, when, yield: y, needsTwo: !!c.needsTwo };
 }
 
 export const mouths = (s) => 1 + livingHands(s).length; // the farmer + living hands
 
 // The household's survival targets for the cold months (fall + winter) still to come this
-// year — what you must lay in — so the weekly work has a visible goal instead of chopping or
+// year — what you must lay in — so the daily work has a visible goal instead of chopping or
 // foraging blind. Pure. `have` is your current stock, `need` the cold-season consumption.
 export function yearNeeds(state) {
   const m = mouths(state);
-  const weeksLeftInSeason = state.phase === "week" ? BALANCE.weeksPerSeason - state.week + 1 : BALANCE.weeksPerSeason;
+  const daysLeftInSeason = state.phase === "day" ? DAYS_PER_SEASON - state.day + 1 : DAYS_PER_SEASON;
   let coldWeeks = 0;
   for (let si = state.seasonIndex; si < SEASONS.length; si++) {
     if (SEASONS[si] !== "fall" && SEASONS[si] !== "winter") continue;
-    coldWeeks += si === state.seasonIndex ? weeksLeftInSeason : BALANCE.weeksPerSeason;
+    coldWeeks += si === state.seasonIndex ? daysLeftInSeason : DAYS_PER_SEASON;
   }
   return {
     coldWeeks,
-    fuel: { have: state.fuel, need: m * BALANCE.fuelPerMouthPerWeek * coldWeeks },
-    food: { have: Math.floor(state.larder), need: m * BALANCE.foodPerMouthPerWeek * coldWeeks },
+    fuel: { have: state.fuel, need: m * BALANCE.fuelPerMouthPerDay * coldWeeks },
+    food: { have: Math.floor(state.larder), need: m * BALANCE.foodPerMouthPerDay * coldWeeks },
   };
 }
 export const fieldLabel = (f) => ["The East Field", "The River Strip", "The Near Acre", "The Stone Lot"][f.id] || `Field ${f.id + 1}`;
@@ -74,19 +74,19 @@ export const burnsFuel = (s) => season(s) === "fall" || season(s) === "winter";
 export const ripeFields = (s) => s.fields.filter(ripe);
 export const emptyFields = (s) => s.fields.filter((f) => !f.crop);
 
-// Reuben's recommended plan for the current week: a task per living hand and the player's
-// own week. A sane default a newcomer can accept, and the baseline the player adjusts from.
-// Heuristic: bring in what is ripe first (pairing a second hand onto a two-hand crop so the
-// whole of it comes in), then chop when the cold is coming and fuel is short, then tend a
-// distinct growing field each, else rest.
+// Reuben's recommended plan for the current day: a task per living hand. A sane default a
+// newcomer can accept, and the baseline the player adjusts from. The player's own day is
+// interactive, not pre-filled (see the day-phase screens). Heuristic: bring in what is ripe
+// first (pairing a second hand onto a two-hand crop so the whole of it comes in), then chop
+// when the cold is coming and fuel is short, then tend a distinct growing field each, else rest.
 export function suggestPlan(state) {
   const living = livingHands(state);
   const ripeList = ripeFields(state); // field objects, so we can see needsTwo
   const growingQueue = growingFields(state, ripeList).map((f) => f.id);
   const cold = burnsFuel(state);
-  const weeksLeft = state.phase === "week" ? BALANCE.weeksPerSeason - state.week + 1 : BALANCE.weeksPerSeason;
-  const foodShort = state.larder < mouths(state) * BALANCE.foodPerMouthPerWeek * weeksLeft; // won't carry the season
-  const fuelShort = cold && state.fuel < mouths(state) * BALANCE.fuelPerMouthPerWeek;
+  const daysLeft = state.phase === "day" ? DAYS_PER_SEASON - state.day + 1 : DAYS_PER_SEASON;
+  const foodShort = state.larder < mouths(state) * BALANCE.foodPerMouthPerDay * daysLeft; // won't carry the season
+  const fuelShort = cold && state.fuel < mouths(state) * BALANCE.fuelPerMouthPerDay;
   const hands = {};
   let i = 0; // next unassigned living hand
   // Harvest ripe fields first; a two-hand crop (cotton) pairs a second hand onto it.
@@ -104,11 +104,7 @@ export function suggestPlan(state) {
     else if (growingQueue.length) hands[h.id] = { task: "tend", targetFieldId: growingQueue.shift() };
     else hands[h.id] = { task: "rest", targetFieldId: undefined };
   }
-  // The player's own week: lend a hand on the least-grown growing field, else rest (spec §5 —
-  // early it is an optional bonus, never a slot the player is punished for spending).
-  const growing0 = growingFields(state, ripeList)[0];
-  const player = growing0 ? { kind: "work", target: growing0.id } : { kind: "rest", target: undefined };
-  return { hands, player };
+  return { hands };
 }
 
 // Planted fields that are not yet ripe, least-grown first. `ripeList` is ripeFields(state).
@@ -118,17 +114,34 @@ function growingFields(state, ripeList) {
 }
 
 // Ledger warning lines the V0.3 design shows under the ledger (Screen 04). Strings only.
-// Only meaningful during an active playing week: at Dusk (and beyond) the season is
-// already settled, so there are no remaining weeks left to run short on.
+// Only meaningful during an active playing day: at Dusk (and beyond) the season is
+// already settled, so there are no remaining days left to run short on.
 export function warnings(s) {
   const out = [];
-  const weeksLeft = s.phase === "week" ? BALANCE.weeksPerSeason - s.week + 1 : 0;
-  if (weeksLeft === 0) return out;
+  const daysLeft = s.phase === "day" ? DAYS_PER_SEASON - s.day + 1 : 0;
+  if (daysLeft === 0) return out;
   if (burnsFuel(s)) {
-    const need = mouths(s) * BALANCE.fuelPerMouthPerWeek * weeksLeft;
+    const need = mouths(s) * BALANCE.fuelPerMouthPerDay * daysLeft;
     if (s.fuel < need) out.push(`Fuel is ${need - s.fuel} short of what the cold wants`);
   }
-  const foodNeed = mouths(s) * BALANCE.foodPerMouthPerWeek * weeksLeft;
+  const foodNeed = mouths(s) * BALANCE.foodPerMouthPerDay * daysLeft;
   if (s.larder < foodNeed) out.push(`The larder will not carry ${mouths(s)} mouths to the season's end`);
   return out;
+}
+
+// The fast-forward stopper. Returns human-readable reasons the "Let the days run"
+// control should pause and hand the day back to the player. Empty array = a calm day
+// that can be skipped. Phase A reasons only; later phases add events/callers/market.
+export function interrupts(state) {
+  if (state.phase !== "day") return [];
+  const St = BALANCE.strain;
+  const reasons = [];
+  const harvesting = new Set(
+    state.hands.filter((h) => h.alive && h.task === "harvest").map((h) => h.targetFieldId)
+  );
+  if (state.fields.some((f) => ripe(f) && !harvesting.has(f.id))) reasons.push("A crop stands ripe and no one is set to bring it in.");
+  if (state.hands.some((h) => h.alive && h.strain >= St.failingAt)) reasons.push("A hand is failing and needs seeing to.");
+  if (state.larder <= 0) reasons.push("The larder is empty.");
+  if (state.day >= DAYS_PER_SEASON) reasons.push("It is the last day of the season.");
+  return reasons;
 }
