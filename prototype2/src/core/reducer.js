@@ -16,6 +16,12 @@ export function reduce(state, action) {
       return advanceWeek(state);
     case "SET_SCREEN":
       return { ...state, screen: action.screen };
+    case "SET_OVERLAY":
+      return { ...state, overlay: action.overlay };
+    case "CLOSE_OVERLAY":
+      return { ...state, overlay: null };
+    case "SET_TUTORIALS":
+      return { ...state, tutorialsOn: !!action.on, overlay: null };
     case "BEGIN_SEASON":
       return beginSeason(state);
     case "OPEN_SCENE":

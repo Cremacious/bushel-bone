@@ -34,10 +34,9 @@ const VIEWS = {
     el("div", { class: "fr-hero" }, [
       crow(),
       el("div", { class: "fr-herotext" }, [
-        el("div", { class: "fr-eyebrow t-label", text: "A Dark Homestead Survival Game" }),
         wordmark(),
+        el("div", { class: "fr-eyebrow t-label", text: "A Dark Homestead Survival Game" }),
         el("div", { class: "fr-rule rule-double" }),
-        el("div", { class: "fr-tagline", text: "You inherit a plot of land and a promise. The land keeps its own ledger." }),
         el("div", { class: "fr-menu" }, [
           menuItem("New Game", "▶", { primary: true, onClick: () => set({ view: "name" }) }),
           menuItem("Continue", null, { disabled: true, aside: "no game in progress" }),
@@ -55,12 +54,11 @@ const VIEWS = {
     const input = el("input", { class: "fr-input t-title", type: "text", maxlength: String(MAX),
       autocomplete: "off", spellcheck: "false", value: ui.lineage });
     input.addEventListener("input", () => { ui.lineage = input.value; toggleContinue(); });
-    const cont = el("button", { class: "choicecard primary fr-btn",
-      onClick: () => { if (input.value.trim()) set({ view: "letter", page: 0, lineage: input.value }); } },
-      [el("span", { class: "ctitle t-choice", text: "Continue" })]);
+    const cont = actionBtn("Continue", { primary: true,
+      onClick: () => { if (input.value.trim()) set({ view: "letter", page: 0, lineage: input.value }); } });
     function toggleContinue() { cont.toggleAttribute("disabled", !input.value.trim()); }
     const node = screen("name", [
-      el("div", { class: "fr-narrow" }, [
+      el("div", { class: "fr-narrow fr-centered" }, [
         el("div", { class: "fr-eyebrow t-label", text: "Before the letter comes" }),
         el("h2", { class: "t-title", text: "Name your line" }),
         el("p", { class: "fr-body", text: "A family holds this land, season on season, and gives it their name. What is the name they will carry?" }),
@@ -68,8 +66,8 @@ const VIEWS = {
         el("label", { class: "fr-label t-label", text: "Family surname" }),
         input,
         el("p", { class: "fr-hint t-sub", text: "This is the name over the door for as long as your line holds the land." }),
-        el("div", { class: "fr-nav" }, [
-          el("button", { class: "linkbtn fr-back", text: "Back", onClick: () => set({ view: "title" }) }),
+        el("div", { class: "fr-actions" }, [
+          actionBtn("Back", { onClick: () => set({ view: "title" }) }),
           cont,
         ]),
       ]),
@@ -81,22 +79,18 @@ const VIEWS = {
     const pages = letterPages(ui.lineage);
     const p = Math.max(0, Math.min(ui.page, pages.length - 1));
     const last = p === pages.length - 1;
+    const next = actionBtn(last ? "Begin" : "Next", { primary: true,
+      onClick: () => { if (last) { onStart && onStart(normLineage(ui.lineage)); } else set({ page: p + 1 }); } });
     return screen("letter", [
       el("div", { class: "fr-letterwrap" }, [
-        pages[p],
-        el("div", { class: "fr-paging" }, [
-          el("button", { class: "linkbtn fr-prev" + (p === 0 ? " off" : ""), text: "Previous",
-            ...(p === 0 ? { disabled: true } : {}), onClick: () => set({ page: p - 1 }) }),
-          el("span", { class: "fr-pageno t-label", text: `Page ${p + 1} of ${pages.length}` }),
-          el("button", { class: "choicecard primary fr-btn fr-next" },
-            [el("span", { class: "ctitle t-choice", text: last ? "Begin" : "Next" })]),
+        el("div", { class: "fr-pagebox" }, [pages[p]]),
+        el("div", { class: "fr-pageno t-label", text: `Page ${p + 1} of ${pages.length}` }),
+        el("div", { class: "fr-actions" }, [
+          actionBtn("Back", { disabled: p === 0, onClick: () => set({ page: p - 1 }) }),
+          next,
         ]),
       ]),
-    ], (node) => {
-      node.querySelector(".fr-next").addEventListener("click", () => {
-        if (last) { onStart && onStart(normLineage(ui.lineage)); } else set({ page: p + 1 });
-      });
-    });
+    ]);
   },
 
   howto: (ui, set) => infoScreen("How to Play", HOWTO, set),
@@ -132,6 +126,12 @@ function letterPages(lineage) {
 }
 
 // ---- small builders ----
+// A uniform front-porch action button: same size everywhere (Back / Continue / Next /
+// Begin), so a two-button row reads as a matched pair. Primary carries the lamp border.
+function actionBtn(label, { primary, disabled, onClick } = {}) {
+  return el("button", { class: "fr-action" + (primary ? " primary" : ""),
+    ...(disabled ? { disabled: true } : {}), ...(onClick ? { onClick } : {}), text: label });
+}
 function screen(name, children, after) {
   const s = el("section", { class: "fr-screen fr-" + name + " m-turn" }, children);
   if (after) after(s);
@@ -145,7 +145,7 @@ function wordmark() {
 function crow() {
   // The real crow-on-bushel logo (the one illustration that carries the brand).
   return el("div", { class: "fr-crow" }, [
-    el("img", { src: "assets/logoTransparent.png", alt: "Bushel & Bone", class: "fr-logo" }),
+    el("img", { src: "assets/logo.png", alt: "Bushel & Bone", class: "fr-logo" }),
   ]);
 }
 function menuItem(label, glyph, { primary, disabled, half, aside, onClick } = {}) {
@@ -157,13 +157,12 @@ function menuItem(label, glyph, { primary, disabled, half, aside, onClick } = {}
 }
 function infoScreen(title, paras, set) {
   return screen("info", [
-    el("div", { class: "fr-narrow" }, [
+    el("div", { class: "fr-narrow fr-centered" }, [
       el("h2", { class: "t-title", text: title }),
       el("div", { class: "fr-rule rule-hatch" }),
       ...paras.map((t) => el("p", { class: "fr-body", text: t })),
-      el("div", { class: "fr-nav" }, [
-        el("button", { class: "choicecard primary fr-btn", onClick: () => set({ view: "title" }) },
-          [el("span", { class: "ctitle t-choice", text: "Back" })]),
+      el("div", { class: "fr-actions" }, [
+        actionBtn("Back", { primary: true, onClick: () => set({ view: "title" }) }),
       ]),
     ]),
   ]);

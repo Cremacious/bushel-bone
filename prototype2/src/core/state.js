@@ -30,6 +30,8 @@ export function initialState(seed = 1, lineageName = "Crane") {
     playerAction: { kind: "rest" }, // the player's own week: {kind:"rest"|"work"|"care", target?}
     screen: "home",            // the active tab (home shows the current phase)
     scene: null,               // an active scripted scene: { id, result } (see content/scenes.js)
+    overlay: null,             // a modal over the shell: { type, ... } (e.g. a Reuben tutorial prompt)
+    tutorialsOn: false,        // Reuben's guided tips, opted into on New Game
     ended: false,
   };
 }

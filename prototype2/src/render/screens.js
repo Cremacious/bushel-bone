@@ -47,8 +47,9 @@ const SCREENS = {
     );
     if (!s.scene.result) {
       for (const cid of sc.choices) {
+        const t = fxTag((sc.fx && sc.fx[cid]) || {});
         stage.append(choiceCard(
-          { text: tok(L(id + "." + cid + ".text")), sub: tok(L(id + "." + cid + ".sub")) },
+          { text: tok(L(id + "." + cid + ".text")), sub: tok(L(id + "." + cid + ".sub")), tag: t.text, tagValence: t.valence },
           () => dispatch({ type: "CHOOSE_SCENE", choiceId: cid }),
         ));
       }
@@ -188,6 +189,22 @@ export { SCREENS };
 // The script bodies are HTML (from #46) and carry their own `.prose` wrapper; render
 // them as real nodes in a plain typographic container (no second `.prose` to nest).
 function htmlProse(html) { const d = el("div", { class: "t-prose" }); d.innerHTML = html; return d; }
+
+// Turn a choice's state deltas into a player-facing stat tag ("+2 regard", "−3 regard",
+// "−60 coin"), colored by valence, so a choice's cost/benefit is legible up front (D-039).
+// This is the general grammar for any choice with mechanical stakes, not just scenes.
+const STAT_LABEL = { regard: "regard", coin: "coin", food: "food", fuel: "fuel", seed: "seed", reckoning: "dread" };
+export function fxTag(fx = {}) {
+  const parts = [];
+  let good = false, bad = false;
+  for (const [k, v] of Object.entries(fx)) {
+    if (!v) continue;
+    parts.push(`${v > 0 ? "+" : "−"}${Math.abs(v)} ${STAT_LABEL[k] || k}`);
+    const positive = k === "reckoning" ? v < 0 : v > 0; // more dread is bad; more of anything else is good
+    if (positive) good = true; else bad = true;
+  }
+  return { text: parts.join(" · "), valence: bad && !good ? "bad" : good && !bad ? "good" : "" };
+}
 
 // A day-book line; `i` staggers the Dusk "Rule" reveal (reference §7), 160ms apart.
 function line(label, value, i = 0) {

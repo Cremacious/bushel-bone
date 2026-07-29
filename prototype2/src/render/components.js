@@ -5,7 +5,8 @@ import { tok } from "../content/names.js";
 // + optional sub line; disabled shows the arithmetic instead of a hover. Matches Screen 04.
 export function choiceCard(choice, onPick) {
   const disabled = !!choice.disabled;
-  const tag = choice.tag ? el("span", { class: "ctag", text: tok(choice.tag) }) : null;
+  // The mechanical tag (Courier), colored by valence: `tagValence` is "good" | "bad" | "".
+  const tag = choice.tag ? el("span", { class: "ctag" + (choice.tagValence ? " " + choice.tagValence : ""), text: tok(choice.tag) }) : null;
   const title = el("span", { class: "ctitle t-choice", text: tok(choice.text) }, tag ? [tag] : []);
   const sub = (disabled && choice.why) || choice.sub
     ? el("span", { class: "csub t-sub", text: tok((disabled && choice.why) || choice.sub) })

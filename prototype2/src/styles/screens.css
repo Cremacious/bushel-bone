@@ -50,7 +50,9 @@ h2.t-title { margin: 0 0 14px; }
 .choicecard.primary { border-color: var(--lamp); background: color-mix(in srgb, var(--lamp) 13%, transparent); }
 .choicecard.disabled { opacity: .55; cursor: not-allowed; }
 .choicecard .ctitle { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; }
-.choicecard .ctag { font-family: "Courier Prime", monospace; font-style: normal; font-size: 0.82rem; color: var(--accent); white-space: nowrap; }
+.choicecard .ctag { font-family: "Courier Prime", monospace; font-style: normal; font-size: 0.82rem; color: var(--ink-soft); white-space: nowrap; }
+.choicecard .ctag.good { color: var(--good); }
+.choicecard .ctag.bad { color: var(--bad); }
 .choicecard .csub { display: block; margin-top: 2px; }
 .choicecard.disabled .csub { color: var(--bad); font-style: normal; }
 
