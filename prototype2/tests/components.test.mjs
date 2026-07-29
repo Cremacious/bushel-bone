@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { choiceCard, warnLines } from "../src/render/components.js";
+import { choiceCard, warnLines, fieldCard } from "../src/render/components.js";
+import { initialState } from "../src/core/state.js";
+import { reduce } from "../src/core/reducer.js";
+import { fieldProjection } from "../src/core/selectors.js";
 
 describe("choiceCard", () => {
   it("renders title, tag, and sub", () => {
@@ -32,6 +35,23 @@ describe("choiceCard", () => {
     expect(b.querySelector(".ctitle").textContent).toContain("Reuben");
     expect(b.querySelector(".csub").textContent).toContain("Malachi");
     expect(b.querySelector(".ctag").textContent).toBe("Reuben");
+  });
+});
+
+describe("fieldCard", () => {
+  it("shows the field name, the crop, and the projection", () => {
+    let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
+    s.fields[0] = { ...s.fields[0], crop: "potato", progress: 0, fert: 3 };
+    const card = fieldCard(s.fields[0], fieldProjection(s, s.fields[0]));
+    expect(card.querySelector(".fc-name").textContent).toContain("East Field");
+    expect(card.textContent).toContain("Potato");
+    expect(card.textContent).toContain("ripens wk 5");
+    expect(card.textContent).toContain("20 food");
+  });
+  it("an empty field reads as fallow", () => {
+    let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
+    const card = fieldCard(s.fields[0], fieldProjection(s, s.fields[0]));
+    expect(card.textContent.toLowerCase()).toContain("fallow");
   });
 });
 
