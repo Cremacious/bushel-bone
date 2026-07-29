@@ -27,8 +27,8 @@ export function pendingTip(state) {
   const isWinter = state.seasonIndex === 3;
   const cands = [];
   if (state.phase === "planting") cands.push("plant");
-  if (state.phase === "week") cands.push("assign");
-  if (isWinter && (state.phase === "week" || state.phase === "brief")) cands.push("winter");
+  if (state.phase === "day") cands.push("assign");
+  if (isWinter && (state.phase === "day" || state.phase === "brief")) cands.push("winter");
   if (state.phase === "dusk") cands.push("dusk");
   const id = cands.find((c) => !seen.includes(c));
   return id ? { id, pages: TIPS[id] } : null;

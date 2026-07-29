@@ -8,7 +8,7 @@ export function counselFor(state) {
       text: "Plant us food to start, a field or two of potato or turnip. The quick crops feed us by the season's end, and a full larder is what carries a new place through. Corn and cotton pay better, but they take two seasons and earn nothing till then, so leave the cash crops till you have food put by. And mind: this is my read for a first spring, not a law. Every season turns different. Learn the why of it, and you will not need me telling you.",
     };
   }
-  if (state.phase === "week") {
+  if (state.phase === "day") {
     return {
       text: "I have set us to the work the way I would do it. Look it over before you commit. Tend pushes a crop along faster; harvest brings in what has stood ripe; forage gathers food from the wild when the larder runs thin; chop lays wood by for winter; rest mends a hand who is worn. Change any of it, or just put us to work and trust my hand for now.",
     };

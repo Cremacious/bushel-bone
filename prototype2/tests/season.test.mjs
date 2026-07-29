@@ -5,7 +5,7 @@ import { reduce } from "../src/core/reducer.js";
 function toDusk(s) {
   s = reduce(s, { type: "BEGIN_SEASON" });
   if (s.phase === "planting") s = reduce(s, { type: "SOW" });
-  for (let i = 0; i < 5; i++) s = reduce(s, { type: "RESOLVE_WEEK" });
+  for (let i = 0; i < 10; i++) s = reduce(s, { type: "TURN_IN" });
   return s; // phase dusk
 }
 

@@ -68,7 +68,7 @@ describe("Reuben's guided tips", () => {
     app.dispatch({ type: "DISMISS_TIP", id: "plant" });
     expect(app.getState().tipsSeen).toContain("plant");
     expect(app.getState().overlay).toBe(null);
-    // sowing into the week now surfaces the assign tip (a different mechanic)
+    // sowing into the day now surfaces the assign tip (a different mechanic)
     app.dispatch({ type: "SOW" });
     expect(app.getState().overlay).toMatchObject({ tipId: "assign" });
   });
