@@ -36,6 +36,25 @@ describe("resolve week", () => {
     expect(s.larder).toBeGreaterThan(before - 2 * BALANCE.foodPerMouthPerWeek); // gained > it ate
     expect(s.fields.find((f) => f.id === 0).crop).toBe(null);
   });
+  it("cotton needs two hands: one brings in half the crop, two bring in the whole", () => {
+    // cotton yield 5 at fert 3 → 5 units at 12 coin; one hand gets floor(5/2)=2, two get 5.
+    let one = inWeek();
+    one.fields[0] = { ...one.fields[0], crop: "cotton", progress: 2, fert: 3 };
+    one = reduce(one, { type: "ASSIGN", handId: "reuben", task: "harvest", targetFieldId: 0 });
+    const c1 = one.coin;
+    one = reduce(one, { type: "RESOLVE_WEEK" });
+    expect(one.coin - c1).toBe(2 * 12);
+    expect(one.fields.find((f) => f.id === 0).crop).toBe(null);
+
+    let two = inWeek();
+    two = { ...two, hands: [...two.hands, { id: "del", name: "Del", body: "average", mind: "average", task: "rest", strain: 0, morale: 4, alive: true, traits: [] }] };
+    two.fields[0] = { ...two.fields[0], crop: "cotton", progress: 2, fert: 3 };
+    two = reduce(two, { type: "ASSIGN", handId: "reuben", task: "harvest", targetFieldId: 0 });
+    two = reduce(two, { type: "ASSIGN", handId: "del", task: "harvest", targetFieldId: 0 });
+    const c2 = two.coin;
+    two = reduce(two, { type: "RESOLVE_WEEK" });
+    expect(two.coin - c2).toBe(5 * 12); // the whole crop
+  });
   it("a starving hand accrues strain and can be lost", () => {
     // Winter: burns fuel too, so an unfed, unwarmed, idle hand racks up hunger (12/wk)
     // + cold (12/wk) and is lost within the season's 5 weeks. Off "rest" so restRecovery

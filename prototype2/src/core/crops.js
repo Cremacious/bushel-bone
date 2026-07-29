@@ -14,7 +14,7 @@ export const CROPS = {
   potato: { name: "Potato", tier: "staple", seed: 6, seasons: 1, yield: 10, food: 2, sale: 2 },
   wheat:  { name: "Wheat", tier: "cash", seed: 4, seasons: 2, yield: 8, food: 0, sale: 6 },
   corn:   { name: "Corn", tier: "cash", seed: 5, seasons: 2, yield: 9, food: 0, sale: 7 },
-  cotton: { name: "Cotton", tier: "cash", seed: 10, seasons: 2, yield: 5, food: 0, sale: 12 },
+  cotton: { name: "Cotton", tier: "cash", seed: 10, seasons: 2, yield: 5, food: 0, sale: 12, needsTwo: true },
 };
 
 export function ripe(field) {
