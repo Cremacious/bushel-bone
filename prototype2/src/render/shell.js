@@ -60,7 +60,6 @@ export function renderShell(root, state, dispatch) {
   const stage = el("main", { class: "stage m-turn", id: "stage" }); // fresh element → Turn replays
 
   const leaf = el("div", { class: "leaf" }, [
-    el("div", { class: "spine leaf-spine" }),
     ledger,
     household(state, dispatch),
     ...(warns ? [warns] : []),

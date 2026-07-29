@@ -43,9 +43,10 @@ const SCREENS = {
     stage.append(
       el("div", { class: "eyebrow t-label", text: tok(L(id + ".eyebrow")) }),
       el("h2", { class: "t-title", text: tok(L(id + ".title")) }),
-      htmlProse(tok(L(id + ".body"))),
     );
     if (!s.scene.result) {
+      // the beat: the speaker's lines, then the choices.
+      stage.append(htmlProse(tok(L(id + ".body"))));
       for (const cid of sc.choices) {
         const t = fxTag((sc.fx && sc.fx[cid]) || {});
         stage.append(choiceCard(
@@ -54,6 +55,7 @@ const SCREENS = {
         ));
       }
     } else {
+      // after a choice: only what came of it, not the whole beat again.
       stage.append(
         htmlProse(`<div class="prose"><p>${tok(L(id + "." + s.scene.result + ".result"))}</p></div>`),
         choiceCard({ text: "Go on", sub: "to the work of the year", primary: true },
@@ -73,8 +75,9 @@ const SCREENS = {
       else {
         const picker = el("div", { class: "croppick" }, Object.entries(CROPS).map(([key, c]) => {
           const cost = c.seed, afford = s.seed + s.coin >= cost;
+          const note = c.needsTwo ? " · two hands" : "";
           return el("button", { class: "cropchip t-sub" + (afford ? "" : " disabled"), ...(afford ? {} : { disabled: true }),
-            text: `${c.name} · ${c.seed} seed`, onClick: afford ? () => dispatch({ type: "PLANT", fieldId: f.id, crop: key }) : undefined });
+            text: `${c.name} · ${c.seed} seed${note}`, onClick: afford ? () => dispatch({ type: "PLANT", fieldId: f.id, crop: key }) : undefined });
         }));
         row.append(picker);
       }

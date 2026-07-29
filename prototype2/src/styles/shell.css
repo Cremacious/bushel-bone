@@ -56,7 +56,6 @@ html, body { height: 100%; }
 
 /* ===================== the leaf ===================== */
 .leaf { display: flex; flex-direction: column; flex: 1; position: relative; }
-.leaf-spine { display: none; }
 
 .ledger { display: flex; background: linear-gradient(var(--ledger-top), var(--ledger-bot)); border-bottom: 1px solid var(--rule); }
 .ledger .cell { flex: 1; padding: 9px 6px; text-align: center; border-right: 1px solid var(--rule-hair); }
@@ -159,7 +158,6 @@ html, body { height: 100%; }
   .leaf { position: absolute; right: 40px; top: 128px; bottom: 36px; width: 44vw; max-width: 900px; min-width: 540px;
     flex: none; background: linear-gradient(var(--leaf-top), var(--leaf-bot)); border: 1px solid var(--rule);
     box-shadow: 0 30px 80px rgba(0,0,0,.6); z-index: 3; animation: bb-turn .55s cubic-bezier(.2,.7,.2,1) both; }
-  .leaf-spine { display: block; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--accent); }
   .leaf-scroll { overflow: hidden; }
   .leaf .stage { overflow-y: auto; }
 
