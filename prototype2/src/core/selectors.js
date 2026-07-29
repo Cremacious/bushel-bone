@@ -54,6 +54,31 @@ export const burnsFuel = (s) => season(s) === "fall" || season(s) === "winter";
 export const ripeFields = (s) => s.fields.filter(ripe);
 export const emptyFields = (s) => s.fields.filter((f) => !f.crop);
 
+// Reuben's recommended plan for the current week: a task per living hand and the player's
+// own week. A sane default a newcomer can accept, and the baseline the player adjusts from.
+// Heuristic: bring in what is ripe, then chop when the cold is coming and fuel is short,
+// then tend the least-grown planted field, else rest. One ripe field is worked by one hand.
+export function suggestPlan(state) {
+  const living = livingHands(state);
+  const ripe = ripeFields(state).map((f) => f.id);
+  const growing = state.fields.filter((f) => f.crop && !ripe.includes(f.id))
+    .sort((a, b) => a.progress - b.progress).map((f) => f.id);
+  const cold = burnsFuel(state);
+  const fuelShort = cold && state.fuel < mouths(state) * BALANCE.fuelPerMouthPerWeek;
+  const hands = {};
+  const ripeQueue = [...ripe];
+  for (const h of living) {
+    if (ripeQueue.length) hands[h.id] = { task: "harvest", targetFieldId: ripeQueue.shift() };
+    else if (fuelShort) hands[h.id] = { task: "chop", targetFieldId: undefined };
+    else if (growing.length) hands[h.id] = { task: "tend", targetFieldId: growing[0] };
+    else hands[h.id] = { task: "rest", targetFieldId: undefined };
+  }
+  // The player's own week: lend a hand on a growing field, else rest (see spec §5 — early
+  // it is an optional bonus, never a slot the player is punished for spending).
+  const player = growing.length ? { kind: "work", target: growing[0] } : { kind: "rest", target: undefined };
+  return { hands, player };
+}
+
 // Ledger warning lines the V0.3 design shows under the ledger (Screen 04). Strings only.
 // Only meaningful during an active playing week: at Dusk (and beyond) the season is
 // already settled, so there are no remaining weeks left to run short on.

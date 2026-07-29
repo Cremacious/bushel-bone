@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { initialState } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
-import { fieldProjection } from "../src/core/selectors.js";
+import { fieldProjection, suggestPlan } from "../src/core/selectors.js";
 
 function planted(crop, progress, fert = 3) {
   const s = reduce(initialState(1), { type: "BEGIN_SEASON" }); // spring, phase planting
@@ -34,5 +34,28 @@ describe("fieldProjection", () => {
     const p = fieldProjection(s, f);
     expect(p.ripe).toBe(true);
     expect(p.when).toBe("ripe");
+  });
+});
+
+describe("suggestPlan", () => {
+  function week(seed = 1) {
+    let s = reduce(initialState(seed), { type: "BEGIN_SEASON" });
+    return reduce(s, { type: "SOW" }); // phase week, nothing planted
+  }
+  it("recommends harvesting a ripe field first", () => {
+    let s = week();
+    s.fields[0] = { ...s.fields[0], crop: "potato", progress: 1, fert: 3 };
+    const plan = suggestPlan(s);
+    expect(plan.hands.reuben).toEqual({ task: "harvest", targetFieldId: 0 });
+  });
+  it("recommends tending a growing crop when nothing is ripe", () => {
+    let s = week();
+    s.fields[1] = { ...s.fields[1], crop: "potato", progress: 0.2, fert: 3 };
+    const plan = suggestPlan(s);
+    expect(plan.hands.reuben).toEqual({ task: "tend", targetFieldId: 1 });
+  });
+  it("recommends resting when there is no field work to do", () => {
+    const s = week(); // nothing planted
+    expect(suggestPlan(s).hands.reuben.task).toBe("rest");
   });
 });
