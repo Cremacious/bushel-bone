@@ -4,7 +4,7 @@ import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard, fieldCard } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
-import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds } from "../core/selectors.js";
+import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
 import { counselFor } from "../content/counsel.js";
 import { BALANCE } from "../core/balance.js";
@@ -167,6 +167,44 @@ const SCREENS = {
       stage.append(el("div", { class: "ledgerrow" }, [
         el("div", { class: "t-choice", text: label }),
         el("div", { class: "t-sub", text: body }),
+      ]));
+    }
+  },
+  town: (stage, s, dispatch) => {
+    const { jobs, locations } = townOffers(s);
+    const canAct = s.phase === "day" && s.playerActionsLeft > 0;
+    const why = s.phase !== "day" ? "Come back during the day." : s.playerActionsLeft <= 0 ? "You are spent for the day." : null;
+    stage.append(
+      el("div", { class: "eyebrow t-label", text: "Marrow's Cross" }),
+      el("h2", { class: "t-title", text: "The town at the crossroads" }),
+      el("p", { class: "t-sub townhint", text: canAct
+        ? `You have ${s.playerActionsLeft} of the day to spend here.`
+        : (why || "The town is quiet.") }),
+    );
+    stage.append(el("div", { class: "eyebrow t-label townsub", text: "Work going" }));
+    for (const j of jobs) {
+      const blocked = !canAct || j.done;
+      const sub = j.done ? "done today" : (why || `+${j.coin} coin · ${tok("{{npc." + j.giver + "}}")}`);
+      stage.append(el("div", { class: "jobcard" }, [
+        el("div", { class: "jobline t-choice", text: j.line }),
+        el("div", { class: "jobmeta t-sub", text: sub }),
+        el("button", { class: "jobtake t-label" + (blocked ? " disabled" : ""), ...(blocked ? { disabled: true } : {}),
+          text: j.done ? "done" : `Take it (+${j.coin})`,
+          onClick: blocked ? undefined : () => dispatch({ type: "ACCEPT_JOB", id: j.id }) }),
+      ]));
+    }
+    stage.append(el("div", { class: "eyebrow t-label townsub", text: "The town" }));
+    for (const l of locations) {
+      const canTalk = !!l.talk && canAct;
+      stage.append(el("div", { class: "townloc" }, [
+        el("div", { class: "loc-head" }, [
+          el("span", { class: "loc-who t-choice", text: tok("{{npc." + l.npc + "}}") }),
+          el("span", { class: "loc-why t-sub", text: l.purpose }),
+        ]),
+        l.talk
+          ? el("button", { class: "loc-talk t-label" + (canTalk ? "" : " disabled"), ...(canTalk ? {} : { disabled: true }),
+              text: "Call on them", onClick: canTalk ? () => dispatch({ type: "VISIT", sceneId: l.talk }) : undefined })
+          : el("span", { class: "loc-soon t-sub", text: "not today" }),
       ]));
     }
   },

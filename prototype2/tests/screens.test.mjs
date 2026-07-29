@@ -164,6 +164,31 @@ describe("dusk + year end", () => {
   });
 });
 
+describe("the town screen", () => {
+  it("lists locations and the day's odd-jobs, and taking a job pays coin", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(42), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    state = { ...state, screen: "town" };
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    expect(root.querySelectorAll(".townloc").length).toBeGreaterThanOrEqual(5);
+    const coin0 = state.coin;
+    const jobBtn = root.querySelector(".jobcard .jobtake");
+    expect(jobBtn).toBeTruthy();
+    jobBtn.click();
+    expect(state.coin).toBeGreaterThan(coin0);
+  });
+  it("disables jobs when it is not the day phase", () => {
+    const root = document.createElement("div");
+    let state = { ...initialState(42), screen: "town", phase: "brief" };
+    const dispatch = () => {};
+    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    const jobBtn = root.querySelector(".jobcard .jobtake");
+    expect(jobBtn.disabled).toBe(true);
+  });
+});
+
 describe("tab views", () => {
   it("the Hands tab lists each living hand with a condition", () => {
     const root = document.createElement("div");
