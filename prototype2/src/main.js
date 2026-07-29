@@ -23,9 +23,14 @@ export function boot(root, opts = {}) {
     const view = viewKey(state);
     const animate = view !== lastView;
     lastView = view;
+    // Preserve the reading column's scroll across an in-beat re-render, so making a choice
+    // (assign a hand, spend an action) does not jump the player back to the top. On a real
+    // beat change (a new screen) we let it start at the top, as the Turn motion intends.
+    const prevScroll = animate ? 0 : (root.querySelector(".leaf-scroll")?.scrollTop || 0);
     const stage = renderShell(root, state, dispatch, { animate });
     renderScreen(stage, state, dispatch);
     renderOverlay(root, state, dispatch); // modal layer (Reuben's direct address) on top
+    if (!animate) { const sc = root.querySelector(".leaf-scroll"); if (sc) sc.scrollTop = prevScroll; }
   }
   // Every New Game opens with Reuben offering to walk the player through it.
   if (opts.tutorialPrompt) state = { ...state, overlay: tutorialOptIn() };

@@ -69,6 +69,7 @@ h2.t-title { margin: 0 0 14px; }
 .fc-fill.ripe { background: var(--good); }
 .fc-proj { display: flex; justify-content: space-between; }
 .fc-proj .good { color: var(--good); }
+.fc-worked { color: var(--lamp); letter-spacing: .04em; }
 .croppick { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 @media (max-width: 700px) { .fieldgrid { grid-template-columns: 1fr; } }
 .weekboard { margin-bottom: 16px; }
@@ -138,6 +139,20 @@ h2.t-title { margin: 0 0 14px; }
 .handrow .hname { flex: 0 1 auto; }
 .handrow .hcond { flex: 0 0 auto; }
 .handrow > .taskpick, .handrow > .t-sub { flex: 1 0 100%; margin-top: 10px; }
+
+/* --- strain meter: a hand's condition made visible (word + bar), so rest/care read as
+   meaningful. Steady is calm/green, worn ambers, failing reds. --- */
+.strain { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+.strain-word { text-transform: capitalize; }
+.strain-bar { width: 64px; height: 6px; background: var(--paper); border: 1px solid var(--rule-fine); }
+.strain-fill { height: 100%; background: var(--good); transition: width .2s ease; }
+.strain.cond-steady  .strain-word { color: var(--good); }
+.strain.cond-worn    .strain-word { color: var(--warn); }
+.strain.cond-failing .strain-word,
+.strain.cond-lost    .strain-word { color: var(--bad); }
+.strain.cond-worn    .strain-fill { background: var(--warn); }
+.strain.cond-failing .strain-fill,
+.strain.cond-lost    .strain-fill { background: var(--bad); }
 
 /* .taskbtn is its own compact pill row, deliberately NOT a choicecard: a task pick is a
    small many-way toggle, not a full scene decision, so it reads lighter and denser. */

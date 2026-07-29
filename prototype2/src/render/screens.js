@@ -98,7 +98,7 @@ const SCREENS = {
     for (const h of living) {
       const row = el("div", { class: "handrow" }, [
         el("span", { class: "hname t-choice", text: h.name }),
-        el("span", { class: "hcond t-sub", text: conditionOf(h) }),
+        strainMeter(h),
       ]);
       const sel = el("div", { class: "taskpick" }, TASKS.map(([task, label]) => {
         const blocked = !!why[task];
@@ -187,16 +187,31 @@ const TASK_DESC = {
   chop: `lay in ${BALANCE.fuelPerChopDay} wood for winter`,
 };
 
+// A hand's condition, made legible: the word (colored by band) plus a strain bar, so the
+// player can SEE when a hand is wearing down and rest or care actually matters (D-039).
+function strainMeter(h) {
+  const cond = conditionOf(h);
+  const pct = Math.min(100, Math.round((h.strain / BALANCE.strain.lostAt) * 100));
+  return el("div", { class: "strain cond-" + cond }, [
+    el("span", { class: "strain-word t-label", text: cond }),
+    el("div", { class: "strain-bar" }, [el("div", { class: "strain-fill", style: `width:${Math.max(3, pct)}%` })]),
+  ]);
+}
+
 // Your own day: spend up to playerActionsPerDay actions. Applied at once (instant feedback).
 function personalActions(s, dispatch) {
   const left = s.playerActionsLeft;
   const growing = s.fields.filter((f) => f.crop && !ripe(f));
   const worn = livingHands(s).find((h) => h.strain >= BALANCE.strain.wornAt);
+  // Prefer a field no one has worked yet today, so the player's labor visibly adds a push.
+  const workTarget = growing.find((f) => !f.tended) || growing[0];
   const opts = [
-    { kind: "forage", label: "Forage", desc: `gather ${BALANCE.forageFood} food from the wild` },
-    ...(growing.length ? [{ kind: "work", target: growing[0].id, label: "Work a field", desc: `lend your back to ${fieldLabel(growing[0]).toLowerCase()}` }] : []),
-    ...(worn ? [{ kind: "care", target: worn.id, label: "Sit with a hand", desc: "ease the worst-worn of the crew" }] : []),
-    { kind: "rest", label: "Rest", desc: "a quiet day; spend the hours on nothing" },
+    { kind: "forage", label: "Forage", desc: `+${BALANCE.forageFood} food to the larder` },
+    ...(growing.length ? [{ kind: "work", target: workTarget.id,
+      label: "Work a field", desc: `tend ${fieldLabel(workTarget).toLowerCase()} yourself — a day's growth toward harvest` }] : []),
+    ...(worn ? [{ kind: "care", target: worn.id,
+      label: `Sit with ${worn.name}`, desc: `ease a ${conditionOf(worn)} hand — brings their strain down` }] : []),
+    { kind: "rest", label: "Rest", desc: "a quiet day; keep your own strength" },
   ];
   return el("div", { class: "personal" }, [
     el("div", { class: "personal-h t-label", text: `Your day — ${left} of ${BALANCE.playerActionsPerDay} actions left` }),
