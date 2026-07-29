@@ -2,9 +2,9 @@ import { el } from "./dom.js";
 import { seasonLabel, WEEKS_PER_SEASON, livingHands } from "../core/state.js";
 import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
-import { choiceCard } from "./components.js";
+import { choiceCard, fieldCard } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
-import { fieldLabel, conditionOf, ripeFields, duskSummary } from "../core/selectors.js";
+import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
 
 // Fleshed out across Tasks 8-12. Renders the active screen into the shell's stage.
@@ -64,26 +64,16 @@ const SCREENS = {
     }
   },
   planting: (stage, s, dispatch) => {
-    stage.append(el("div", { class: "eyebrow t-label", text: "Dawn · Planting" }), el("h2", { class: "t-title", text: "Set the fields" }));
-    for (const f of s.fields) {
-      const row = el("div", { class: "fieldrow" }, [
-        el("div", { class: "fieldname t-choice", text: fieldLabel(f) }),
-        el("div", { class: "fert", text: "fert " + "●".repeat(f.fert) + "○".repeat(3 - f.fert) }),
-      ]);
-      if (f.crop) row.append(el("div", { class: "t-sub", text: `${CROPS[f.crop].name}, in the ground` }),
-        el("button", { class: "linkbtn t-sub", text: "clear", onClick: () => dispatch({ type: "FALLOW", fieldId: f.id }) }));
-      else {
-        const picker = el("div", { class: "croppick" }, Object.entries(CROPS).map(([key, c]) => {
-          const cost = c.seed, afford = s.seed + s.coin >= cost;
-          const note = c.needsTwo ? " · two hands" : "";
-          return el("button", { class: "cropchip t-sub" + (afford ? "" : " disabled"), ...(afford ? {} : { disabled: true }),
-            text: `${c.name} · ${c.seed} seed${note}`, onClick: afford ? () => dispatch({ type: "PLANT", fieldId: f.id, crop: key }) : undefined });
-        }));
-        row.append(picker);
-      }
-      stage.append(row);
-    }
-    stage.append(choiceCard({ text: "Sow it so", sub: "put the season in the ground", primary: true }, () => dispatch({ type: "SOW" })));
+    const spent = s.fields.reduce((n, f) => n + (f.crop ? CROPS[f.crop].seed : 0), 0);
+    stage.append(
+      el("div", { class: "eyebrow t-label", text: "Dawn · Planting" }),
+      el("h2", { class: "t-title", text: "Set the fields" }),
+      el("div", { class: "plant-bar" }, [
+        el("span", { class: "t-sub", text: `Seed ${s.seed} · Coin ${s.coin} · this planting costs ${spent}` }),
+        choiceCard({ text: "Sow it so", sub: "put the season in the ground", primary: true }, () => dispatch({ type: "SOW" })),
+      ]),
+      el("div", { class: "fieldgrid" }, s.fields.map((f) => plantingCell(s, f, dispatch))),
+    );
   },
   week: (stage, s, dispatch) => {
     stage.append(el("div", { class: "eyebrow t-label", text: `Week ${s.week} of ${WEEKS_PER_SEASON}` }), el("h2", { class: "t-title", text: "Set the crew to work" }));
@@ -188,6 +178,25 @@ const SCREENS = {
   },
 };
 export { SCREENS };
+
+// One field on the planting grid: its read (fieldCard), plus a crop picker while empty or a
+// "clear" while planted. Picking dispatches PLANT; with the beat-only Turn motion, only this
+// cell repaints, so the grid does not flash.
+function plantingCell(s, f, dispatch) {
+  const proj = fieldProjection(s, f);
+  let extra;
+  if (f.crop) {
+    extra = el("button", { class: "linkbtn t-sub", text: "clear", onClick: () => dispatch({ type: "FALLOW", fieldId: f.id }) });
+  } else {
+    extra = el("div", { class: "croppick" }, Object.entries(CROPS).map(([key, c]) => {
+      const afford = s.seed + s.coin >= c.seed;
+      const note = c.needsTwo ? " · two" : "";
+      return el("button", { class: "cropchip t-sub" + (afford ? "" : " disabled"), ...(afford ? {} : { disabled: true }),
+        text: `${c.name} · ${c.seed}${note}`, onClick: afford ? () => dispatch({ type: "PLANT", fieldId: f.id, crop: key }) : undefined });
+    }));
+  }
+  return fieldCard(f, proj, extra);
+}
 
 // The script bodies are HTML (from #46) and carry their own `.prose` wrapper; render
 // them as real nodes in a plain typographic container (no second `.prose` to nest).

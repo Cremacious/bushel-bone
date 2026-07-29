@@ -56,6 +56,22 @@ h2.t-title { margin: 0 0 14px; }
 .choicecard .csub { display: block; margin-top: 2px; }
 .choicecard.disabled .csub { color: var(--bad); font-style: normal; }
 
+/* --- planting grid + shared field card --- */
+.plant-bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.plant-bar .choicecard { width: auto; min-width: 200px; margin: 0; }
+.fieldgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.fieldcard { border: 1px solid var(--rule-fine); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.fieldcard.ripe { border-color: var(--good); }
+.fc-head { display: flex; justify-content: space-between; align-items: baseline; }
+.fc-fert { color: var(--ink-faint); font-size: 0.82rem; }
+.fc-bar { height: 6px; background: var(--paper); border: 1px solid var(--rule-fine); }
+.fc-fill { height: 100%; background: var(--accent); }
+.fc-fill.ripe { background: var(--good); }
+.fc-proj { display: flex; justify-content: space-between; }
+.fc-proj .good { color: var(--good); }
+.croppick { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+@media (max-width: 700px) { .fieldgrid { grid-template-columns: 1fr; } }
+
 /* --- fieldrow (Screen 05: Planting; also the read-only Fields tab) --- */
 .fieldrow {
   display: flex;
@@ -69,7 +85,6 @@ h2.t-title { margin: 0 0 14px; }
 .fieldrow .fieldname { flex: 0 1 auto; }
 .fieldrow .fert { flex: 0 0 auto; font-size: 0.88rem; color: var(--ink-faint); }
 .fieldrow > .t-sub { flex: 1 0 100%; margin-top: 8px; }
-.croppick { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 8px; margin-top: 10px; flex: 1 0 100%; }
 .cropchip {
   all: unset;
   box-sizing: border-box;

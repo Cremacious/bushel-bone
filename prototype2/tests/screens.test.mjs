@@ -48,18 +48,31 @@ describe("morning brief", () => {
   });
 });
 
-describe("planting screen", () => {
+describe("planting grid", () => {
   it("plants a crop from the picker and sows into the week", () => {
     const root = document.createElement("div");
     let state = reduce(initialState(1), { type: "BEGIN_SEASON" }); // planting
     const dispatch = (a) => { state = reduce(state, a); rerender(); };
     function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
     rerender();
-    expect(root.querySelectorAll(".fieldrow").length).toBe(4);
-    root.querySelector(".cropchip:not(.disabled)").click(); // plant field 0
+    expect(root.querySelectorAll(".fieldgrid .fieldcard").length).toBe(4);
+    root.querySelector(".fieldcard .cropchip:not(.disabled)").click(); // plant field 0
     expect(state.fields[0].crop).toBeTruthy();
-    [...root.querySelectorAll(".choicecard")].find((b) => /Sow/.test(b.textContent)).click();
+    [...root.querySelectorAll(".plant-bar .choicecard")].find((b) => /Sow it so/.test(b.textContent)).click();
     expect(state.phase).toBe("week");
+  });
+
+  it("shows four field cards and Sow is present before scrolling; a pick fills the cell", () => {
+    const root = document.createElement("div");
+    let state = reduce(initialState(1), { type: "BEGIN_SEASON" });
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    expect(root.querySelectorAll(".fieldgrid .fieldcard").length).toBe(4);
+    expect([...root.querySelectorAll(".plant-bar .choicecard")].some((b) => /Sow/.test(b.textContent))).toBe(true);
+    root.querySelector(".fieldcard .cropchip:not(.disabled)").click();
+    expect(state.fields[0].crop).toBeTruthy();
+    expect(root.querySelector(".fieldcard").textContent).toContain("ripens");
   });
 });
 
