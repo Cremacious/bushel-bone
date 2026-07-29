@@ -35,6 +35,40 @@ describe("fieldProjection", () => {
     expect(p.ripe).toBe(true);
     expect(p.when).toBe("ripe");
   });
+  it("during the playing week the ripen week is not double-counted (no off-by-one)", () => {
+    // Plant then SOW into week 1: state.week is 1 (this week not yet resolved). A potato
+    // needs 5 weeks, so it ripens at week 5 — must read "ripens wk 5", not "won't ripen".
+    let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
+    s = reduce(s, { type: "PLANT", fieldId: 0, crop: "potato" });
+    s = reduce(s, { type: "SOW" }); // phase "week", week 1
+    expect(s.phase).toBe("week");
+    expect(fieldProjection(s, s.fields.find((f) => f.id === 0)).when).toBe("ripens wk 5");
+  });
+});
+
+describe("suggestPlan — multiple hands", () => {
+  function twoHandWeek() {
+    let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
+    s = reduce(s, { type: "SOW" });
+    return { ...s, hands: [...s.hands, { id: "del", name: "Del", body: "average", mind: "average", task: "rest", strain: 0, morale: 4, alive: true, traits: [] }] };
+  }
+  it("spreads two hands across two growing fields, not both onto one", () => {
+    let s = twoHandWeek();
+    s.fields[0] = { ...s.fields[0], crop: "potato", progress: 0.2, fert: 3 };
+    s.fields[1] = { ...s.fields[1], crop: "potato", progress: 0.4, fert: 3 };
+    const plan = suggestPlan(s);
+    const targets = [plan.hands.reuben, plan.hands.del].map((a) => a.targetFieldId).sort();
+    expect(plan.hands.reuben.task).toBe("tend");
+    expect(plan.hands.del.task).toBe("tend");
+    expect(targets).toEqual([0, 1]); // one each, least-grown first
+  });
+  it("pairs a second hand onto a ripe two-hand crop (cotton) instead of leaving it idle", () => {
+    let s = twoHandWeek();
+    s.fields[0] = { ...s.fields[0], crop: "cotton", progress: 2, fert: 3 }; // ripe, needsTwo
+    const plan = suggestPlan(s);
+    expect(plan.hands.reuben).toEqual({ task: "harvest", targetFieldId: 0 });
+    expect(plan.hands.del).toEqual({ task: "harvest", targetFieldId: 0 });
+  });
 });
 
 describe("suggestPlan", () => {
