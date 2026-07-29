@@ -28,6 +28,10 @@ export function fieldCard(field, proj, extra) {
     el("span", { class: "fc-name t-choice", text: fieldLabel(field) }), fert,
   ]);
   const body = el("div", { class: "fc-body" });
+  if (!field.cleared) {
+    body.append(el("div", { class: "fc-crop t-sub overgrown", text: "overgrown, uncleared" }));
+    return el("div", { class: "fieldcard uncleared" }, [head, body, ...(extra ? [extra] : [])]);
+  }
   if (proj.crop) {
     const total = proj.ripe ? field.progress : field.progress + proj.daysToRipe * 0.1; // approx seasons to full
     const pct = Math.max(4, Math.min(100, Math.round((field.progress / (total || 1)) * 100)));

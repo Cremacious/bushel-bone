@@ -215,3 +215,18 @@ describe("tab views", () => {
     expect(root.textContent).toContain("fallow");
   });
 });
+
+describe("clearing land on the planting grid", () => {
+  it("an overgrown field shows a Clear control that spends coin to clear it", () => {
+    const root = document.createElement("div");
+    let state = reduce(initialState(1), { type: "BEGIN_SEASON" }); // planting
+    state = { ...state, coin: 100 };
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    const clearBtn = root.querySelector(".fieldcard .clearbtn");
+    expect(clearBtn).toBeTruthy();
+    clearBtn.click();
+    expect(state.fields.filter((f) => f.cleared).length).toBe(2);
+  });
+});

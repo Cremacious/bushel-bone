@@ -1,6 +1,6 @@
 import { el } from "./dom.js";
 import { fieldCard } from "./components.js";
-import { fieldProjection } from "../core/selectors.js";
+import { fieldProjection, clearCost } from "../core/selectors.js";
 import { CROPS } from "../core/crops.js";
 
 // The "place" panel: your fields. On desktop it sits on the LEFT (over the plate); on phone
@@ -30,7 +30,13 @@ export function boardPanel(state, dispatch) {
 function plantingCell(s, f, dispatch) {
   const proj = fieldProjection(s, f);
   let extra;
-  if (f.crop) {
+  if (!f.cleared) {
+    const cost = clearCost(s);
+    const afford = cost != null && s.coin >= cost;
+    extra = el("button", { class: "clearbtn t-sub" + (afford ? "" : " disabled"), ...(afford ? {} : { disabled: true }),
+      text: cost == null ? "cleared" : `Clear this ground · ${cost}m`,
+      onClick: afford ? () => dispatch({ type: "CLEAR_FIELD", fieldId: f.id }) : undefined });
+  } else if (f.crop) {
     extra = el("button", { class: "linkbtn t-sub", text: "clear", onClick: () => dispatch({ type: "FALLOW", fieldId: f.id }) });
   } else {
     extra = el("div", { class: "croppick" }, Object.entries(CROPS).map(([key, c]) => {

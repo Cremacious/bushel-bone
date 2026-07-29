@@ -246,3 +246,10 @@ h2.t-title { margin: 0 0 14px; }
 .loc-talk:hover:not(.disabled) { border-color: var(--lamp); }
 .loc-talk.disabled { opacity: .45; cursor: default; }
 .loc-soon { color: var(--ink-faint); font-style: italic; }
+
+/* --- clearing overgrown fields on the planting grid --- */
+.fieldcard.uncleared { opacity: .8; border-style: dashed; }
+.fc-crop.overgrown { color: var(--ink-faint); font-style: italic; }
+.clearbtn { all: unset; cursor: pointer; border: 1px solid var(--lamp); color: var(--lamp);
+  padding: 6px 10px; text-align: center; letter-spacing: .03em; }
+.clearbtn.disabled { opacity: .45; cursor: not-allowed; border-color: var(--rule-fine); color: var(--ink-faint); }
