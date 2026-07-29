@@ -34,7 +34,7 @@ export function boot(root, opts = {}) {
 }
 
 // The "beat" on screen: the active tab, or the phase when on Home. Overlays and in-screen
-// interactions (planting picks, week adjustments) keep the same key, so they do not re-animate.
+// interactions (planting picks, day adjustments) keep the same key, so they do not re-animate.
 function viewKey(s) { return s.screen === "home" ? s.phase : s.screen; }
 
 // The real entry point: show the title menu, and boot the game once New Game finishes.

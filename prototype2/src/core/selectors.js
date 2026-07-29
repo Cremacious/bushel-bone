@@ -57,15 +57,15 @@ export const mouths = (s) => 1 + livingHands(s).length; // the farmer + living h
 export function yearNeeds(state) {
   const m = mouths(state);
   const daysLeftInSeason = state.phase === "day" ? DAYS_PER_SEASON - state.day + 1 : DAYS_PER_SEASON;
-  let coldWeeks = 0;
+  let coldDays = 0;
   for (let si = state.seasonIndex; si < SEASONS.length; si++) {
     if (SEASONS[si] !== "fall" && SEASONS[si] !== "winter") continue;
-    coldWeeks += si === state.seasonIndex ? daysLeftInSeason : DAYS_PER_SEASON;
+    coldDays += si === state.seasonIndex ? daysLeftInSeason : DAYS_PER_SEASON;
   }
   return {
-    coldWeeks,
-    fuel: { have: state.fuel, need: m * BALANCE.fuelPerMouthPerDay * coldWeeks },
-    food: { have: Math.floor(state.larder), need: m * BALANCE.foodPerMouthPerDay * coldWeeks },
+    coldDays,
+    fuel: { have: state.fuel, need: m * BALANCE.fuelPerMouthPerDay * coldDays },
+    food: { have: Math.floor(state.larder), need: m * BALANCE.foodPerMouthPerDay * coldDays },
   };
 }
 export const fieldLabel = (f) => ["The East Field", "The River Strip", "The Near Acre", "The Stone Lot"][f.id] || `Field ${f.id + 1}`;

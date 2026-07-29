@@ -169,7 +169,7 @@ function infoScreen(title, paras, set) {
 }
 
 const HOWTO = [
-  "You have inherited a homestead worked by farmhand clones. Each season you plant your fields, set your crew to their week's work, and spend your own week alongside them.",
+  "You have inherited a homestead worked by farmhand clones. Each season you plant your fields, and then, day by day, set your crew to their work and spend your own days alongside them.",
   "Keep the larder full and the woodpile high, and keep your people whole: a hand worked to the bone in the cold does not last the winter. Kindness costs yield. Cruelty is paid back in ways the land remembers.",
   "Survive the year, then the next. You do not beat this land. You pass the watch on.",
 ];

@@ -1,4 +1,4 @@
-// Scripted NPC scenes woven into the weekly loop. The prose lives in content/script.yaml
+// Scripted NPC scenes woven into the daily loop. The prose lives in content/script.yaml
 // (rendered via L(id + ".field")); this table is the mechanics: which choices a scene
 // offers, what each choice does to state, and what happens when the scene closes.
 //

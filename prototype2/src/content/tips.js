@@ -9,13 +9,13 @@ export const TIPS = {
     "Mind the fertility dots on each field. Only the harvest wears them down, so a field brought in with none left gives back nothing for the season's work. To mend a point, leave that field fallow and let it rest the season.",
   ],
   assign: [
-    "It is only me for now, so there is little to divide. Set me to tend a planted field, or chop wood against the winter, or rest if I am worn. Then spend your own week beside me: work a field, rest, or sit with a hand who is failing. When you are set, put us to work and the week plays out. Mind the cotton, if you sowed any: it takes two of us working it together to bring in the whole crop, and one hand alone gets only half.",
+    "It is only me for now, so there is little to divide. Set me to tend a planted field, or chop wood against the winter, or rest if I am worn. The day is yours to spend as well: forage for food, work a field beside me, or sit with a hand who is failing. When you are set, turn in for the night and the day plays out. If a run of quiet days lies ahead, let them run and I will wake you when something wants you. Mind the cotton, if you sowed any: it takes two of us working it together to bring in the whole crop, and one hand alone gets only half.",
   ],
   dusk: [
     "This is the day-book, the season closed and counted: what came in, what we ate, what the cold burned. Read it, then turn the page. What you laid by is what carries us into the next season.",
   ],
   winter: [
-    "Winter is the test. Every mouth needs food in the larder and wood on the pile, every week of it. Watch those two figures close. Come up short on wood, and the frailest of us freezes first.",
+    "Winter is the test. Every mouth needs food in the larder and wood on the pile, every day of it. Watch those two figures close. Come up short on wood, and the frailest of us freezes first.",
   ],
 };
 

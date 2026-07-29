@@ -33,7 +33,7 @@ describe("yearNeeds (goal foreshadowing)", () => {
     const s = inDay(); // spring, day 1
     const n = yearNeeds(s);
     // cold days remaining = fall(10) + winter(10) at spring start = 20; 2 mouths
-    expect(n.coldWeeks).toBe(20);
+    expect(n.coldDays).toBe(20);
     expect(n.fuel.need).toBe(2 * BALANCE.fuelPerMouthPerDay * 20); // 40
     expect(n.food.need).toBe(2 * BALANCE.foodPerMouthPerDay * 20); // 40
     expect(n.fuel.have).toBe(s.fuel);
