@@ -22,8 +22,8 @@ describe("shell + router", () => {
     expect(state.screen).toBe("hands");
   });
   it("renders a ledger warning line when the larder is short", () => {
-    // warnings() only speaks during an active playing week (selectors.js gates on
-    // phase === "week"); drive state past the brief/planting gate before checking it.
+    // warnings() only speaks during an active playing day (selectors.js gates on
+    // phase === "day"); drive state past the brief/planting gate before checking it.
     let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
     if (s.phase === "planting") s = reduce(s, { type: "SOW" });
     s.larder = 0;
@@ -49,7 +49,7 @@ describe("morning brief", () => {
 });
 
 describe("planting grid", () => {
-  it("plants a crop from the picker and sows into the week", () => {
+  it("plants a crop from the picker and sows into the day", () => {
     const root = document.createElement("div");
     let state = reduce(initialState(1), { type: "BEGIN_SEASON" }); // planting
     const dispatch = (a) => { state = reduce(state, a); rerender(); };
@@ -59,7 +59,7 @@ describe("planting grid", () => {
     root.querySelector(".fieldcard .cropchip:not(.disabled)").click(); // plant field 0
     expect(state.fields[0].crop).toBeTruthy();
     [...root.querySelectorAll(".plant-bar .choicecard")].find((b) => /Sow it so/.test(b.textContent)).click();
-    expect(state.phase).toBe("week");
+    expect(state.phase).toBe("day");
   });
 
   it("shows four field cards and Sow is present before scrolling; a pick fills the cell", () => {
@@ -103,33 +103,37 @@ describe("planting grid", () => {
   });
 });
 
-describe("readable weekly plan", () => {
-  it("shows the field board with a projection and the pre-filled crew task", () => {
+describe("the day screen", () => {
+  it("shows the crew's standing orders, the personal action budget, and Turn in / Let the days run", () => {
     const root = document.createElement("div");
     let state = reduce(initialState(1), { type: "BEGIN_SEASON" });
     state = reduce(state, { type: "PLANT", fieldId: 0, crop: "potato" });
-    state = reduce(state, { type: "SOW" }); // week, pre-filled to tend field 0
+    state = reduce(state, { type: "SOW" }); // phase: day
     const dispatch = (a) => { state = reduce(state, a); };
     const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    expect(root.querySelector(".boardpanel .fieldcard")).toBeTruthy(); // fields read on the left now
-    expect(root.textContent).toContain("ripens wk 5");
-    // Reuben's row shows Tend selected (the pre-filled suggestion)
-    const reubenRow = root.querySelector(".handrow");
-    expect(reubenRow.querySelector(".taskbtn.sel").textContent).toBe("Tend");
+    expect(root.querySelector(".handrow")).toBeTruthy();
+    expect(root.textContent).toMatch(/2 (actions|left)/i);
+    expect([...root.querySelectorAll(".choicecard")].some((b) => /Turn in/i.test(b.textContent))).toBe(true);
+    expect([...root.querySelectorAll("button")].some((b) => /Let the days run/i.test(b.textContent))).toBe(true);
   });
-});
-
-describe("weekly plan screen", () => {
-  it("assigns a hand and resolves the week", () => {
+  it("spending a personal action decrements the budget", () => {
     const root = document.createElement("div");
-    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" }); // phase week
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
     const dispatch = (a) => { state = reduce(state, a); rerender(); };
     function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
     rerender();
-    expect(root.querySelectorAll(".handrow").length).toBe(1); // Reuben
-    root.querySelector('.handrow .taskbtn').click(); // pick a task
-    [...root.querySelectorAll(".choicecard")].find((b) => /Put them/.test(b.textContent)).click();
-    expect(state.week).toBe(2);
+    [...root.querySelectorAll(".pa-action")].find((b) => /Forage/i.test(b.textContent)).click();
+    expect(state.playerActionsLeft).toBe(1);
+  });
+  it("disables Harvest when nothing is ripe, and lists only living hands", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    state = { ...state, hands: [...state.hands, { id: "del", name: "Del", alive: false, strain: 100, task: "rest", morale: 0, traits: [] }] };
+    const dispatch = (a) => { state = reduce(state, a); };
+    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    const harvest = [...root.querySelectorAll(".handrow .taskbtn")].find((b) => b.textContent === "Harvest");
+    expect(harvest.disabled).toBe(true);
+    expect(root.querySelectorAll(".handrow").length).toBe(1); // only Reuben stands
   });
 });
 
@@ -137,7 +141,7 @@ describe("dusk + year end", () => {
   it("shows the day-book at dusk and turns the page to the next season", () => {
     const root = document.createElement("div");
     let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
-    for (let i = 0; i < 5; i++) state = reduce(state, { type: "RESOLVE_WEEK" });
+    for (let i = 0; i < 10; i++) state = reduce(state, { type: "TURN_IN" });
     const dispatch = (a) => { state = reduce(state, a); };
     const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
     expect(root.querySelector(".daybook")).toBeTruthy();
@@ -149,7 +153,7 @@ describe("dusk + year end", () => {
     const root = document.createElement("div");
     let state = initialState(1); state.seasonIndex = 3; // winter (no planting phase)
     state = reduce(state, { type: "BEGIN_SEASON" });
-    for (let i = 0; i < 5; i++) state = reduce(state, { type: "RESOLVE_WEEK" });
+    for (let i = 0; i < 10; i++) state = reduce(state, { type: "TURN_IN" });
     const dispatch = (a) => { state = reduce(state, a); };
     let stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
     [...root.querySelectorAll(".choicecard")].find((b) => /Turn the page/.test(b.textContent)).click();
@@ -184,28 +188,5 @@ describe("tab views", () => {
     const rows = root.querySelectorAll(".fieldrow");
     expect(rows.length).toBe(4);
     expect(root.textContent).toContain("fallow");
-  });
-});
-
-describe("weekly plan — dead tasks and lost hands", () => {
-  function weekView(mutate) {
-    const root = document.createElement("div");
-    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" }); // phase week, nothing planted
-    if (mutate) state = mutate(state);
-    const dispatch = (a) => { state = reduce(state, a); };
-    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    return { root, get: () => state };
-  }
-  it("disables Harvest (and Tend) when nothing is ripe or planted, and the button will not assign", () => {
-    const { root, get } = weekView();
-    const harvest = [...root.querySelectorAll(".handrow .taskbtn")].find((b) => b.textContent === "Harvest");
-    expect(harvest.disabled).toBe(true);
-    expect(harvest.getAttribute("title")).toMatch(/ripe/);
-    harvest.click(); // no-op: no onClick wired
-    expect(get().hands[0].task).toBe("rest"); // unchanged from the default
-  });
-  it("lists only living hands", () => {
-    const { root } = weekView((s) => ({ ...s, hands: [...s.hands, { id: "del", name: "Del", alive: false, strain: 100, task: "rest", morale: 0, traits: [] }] }));
-    expect(root.querySelectorAll(".handrow").length).toBe(1); // Del is lost, only Reuben stands
   });
 });

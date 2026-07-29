@@ -46,7 +46,7 @@ export function fieldProjection(state, field) {
   else if (c.seasons > 1) when = "ripens next season";
   else when = "won't ripen in time";
   return { crop: field.crop, name: c.name, tier: c.tier, ripe: daysToRipe === 0,
-    weeksToRipe: daysToRipe, when, yield: y, needsTwo: !!c.needsTwo };
+    daysToRipe, when, yield: y, needsTwo: !!c.needsTwo };
 }
 
 export const mouths = (s) => 1 + livingHands(s).length; // the farmer + living hands

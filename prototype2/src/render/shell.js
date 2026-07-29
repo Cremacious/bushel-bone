@@ -1,5 +1,5 @@
 import { el, clear } from "./dom.js";
-import { season, seasonLabel, WEEKS_PER_SEASON, livingHands } from "../core/state.js";
+import { season, seasonLabel, DAYS_PER_SEASON, livingHands } from "../core/state.js";
 import { warnings, burnsFuel, mouths } from "../core/selectors.js";
 import { BALANCE } from "../core/balance.js";
 import { icon, weatherIconName } from "./icons.js";
@@ -20,7 +20,6 @@ export function renderShell(root, state, dispatch, { animate = true } = {}) {
   clear(root);
   root.className = "shell";
 
-  const dayOf20 = (state.week - 1) * 4 + 1; // week 1 -> day 1; a week is 4 days
   const loc = locationFor(state);
 
   // ---- the illustration plate (full-bleed on desktop, a band on phone) ----
@@ -38,7 +37,7 @@ export function renderShell(root, state, dispatch, { animate = true } = {}) {
       el("div", { class: "mast-inner" }, [
         el("span", { class: "brand t-label", text: "Bushel & Bone" }),
         el("span", { class: "season t-plate", text: seasonLabel(state) }),
-        el("span", { class: "when t-label", text: `Year ${YEAR_WORD[state.year - 1] || state.year} · Day ${dayOf20} of 20` }),
+        el("span", { class: "when t-label", text: `Year ${YEAR_WORD[state.year - 1] || state.year} · Day ${state.day} of ${DAYS_PER_SEASON}` }),
         pips(state),
         el("span", { class: "mast-tools" }, [
           el("span", { class: "wx" }, [icon(weatherIconName(state.weather), { size: 20, sw: 1.6 }),
@@ -94,15 +93,15 @@ export function renderShell(root, state, dispatch, { animate = true } = {}) {
 // ---- pieces ----
 
 function pips(state) {
-  const played = state.phase === "brief" || state.phase === "planting" ? 0 : Math.min(state.week, WEEKS_PER_SEASON);
+  const played = state.phase === "brief" || state.phase === "planting" ? 0 : Math.min(state.day, DAYS_PER_SEASON);
   const dots = [];
-  for (let i = 0; i < WEEKS_PER_SEASON; i++) dots.push(el("span", { class: "pip" + (i < played ? " on" : "") }));
+  for (let i = 0; i < DAYS_PER_SEASON; i++) dots.push(el("span", { class: "pip" + (i < played ? " on" : "") }));
   return el("span", { class: "pips" }, dots);
 }
 
 function brassLedger(state) {
   const larderShort = warnings(state).some((w) => /larder/i.test(w));
-  const fuelWant = burnsFuel(state) ? mouths(state) * BALANCE.fuelPerMouthPerWeek : 0;
+  const fuelWant = burnsFuel(state) ? mouths(state) * BALANCE.fuelPerMouthPerDay : 0;
   return el("div", { class: "ledger" }, [
     cell("Coin", state.coin, { unit: "m" }),
     cell("Larder", Math.floor(state.larder), { valence: state.larder <= 0 ? "bad" : larderShort ? "warn" : null }),
@@ -148,7 +147,7 @@ function moraleDots(morale = 0) {
 
 // The standing speaker portrait + lamp nameplate (reference §8.5). It appears ONLY when a
 // character is actually addressing the player — a scripted scene — so the plate is not
-// showing a silhouette during a quiet planting or weekly screen. Real art drops in later.
+// showing a silhouette during a quiet planting or day screen. Real art drops in later.
 const SCENE_SPEAKER = { silas_welcome: { name: "{{npc.silas}}", role: "the banker" } };
 function portrait(state) {
   const spk = state.phase === "scene" && state.scene && SCENE_SPEAKER[state.scene.id];

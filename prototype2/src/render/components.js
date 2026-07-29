@@ -21,7 +21,7 @@ export function choiceCard(choice, onPick) {
 
 // A field's read: name + fertility, and either its crop with a growth bar and projection,
 // or "fallow". `proj` is fieldProjection(state, field). `extra` (optional) appends controls
-// (a crop picker on the planting grid, a task chip on the weekly board).
+// (a crop picker on the planting grid, a task chip on the day board).
 export function fieldCard(field, proj, extra) {
   const fert = el("span", { class: "fc-fert", text: "●".repeat(field.fert) + "○".repeat(3 - field.fert) });
   const head = el("div", { class: "fc-head" }, [
@@ -29,7 +29,7 @@ export function fieldCard(field, proj, extra) {
   ]);
   const body = el("div", { class: "fc-body" });
   if (proj.crop) {
-    const total = proj.ripe ? field.progress : field.progress + proj.weeksToRipe * 0.2; // approx seasons to full
+    const total = proj.ripe ? field.progress : field.progress + proj.daysToRipe * 0.1; // approx seasons to full
     const pct = Math.max(4, Math.min(100, Math.round((field.progress / (total || 1)) * 100)));
     body.append(
       el("div", { class: "fc-crop t-sub", text: proj.name + (proj.needsTwo ? " · two hands" : "") }),

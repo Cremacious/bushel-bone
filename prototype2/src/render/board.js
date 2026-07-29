@@ -5,7 +5,7 @@ import { CROPS } from "../core/crops.js";
 
 // The "place" panel: your fields. On desktop it sits on the LEFT (over the plate); on phone
 // it stacks above the leaf. Interactive crop pickers during planting, a read-only projection
-// board during the week, and nothing on other phases (the plate shows its art/portrait then).
+// board during the day, and nothing on other phases (the plate shows its art/portrait then).
 export function boardPanel(state, dispatch) {
   if (state.phase === "planting") {
     return el("div", { class: "boardpanel" }, [
@@ -13,7 +13,7 @@ export function boardPanel(state, dispatch) {
       el("div", { class: "fieldgrid" }, state.fields.map((f) => plantingCell(state, f, dispatch))),
     ]);
   }
-  if (state.phase === "week") {
+  if (state.phase === "day") {
     const planted = state.fields.filter((f) => f.crop);
     if (!planted.length) return null;
     return el("div", { class: "boardpanel" }, [

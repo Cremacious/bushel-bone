@@ -31,7 +31,7 @@ describe("shell render", () => {
     renderShell(root, state, () => {});
     expect(root.querySelectorAll(".ledger .cell").length).toBe(4);
     expect([...root.querySelectorAll(".tabbar .tab .tab-label")].map((t) => t.textContent)).toEqual(TABS.map((t) => t[1]));
-    expect(root.querySelector(".when").textContent).toContain("Day 1 of 20");
+    expect(root.querySelector(".when").textContent).toContain("Day 1 of 10");
     expect(document.documentElement.getAttribute("data-season")).toBe("spring");
   });
   it("the theme toggle dispatches SET_THEME and re-renders to day", () => {

@@ -45,7 +45,7 @@ describe("fieldCard", () => {
     const card = fieldCard(s.fields[0], fieldProjection(s, s.fields[0]));
     expect(card.querySelector(".fc-name").textContent).toContain("East Field");
     expect(card.textContent).toContain("Potato");
-    expect(card.textContent).toContain("ripens wk 5");
+    expect(card.textContent).toContain("ripens day 10");
     expect(card.textContent).toContain("20 food");
   });
   it("an empty field reads as fallow", () => {

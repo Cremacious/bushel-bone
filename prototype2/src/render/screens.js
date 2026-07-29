@@ -1,5 +1,5 @@
 import { el } from "./dom.js";
-import { seasonLabel, WEEKS_PER_SEASON, livingHands } from "../core/state.js";
+import { seasonLabel, DAYS_PER_SEASON, livingHands } from "../core/state.js";
 import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard, fieldCard } from "./components.js";
@@ -80,18 +80,20 @@ const SCREENS = {
       el("p", { class: "t-sub plant-hint", text: "Set each field on the left, then sow." }),
     );
   },
-  week: (stage, s, dispatch) => {
-    stage.append(el("div", { class: "eyebrow t-label", text: `Week ${s.week} of ${WEEKS_PER_SEASON}` }), el("h2", { class: "t-title", text: "Set the crew to work" }));
+  day: (stage, s, dispatch) => {
+    stage.append(
+      el("div", { class: "eyebrow t-label", text: `Day ${s.day} of ${DAYS_PER_SEASON}` }),
+      el("h2", { class: "t-title", text: "Set the crew, and spend your day" }),
+    );
     stage.append(...counsel(s));               // Reuben's plain-language guidance (Year 1)
     stage.append(goalPanel(s));                // what the cold months will want (foreshadowing)
-    // The fields themselves read on the left (the board panel); here we set the crew to them.
     const plantedFields = s.fields.filter((f) => f.crop);
-    const ripe = ripeFields(s);
+    const ripeList = ripeFields(s);
     const living = livingHands(s);
-    // A task is offered only when there is something to do it to; otherwise it is shown
-    // disabled with a plain reason, so a hand is never quietly tired for empty motion (D-039).
+    // A task is offered only when there is something to do it to; otherwise disabled with a
+    // plain reason, so a hand is never quietly tired for empty motion (D-039).
     const why = { tend: plantedFields.length ? null : "no crop is in the ground to tend",
-      harvest: ripe.length ? null : "nothing is ripe to bring in" };
+      harvest: ripeList.length ? null : "nothing is ripe to bring in" };
     const TASKS = [["rest", "Rest"], ["tend", "Tend"], ["harvest", "Harvest"], ["forage", "Forage"], ["chop", "Chop wood"]];
     for (const h of living) {
       const row = el("div", { class: "handrow" }, [
@@ -103,27 +105,13 @@ const SCREENS = {
         return el("button", { class: "taskbtn t-sub" + (h.task === task ? " sel" : "") + (blocked ? " disabled" : ""),
           ...(blocked ? { disabled: true, title: why[task] } : {}), text: label,
           onClick: blocked ? undefined : () => dispatch({ type: "ASSIGN", handId: h.id, task,
-            targetFieldId: task === "tend" ? plantedFields[0].id : task === "harvest" ? ripe[0].id : undefined }) });
+            targetFieldId: task === "tend" ? plantedFields[0].id : task === "harvest" ? ripeList[0].id : undefined }) });
       }));
       row.append(sel);
-      // what the hand's chosen task does, so the player is never clicking blind
       row.append(el("div", { class: "taskdesc t-sub", text: TASK_DESC[h.task] || "" }));
       stage.append(row);
     }
-    // The player's own week
-    stage.append(el("div", { class: "eyebrow t-label", text: "Your own week" }));
-    const pWhy = { work: plantedFields.length ? null : "no field is planted to work",
-      care: living.length ? null : "there is no one left to sit with" };
-    const P = [["rest", "Rest"], ["work", "Work a field"], ["forage", "Forage"], ["care", "Sit with a hand"]];
-    stage.append(el("div", { class: "taskpick" }, P.map(([kind, label]) => {
-      const blocked = !!pWhy[kind];
-      return el("button", { class: "taskbtn t-sub" + (s.playerAction?.kind === kind ? " sel" : "") + (blocked ? " disabled" : ""),
-        ...(blocked ? { disabled: true, title: pWhy[kind] } : {}), text: label,
-        onClick: blocked ? undefined : () => dispatch({ type: "SET_PLAYER_ACTION", kind,
-          target: kind === "work" ? plantedFields[0].id : kind === "care" ? living[0].id : undefined }) });
-    })));
-    stage.append(el("div", { class: "taskdesc t-sub", text: PLAYER_DESC[s.playerAction?.kind] || "" }));
-    stage.append(choiceCard({ text: "Put them to work", sub: "let the week play out", primary: true }, () => dispatch({ type: "RESOLVE_WEEK" })));
+    stage.append(personalActions(s, dispatch));
   },
   dusk: (stage, s, dispatch) => {
     const d = duskSummary(s);
@@ -190,20 +178,40 @@ const SCREENS = {
 };
 export { SCREENS };
 
-// --- weekly-work guidance: task descriptions, Reuben's counsel, the goal foreshadowing ---
+// --- daily-work guidance: task descriptions, Reuben's counsel, the goal foreshadowing ---
 const TASK_DESC = {
   rest: "mend a worn hand",
   tend: "push a crop toward harvest",
   harvest: "bring in a ripe field",
   forage: `gather about ${BALANCE.forageFood} food from the wild`,
-  chop: `lay in ${BALANCE.fuelPerChopWeek} wood for winter`,
+  chop: `lay in ${BALANCE.fuelPerChopDay} wood for winter`,
 };
-const PLAYER_DESC = {
-  rest: "you take the week easy",
-  work: "you tend a field alongside the crew",
-  forage: `you gather about ${BALANCE.forageFood} food from the wild`,
-  care: "you sit with a worn hand and ease them",
-};
+
+// Your own day: spend up to playerActionsPerDay actions. Applied at once (instant feedback).
+function personalActions(s, dispatch) {
+  const left = s.playerActionsLeft;
+  const growing = s.fields.filter((f) => f.crop && !ripe(f));
+  const worn = livingHands(s).find((h) => h.strain >= BALANCE.strain.wornAt);
+  const opts = [
+    { kind: "forage", label: "Forage", desc: `gather ${BALANCE.forageFood} food from the wild` },
+    ...(growing.length ? [{ kind: "work", target: growing[0].id, label: "Work a field", desc: `lend your back to ${fieldLabel(growing[0]).toLowerCase()}` }] : []),
+    ...(worn ? [{ kind: "care", target: worn.id, label: "Sit with a hand", desc: "ease the worst-worn of the crew" }] : []),
+    { kind: "rest", label: "Rest", desc: "a quiet day; spend the hours on nothing" },
+  ];
+  return el("div", { class: "personal" }, [
+    el("div", { class: "personal-h t-label", text: `Your day — ${left} of ${BALANCE.playerActionsPerDay} actions left` }),
+    el("div", { class: "pa-grid" }, opts.map((o) =>
+      el("button", { class: "pa-action" + (left <= 0 ? " disabled" : ""), ...(left <= 0 ? { disabled: true } : {}),
+        onClick: left > 0 ? () => dispatch({ type: "DO_PLAYER_ACTION", kind: o.kind, target: o.target }) : undefined }, [
+        el("span", { class: "pa-label t-choice", text: o.label }),
+        el("span", { class: "pa-desc t-sub", text: o.desc }),
+      ]))),
+    el("div", { class: "day-cta" }, [
+      choiceCard({ text: "Turn in for the night", sub: "the day resolves — crops grow, the crew eats", primary: true }, () => dispatch({ type: "TURN_IN" })),
+      el("button", { class: "runbtn t-label", text: "Let the days run →", onClick: () => dispatch({ type: "RUN_DAYS" }) }),
+    ]),
+  ]);
+}
 
 // Reuben's counsel block (Year 1), or nothing. Returned as an array to spread into append.
 function counsel(s) {
@@ -215,7 +223,7 @@ function counsel(s) {
   ])];
 }
 
-// The cold months' fuel + food targets, so the weekly work has a visible goal to plan toward.
+// The cold months' fuel + food targets, so the day's work has a visible goal to plan toward.
 function goalPanel(s) {
   const n = yearNeeds(s);
   const row = (label, have, need, unit) => {
@@ -259,14 +267,14 @@ function line(label, value, i = 0) {
     [el("span", { class: "t-sub", text: label }), el("span", { class: "t-choice", text: value })]);
 }
 
-// Plain-language task words for the Hands tab (the week screen's own TASKS array is
+// Plain-language task words for the Hands tab (the day screen's own TASKS array is
 // choice-button labels, not read-only prose, so this is a small, separate map).
 const TASK_LABEL = { rest: "resting", tend: "tending a field", harvest: "bringing in the harvest", chop: "chopping wood" };
 
 // The Ledger tab explains the four figures the masthead only shows as numbers.
 const LEDGER_ROWS = [
   ["Coin", "Marks in the strongbox. Coin buys seed, settles what is owed the bank, and is the only figure the wider world will take in trade."],
-  ["Larder", "Food laid by. Every mouth on the place, yours and each living hand's, eats from the larder every week. Let it run thin and hunger starts to wear on the household."],
-  ["Fuel", "Wood cut and stacked. It sits idle through spring and summer, then is burned each week of fall and winter to keep the cold off the household."],
+  ["Larder", "Food laid by. Every mouth on the place, yours and each living hand's, eats from the larder every day. Let it run thin and hunger starts to wear on the household."],
+  ["Fuel", "Wood cut and stacked. It sits idle through spring and summer, then is burned each day of fall and winter to keep the cold off the household."],
   ["Seed", "Stock for the planting. Spend it at dawn to set a field, or hold it back and it carries forward to the next season's sowing."],
 ];
