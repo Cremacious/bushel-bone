@@ -64,8 +64,14 @@ describe("resolve week", () => {
     let s = initialState(1); s.seasonIndex = 3; // winter
     s = reduce(s, { type: "BEGIN_SEASON" }); // winter skips planting -> phase "week"
     s.larder = 0;
-    s.hands[0] = { ...s.hands[0], task: "idle" };
-    for (let i = 0; i < 5 && s.hands[0].alive; i++) s = reduce(s, { type: "RESOLVE_WEEK" });
+    // Task 4 pre-fills each hand's task from Reuben's suggested plan after every
+    // RESOLVE_WEEK, so "idle" has to be re-asserted each week: otherwise the fuel-short
+    // suggestion would put Reuben on "chop" after week 1, which refuels and masks the
+    // cold half of this isolation.
+    for (let i = 0; i < 5 && s.hands[0].alive; i++) {
+      s.hands[0] = { ...s.hands[0], task: "idle" };
+      s = reduce(s, { type: "RESOLVE_WEEK" });
+    }
     expect(s.hands[0].alive).toBe(false); // Reuben starved (and froze)
     expect(s.log.some((l) => /Reuben/.test(l))).toBe(true);
   });

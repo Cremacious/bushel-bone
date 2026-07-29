@@ -1,7 +1,7 @@
 import { SEASONS, WEEKS_PER_SEASON, season } from "./state.js";
 import { CROPS, ripe, weeklyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
-import { burnsFuel, fieldLabel } from "./selectors.js";
+import { burnsFuel, fieldLabel, suggestPlan } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
 
 // Pure: (state, action) => nextState. Never mutates the input.
@@ -38,7 +38,7 @@ export function reduce(state, action) {
     case "FALLOW":
       return mapField(state, action.fieldId, (f) => ({ ...f, crop: null, progress: 0 }));
     case "SOW":
-      return { ...state, phase: "week", week: 1 };
+      return withSuggestedPlan({ ...state, phase: "week", week: 1 });
     case "ASSIGN":
       return mapHand(state, action.handId, (h) => ({ ...h, task: action.task, targetFieldId: action.targetFieldId }));
     case "SET_PLAYER_ACTION":
@@ -56,6 +56,15 @@ export function reduce(state, action) {
 // winter). Shared by BEGIN_SEASON and a scene closing with after: "BEGIN_SEASON".
 function beginSeason(s) {
   return { ...s, phase: season(s) === "winter" ? "week" : "planting", week: 1, logSeasonStart: s.log.length };
+}
+
+// Pre-fill the crew's tasks and the player's own week from Reuben's recommendation for the
+// board as it stands. Called whenever a fresh week starts; the player overrides via ASSIGN.
+function withSuggestedPlan(s) {
+  const plan = suggestPlan(s);
+  const hands = s.hands.map((h) => (h.alive && plan.hands[h.id])
+    ? { ...h, task: plan.hands[h.id].task, targetFieldId: plan.hands[h.id].targetFieldId } : h);
+  return { ...s, hands, playerAction: plan.player };
 }
 
 // A scripted scene: apply the chosen option's state deltas and record the choice, so the
@@ -182,7 +191,8 @@ function resolveWeek(s) {
   let week = s.week + 1, phase = s.phase;
   if (week > BALANCE.weeksPerSeason) { week = BALANCE.weeksPerSeason; phase = "dusk"; }
 
-  return { ...s, hands, fields, larder, fuel, coin, seed, week, phase, log: [...s.log, ...log] };
+  const next = { ...s, hands, fields, larder, fuel, coin, seed, week, phase, log: [...s.log, ...log] };
+  return phase === "week" ? withSuggestedPlan(next) : next;
 }
 
 // A shared shortfall bites every living hand equally; the already-worn are the ones

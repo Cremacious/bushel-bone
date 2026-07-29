@@ -13,8 +13,14 @@ describe("duskSummary season scoping", () => {
     s = reduce(s, { type: "BEGIN_SEASON" }); // phase planting
     s = reduce(s, { type: "SOW" }); // phase week
     s.larder = 0;
-    s.hands[0] = { ...s.hands[0], task: "idle" };
-    for (let i = 0; i < 5; i++) s = reduce(s, { type: "RESOLVE_WEEK" });
+    // Task 4 pre-fills each hand's task from Reuben's suggested plan after every
+    // RESOLVE_WEEK, so "idle" has to be re-asserted each week to keep this hand off
+    // both hard labor (which would recover fuel/progress) and "rest" (which would
+    // mask the shortfall with recovery) for the whole isolation.
+    for (let i = 0; i < 5; i++) {
+      s.hands[0] = { ...s.hands[0], task: "idle" };
+      s = reduce(s, { type: "RESOLVE_WEEK" });
+    }
     expect(s.phase).toBe("dusk");
     expect(s.hands[0].alive).toBe(false);
     expect(duskSummary(s).lostThisSeason).toHaveLength(1); // fall's own dusk reports it
