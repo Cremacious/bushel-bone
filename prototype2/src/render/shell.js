@@ -12,7 +12,7 @@ const TABS = [["home", "Home"], ["fields", "Fields"], ["hands", "Hands"], ["town
 //  - desktop: a full-bleed plate with the masthead/location as floating chrome, Reuben
 //    standing on the plate, and a floating "leaf" (ledger + reading + Ask Reuben) on the right.
 // CSS does the arranging; this function just emits every piece in the phone stacking order.
-export function renderShell(root, state, dispatch) {
+export function renderShell(root, state, dispatch, { animate = true } = {}) {
   document.documentElement.setAttribute("data-theme", state.theme);
   document.documentElement.setAttribute("data-season", season(state));
   clear(root);
@@ -57,7 +57,9 @@ export function renderShell(root, state, dispatch) {
   // ---- the leaf: ledger + household + reading stage + Ask Reuben ----
   const ledger = brassLedger(state);
   const warns = warnBand(warnings(state));
-  const stage = el("main", { class: "stage m-turn", id: "stage" }); // fresh element → Turn replays
+  // A fresh <main> each render; .m-turn (the "Turn" beat motion) is added only when the
+  // beat actually changed (see main.js), so in-screen interactions do not re-animate.
+  const stage = el("main", { class: "stage" + (animate ? " m-turn" : ""), id: "stage" });
 
   const leaf = el("div", { class: "leaf" }, [
     ledger,

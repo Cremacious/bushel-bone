@@ -10,6 +10,7 @@ import { startFront } from "./front.js";
 // front porch (title/naming/letter), exactly as the year1.html harness does.
 export function boot(root, opts = {}) {
   let state = initialState(opts.seed ?? ((Math.random() * 1e9) >>> 0), opts.lineageName ?? "Crane");
+  let lastView = null; // the beat currently on screen; a change replays the Turn motion
   function dispatch(action) {
     state = reduce(state, action);
     // If tutorials are on and this move reached a mechanic Reuben hasn't explained yet,
@@ -19,7 +20,10 @@ export function boot(root, opts = {}) {
     render();
   }
   function render() {
-    const stage = renderShell(root, state, dispatch);
+    const view = viewKey(state);
+    const animate = view !== lastView;
+    lastView = view;
+    const stage = renderShell(root, state, dispatch, { animate });
     renderScreen(stage, state, dispatch);
     renderOverlay(root, state, dispatch); // modal layer (Reuben's direct address) on top
   }
@@ -28,6 +32,10 @@ export function boot(root, opts = {}) {
   render();
   return { getState: () => state, dispatch };
 }
+
+// The "beat" on screen: the active tab, or the phase when on Home. Overlays and in-screen
+// interactions (planting picks, week adjustments) keep the same key, so they do not re-animate.
+function viewKey(s) { return s.screen === "home" ? s.phase : s.screen; }
 
 // The real entry point: show the title menu, and boot the game once New Game finishes.
 export function start(root) {
