@@ -79,6 +79,29 @@ export default {
       "name": "Malachi",
       "role": "your late uncle",
       "desc": "the uncle you never met"
+    },
+    "crake": {
+      "name": "Hollis Crake",
+      "first": "Hollis",
+      "role": "the toolwright",
+      "desc": "a one-armed smith, sleeve pinned, sizing you up over the forge"
+    },
+    "tolliver": {
+      "name": "Prudence Tolliver",
+      "first": "Prudence",
+      "role": "the shopkeep",
+      "desc": "tight-mouthed behind a tidy counter, missing nothing"
+    },
+    "fenwick": {
+      "name": "Mr. Fenwick",
+      "role": "the rail agent",
+      "desc": "a company man in a good hat, all ledger and no warmth"
+    },
+    "ostrander": {
+      "name": "Old Ostrander",
+      "first": "Ostrander",
+      "role": "the rival farmer",
+      "desc": "broad and weathered, a hard man who works his hands harder"
     }
   },
   "locations": {
@@ -116,6 +139,31 @@ export default {
       "cap": "The Homestead",
       "sub": "the gate at dusk",
       "desc": "the gate at the fence-line as the light goes"
+    },
+    "smithy": {
+      "cap": "{{place.town}}",
+      "sub": "the smithy",
+      "desc": "the smithy: a low forge, iron stacked, {{npc.crake}} at the anvil"
+    },
+    "store": {
+      "cap": "{{place.town}}",
+      "sub": "the general store",
+      "desc": "the general store, shelves close and orderly, {{npc.tolliver}} at the counter"
+    },
+    "depot": {
+      "cap": "{{place.town}}",
+      "sub": "the rail depot",
+      "desc": "a raw plank depot at the end of the new line, a chalk price-board by the door"
+    },
+    "jail": {
+      "cap": "{{place.town}}",
+      "sub": "the jail",
+      "desc": "the sheriff's office, a lamp low in the window"
+    },
+    "doc": {
+      "cap": "{{place.town}}",
+      "sub": "the doctor's rooms",
+      "desc": "{{npc.bell}}'s rooms, bottles ranked on a shelf"
     }
   }
 };
