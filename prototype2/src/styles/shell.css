@@ -54,6 +54,11 @@ html, body { height: 100%; }
 .loc-name { line-height: 1; }
 .loc-cap { font-family: "IM Fell English", Georgia, serif; font-style: italic; color: var(--ink-soft); font-size: 0.94rem; }
 
+/* ===================== the board panel (your fields) ===================== */
+/* Phone: a section between the plate band and the leaf. Desktop: floats on the left. */
+.boardpanel { padding: 14px 20px; border-bottom: 1px solid var(--rule-fine); background: var(--paper); }
+.boardpanel-h { margin-bottom: 8px; }
+
 /* ===================== the leaf ===================== */
 .leaf { display: flex; flex-direction: column; flex: 1; position: relative; }
 
@@ -159,6 +164,11 @@ html, body { height: 100%; }
     flex: none; background: linear-gradient(var(--leaf-top), var(--leaf-bot)); border: 1px solid var(--rule);
     box-shadow: 0 30px 80px rgba(0,0,0,.6); z-index: 3; animation: bb-turn .55s cubic-bezier(.2,.7,.2,1) both; }
   .leaf-scroll { overflow: hidden; }
+
+  /* the fields float on the left, over the plate, filling the space up to the leaf */
+  .boardpanel { position: absolute; left: 40px; top: 128px; bottom: 36px; right: calc(44vw + 64px);
+    overflow-y: auto; z-index: 3; padding: 0; border-bottom: none; background: none; }
+  .boardpanel-h { margin-bottom: 12px; }
   .leaf .stage { overflow-y: auto; }
 
   .tabbar { display: none; }

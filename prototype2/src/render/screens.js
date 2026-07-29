@@ -77,19 +77,15 @@ const SCREENS = {
         el("span", { class: "t-sub", text: `Seed ${s.seed} · Coin ${s.coin} · this planting costs ${spent}` }),
         choiceCard({ text: "Sow it so", sub: "put the season in the ground", primary: true }, () => dispatch({ type: "SOW" })),
       ]),
-      el("div", { class: "fieldgrid" }, s.fields.map((f) => plantingCell(s, f, dispatch))),
+      el("p", { class: "t-sub plant-hint", text: "Set each field on the left, then sow." }),
     );
   },
   week: (stage, s, dispatch) => {
     stage.append(el("div", { class: "eyebrow t-label", text: `Week ${s.week} of ${WEEKS_PER_SEASON}` }), el("h2", { class: "t-title", text: "Set the crew to work" }));
     stage.append(...counsel(s));               // Reuben's plain-language guidance (Year 1)
     stage.append(goalPanel(s));                // what the cold months will want (foreshadowing)
-    // The board: read the fields before setting the crew.
+    // The fields themselves read on the left (the board panel); here we set the crew to them.
     const plantedFields = s.fields.filter((f) => f.crop);
-    if (plantedFields.length) {
-      stage.append(el("div", { class: "weekboard fieldgrid" },
-        plantedFields.map((f) => fieldCard(f, fieldProjection(s, f)))));
-    }
     const ripe = ripeFields(s);
     const living = livingHands(s);
     // A task is offered only when there is something to do it to; otherwise it is shown
@@ -235,25 +231,6 @@ function goalPanel(s) {
     row("Wood", n.fuel.have, n.fuel.need, "wood"),
     row("Food", n.food.have, n.food.need, "food"),
   ]);
-}
-
-// One field on the planting grid: its read (fieldCard), plus a crop picker while empty or a
-// "clear" while planted. Picking dispatches PLANT; with the beat-only Turn motion, only this
-// cell repaints, so the grid does not flash.
-function plantingCell(s, f, dispatch) {
-  const proj = fieldProjection(s, f);
-  let extra;
-  if (f.crop) {
-    extra = el("button", { class: "linkbtn t-sub", text: "clear", onClick: () => dispatch({ type: "FALLOW", fieldId: f.id }) });
-  } else {
-    extra = el("div", { class: "croppick" }, Object.entries(CROPS).map(([key, c]) => {
-      const afford = s.seed + s.coin >= c.seed;
-      const note = c.needsTwo ? " · two" : "";
-      return el("button", { class: "cropchip t-sub" + (afford ? "" : " disabled"), ...(afford ? {} : { disabled: true }),
-        text: `${c.name} · ${c.seed}${note}`, onClick: afford ? () => dispatch({ type: "PLANT", fieldId: f.id, crop: key }) : undefined });
-    }));
-  }
-  return fieldCard(f, proj, extra);
 }
 
 // The script bodies are HTML (from #46) and carry their own `.prose` wrapper; render

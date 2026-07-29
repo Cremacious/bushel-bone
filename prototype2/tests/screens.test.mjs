@@ -111,7 +111,7 @@ describe("readable weekly plan", () => {
     state = reduce(state, { type: "SOW" }); // week, pre-filled to tend field 0
     const dispatch = (a) => { state = reduce(state, a); };
     const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    expect(root.querySelector(".weekboard .fieldcard")).toBeTruthy();
+    expect(root.querySelector(".boardpanel .fieldcard")).toBeTruthy(); // fields read on the left now
     expect(root.textContent).toContain("ripens wk 5");
     // Reuben's row shows Tend selected (the pre-filled suggestion)
     const reubenRow = root.querySelector(".handrow");

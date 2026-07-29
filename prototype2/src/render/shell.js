@@ -3,6 +3,8 @@ import { season, seasonLabel, WEEKS_PER_SEASON, livingHands } from "../core/stat
 import { warnings, burnsFuel, mouths } from "../core/selectors.js";
 import { BALANCE } from "../core/balance.js";
 import { icon, weatherIconName } from "./icons.js";
+import { boardPanel } from "./board.js";
+import { tok } from "../content/names.js";
 
 const YEAR_WORD = ["One", "Two", "Three", "Four"];
 const TABS = [["home", "Home"], ["fields", "Fields"], ["hands", "Hands"], ["town", "Town"], ["ledger", "Ledger"], ["almanac", "Almanac"]];
@@ -78,10 +80,14 @@ export function renderShell(root, state, dispatch, { animate = true } = {}) {
     ]);
   }));
 
-  // Order for the phone stack: masthead/location, then the plate band, then the leaf,
-  // then the tab bar. On desktop these are absolutely positioned, so z-index (not DOM
-  // order) decides the stack: plate behind (0), chrome (2), leaf (3).
-  root.append(chrome, plate, leaf, nav);
+  // The "place" panel: your fields. On desktop it floats on the left over the plate; on
+  // phone it stacks. Null on non-field phases (brief/scene/dusk), where the plate shows art.
+  const board = boardPanel(state, dispatch);
+
+  // Order for the phone stack: masthead/location, then the plate band, then the fields, then
+  // the leaf, then the tab bar. On desktop these are absolutely positioned, so z-index (not
+  // DOM order) decides the stack: plate behind (0), chrome (2), board + leaf (3).
+  root.append(chrome, plate, ...(board ? [board] : []), leaf, nav);
   return stage;
 }
 
@@ -140,16 +146,18 @@ function moraleDots(morale = 0) {
   return el("span", { class: "morale" }, dots);
 }
 
-// The standing speaker portrait + lamp nameplate (reference §8.5). Reuben, the foreman,
-// stands on the plate through the Plan-2 beats; real art and other speakers drop in later.
+// The standing speaker portrait + lamp nameplate (reference §8.5). It appears ONLY when a
+// character is actually addressing the player — a scripted scene — so the plate is not
+// showing a silhouette during a quiet planting or weekly screen. Real art drops in later.
+const SCENE_SPEAKER = { silas_welcome: { name: "{{npc.silas}}", role: "the banker" } };
 function portrait(state) {
-  const foreman = state.hands.find((h) => h.id === state.foremanId && h.alive) || livingHands(state)[0];
-  if (!foreman) return el("div", { class: "portrait empty" });
+  const spk = state.phase === "scene" && state.scene && SCENE_SPEAKER[state.scene.id];
+  if (!spk) return el("div", { class: "portrait empty" });
   return el("div", { class: "portrait" }, [
     el("div", { class: "sil" }, [el("span", { class: "sil-head" }), el("span", { class: "sil-body" })]),
     el("div", { class: "nameplate" }, [
-      el("div", { class: "np-name t-title", text: foreman.name }),
-      el("div", { class: "np-role", text: state.foremanId === foreman.id ? "your foreman" : "a hand" }),
+      el("div", { class: "np-name t-title", text: tok(spk.name) }),
+      el("div", { class: "np-role", text: spk.role }),
     ]),
   ]);
 }
