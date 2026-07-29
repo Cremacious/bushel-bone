@@ -64,7 +64,9 @@ const SCREENS = {
     }
   },
   planting: (stage, s, dispatch) => {
-    const spent = s.fields.reduce((n, f) => n + (f.crop ? CROPS[f.crop].seed : 0), 0);
+    // Only crops sown THIS dawn (progress still 0) count toward the spend; a 2-season crop
+    // carried over from last season is still growing (progress > 0), not paid for again.
+    const spent = s.fields.reduce((n, f) => n + (f.crop && f.progress < 1e-9 ? CROPS[f.crop].seed : 0), 0);
     stage.append(
       el("div", { class: "eyebrow t-label", text: "Dawn · Planting" }),
       el("h2", { class: "t-title", text: "Set the fields" }),
@@ -78,12 +80,11 @@ const SCREENS = {
   week: (stage, s, dispatch) => {
     stage.append(el("div", { class: "eyebrow t-label", text: `Week ${s.week} of ${WEEKS_PER_SEASON}` }), el("h2", { class: "t-title", text: "Set the crew to work" }));
     // The board first: read the fields before setting the crew.
-    const planted = s.fields.filter((f) => f.crop);
-    if (planted.length) {
-      stage.append(el("div", { class: "weekboard fieldgrid" },
-        planted.map((f) => fieldCard(f, fieldProjection(s, f)))));
-    }
     const plantedFields = s.fields.filter((f) => f.crop);
+    if (plantedFields.length) {
+      stage.append(el("div", { class: "weekboard fieldgrid" },
+        plantedFields.map((f) => fieldCard(f, fieldProjection(s, f)))));
+    }
     const ripe = ripeFields(s);
     const living = livingHands(s);
     // A task is offered only when there is something to do it to; otherwise it is shown

@@ -74,6 +74,33 @@ describe("planting grid", () => {
     expect(state.fields[0].crop).toBeTruthy();
     expect(root.querySelector(".fieldcard").textContent).toContain("ripens");
   });
+
+  it("the spend figure counts only crops sown this dawn, not a carried-over growing crop", () => {
+    const root = document.createElement("div");
+    let state = reduce(initialState(1), { type: "BEGIN_SEASON" });
+    state.fields[1] = { ...state.fields[1], crop: "corn", progress: 0.4 }; // carried from last season
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    // sow potato (seed 6) this dawn in field 0 (the first card)
+    [...root.querySelectorAll(".fieldcard")][0].querySelectorAll(".cropchip")
+      .forEach((b) => { if (/Potato/.test(b.textContent)) b.click(); });
+    const bar = root.querySelector(".plant-bar .t-sub").textContent;
+    expect(bar).toContain("costs 6");     // potato only
+    expect(bar).not.toContain("costs 11"); // not potato + carried corn (would be 6 + 5)
+  });
+
+  it("the clear control on a planted cell fallows the field", () => {
+    const root = document.createElement("div");
+    let state = reduce(initialState(1), { type: "BEGIN_SEASON" });
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    root.querySelector(".fieldcard .cropchip:not(.disabled)").click(); // plant field 0
+    expect(state.fields[0].crop).toBeTruthy();
+    [...root.querySelectorAll(".fieldcard .linkbtn")].find((b) => /clear/.test(b.textContent)).click();
+    expect(state.fields[0].crop).toBe(null);
+  });
 });
 
 describe("readable weekly plan", () => {
