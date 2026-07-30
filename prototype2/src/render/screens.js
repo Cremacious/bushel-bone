@@ -247,13 +247,13 @@ function personalActions(s, dispatch) {
   const opts = [
     { kind: "forage", label: "Forage", desc: `+${BALANCE.forageFood} food to the larder` },
     ...(growing.length ? [{ kind: "work", target: workTarget.id,
-      label: "Work a field", desc: `tend ${fieldLabel(workTarget).toLowerCase()} yourself — a day's growth toward harvest` }] : []),
+      label: "Work a field", desc: `tend ${fieldLabel(workTarget).toLowerCase()} yourself, a day's growth toward harvest` }] : []),
     ...(worn ? [{ kind: "care", target: worn.id,
-      label: `Sit with ${worn.name}`, desc: `ease a ${conditionOf(worn)} hand — brings their strain down` }] : []),
+      label: `Sit with ${worn.name}`, desc: `ease a ${conditionOf(worn)} hand, brings their tiredness down` }] : []),
     { kind: "rest", label: "Rest", desc: "a quiet day; keep your own strength" },
   ];
   return el("div", { class: "personal" }, [
-    el("div", { class: "personal-h t-label", text: `Your day — ${left} of ${BALANCE.playerActionsPerDay} actions left` }),
+    el("div", { class: "personal-h t-label", text: `Your day: ${left} of ${BALANCE.playerActionsPerDay} actions left` }),
     el("button", { class: "ridebtn t-label", text: "Ride to Marrow's Cross →",
       onClick: () => dispatch({ type: "SET_SCREEN", screen: "town" }) }),
     el("div", { class: "ridehint t-sub", text: "or spend the day here:" }),
@@ -265,7 +265,7 @@ function personalActions(s, dispatch) {
         ...playerActionEffects(o.kind).map((e) => el("span", { class: "efftag " + e.valence, text: e.label })),
       ]))),
     el("div", { class: "day-cta" }, [
-      choiceCard({ text: "Turn in for the night", sub: "the day resolves — crops grow, the crew eats", primary: true }, () => dispatch({ type: "TURN_IN" })),
+      choiceCard({ text: "Turn in for the night", sub: "the day resolves: crops grow, the crew eats", primary: true }, () => dispatch({ type: "TURN_IN" })),
       el("button", { class: "runbtn t-label", text: "Let the days run →", onClick: () => dispatch({ type: "RUN_DAYS" }) }),
     ]),
   ]);
