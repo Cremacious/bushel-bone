@@ -1,11 +1,16 @@
 import { season, makeHand, HAND_NAMES, livingHands } from "./state.js";
 import { CROPS, ripe, dailyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
-import { burnsFuel, fieldLabel, interrupts, clearCost, nextTownScene, mortgageDue, hireCost } from "./selectors.js";
+import { burnsFuel, fieldLabel, interrupts, clearCost, nextTownScene, mortgageDue, hireCost, conditionOf } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
 import { ODD_JOBS, SMALLTALK } from "./town.js";
 import { mulberry32 } from "./rng.js";
 import { EVENTS, EVENT_CHANCE } from "./events.js";
+
+// Condition wording for the day-log (spec §10.4). Rank orders the track so a change reads as
+// better (a lower rank) or worse (a higher rank); capWord titles a condition for the "X to Y" line.
+const CONDITION_RANK = { steady: 0, worn: 1, failing: 2, lost: 3 };
+const capWord = (w) => w.charAt(0).toUpperCase() + w.slice(1);
 
 // Pure: (state, action) => nextState. Never mutates the input.
 // Later plans add cases (resolveEvent, ...). For now: theme + the day/season/year
@@ -94,7 +99,18 @@ function spendAction(s, { kind, target }) {
   let ns = { ...s, seasonActionsLeft: s.seasonActionsLeft - 1 };
   if (kind === "forage") ns.larder = s.larder + BALANCE.forageFood;
   else if (kind === "work" && target != null) ns.fields = s.fields.map((f) => (f.id === target && f.crop) ? { ...f, tended: true } : f);
-  else if (kind === "care" && target != null) ns.hands = s.hands.map((h) => (h.id === target && h.alive) ? { ...h, strain: Math.max(0, h.strain - St.careRecovery) } : h);
+  else if (kind === "care" && target != null) {
+    // Care resolves outside resolveDay (no daylog here), so report any condition step straight
+    // into the run log the moment you sit with the hand.
+    const h = s.hands.find((x) => x.id === target && x.alive);
+    if (h) {
+      const before = conditionOf(h);
+      const eased = { ...h, strain: Math.max(0, h.strain - St.careRecovery) };
+      const after = conditionOf(eased);
+      ns.hands = s.hands.map((x) => (x.id === target ? eased : x));
+      if (after !== before) ns.log = [...s.log, `${h.name} eased. ${capWord(before)} to ${capWord(after)}.`];
+    }
+  }
   return ns;
 }
 
@@ -178,6 +194,9 @@ function resolveDay(s) {
   const daylog = [];
   const St = BALANCE.strain;
   const byId = (id) => fields.find((f) => f.id === id);
+  // Each living hand's condition BEFORE the day's strain, so we can name any step it takes.
+  const condBefore = {};
+  for (const h of hands) if (h.alive) condBefore[h.id] = conditionOf(h);
 
   // 1) Labor by role. Field hands bring in what is ripe (pooling on a field; a two-hand crop
   // needs two), else tend the least-grown crop. Wood/forage are direct; rest recovers. Only
@@ -237,6 +256,19 @@ function resolveDay(s) {
   for (const h of hands) {
     h.strain = Math.max(0, Math.min(St.lostAt, h.strain));
     if (h.alive && h.strain >= St.lostAt) { h.alive = false; daylog.push(`${h.name} did not last the night.`); }
+  }
+
+  // 5b) Report any condition step, so a rest visibly pays off (playtest: Rest looked like a
+  // no-op) and a bad day reads plainly. A lost hand already got its "did not last" line above.
+  for (const h of hands) {
+    if (!h.alive) continue;
+    const before = condBefore[h.id];
+    if (before == null) continue;
+    const after = conditionOf(h);
+    if (after === before) continue;
+    daylog.push(CONDITION_RANK[after] < CONDITION_RANK[before]
+      ? `${h.name} rested. ${capWord(before)} to ${capWord(after)}.`
+      : `${h.name} is worn thin. ${capWord(before)} to ${capWord(after)}.`);
   }
 
   // 6) Advance one day, or into Dusk after the last day. Standing orders persist (no

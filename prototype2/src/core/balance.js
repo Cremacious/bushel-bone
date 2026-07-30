@@ -13,6 +13,13 @@
 // line survives, tight. KNOWN follow-ups: 1-field start is a hard trap (the player MUST reach
 // 2 fields early); cash income is lumpy (2-season crops + no winter planting). Re-run
 // `node sim/run.js` after any number change here.
+//
+// Recovery retune (rest visibly steps a condition): restRecovery 8 to 14, careRecovery 5 to 10.
+// A Failing hand (strain 50..99) put on Rest returns toward Worn within a normal rest stretch,
+// and one Care action is a real one-shot nudge. Sim-validated: the curve above is unchanged
+// (optimal survives 4 years then forecloses Y5, now reaching 3 fields; sloppy still forecloses
+// Y2). Safe because hands were never the economic bottleneck and a careless line never rests,
+// so faster recovery buys no free ground.
 export const BALANCE = {
   daysPerSeason: 10,          // a season is 10 days (updates the old 20; tunable in playtest)
   seasonActionsPerSeason: 5,  // the proprietor's own actions per season (v0.4: replaces the per-day pool)
@@ -24,8 +31,8 @@ export const BALANCE = {
   tendGrowthBonus: 0.1,       // extra progress when a crop was tended that day (doubles growthPerDay, so tending is always felt: Q-003)
   strain: {
     hardLabor: 4,             // per day of real work
-    restRecovery: 8,          // per day of rest
-    careRecovery: 5,          // when you sit with a hand (a personal action)
+    restRecovery: 14,         // per day of rest (tuned up from 8 so a rest stretch VISIBLY steps a hand's condition; sim-validated below)
+    careRecovery: 10,         // when you sit with a hand (a personal action): a stronger one-shot nudge (up from 5)
     hungerPerDay: 5,          // per day the larder can't feed the household
     coldPerDay: 5,            // per cold day with no fuel
     wornAt: 25, failingAt: 50, lostAt: 100,
