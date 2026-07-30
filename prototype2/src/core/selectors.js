@@ -1,7 +1,7 @@
 import { BALANCE } from "./balance.js";
 import { CROPS, ripe } from "./crops.js";
 import { livingHands, season, SEASONS, DAYS_PER_SEASON } from "./state.js";
-import { LOCATIONS, ODD_JOBS, JOBS_PER_DAY } from "./town.js";
+import { LOCATIONS, ODD_JOBS, JOBS_PER_DAY, TALKS, SMALLTALK } from "./town.js";
 
 // The season's closing figures for the Dusk Report (Screen 06). Pure read.
 export function duskSummary(s) {
@@ -172,4 +172,24 @@ export function townOffers(state) {
     jobs.push({ ...j, done: done.includes(j.id) });
   }
   return { jobs, locations: LOCATIONS };
+}
+
+export const standingOf = (state, npc) => (state.standing && state.standing[npc]) || 0;
+
+export function standingWord(v = 0) {
+  const t = BALANCE.standing;
+  if (v >= t.close) return "Close";
+  if (v >= t.friendly) return "Friendly";
+  if (v >= t.known) return "Known";
+  return "Stranger";
+}
+
+// Which of an NPC's talks plays on the next visit: the first deck entry not yet seen whose
+// minStanding is met, else the NPC's small-talk filler (so a visit is never empty). Pure.
+export function nextTownScene(state, npc) {
+  const deck = TALKS[npc] || [];
+  const seen = state.talksSeen || [];
+  const st = standingOf(state, npc);
+  const next = deck.find((d) => d.minStanding <= st && !seen.includes(d.id));
+  return next ? next.id : (SMALLTALK[npc] || null);
 }

@@ -25,3 +25,23 @@ export const ODD_JOBS = [
 
 // How many jobs are on offer on a given day.
 export const JOBS_PER_DAY = 2;
+
+// Each NPC's talk deck: ordered intro-first, each gated by a minStanding (0 = always). As
+// standing rises, deeper scenes unlock. Scene ids match content/script.yaml + scenes.js.
+export const TALKS = {
+  meredith:  [{ id: "meredith_rumor", minStanding: 0 }, { id: "meredith_deep", minStanding: 12 }],
+  crake:     [{ id: "crake_intro",    minStanding: 0 }, { id: "crake_deep",    minStanding: 12 }],
+  tolliver:  [{ id: "tolliver_intro", minStanding: 0 }, { id: "tolliver_deep", minStanding: 12 }],
+  silas:     [{ id: "silas_town",     minStanding: 0 }, { id: "silas_deep",    minStanding: 30 }],
+  grange:    [{ id: "grange_intro",   minStanding: 0 }, { id: "grange_deep",   minStanding: 12 }],
+  bell:      [{ id: "bell_intro",     minStanding: 0 }, { id: "bell_deep",      minStanding: 12 }],
+  coldwater: [{ id: "coldwater_intro",minStanding: 0 }, { id: "coldwater_deep",minStanding: 30 }],
+  nan:       [{ id: "nan_intro",      minStanding: 0 }, { id: "nan_deep",       minStanding: 12 }],
+};
+
+// A short "nothing new today" filler per NPC, played when their deck is exhausted at the
+// current standing. Keeps a visit from ever being empty. Scene ids in script.yaml/scenes.js.
+export const SMALLTALK = {
+  meredith: "meredith_small", crake: "crake_small", tolliver: "tolliver_small", silas: "silas_small",
+  grange: "grange_small", bell: "bell_small", coldwater: "coldwater_small", nan: "nan_small",
+};

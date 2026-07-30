@@ -1,7 +1,7 @@
 import { season } from "./state.js";
 import { CROPS, ripe, dailyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
-import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost } from "./selectors.js";
+import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost, nextTownScene } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
 import { ODD_JOBS } from "./town.js";
 
@@ -52,7 +52,7 @@ export function reduce(state, action) {
     case "ACCEPT_JOB":
       return acceptJob(state, action.id);
     case "VISIT":
-      return visit(state, action.sceneId);
+      return visit(state, action.npc);
     case "CLEAR_FIELD":
       return clearField(state, action.fieldId);
     default:
@@ -101,11 +101,17 @@ function acceptJob(s, id) {
     jobsDoneToday: [...(s.jobsDoneToday || []), id] };
 }
 
-// Call on a townsperson: spend one action and open their talk scene. A no-op off the day
-// phase or with no actions left. The scene remembers to return to the Town screen on close.
-function visit(s, sceneId) {
+// Call on a townsperson: spend one action, open whichever of their talks comes next (see
+// nextTownScene), raise your standing with them, and remember the talk so the deck rotates.
+// A no-op off the day phase or with no actions left.
+function visit(s, npc) {
   if (s.phase !== "day" || s.playerActionsLeft <= 0) return s;
+  const sceneId = nextTownScene(s, npc);
+  if (!sceneId) return s;
+  const seen = s.talksSeen || [];
   return { ...s, playerActionsLeft: s.playerActionsLeft - 1,
+    standing: { ...(s.standing || {}), [npc]: ((s.standing || {})[npc] || 0) + BALANCE.standing.perTalk },
+    talksSeen: seen.includes(sceneId) ? seen : [...seen, sceneId],
     phase: "scene", scene: { id: sceneId, result: null }, screen: "home" };
 }
 
