@@ -23,9 +23,9 @@ describe("selectors", () => {
     s.hands.push(makeHand("h2", "Del"));
     expect(mouths(s)).toBe(3);
   });
-  it("warnings flag a short larder during an active week", () => {
+  it("warnings flag a short larder during an active day", () => {
     const s = initialState(1);
-    s.phase = "week";
+    s.phase = "day";
     s.larder = 1;
     expect(warnings(s).some((w) => w.includes("larder"))).toBe(true);
   });

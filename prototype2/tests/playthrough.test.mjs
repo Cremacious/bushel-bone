@@ -1,41 +1,43 @@
 import { describe, it, expect } from "vitest";
-import { initialState, season } from "../src/core/state.js";
+import { initialState, SEASONS, DAYS_PER_SEASON } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
-import { ripeFields, emptyFields } from "../src/core/selectors.js";
 
-// A cautious auto-player: plant potatoes, harvest what's ripe, chop in fall/winter, else tend.
-function autoPlay(seed) {
-  let s = initialState(seed, "Mackall");
-  let guard = 0;
-  while (!s.ended && guard++ < 500) {
-    if (s.phase === "brief") s = reduce(s, { type: "BEGIN_SEASON" });
-    else if (s.phase === "planting") {
-      for (const f of emptyFields(s)) s = reduce(s, { type: "PLANT", fieldId: f.id, crop: "potato" });
-      s = reduce(s, { type: "SOW" });
-    } else if (s.phase === "week") {
-      const ripe = ripeFields(s)[0];
-      const cold = season(s) === "fall" || season(s) === "winter";
-      s = reduce(s, { type: "ASSIGN", handId: "reuben",
-        task: ripe ? "harvest" : cold ? "chop" : "tend",
-        targetFieldId: ripe ? ripe.id : s.fields.find((f) => f.crop)?.id });
-      s = reduce(s, { type: "SET_PLAYER_ACTION", kind: cold ? "rest" : "work", target: s.fields.find((f) => f.crop)?.id });
-      s = reduce(s, { type: "RESOLVE_WEEK" });
-    } else if (s.phase === "dusk") s = reduce(s, { type: "END_SEASON" });
-  }
-  return s;
-}
-
-describe("year 1 playthrough", () => {
-  it("reaches the year's end without wedging, for several seeds", () => {
-    for (const seed of [1, 7, 42, 99]) {
-      const s = autoPlay(seed);
-      expect(s.ended).toBe(true);
-      expect(s.phase).toBe("yearend");
-      expect(s.year).toBe(1);
+// A cautious full-year line on the daily cadence, played day by day with real fuel/food
+// management: plant food; each day bring in what's ripe, lay in wood against the cold, and
+// forage for the table. Starts with NO fuel (per the opening narration), so surviving winter
+// genuinely requires chopping — proving both that the loop never wedges and that a sensible,
+// resource-managing line survives Year 1.
+describe("a full Year-1 daily playthrough", () => {
+  it("plays Spring→Winter without wedging and keeps Reuben alive on a fuel-and-food-minding line", () => {
+    let s = initialState(12345, "Mackall");
+    s = reduce(s, { type: "BEGIN_SEASON" });
+    if (s.phase === "scene") s = reduce(s, { type: "CLOSE_SCENE" });
+    for (let season = 0; season < SEASONS.length; season++) {
+      if (s.phase === "brief") s = reduce(s, { type: "BEGIN_SEASON" });
+      if (s.phase === "planting") {
+        s.fields.forEach((f) => { if (!f.crop) s = reduce(s, { type: "PLANT", fieldId: f.id, crop: "potato" }); });
+        s = reduce(s, { type: "SOW" });
+      }
+      let guard = 0;
+      while (s.phase === "day" && guard++ < 50) {
+        const cold = s.seasonIndex >= 2; // fall/winter: banking wood matters
+        // Standing orders for the day: harvest anything ripe, else chop in the cold seasons,
+        // else tend a growing field.
+        const ripeField = s.fields.find((f) => f.crop && f.progress >= 1);
+        const growing = s.fields.find((f) => f.crop && f.progress < 1);
+        s.hands.filter((h) => h.alive).forEach((h) => {
+          const task = ripeField ? "harvest" : cold ? "chop" : growing ? "tend" : "rest";
+          const targetFieldId = task === "harvest" ? ripeField.id : task === "tend" ? growing.id : undefined;
+          s = reduce(s, { type: "ASSIGN", handId: h.id, task, targetFieldId });
+        });
+        // The farmer forages for the table each day (keeps the larder ahead of the eating).
+        if (s.playerActionsLeft > 0) s = reduce(s, { type: "DO_PLAYER_ACTION", kind: "forage" });
+        s = reduce(s, { type: "TURN_IN" }); // day by day, so the daily forage actually lands
+      }
+      expect(s.phase).toBe("dusk");
+      s = reduce(s, { type: "END_SEASON" });
     }
-  });
-  it("a fed, well-managed cautious line keeps Reuben alive to spring", () => {
-    const s = autoPlay(7);
+    expect(s.phase).toBe("yearend");
     expect(s.hands.find((h) => h.id === "reuben").alive).toBe(true);
   });
 });

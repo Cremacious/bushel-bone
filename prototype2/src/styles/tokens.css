@@ -1,45 +1,58 @@
-/* TODO: swap to real IM Fell English SC / Spectral / Courier Prime woff2 files in
-   ../../assets/fonts/ once available offline. Until then these @font-face rules
-   point at not-yet-present files; the browser silently falls through to the
-   generic serif fallback declared alongside each font-family below, so the type
-   ramp and roles are unaffected by the missing binaries. */
-@font-face { font-family: "Fell SC"; src: url("../../assets/fonts/imfell-sc.woff2") format("woff2"); font-display: swap; }
-@font-face { font-family: "Spectral"; src: url("../../assets/fonts/spectral-400.woff2") format("woff2"); font-weight: 400; }
-@font-face { font-family: "Spectral"; src: url("../../assets/fonts/spectral-500.woff2") format("woff2"); font-weight: 500; }
-@font-face { font-family: "Spectral"; src: url("../../assets/fonts/spectral-italic.woff2") format("woff2"); font-style: italic; }
-@font-face { font-family: "Courier Prime"; src: url("../../assets/fonts/courierprime.woff2") format("woff2"); }
+/* The three faces (IM Fell English SC · Spectral · Courier Prime, plus IM Fell
+   English italic for accents) load from Google Fonts via the <link> in index.html,
+   exactly as the V0.3 design does. Family names below match Google's. If offline
+   support is needed later, self-host the woff2 and add @font-face here. */
 
 :root {
   color-scheme: dark light;
+  --ground:#0b0906;                 /* the true page ground, behind the desk/leaf */
   --paper:#17130d; --leaf:#1f1a12; --paper-3:#2f2718;
-  --ink:#e9dcbe; --ink-soft:#c3b087; --ink-faint:#8f7e5c;
-  --rule:#4b3f2b; --rule-fine:#38301f;
-  --omen:#a892c4; --lamp:#d9a441; --bad:#cf6a4e;
+  --ink:#e9dcbe; --ink-hi:#f0e4c6; --ink-soft:#c3b087; --ink-faint:#8f7e5c;
+  --rule:#4b3f2b; --rule-fine:#38301f; --rule-hair:#3a3020;
+  --good:#9fb262; --warn:#d0a54a; --bad:#cf6a4e; --omen:#a892c4; --lamp:#d9a441;
+  --gold-2:#a4842a;                 /* secondary antique amber (day CTA, "chosen" borders) */
+  --dialogue:#f4ead0;               /* quoted NPC speech, brighter than ink */
+  --art-brief:#b09a63;              /* italic bracketed art-brief text on an empty plate */
+  --card:#12100b; --card-2:#171309; --card-rule:#2f2718; /* nested-card surfaces (from the design doc) */
+  --leaf-top:#221c13; --leaf-bot:#1b1610;   /* the almanac leaf gradient */
+  --ledger-top:#2a2216; --ledger-bot:#211a11; /* the brass ledger bar gradient */
   --accent:#6f8a3f;                 /* season accent, set per data-season */
   --root: 17px;                     /* mobile default */
 }
 :root[data-theme="day"] {
+  --ground:#d8cbac;
   --paper:#e7dcc2; --leaf:#ddd0b1; --paper-3:#d3c4a1;
-  --ink:#2a2216; --ink-soft:#5f5138; --ink-faint:#8a795a;
-  --rule:#a3906c; --rule-fine:#bcab86;
+  --ink:#2a2216; --ink-hi:#2a2216; --ink-soft:#5f5138; --ink-faint:#8a795a;
+  --rule:#a3906c; --rule-fine:#bcab86; --rule-hair:#bcab86;
+  --good:#5f7a34; --warn:#a9791f; --bad:#99381f; --omen:#6f5c86;
+  --dialogue:#3a2f1c;
+  --card:#e2d6ba; --card-2:#d8cbac; --card-rule:#bcab86;
+  --leaf-top:#efe5cd; --leaf-bot:#e2d6ba;
+  --ledger-top:#e4d9bd; --ledger-bot:#d8cbac;
 }
 [data-season="spring"]{ --accent:#6f8a3f; }
 [data-season="summer"]{ --accent:#c0892a; }
 [data-season="fall"]{ --accent:#a4482a; }
 [data-season="winter"]{ --accent:#5a7d99; }
 
-@media (min-width: 1100px) { :root { --root: 20px; } }
+/* Desktop root is fluid: the V0.3 ramp is calibrated for a 1920 canvas (20px root),
+   but on a smaller desk the leaf is narrower, so scale the root with the viewport and
+   only reach 20px near 1920. Keeps type legible without feeling oversized. */
+@media (min-width: 1100px) { :root { --root: clamp(14px, 1.04vw, 20px); } }
 
 html { font-size: var(--root); }
 body {
   margin:0; background:var(--paper); color:var(--ink);
   font-family:"Spectral", Georgia, serif;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
 }
-/* type ramp — rem of --root (mobile shown; desktop scales via --root bump) */
-.t-plate  { font-family:"Fell SC", serif; font-size:1.88rem; }   /* 32 / 48 */
-.t-title  { font-family:"Fell SC", serif; font-size:1.53rem; }   /* 26 / 36 */
+/* type ramp — rem of --root (mobile shown; desktop scales via --root bump).
+   Fell SC carries the plate + scene titles; Spectral the body; the .22em
+   eyebrow label and the Courier seed-tag round it out (see the V0.3 ramp). */
+.t-plate  { font-family:"IM Fell English SC", Georgia, serif; font-size:1.88rem; color:var(--ink-hi); line-height:1; } /* 32 / 48 */
+.t-title  { font-family:"IM Fell English SC", Georgia, serif; font-size:1.53rem; color:var(--ink-hi); line-height:1.08; } /* 26 / 36 */
 .t-prose  { font-size:1.06rem; line-height:1.6; }                /* 18 / 22 */
 .t-choice { font-weight:500; font-size:1.06rem; }                /* 18 / 22 */
 .t-sub    { font-style:italic; font-size:0.88rem; color:var(--ink-soft); } /* 15 / 17 */
 .t-fig    { font-weight:500; font-variant-numeric:tabular-nums; font-size:1.41rem; } /* 24 / 34 */
-.t-label  { font-size:0.82rem; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-faint); } /* 12 / 14 */
+.t-label  { font-size:0.82rem; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; } /* 12 / 14 */

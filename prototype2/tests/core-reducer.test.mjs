@@ -9,21 +9,26 @@ describe("reducer", () => {
     expect(next.theme).toBe("day");
     expect(s.theme).toBe("night"); // input untouched
   });
-  it("ADVANCE_WEEK rolls weeks, then seasons, then the year", () => {
+  it("TURN_IN rolls days to dusk, then END_SEASON advances the season", () => {
     let s = initialState(1);
-    for (let i = 0; i < 4; i++) s = reduce(s, { type: "ADVANCE_WEEK" });
-    expect(s.week).toBe(5);
+    s = reduce(s, { type: "BEGIN_SEASON" });
+    if (s.phase === "planting") s = reduce(s, { type: "SOW" });
+    expect(s.phase).toBe("day");
     expect(season(s)).toBe("spring");
-    const before = { week: s.week, seasonIndex: s.seasonIndex, year: s.year };
-    const next = reduce(s, { type: "ADVANCE_WEEK" }); // week 5 -> next season
-    expect(s.week).toBe(before.week);
+    for (let i = 0; i < 9; i++) s = reduce(s, { type: "TURN_IN" });
+    expect(s.phase).toBe("day");
+    expect(s.day).toBe(10);
+    const before = { day: s.day, seasonIndex: s.seasonIndex, phase: s.phase };
+    const next = reduce(s, { type: "TURN_IN" }); // last day -> dusk
+    expect(s.day).toBe(before.day);
     expect(s.seasonIndex).toBe(before.seasonIndex);
-    expect(s.year).toBe(before.year); // input untouched
+    expect(s.phase).toBe(before.phase); // input untouched
     s = next;
-    expect(s.week).toBe(1);
+    expect(s.phase).toBe("dusk");
+    s = reduce(s, { type: "END_SEASON" });
+    expect(s.seasonIndex).toBe(1);
     expect(season(s)).toBe("summer");
-    for (let i = 0; i < 15; i++) s = reduce(s, { type: "ADVANCE_WEEK" }); // through winter into Year 2
-    expect(s.year).toBe(2);
-    expect(season(s)).toBe("spring");
+    expect(s.phase).toBe("brief");
+    expect(s.day).toBe(1);
   });
 });

@@ -1,0 +1,78 @@
+/* The pre-game front porch (title / naming / letter), in the V0.3 dark register.
+   A black ground on purpose, before the season calendar has anything to say. */
+
+.front { min-height: 100vh; min-height: 100dvh; background: var(--ground); color: var(--ink);
+  display: flex; flex-direction: column; }
+.fr-screen { flex: 1; display: flex; flex-direction: column; }
+
+/* ---- title ---- */
+.fr-title { position: relative; }
+.fr-title .fr-hero { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6vw;
+  padding: 40px 24px; flex-wrap: wrap; }
+.fr-crow { flex: 0 0 auto; filter: drop-shadow(0 24px 44px rgba(0,0,0,.7)); }
+.fr-logo { width: clamp(160px, 24vw, 360px); height: auto; display: block; }
+.fr-herotext { max-width: 560px; width: 100%; }
+.fr-wordmark { font-size: clamp(52px, 8vw, 92px); line-height: 1; color: var(--ink-hi); }
+.fr-wordmark .amp { color: var(--lamp); margin: 0 .04em; }
+.fr-eyebrow { letter-spacing: .34em; margin-top: 12px; }              /* subtitle, now BELOW the title */
+.fr-rule { margin: 22px 0; }
+.fr-menu { display: flex; flex-direction: column; gap: 14px; margin-top: 32px; }
+.fr-menu-row { display: flex; gap: 14px; }
+.fr-menuitem { all: unset; cursor: pointer; box-sizing: border-box; display: flex; align-items: center;
+  justify-content: space-between; gap: 16px; min-height: 56px; padding: 16px 22px;
+  border: 1px solid var(--rule); color: var(--ink-soft); }
+.fr-menuitem .fr-mi-label { font-size: clamp(20px, 2.4vw, 28px); color: var(--ink-hi); }
+.fr-menuitem.primary { border-color: var(--lamp); background: color-mix(in srgb, var(--lamp) 14%, transparent); }
+.fr-menuitem.primary .fr-mi-glyph { color: var(--lamp); font-size: 1.4rem; }
+.fr-menuitem.disabled { opacity: .45; cursor: default; }
+.fr-menuitem.disabled .fr-mi-label { color: var(--ink-soft); }
+.fr-menuitem.half { flex: 1; }
+.fr-menuitem:not(.disabled):hover, .fr-menuitem:not(.disabled):focus-visible { border-color: var(--lamp); outline: none; }
+.fr-mi-aside { font-style: italic; color: var(--ink-faint); }
+.fr-foot { text-align: center; padding: 16px; color: var(--ink-faint); letter-spacing: .16em; }
+
+/* ---- naming + info screens: a centered column ---- */
+.fr-name, .fr-info { justify-content: center; align-items: center; }
+.fr-narrow { max-width: 560px; width: 100%; margin: 0 auto; padding: 24px; box-sizing: border-box; }
+.fr-centered { text-align: center; }
+.fr-body { font-size: 1.06rem; line-height: 1.7; color: var(--ink-soft); margin: 0 auto 1em; max-width: 46ch; }
+.fr-centered .fr-rule { margin-left: auto; margin-right: auto; max-width: 120px; }
+.fr-label { display: block; margin: 8px 0 8px; }
+.fr-input { width: 100%; box-sizing: border-box; background: transparent; color: var(--ink-hi); text-align: center;
+  border: 1px solid var(--lamp); padding: 12px 14px; outline: none; }
+.fr-input:focus { box-shadow: 0 0 0 1px var(--lamp); }
+.fr-hint { margin: 10px auto 0; max-width: 40ch; }
+
+/* ---- uniform action buttons, centered below the content ---- */
+.fr-actions { display: flex; justify-content: center; gap: 16px; margin-top: 28px; }
+.fr-action { all: unset; cursor: pointer; box-sizing: border-box; min-width: 150px; min-height: 52px;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  border: 1px solid var(--rule); color: var(--ink); font-weight: 500; font-size: 1.06rem; padding: 12px 22px; }
+.fr-action:hover, .fr-action:focus-visible { border-color: var(--lamp); color: var(--ink-hi); outline: none; }
+.fr-action.primary { border-color: var(--lamp); background: color-mix(in srgb, var(--lamp) 14%, transparent); color: var(--ink-hi); }
+.fr-action[disabled] { opacity: .4; cursor: not-allowed; }
+.fr-action[disabled]:hover { border-color: var(--rule); color: var(--ink); }
+
+/* ---- the letter: both pages share one centered, top-anchored box ---- */
+.fr-letter { justify-content: flex-start; }
+.fr-letterwrap { max-width: 720px; width: 100%; margin: 0 auto; padding: 7vh 24px 40px; box-sizing: border-box; }
+/* a consistent-height box so page 1 (the tall letter) and page 2 (short narration) start
+   at the same top and the paging controls never jump between pages. */
+.fr-pagebox { min-height: 54vh; }
+.fr-page { animation: bb-line .28s ease-out both; }
+.fr-letter-h { font-family: "IM Fell English", Georgia, serif; font-style: italic; color: var(--ink-faint);
+  text-align: center; margin-bottom: 18px; font-size: 1rem; }
+/* page 1 is a real paper document (light leaf on the black ground). Its own class,
+   distinct from the .fr-letter screen section, so the cream never bleeds onto page 2. */
+.fr-doc { background: #efe3c6; color: #2a2216; border: 1px solid #6b5a3c; border-left: 5px solid #a4482a;
+  box-shadow: 0 30px 80px rgba(0,0,0,.6); padding: 40px 44px 36px; }
+.fr-letter-head { text-align: center; border-bottom: 1px solid #b9a684; padding-bottom: 16px; margin-bottom: 20px; }
+.fr-co { font-family: "IM Fell English SC", Georgia, serif; font-size: 1.5rem; color: #2a2216; }
+.fr-office { font-family: "IM Fell English", Georgia, serif; font-style: italic; color: #5f5138; margin-top: 4px; }
+.fr-date { font-variant-numeric: tabular-nums; color: #5f5138; margin-top: 6px; font-size: 0.9rem; }
+.fr-doc p { font-size: 1.06rem; line-height: 1.62; margin: 0 0 0.9em; color: #2a2216; }
+.fr-signoff { font-family: "IM Fell English", Georgia, serif; font-style: italic; text-align: right; color: #5f5138; }
+/* page 2 is plain cream narration on the black ground, not a letter */
+.fr-narration p { font-size: 1.12rem; line-height: 1.78; color: var(--ink); margin: 0 0 1.1em; }
+.fr-narration .said { color: var(--dialogue); font-style: italic; }
+.fr-pageno { text-align: center; letter-spacing: .18em; margin-top: 18px; }

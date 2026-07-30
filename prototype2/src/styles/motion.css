@@ -1,0 +1,29 @@
+/* The V0.3 motion vocabulary (design reference §7): six named motions, and no more.
+   Keyframes are verbatim from the design file. Body prose and scene titles never
+   animate — the player reads at their own pace. */
+
+@keyframes bb-turn  { from{ opacity:0; transform:translateY(10px) rotateX(3deg); } to{ opacity:1; transform:none; } }
+@keyframes bb-rule  { from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+@keyframes bb-tick  { 0%{ transform:translateY(0); opacity:1; } 40%{ transform:translateY(-7px); opacity:0; } 41%{ transform:translateY(7px); } 100%{ transform:translateY(0); opacity:1; } }
+@keyframes bb-rain  { from{ transform:translateY(-40px); } to{ transform:translateY(160px); } }
+@keyframes bb-snow  { from{ transform:translateY(-30px) translateX(0); } to{ transform:translateY(170px) translateX(14px); } }
+@keyframes bb-stain { 0%,100%{ opacity:.30; transform:translate(-50%,-50%) scale(1); } 50%{ opacity:.62; transform:translate(-50%,-50%) scale(1.06); } }
+@keyframes bb-crow  { 0%,92%,100%{ opacity:1; } 94%,98%{ opacity:.15; } }
+@keyframes bb-line  { from{ opacity:0; transform:translateX(-8px); } to{ opacity:1; transform:none; } }
+@keyframes bb-bleed { from{ opacity:0; transform:translateY(-50%) scale(.7); } to{ opacity:1; transform:translateY(-50%) scale(1); } }
+@keyframes bb-lamp  { 0%,100%{ opacity:.55; } 50%{ opacity:.9; } }
+
+/* Turn — a new beat/leaf arrives. The stage is a fresh element each render, so the
+   class replays on every screen change. */
+.m-turn { animation: bb-turn .5s cubic-bezier(.2,.7,.2,1) both; }
+
+/* Rule — the Dusk reveal: day-book lines write on one at a time, 160ms apart.
+   Set --i (line index) inline; the delay follows. */
+.m-line { animation: bb-line .3s calc(var(--i, 0) * .16s) ease-out both; }
+
+/* The one motion sin: body prose must never type on. Nothing here animates text opacity
+   line-by-line except the day-book table, which is figures, not prose. */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

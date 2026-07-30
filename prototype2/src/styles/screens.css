@@ -1,8 +1,35 @@
-/* Layout + type for the screens rendered by src/render/screens.js (Tasks 8-12).
-   Colors are token vars only (tokens.css); spacing matches shell.css's scale. */
+/* Layout + type for the screens rendered by src/render/screens.js.
+   Colors are token vars only (tokens.css); spacing matches shell.css's scale.
+   The V0.3 visual language (design reference): engraved leaf, rules, drop-cap. */
 
-.eyebrow { margin-bottom: 6px; }
-h2.t-title { margin: 0 0 12px; }
+.eyebrow { margin-bottom: 8px; }
+h2.t-title { margin: 0 0 14px; }
+
+/* --- the four rules, "the almanac's punctuation" (reference §5) --- */
+.rule-hair   { height: 1px; background: var(--rule); border: 0; }
+.rule-double { height: 3px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.rule-hatch  { height: 9px; background: repeating-linear-gradient(45deg, var(--rule) 0 1px, transparent 1px 5px); }
+.spine       { background: var(--accent); }   /* the season, on a leaf's binding edge */
+
+/* Under the eyebrow+title of a reading beat, a hatch rule sets the beat off. */
+.t-title + .rule-hatch { margin: 0 0 16px; }
+
+/* --- prose: drop-cap + dialogue color (reference §9 Morning Brief) --- */
+.t-prose { max-width: 68ch; }
+.prose p { margin: 0 0 0.9em; }
+.prose p:last-child { margin-bottom: 0; }
+/* The script's first paragraph carries .dropcap (from #46). A real dropped Fell SC
+   initial, ~3 lines tall, in the season accent. */
+.prose .dropcap::first-letter,
+.prose p.dropcap::first-letter {
+  font-family: "IM Fell English SC", Georgia, serif;
+  font-size: 3.1em; line-height: 0.82; float: left;
+  padding: 0.02em 0.09em 0 0; color: var(--accent);
+}
+/* Quoted NPC speech, brighter than ink (the design's dialogue tone). */
+.prose em, .prose i, .dialogue, .prose .said { color: var(--dialogue); font-style: italic; }
+/* An aside/note line inside a scene (e.g. the Vane wagon's winter-mouth warning). */
+.prose .note { color: var(--ink-faint); font-style: italic; }
 
 /* --- choicecard (Screens 04-06: Morning Brief / Dusk / verdict actions) --- */
 .choicecard {
@@ -23,9 +50,47 @@ h2.t-title { margin: 0 0 12px; }
 .choicecard.primary { border-color: var(--lamp); background: color-mix(in srgb, var(--lamp) 13%, transparent); }
 .choicecard.disabled { opacity: .55; cursor: not-allowed; }
 .choicecard .ctitle { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; }
-.choicecard .ctag { font-family: "Courier Prime", monospace; font-style: normal; font-size: 0.82rem; color: var(--accent); white-space: nowrap; }
+.choicecard .ctag { font-family: "Courier Prime", monospace; font-style: normal; font-size: 0.82rem; color: var(--ink-soft); white-space: nowrap; }
+.choicecard .ctag.good { color: var(--good); }
+.choicecard .ctag.bad { color: var(--bad); }
 .choicecard .csub { display: block; margin-top: 2px; }
 .choicecard.disabled .csub { color: var(--bad); font-style: normal; }
+
+/* --- planting grid + shared field card --- */
+.plant-bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+.plant-bar .choicecard { width: auto; min-width: 200px; margin: 0; }
+.fieldgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.fieldcard { border: 1px solid var(--rule-fine); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.fieldcard.ripe { border-color: var(--good); }
+.fc-head { display: flex; justify-content: space-between; align-items: baseline; }
+.fc-fert { color: var(--ink-faint); font-size: 0.82rem; }
+.fc-bar { height: 6px; background: var(--paper); border: 1px solid var(--rule-fine); }
+.fc-fill { height: 100%; background: var(--accent); }
+.fc-fill.ripe { background: var(--good); }
+.fc-proj { display: flex; justify-content: space-between; }
+.fc-proj .good { color: var(--good); }
+.fc-worked { color: var(--lamp); letter-spacing: .04em; }
+.croppick { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+@media (max-width: 700px) { .fieldgrid { grid-template-columns: 1fr; } }
+.weekboard { margin-bottom: 16px; }
+
+/* --- Reuben's counsel (always-on Year-1 guidance) --- */
+.counsel { border-left: 3px solid var(--lamp); background: color-mix(in srgb, var(--lamp) 8%, transparent);
+  padding: 10px 12px; margin: 0 0 14px; }
+.counsel-who { color: var(--lamp); margin-bottom: 4px; display: flex; align-items: center; }
+.counsel-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lamp); flex: 0 0 auto; }
+.counsel-text { font-style: italic; color: var(--ink-soft); line-height: 1.55; }
+
+/* --- the cold-months goal foreshadowing --- */
+.goals { border: 1px solid var(--rule-fine); padding: 10px 12px; margin-bottom: 14px; }
+.goals-h { margin-bottom: 6px; }
+.goalrow { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 0; }
+.goal-v { font-style: normal; }
+.goal-v.warn { color: var(--warn); }
+.goal-v.good { color: var(--good); }
+
+/* --- one-line "what this task does" under each crew picker --- */
+.taskdesc { color: var(--ink-faint); font-style: italic; margin: 4px 0 12px; }
 
 /* --- fieldrow (Screen 05: Planting; also the read-only Fields tab) --- */
 .fieldrow {
@@ -40,7 +105,6 @@ h2.t-title { margin: 0 0 12px; }
 .fieldrow .fieldname { flex: 0 1 auto; }
 .fieldrow .fert { flex: 0 0 auto; font-size: 0.88rem; color: var(--ink-faint); }
 .fieldrow > .t-sub { flex: 1 0 100%; margin-top: 8px; }
-.croppick { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 8px; margin-top: 10px; flex: 1 0 100%; }
 .cropchip {
   all: unset;
   box-sizing: border-box;
@@ -75,6 +139,20 @@ h2.t-title { margin: 0 0 12px; }
 .handrow .hname { flex: 0 1 auto; }
 .handrow .hcond { flex: 0 0 auto; }
 .handrow > .taskpick, .handrow > .t-sub { flex: 1 0 100%; margin-top: 10px; }
+
+/* --- strain meter: a hand's condition made visible (word + bar), so rest/care read as
+   meaningful. Steady is calm/green, worn ambers, failing reds. --- */
+.strain { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; }
+.strain-word { text-transform: capitalize; }
+.strain-bar { width: 64px; height: 6px; background: var(--paper); border: 1px solid var(--rule-fine); }
+.strain-fill { height: 100%; background: var(--good); transition: width .2s ease; }
+.strain.cond-steady  .strain-word { color: var(--good); }
+.strain.cond-worn    .strain-word { color: var(--warn); }
+.strain.cond-failing .strain-word,
+.strain.cond-lost    .strain-word { color: var(--bad); }
+.strain.cond-worn    .strain-fill { background: var(--warn); }
+.strain.cond-failing .strain-fill,
+.strain.cond-lost    .strain-fill { background: var(--bad); }
 
 /* .taskbtn is its own compact pill row, deliberately NOT a choicecard: a task pick is a
    small many-way toggle, not a full scene decision, so it reads lighter and denser. */
@@ -114,3 +192,64 @@ h2.t-title { margin: 0 0 12px; }
 @media (min-width: 1100px) {
   .croppick, .taskpick { max-width: 620px; }
 }
+
+/* --- personal actions (Screen: the Day screen's "your day" block) --- */
+.personal { margin-top: 14px; }
+.personal-h { margin-bottom: 8px; }
+.pa-grid { display: grid; gap: 8px; }
+.pa-action {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid var(--rule-fine);
+  cursor: pointer;
+}
+.pa-action:focus-visible { outline: 2px solid var(--lamp); outline-offset: -2px; }
+.pa-action:hover:not(.disabled) { border-color: var(--lamp); }
+.pa-action.disabled { opacity: .45; cursor: not-allowed; }
+.pa-desc { color: var(--ink-faint); font-style: italic; }
+.day-cta { margin-top: 12px; display: grid; gap: 8px; }
+.runbtn {
+  all: unset;
+  justify-self: start;
+  color: var(--lamp);
+  cursor: pointer;
+  padding: 4px 2px;
+  letter-spacing: .04em;
+}
+.runbtn:focus-visible { outline: 2px solid var(--lamp); outline-offset: -2px; }
+
+@media (min-width: 1100px) {
+  .pa-grid { max-width: 620px; }
+}
+
+/* --- the Town tab: the menu-map + the day's odd-jobs --- */
+.townhint { margin-bottom: 14px; }
+.townsub { margin: 14px 0 8px; }
+.jobcard { border: 1px solid var(--rule-fine); border-left: 3px solid var(--lamp); padding: 10px 12px; margin-bottom: 8px; }
+.jobline { margin-bottom: 2px; }
+.jobmeta { color: var(--ink-faint); }
+.jobtake { display: inline-block; margin-top: 8px; cursor: pointer; border: 1px solid var(--lamp);
+  color: var(--lamp); background: none; padding: 5px 12px; letter-spacing: .03em; }
+.jobtake.disabled { opacity: .45; cursor: default; border-color: var(--rule-fine); color: var(--ink-faint); }
+.townloc { display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  border-bottom: 1px solid var(--rule-fine); padding: 10px 0; }
+.loc-head { display: flex; flex-direction: column; gap: 2px; }
+.loc-why { color: var(--ink-faint); }
+.loc-talk { cursor: pointer; border: 1px solid var(--rule-fine); background: none; color: inherit; padding: 5px 12px; }
+.loc-talk:hover:not(.disabled) { border-color: var(--lamp); }
+.loc-talk.disabled { opacity: .45; cursor: default; }
+.loc-soon { color: var(--ink-faint); font-style: italic; }
+
+/* --- clearing overgrown fields on the planting grid --- */
+.fieldcard.uncleared { opacity: .8; border-style: dashed; }
+.fc-crop.overgrown { color: var(--ink-faint); font-style: italic; }
+.clearbtn { all: unset; cursor: pointer; border: 1px solid var(--lamp); color: var(--lamp);
+  padding: 6px 10px; text-align: center; letter-spacing: .03em; }
+.clearbtn.disabled { opacity: .45; cursor: not-allowed; border-color: var(--rule-fine); color: var(--ink-faint); }
