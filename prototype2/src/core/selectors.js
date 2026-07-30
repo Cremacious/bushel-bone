@@ -239,7 +239,7 @@ export function talkIsDry(state, npc) {
 // defaults past the authored years). Pure.
 export function mortgageDue(state) {
   const y = state.year;
-  const payment = BALANCE.mortgageSchedule[y] ?? 150;
-  const upkeep = BALANCE.upkeepSchedule[y] ?? 40;
+  const payment = BALANCE.mortgageSchedule[y] ?? 130;
+  const upkeep = BALANCE.upkeepSchedule[y] ?? 35;
   return { payment, upkeep, total: payment + upkeep };
 }

@@ -46,7 +46,7 @@ describe("fieldCard", () => {
     expect(card.querySelector(".fc-name").textContent).toContain("East Field");
     expect(card.textContent).toContain("Potato");
     expect(card.textContent).toContain("ripens day 10");
-    expect(card.textContent).toContain("20 food");
+    expect(card.textContent).toContain("30 food");
   });
   it("an empty field reads as fallow", () => {
     let s = reduce(initialState(1), { type: "BEGIN_SEASON" });

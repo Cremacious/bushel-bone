@@ -22,7 +22,7 @@ describe("fieldProjection", () => {
     expect(p.ripe).toBe(false);
     expect(p.daysToRipe).toBe(10);      // 1 season / 0.1 per day
     expect(p.when).toBe("ripens day 10");
-    expect(p.yield).toEqual({ amount: 20, kind: "food" }); // 10 units * 2 food at fert 3
+    expect(p.yield).toEqual({ amount: 30, kind: "food" }); // 10 units x food 3 * 2 food at fert 3
   });
   it("a 2-season crop reads as ripening next season and projects a coin yield", () => {
     const { s, f } = planted("corn", 0);

@@ -50,10 +50,15 @@ function plantStep(s, chooseCrop) {
   return { type: "PLANT", fieldId: field.id, crop };
 }
 
+// Keep just enough fields in food to feed the crew (about one potato field per two mouths),
+// and put every other field into cash. Coordinated across the dawn's plantings by counting the
+// food fields already sown, so the coin crop actually gets grown instead of a larder of unsold
+// potatoes. Cotton (two-hand) only when there are hands to pair on it.
 const optimalCrop = (s, field) => {
-  const safe = s.larder >= mouths(s) * 15; // well ahead of near-term eating
-  if (!safe) return "potato";
-  return field.id % 2 === 0 ? "corn" : "cotton"; // bias cash once the table is safely stocked
+  const foodFieldsWanted = Math.ceil(mouths(s) / 2);
+  const foodFieldsSown = s.fields.filter((f) => f.crop === "potato" || f.crop === "turnip").length;
+  if (foodFieldsSown < foodFieldsWanted) return "potato";
+  return livingHands(s).length >= 2 && field.id % 3 === 0 ? "cotton" : "corn";
 };
 const normalCrop = (s, field) => (field.id % 2 === 0 ? "potato" : "corn"); // a mixed, middling line
 const sloppyCrop = () => "potato"; // never diversifies
@@ -134,13 +139,16 @@ function optimalExpand(s) {
     const f = s.fields.find((x) => !x.cleared);
     if (f) return { type: "CLEAR_FIELD", fieldId: f.id };
   }
+  // Hire only when genuinely short-handed: you work too, so a hand per field over-hires and
+  // just adds a mouth. Bring one on when the fields outrun the workers (you + hands) by two.
   const clearedCount = s.fields.filter((f) => f.cleared).length;
+  const workers = s.hands.length + 1; // the hands plus you
   const hc = hireCost(s);
-  if (s.hands.length < clearedCount && s.coin - hc >= buffer) return { type: "HIRE" };
+  if (clearedCount >= workers + 1 && s.coin - hc >= buffer) return { type: "HIRE" };
   return null;
 }
 function normalExpand(s) {
-  const buffer = mortgageDue(s).total + s.mortgage.arrears + 100; // a bigger cushion than optimal
+  const buffer = mortgageDue(s).total + s.mortgage.arrears + 40; // a modest cushion
   const cc = clearCost(s);
   if (cc != null && s.coin - cc >= buffer) {
     const f = s.fields.find((x) => !x.cleared);

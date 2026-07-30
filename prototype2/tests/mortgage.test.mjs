@@ -40,7 +40,7 @@ describe("year-end settlement", () => {
     s = reduce(s, { type: "TURN_YEAR" });
     expect(s.mortgage.arrears).toBe(0);
     expect(s.mortgage.warned).toBe(false);
-    expect(s.coin).toBe(500 - 170); // 150 payment + 20 upkeep
+    expect(s.coin).toBe(500 - 90); // 80 payment + 10 upkeep (year 3, tuned)
   });
   it("a second consecutive miss forecloses", () => {
     let s = reduce(atWinterDusk(1, (s) => ({ ...s, year: 4, coin: 0, mortgage: { balance: 600, arrears: 170, warned: true } })), { type: "END_SEASON" });
