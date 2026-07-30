@@ -1,11 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { initialState, SEASONS, DAYS_PER_SEASON } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
+import { BALANCE } from "../src/core/balance.js";
 
-// A cautious full-year line on the daily cadence, played day by day with real fuel/food
-// management: plant food; each day bring in what's ripe, lay in wood against the cold, and
-// forage for the table. Starts with NO fuel (per the opening narration), so surviving winter
-// genuinely requires chopping — proving both that the loop never wedges and that a sensible,
+// A cautious full-year line on the beat loop, played beat by beat with real fuel/food
+// management: plant food; each beat set the crew's role by the season (field to bring the
+// crops in while it's warm, wood to lay in fuel once the cold comes), and spend the season's
+// own actions foraging. Starts with NO fuel (per the opening narration), so surviving winter
+// genuinely requires chopping, proving both that the loop never wedges and that a sensible,
 // resource-managing line survives Year 1.
 describe("a full Year-1 daily playthrough", () => {
   it("plays Spring→Winter without wedging and keeps Reuben alive on a fuel-and-food-minding line", () => {
@@ -16,23 +18,22 @@ describe("a full Year-1 daily playthrough", () => {
       if (s.phase === "brief") s = reduce(s, { type: "BEGIN_SEASON" });
       if (s.phase === "planting") {
         s.fields.forEach((f) => { if (!f.crop) s = reduce(s, { type: "PLANT", fieldId: f.id, crop: "potato" }); });
-        s = reduce(s, { type: "SOW" });
+        s = reduce(s, { type: "SOW" }); // auto-runs to the first beat
       }
       let guard = 0;
       while (s.phase === "day" && guard++ < 50) {
-        const cold = s.seasonIndex >= 2; // fall/winter: banking wood matters
-        // Standing orders for the day: harvest anything ripe, else chop in the cold seasons,
-        // else tend a growing field.
-        const ripeField = s.fields.find((f) => f.crop && f.progress >= 1);
-        const growing = s.fields.find((f) => f.crop && f.progress < 1);
+        const cold = s.seasonIndex >= 2; // fall/winter: banking wood matters more than one more field hand
+        // Standing orders at each beat: rest a worn hand before anything else, else chop in
+        // the cold seasons, else work the fields. Minding the crew's own tiredness, not just
+        // the ledger, is what keeps a hand alive on the beat loop's strain track.
         s.hands.filter((h) => h.alive).forEach((h) => {
-          const task = ripeField ? "harvest" : cold ? "chop" : growing ? "tend" : "rest";
-          const targetFieldId = task === "harvest" ? ripeField.id : task === "tend" ? growing.id : undefined;
-          s = reduce(s, { type: "ASSIGN", handId: h.id, task, targetFieldId });
+          const role = h.strain >= BALANCE.strain.wornAt ? "rest" : cold ? "wood" : "field";
+          if (h.role !== role) s = reduce(s, { type: "SET_ROLE", handId: h.id, role });
         });
-        // The farmer forages for the table each day (keeps the larder ahead of the eating).
-        if (s.playerActionsLeft > 0) s = reduce(s, { type: "DO_PLAYER_ACTION", kind: "forage" });
-        s = reduce(s, { type: "TURN_IN" }); // day by day, so the daily forage actually lands
+        // The farmer forages with whatever of the season's own actions remain, keeping the
+        // larder ahead of the eating.
+        if (s.seasonActionsLeft > 0) s = reduce(s, { type: "SPEND_ACTION", kind: "forage" });
+        s = reduce(s, { type: "CONTINUE" }); // advance past this beat, toward the next (or dusk)
       }
       expect(s.phase).toBe("dusk");
       s = reduce(s, { type: "END_SEASON" });

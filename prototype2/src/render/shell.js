@@ -112,12 +112,12 @@ function brassLedger(state) {
   ]);
 }
 
-// The persistent actions-today counter: a plain "left / max" readout plus pips, visible in
+// The persistent season-actions counter: a plain "left / max" readout plus pips, visible in
 // the brass ledger only during the day phase (when spending an action actually means
-// something). Answers "how many actions do I have left" without opening a screen.
+// something). Answers "how many of the season's actions are left" without opening a screen.
 function actionCounter(state) {
   if (state.phase !== "day") return null;
-  const left = state.playerActionsLeft, max = BALANCE.playerActionsPerDay;
+  const left = state.seasonActionsLeft, max = BALANCE.seasonActionsPerSeason;
   const pips = [];
   for (let i = 0; i < max; i++) pips.push(el("span", { class: "apip" + (i < left ? " on" : "") }));
   return el("div", { class: "actioncount" }, [

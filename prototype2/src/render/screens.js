@@ -216,7 +216,7 @@ const SCREENS = {
         el("span", { class: "hname t-choice", text: h.name + (isForeman ? " · foreman" : "") }),
         el("span", { class: "hcond t-sub", text: conditionOf(h) }),
       ]);
-      row.append(el("div", { class: "t-sub", text: "at task: " + (TASK_LABEL[h.task] || h.task) }));
+      row.append(el("div", { class: "t-sub", text: "set to: " + roleLabel(h.role) }));
       stage.append(row);
     }
   },
@@ -340,10 +340,6 @@ function line(label, value, i = 0) {
   return el("div", { class: "bookline m-line", style: `--i:${i}` },
     [el("span", { class: "t-sub", text: label }), el("span", { class: "t-choice", text: value })]);
 }
-
-// Plain-language task words for the Hands tab (the day screen's own TASKS array is
-// choice-button labels, not read-only prose, so this is a small, separate map).
-const TASK_LABEL = { rest: "resting", tend: "tending a field", harvest: "bringing in the harvest", chop: "chopping wood" };
 
 // The Ledger tab explains the four figures the masthead only shows as numbers.
 const LEDGER_ROWS = [

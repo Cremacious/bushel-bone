@@ -33,16 +33,16 @@ describe("standing", () => {
 describe("VISIT grants standing and records the talk", () => {
   it("spends an action, opens the resolved scene, raises standing, marks it seen", () => {
     let s = inTown();
-    const acts0 = s.playerActionsLeft;
+    const acts0 = s.seasonActionsLeft;
     s = reduce(s, { type: "VISIT", npc: "crake" });
     expect(s.phase).toBe("scene");
     expect(s.scene.id).toBe("crake_intro");
-    expect(s.playerActionsLeft).toBe(acts0 - 1);
+    expect(s.seasonActionsLeft).toBe(acts0 - 1);
     expect(standingOf(s, "crake")).toBe(BALANCE.standing.perTalk);
     expect(s.talksSeen).toContain("crake_intro");
   });
   it("is a no-op off the day phase or with no actions", () => {
-    let s = inTown(); s = { ...s, playerActionsLeft: 0 };
+    let s = inTown(); s = { ...s, seasonActionsLeft: 0 };
     expect(reduce(s, { type: "VISIT", npc: "crake" })).toEqual(s);
   });
 });

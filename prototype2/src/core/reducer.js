@@ -43,8 +43,6 @@ export function reduce(state, action) {
       return continueRun(state);
     case "SET_ROLE":
       return mapHand(state, action.handId, (h) => ({ ...h, role: action.role }));
-    case "DO_PLAYER_ACTION":
-      return doPlayerAction(state, action);
     case "SPEND_ACTION":
       return spendAction(state, action);
     case "TURN_IN":
@@ -84,19 +82,6 @@ function beginSeason(s) {
 // pre-fill. Kept as a seam for future season-open setup.
 function withInitialRoles(s) { return s; }
 
-// The proprietor spends one of their day's actions on their own labor. Applied at once for
-// instant feedback. work → help a field along; forage → food on the table; care → ease a hand.
-function doPlayerAction(s, { kind, target }) {
-  if (s.phase !== "day" || s.playerActionsLeft <= 0) return s;
-  const St = BALANCE.strain;
-  let ns = { ...s, playerActionsLeft: s.playerActionsLeft - 1 };
-  if (kind === "forage") ns.larder = s.larder + BALANCE.forageFood;
-  else if (kind === "work" && target != null) ns.fields = s.fields.map((f) => (f.id === target && f.crop) ? { ...f, tended: true } : f);
-  else if (kind === "care" && target != null) ns.hands = s.hands.map((h) => (h.id === target && h.alive) ? { ...h, strain: Math.max(0, h.strain - St.careRecovery) } : h);
-  // kind === "rest": spends the action, no effect (a quiet day)
-  return ns;
-}
-
 // The proprietor spends one of the season's actions on their own labor at a beat. Applied at
 // once. A no-op with none left.
 function spendAction(s, { kind, target }) {
@@ -109,21 +94,18 @@ function spendAction(s, { kind, target }) {
   return ns;
 }
 
-// Take a paid odd-job: spend one of the day's actions, take the coin, mark it done so it
+// Take a paid odd-job: spend one of the season's actions, take the coin, mark it done so it
 // cannot be double-claimed. A no-op off the day phase, with no actions, or if already done.
-// NOTE: still keyed on playerActionsLeft (pre-v0.4), same as doPlayerAction below; the town
-// action economy's move to the season pool is out of this task's scope (see screens.js's
-// town gating, which now reads seasonActionsLeft for display/enable purposes only).
 function acceptJob(s, id) {
-  if (s.phase !== "day" || s.playerActionsLeft <= 0) return s;
+  if (s.phase !== "day" || s.seasonActionsLeft <= 0) return s;
   const job = ODD_JOBS.find((j) => j.id === id);
   if (!job || (s.jobsDoneToday || []).includes(id)) return s;
-  return { ...s, coin: s.coin + job.coin, playerActionsLeft: s.playerActionsLeft - 1,
+  return { ...s, coin: s.coin + job.coin, seasonActionsLeft: s.seasonActionsLeft - 1,
     jobsDoneToday: [...(s.jobsDoneToday || []), id] };
 }
 
 // Call on a townsperson: open whichever of their talks comes next (see nextTownScene). A
-// talk with real content still spends one of the day's actions and raises standing; once
+// talk with real content still spends one of the season's actions and raises standing; once
 // the deck is exhausted at the current standing, the small-talk filler is free (no action,
 // no standing) so a visit is never a wasted action. Either way the talk is remembered so
 // the deck rotates. A no-op off the day phase; real talks still need an action.
@@ -132,10 +114,10 @@ function visit(s, npc) {
   const sceneId = nextTownScene(s, npc);
   if (!sceneId) return s;
   const dry = sceneId === (SMALLTALK[npc] || null);
-  if (!dry && s.playerActionsLeft <= 0) return s; // real talks still need an action
+  if (!dry && s.seasonActionsLeft <= 0) return s; // real talks still need an action
   const seen = s.talksSeen || [];
   return { ...s,
-    playerActionsLeft: dry ? s.playerActionsLeft : s.playerActionsLeft - 1,
+    seasonActionsLeft: dry ? s.seasonActionsLeft : s.seasonActionsLeft - 1,
     standing: dry ? s.standing : { ...(s.standing || {}), [npc]: ((s.standing || {})[npc] || 0) + BALANCE.standing.perTalk },
     talksSeen: seen.includes(sceneId) ? seen : [...seen, sceneId],
     phase: "scene", scene: { id: sceneId, result: null }, screen: "home" };
@@ -221,7 +203,7 @@ function resolveDay(s) {
     h.strain += worked ? St.hardLabor : (h.role === "rest" ? -St.restRecovery : 0);
   }
 
-  // 2) Crop growth (uses today's tended flags, set above and by DO_PLAYER_ACTION "work"), then reset tended.
+  // 2) Crop growth (uses today's tended flags, set above and by SPEND_ACTION "work"), then reset tended.
   for (const f of fields) { if (f.crop) f.progress += dailyGrowth(f, s.weather); f.tended = false; }
 
   // 3) Eating: the household eats; a shortfall strains everyone alike. The already-worn

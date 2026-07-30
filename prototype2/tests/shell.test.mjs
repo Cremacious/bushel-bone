@@ -46,13 +46,13 @@ describe("shell render", () => {
 });
 
 describe("persistent action counter", () => {
-  it("shows an actions-today counter in the chrome during the day", () => {
+  it("shows the season-actions counter in the chrome during the day", () => {
     const root = document.createElement("div");
     let s = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" }); // day
     renderShell(root, s, () => {});
     const c = root.querySelector(".actioncount");
     expect(c).toBeTruthy();
-    expect(c.textContent).toMatch(/2\s*\/\s*2/);
+    expect(c.textContent).toMatch(/5\s*\/\s*5/);
   });
   it("does not show the counter outside the day phase", () => {
     const root = document.createElement("div");

@@ -1,6 +1,7 @@
 // First-pass tuning, owned by the balance model (Q-003). One place for every number.
 // DAILY model (Phase A): a season is `daysPerSeason` days; growth, eating, cold, and
-// strain are all per-day. The player has `playerActionsPerDay` personal actions each day.
+// strain are all per-day. The player has `seasonActionsPerSeason` personal actions each
+// season (v0.4: the beat loop's shared pool, spent at a beat rather than every single day).
 //
 // Curve validated by the sim (`sim/run.js`, three policies over the real reducer):
 //   optimal  — survives 4 years, expands to ~4 fields / 2-3 hands, then the debt catches it in Y5.
@@ -12,7 +13,6 @@
 // any number change here.
 export const BALANCE = {
   daysPerSeason: 10,          // a season is 10 days (updates the old 20; tunable in playtest)
-  playerActionsPerDay: 2,     // the proprietor's own actions per day
   seasonActionsPerSeason: 5,  // the proprietor's own actions per season (v0.4: replaces the per-day pool)
   foodPerMouthPerDay: 0.75,   // larder eaten per mouth per day (tuned via sim)
   fuelPerMouthPerDay: 1,      // fuel burned per mouth per day (fall/winter only)
