@@ -229,3 +229,12 @@ export function nextTownScene(state, npc) {
 export function talkIsDry(state, npc) {
   return nextTownScene(state, npc) === (SMALLTALK[npc] || null);
 }
+
+// The mortgage due at this year's settlement: the scheduled payment + upkeep (with sensible
+// defaults past the authored years). Pure.
+export function mortgageDue(state) {
+  const y = state.year;
+  const payment = BALANCE.mortgageSchedule[y] ?? 150;
+  const upkeep = BALANCE.upkeepSchedule[y] ?? 40;
+  return { payment, upkeep, total: payment + upkeep };
+}

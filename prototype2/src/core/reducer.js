@@ -1,7 +1,7 @@
 import { season } from "./state.js";
 import { CROPS, ripe, dailyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
-import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost, nextTownScene } from "./selectors.js";
+import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost, nextTownScene, mortgageDue } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
 import { ODD_JOBS, SMALLTALK } from "./town.js";
 
@@ -49,6 +49,8 @@ export function reduce(state, action) {
       return runDays(state);
     case "END_SEASON":
       return endSeason(state);
+    case "TURN_YEAR":
+      return turnYear(state);
     case "ACCEPT_JOB":
       return acceptJob(state, action.id);
     case "VISIT":
@@ -260,9 +262,28 @@ function runDays(s) {
 }
 
 function endSeason(s) {
-  if (season(s) === "winter") return { ...s, phase: "yearend", ended: true }; // Year-1 slice ends here (multi-year = Plan 5)
-  let seasonIndex = s.seasonIndex + 1;
-  return { ...s, seasonIndex, day: 1, phase: "brief" };
+  if (season(s) === "winter") return { ...s, phase: "settlement" }; // year-end accounts, not game-over
+  return { ...s, seasonIndex: s.seasonIndex + 1, day: 1, phase: "brief" };
+}
+
+// Settle the year's mortgage and either roll into the next Spring or foreclose. Payment +
+// upkeep + any arrears come out of coin; a shortfall accrues as arrears and a warning. A
+// second consecutive short year (already warned, still short) loses the land.
+function turnYear(s) {
+  const due = mortgageDue(s);
+  let coin = s.coin;
+  let { arrears, warned, balance } = s.mortgage;
+  const owed = due.total + arrears;
+  if (coin >= owed) {
+    coin -= owed; arrears = 0; warned = false; balance = Math.max(0, balance - due.payment);
+  } else {
+    const short = owed - coin; coin = 0; arrears = short;
+    balance = Math.max(0, balance - Math.max(0, due.payment - short));
+    if (warned) return { ...s, phase: "foreclosed", ended: true, coin, mortgage: { balance, arrears, warned: true } };
+    warned = true;
+  }
+  return { ...s, coin, mortgage: { balance, arrears, warned },
+    year: s.year + 1, seasonIndex: 0, day: 1, phase: "brief" };
 }
 
 // Clear an overgrown field for coin, at the escalating price. A no-op if the field is

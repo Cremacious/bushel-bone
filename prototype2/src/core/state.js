@@ -20,6 +20,8 @@ export function initialState(seed = 1, lineageName = "Crane") {
     theme: "night",
     weather: { key: "cold-rain", label: "Cold rain", grow: 0 },
     coin: 100, larder: 80, fuel: 0, seed: 20,
+    mortgage: { balance: BALANCE.debtStart, arrears: 0, warned: false },
+    upgrades: [],              // owned tool/building ids (later phases)
     regard: 20,
     reckoning: 0,            // hidden
     fields: [0, 1, 2, 3].map((i) => ({ id: i, crop: null, progress: 0, fert: 3, taint: 0, tended: false, cleared: i === 0 })),

@@ -37,7 +37,11 @@ describe("a full Year-1 daily playthrough", () => {
       expect(s.phase).toBe("dusk");
       s = reduce(s, { type: "END_SEASON" });
     }
-    expect(s.phase).toBe("yearend");
+    expect(s.phase).toBe("settlement");
+    expect(s.hands.find((h) => h.id === "reuben").alive).toBe(true);
+    s = reduce(s, { type: "TURN_YEAR" });
+    expect(s.year).toBe(2);
+    expect(s.phase).toBe("brief");
     expect(s.hands.find((h) => h.id === "reuben").alive).toBe(true);
   });
 });

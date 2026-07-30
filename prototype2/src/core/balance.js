@@ -20,4 +20,7 @@ export const BALANCE = {
   },
   clearCosts: [40, 90, 150], // coin to clear the 2nd, 3rd, 4th field (Q-003 first pass)
   standing: { perTalk: 12, known: 15, friendly: 40, close: 70 }, // town relationships (Q-003)
+  debtStart: 600,                                    // the inherited mortgage balance (m)
+  mortgageSchedule: { 1: 0, 2: 50, 3: 150, 4: 150 }, // payment due at each year-end; 150 default 5+
+  upkeepSchedule:   { 1: 0, 2: 0, 3: 20, 4: 40 },    // flat yearly upkeep, rising; 40 default 5+
 };

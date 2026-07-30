@@ -159,7 +159,7 @@ describe("dusk + year end", () => {
     expect(state.phase).toBe("brief");
   });
 
-  it("winter's end reaches the year-1 verdict screen with a replay control", () => {
+  it("winter's end reaches the year-end settlement phase (the render screen is Task 5)", () => {
     const root = document.createElement("div");
     let state = initialState(1); state.seasonIndex = 3; // winter (no planting phase)
     state = reduce(state, { type: "BEGIN_SEASON" });
@@ -167,10 +167,8 @@ describe("dusk + year end", () => {
     const dispatch = (a) => { state = reduce(state, a); };
     let stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
     [...root.querySelectorAll(".choicecard")].find((b) => /Turn the page/.test(b.textContent)).click();
-    expect(state.phase).toBe("yearend");
-    stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    expect(root.textContent).toContain("survived another year");
-    expect([...root.querySelectorAll(".choicecard")].some((b) => /another first year/.test(b.textContent))).toBe(true);
+    expect(state.phase).toBe("settlement");
+    expect(state.ended).toBe(false);
   });
 });
 
