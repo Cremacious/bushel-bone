@@ -228,6 +228,7 @@ h2.t-title { margin: 0 0 14px; }
 .pa-action:hover:not(.disabled) { border-color: var(--lamp); }
 .pa-action.disabled { opacity: .45; cursor: not-allowed; }
 .pa-desc { color: var(--ink-faint); font-style: italic; }
+.actionsfree { color: var(--ink-faint); font-style: italic; margin: 8px 0 0; }
 .day-cta { margin-top: 12px; display: grid; gap: 8px; }
 .runbtn {
   all: unset;

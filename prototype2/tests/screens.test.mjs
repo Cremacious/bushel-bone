@@ -126,6 +126,15 @@ describe("the day screen", () => {
     [...root.querySelectorAll(".pa-action")].find((b) => /Forage/i.test(b.textContent)).click();
     expect(state.playerActionsLeft).toBe(1);
   });
+  it("has no wasted Rest personal action, and reassures unspent time is fine", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    const dispatch = () => {};
+    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    const labels = [...root.querySelectorAll(".pa-action .pa-label")].map((e) => e.textContent);
+    expect(labels).not.toContain("Rest");
+    expect(root.textContent).toMatch(/Unspent time is fine/);
+  });
   it("disables Harvest when nothing is ripe, and lists only living hands", () => {
     const root = document.createElement("div");
     let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });

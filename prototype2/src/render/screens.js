@@ -271,7 +271,6 @@ function personalActions(s, dispatch) {
       label: "Work a field", desc: `tend ${fieldLabel(workTarget).toLowerCase()} yourself, a day's growth toward harvest` }] : []),
     ...(worn ? [{ kind: "care", target: worn.id,
       label: `Sit with ${worn.name}`, desc: `ease a ${conditionOf(worn)} hand, brings their tiredness down` }] : []),
-    { kind: "rest", label: "Rest", desc: "a quiet day; keep your own strength" },
   ];
   return el("div", { class: "personal" }, [
     el("div", { class: "personal-h t-label", text: `Your day: ${left} of ${BALANCE.playerActionsPerDay} actions left` }),
@@ -284,8 +283,9 @@ function personalActions(s, dispatch) {
         el("span", { class: "pa-label t-choice", text: o.label }),
         el("span", { class: "pa-desc t-sub", text: o.desc }),
         ...playerActionEffects(o.kind).map((e) => el("span", { class: "efftag " + e.valence, text: e.label })),
-        ...(o.kind === "rest" ? [] : [actionCostTag()]),
+        actionCostTag(),
       ]))),
+    el("p", { class: "t-sub actionsfree", text: "Unspent time is fine. Turn in whenever you are ready." }),
     el("div", { class: "day-cta" }, [
       choiceCard({ text: "Turn in for the night", sub: "the day resolves: crops grow, the crew eats", primary: true }, () => dispatch({ type: "TURN_IN" })),
       el("button", { class: "runbtn t-label", text: "Let the days run →", onClick: () => dispatch({ type: "RUN_DAYS" }) }),
