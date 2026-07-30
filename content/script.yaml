@@ -13,6 +13,16 @@
 #
 # ids flatten to  <scene>.<field>  and  <scene>.<choiceId>.<field>.
 # Export a hand-editable .docx of all this with `npm run script:docx`.
+#
+# Dialogue intel highlights (economy task 3): when a line of NPC talk carries real,
+# actionable intel (not pure flavor), wrap the load-bearing keyword, not the whole
+# sentence, in one of five <span class="hl CATEGORY">...</span> classes:
+#   hl mkt   market intel, what will sell (gold)
+#   hl wx    weather / season warning (blue)
+#   hl omen  the reckoning, an omen (red)
+#   hl ppl   a person / story thread (green)
+#   hl off   an opportunity / offer (lamp accent)
+# Styled in prototype2/src/styles/screens.css under `.prose .hl`.
 
 scenes:
 
@@ -49,7 +59,7 @@ scenes:
     title: "The town turns out"
     dir: "[a green between a white church and a low saloon; the whole of {{place.town}} gathered to bless the planting]"
     body: >-
-      <div class="prose"><p>{{npc.halloway}} makes an expansive welcome and presses a small wheat contract on you: eight units, at a fair locked price, come the harvest. {{npc.grange}} walks the new man’s fields and says the old words over them. {{npc.meredith}} watches from the saloon step; the Sheriff watches from the shade.</p><p>Attending costs you a working day of {{npc.reuben}}’s, but a newcomer is only new once.</p></div>
+      <div class="prose"><p>{{npc.halloway}} makes an expansive welcome and presses <span class="hl off">a small wheat contract on you: eight units, at a fair locked price, come the harvest</span>. {{npc.grange}} walks the new man’s fields and says the old words over them. {{npc.meredith}} watches from the saloon step; the Sheriff watches from the shade.</p><p>Attending costs you a working day of {{npc.reuben}}’s, but a newcomer is only new once.</p></div>
     choices:
       attend:
         text: "Attend the Fair"
@@ -106,7 +116,7 @@ scenes:
     title_cotton: "The Cotton Won't Wait"
     dir: "[a field standing full, a bruise of storm two days out on the horizon, and a hand swaying on his feet]"
     body: >-
-      <div class="prose"><p>{field} stands ready, and the forecast reads storm within two days. {{npc.reuben}} has been on his feet since before light and is grey with it. Push him through the night and you save the crop whole. Let him lie down and you lose a third of it to the weather.</p></div>
+      <div class="prose"><p>{field} stands ready, and <span class="hl wx">the forecast reads storm within two days</span>. {{npc.reuben}} has been on his feet since before light and is grey with it. Push him through the night and you save the crop whole. Let him lie down and you lose a third of it to the weather.</p></div>
     choices:
       work:
         text: "Work him through the night"
@@ -342,7 +352,7 @@ scenes:
     eyebrow: "An early frost"
     title: "Frost on the Low Ground"
     body: >-
-      <div class="prose"><p>A hard frost comes a week early to the low fields. Anything ripe should come in now or risk the cold.</p></div>
+      <div class="prose"><p><span class="hl wx">A hard frost comes a week early to the low fields</span>. Anything ripe should come in now or risk the cold.</p></div>
     choices:
       bring:
         text: "Bring in what's ready"
@@ -421,7 +431,7 @@ scenes:
     eyebrow: "The saloon"
     title: "Meredith Vane"
     body: >-
-      <div class="prose"><p>{{npc.meredith}} pours for a man who has stopped listening and leans your way instead. “You hear things, keeping a bar,” she says, low. “The rail is hungry for grain this year, and what the rail wants, the rail pays for, come the depot. Wheat and corn, if you have the patience to grow them. The roots? Everyone has roots. A glut on a market is a poor man's harvest.” She straightens. “Worth knowing, when you decide what to put in the ground.”</p></div>
+      <div class="prose"><p>{{npc.meredith}} pours for a man who has stopped listening and leans your way instead. “You hear things, keeping a bar,” she says, low. “The rail is hungry for <span class="hl mkt">grain this year</span>, and what the rail wants, the rail pays for, come the depot. <span class="hl mkt">Wheat and corn</span>, if you have the patience to grow them. The roots? Everyone has roots. A <span class="hl mkt">glut on a market</span> is a poor man's harvest.” She straightens. “Worth knowing, when you decide what to put in the ground.”</p></div>
     choices:
       go_on:
         text: "“I will keep it in mind.”"
@@ -491,7 +501,7 @@ scenes:
     eyebrow: "The saloon"
     title: "Meredith Vane"
     body: >-
-      <div class="prose"><p>{{npc.meredith}} waits until the bar empties before she says more. She tells you plain that a saloonkeeper hears every debt in {{place.town}} before the bank does, and that yours is spoken of kindly enough, so far. Then, quieter, she asks whether you have had any word from her brother's wagon, and something in her face goes careful when she says his name. She does not explain herself, and you do not press.</p></div>
+      <div class="prose"><p>{{npc.meredith}} waits until the bar empties before she says more. She tells you plain that a saloonkeeper hears every debt in {{place.town}} before the bank does, and that yours is spoken of kindly enough, so far. Then, quieter, she asks whether you have had any word from <span class="hl ppl">her brother's wagon</span>, and something in her face goes careful when she says his name. She does not explain herself, and you do not press.</p></div>
     choices:
       go_on:
         text: "“I will send word, if I do.”"
@@ -524,7 +534,7 @@ scenes:
     eyebrow: "The bank"
     title: "Silas Ridley"
     body: >-
-      <div class="prose"><p>{{npc.silas}} unlocks a drawer and shows you, without preamble, the ledger page in your uncle's account. The payments came regular for years, he says, and then in the last year came early, more than was owed, as if {{npc.malachi}} meant to clear something ahead of a date only he knew. He closes the drawer before you can look too long, and says only that a man who pays ahead is usually running from something behind. He offers no guess as to what.</p></div>
+      <div class="prose"><p>{{npc.silas}} unlocks a drawer and shows you, without preamble, the ledger page in your uncle's account. The payments came regular for years, he says, and then in the last year came early, more than was owed, as if <span class="hl ppl">{{npc.malachi}} meant to clear something ahead of a date only he knew</span>. He closes the drawer before you can look too long, and says only that a man who pays ahead is usually running from something behind. He offers no guess as to what.</p></div>
     choices:
       go_on:
         text: "“Did he say why?”"
@@ -546,7 +556,7 @@ scenes:
     eyebrow: "The doctor's rooms"
     title: "Doc Bell"
     body: >-
-      <div class="prose"><p>{{npc.bell}} pours two fingers of something medicinal and admits, dry as ever, that half his practice these days is fevers no textbook accounts for, and hands that will not stop shaking though nothing ails them plain. He says he keeps his own notes on it, separate from the town's official record, and has not decided who ought to see them. He studies you a moment over his spectacles, the way he studies a wound before deciding how deep it runs, then changes the subject, as if he had said more than he meant to.</p></div>
+      <div class="prose"><p>{{npc.bell}} pours two fingers of something medicinal and admits, dry as ever, that half his practice these days is <span class="hl omen">fevers no textbook accounts for, and hands that will not stop shaking though nothing ails them plain</span>. He says he keeps his own notes on it, separate from the town's official record, and has not decided who ought to see them. He studies you a moment over his spectacles, the way he studies a wound before deciding how deep it runs, then changes the subject, as if he had said more than he meant to.</p></div>
     choices:
       go_on:
         text: "“What sort of fevers, Doc?”"
@@ -557,7 +567,7 @@ scenes:
     eyebrow: "The jail"
     title: "Nathaniel Coldwater"
     body: >-
-      <div class="prose"><p>{{npc.coldwater}} does not raise his voice, which is somehow worse than if he had. He tells you, plain, that he has walked more than one homestead where a farmer's hands went missing quiet and no one asked after them, and that he means to keep asking regardless whether anyone wants him to. He says the law in {{place.town}} does not much care how a man runs his own ground, but he does, and he wanted that said once, to your face, so no one can claim later he gave no warning. He touches his hat and goes, and you are left certain he meant every word.</p></div>
+      <div class="prose"><p>{{npc.coldwater}} does not raise his voice, which is somehow worse than if he had. He tells you, plain, that <span class="hl omen">he has walked more than one homestead where a farmer's hands went missing quiet and no one asked after them</span>, and that he means to keep asking regardless whether anyone wants him to. He says the law in {{place.town}} does not much care how a man runs his own ground, but he does, and he wanted that said once, to your face, so no one can claim later he gave no warning. He touches his hat and goes, and you are left certain he meant every word.</p></div>
     choices:
       go_on:
         text: "“I hear you, Sheriff.”"
@@ -568,7 +578,7 @@ scenes:
     eyebrow: "The gate"
     title: "Old Nan"
     body: >-
-      <div class="prose"><p>{{npc.nan}} takes your hand a moment longer than a greeting requires and turns it over, reading the calluses like a page. She tells you the ground under the east field has always kept what is given it, kindness and cruelty both, and pays each back in its own season and its own coin. She does not say when, or how, only that it has never yet forgotten a debt and does not intend to start with you. Then she lets your hand go and walks on before you can ask her to say it plainer.</p></div>
+      <div class="prose"><p>{{npc.nan}} takes your hand a moment longer than a greeting requires and turns it over, reading the calluses like a page. She tells you the ground under the east field has always kept what is given it, <span class="hl omen">kindness and cruelty both, and pays each back in its own season and its own coin</span>. She does not say when, or how, only that it has never yet forgotten a debt and does not intend to start with you. Then she lets your hand go and walks on before you can ask her to say it plainer.</p></div>
     choices:
       go_on:
         text: "“What does it pay back, exactly?”"

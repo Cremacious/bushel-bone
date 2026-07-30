@@ -17,11 +17,11 @@ describe("season transition", () => {
     expect(season(s)).toBe("summer");
     expect(s.phase).toBe("brief");
   });
-  it("END_SEASON from winter's dusk ends Year 1 (phase yearend)", () => {
+  it("END_SEASON from winter's dusk reaches the year-end settlement (not game-over)", () => {
     let s = initialState(1); s.seasonIndex = 3; // winter
     s = toDusk(s);
     s = reduce(s, { type: "END_SEASON" });
-    expect(s.phase).toBe("yearend");
-    expect(s.ended).toBe(true);
+    expect(s.phase).toBe("settlement");
+    expect(s.ended).toBe(false);
   });
 });

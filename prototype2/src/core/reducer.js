@@ -1,9 +1,9 @@
-import { season } from "./state.js";
+import { season, makeHand, HAND_NAMES } from "./state.js";
 import { CROPS, ripe, dailyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
-import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost, nextTownScene } from "./selectors.js";
+import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost, nextTownScene, mortgageDue, hireCost } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
-import { ODD_JOBS } from "./town.js";
+import { ODD_JOBS, SMALLTALK } from "./town.js";
 
 // Pure: (state, action) => nextState. Never mutates the input.
 // Later plans add cases (resolveEvent, ...). For now: theme + the day/season/year
@@ -49,6 +49,8 @@ export function reduce(state, action) {
       return runDays(state);
     case "END_SEASON":
       return endSeason(state);
+    case "TURN_YEAR":
+      return turnYear(state);
     case "ACCEPT_JOB":
       return acceptJob(state, action.id);
     case "VISIT":
@@ -59,6 +61,8 @@ export function reduce(state, action) {
       return { ...state, screen: "home", townAt: null };
     case "CLEAR_FIELD":
       return clearField(state, action.fieldId);
+    case "HIRE":
+      return hire(state);
     default:
       return state;
   }
@@ -105,16 +109,21 @@ function acceptJob(s, id) {
     jobsDoneToday: [...(s.jobsDoneToday || []), id] };
 }
 
-// Call on a townsperson: spend one action, open whichever of their talks comes next (see
-// nextTownScene), raise your standing with them, and remember the talk so the deck rotates.
-// A no-op off the day phase or with no actions left.
+// Call on a townsperson: open whichever of their talks comes next (see nextTownScene). A
+// talk with real content still spends one of the day's actions and raises standing; once
+// the deck is exhausted at the current standing, the small-talk filler is free (no action,
+// no standing) so a visit is never a wasted action. Either way the talk is remembered so
+// the deck rotates. A no-op off the day phase; real talks still need an action.
 function visit(s, npc) {
-  if (s.phase !== "day" || s.playerActionsLeft <= 0) return s;
+  if (s.phase !== "day") return s;
   const sceneId = nextTownScene(s, npc);
   if (!sceneId) return s;
+  const dry = sceneId === (SMALLTALK[npc] || null);
+  if (!dry && s.playerActionsLeft <= 0) return s; // real talks still need an action
   const seen = s.talksSeen || [];
-  return { ...s, playerActionsLeft: s.playerActionsLeft - 1,
-    standing: { ...(s.standing || {}), [npc]: ((s.standing || {})[npc] || 0) + BALANCE.standing.perTalk },
+  return { ...s,
+    playerActionsLeft: dry ? s.playerActionsLeft : s.playerActionsLeft - 1,
+    standing: dry ? s.standing : { ...(s.standing || {}), [npc]: ((s.standing || {})[npc] || 0) + BALANCE.standing.perTalk },
     talksSeen: seen.includes(sceneId) ? seen : [...seen, sceneId],
     phase: "scene", scene: { id: sceneId, result: null }, screen: "home" };
 }
@@ -255,9 +264,28 @@ function runDays(s) {
 }
 
 function endSeason(s) {
-  if (season(s) === "winter") return { ...s, phase: "yearend", ended: true }; // Year-1 slice ends here (multi-year = Plan 5)
-  let seasonIndex = s.seasonIndex + 1;
-  return { ...s, seasonIndex, day: 1, phase: "brief" };
+  if (season(s) === "winter") return { ...s, phase: "settlement" }; // year-end accounts, not game-over
+  return { ...s, seasonIndex: s.seasonIndex + 1, day: 1, phase: "brief" };
+}
+
+// Settle the year's mortgage and either roll into the next Spring or foreclose. Payment +
+// upkeep + any arrears come out of coin; a shortfall accrues as arrears and a warning. A
+// second consecutive short year (already warned, still short) loses the land.
+function turnYear(s) {
+  const due = mortgageDue(s);
+  let coin = s.coin;
+  let { arrears, warned, balance } = s.mortgage;
+  const owed = due.total + arrears;
+  if (coin >= owed) {
+    coin -= owed; arrears = 0; warned = false; balance = Math.max(0, balance - due.payment);
+  } else {
+    const short = owed - coin; coin = 0; arrears = short;
+    balance = Math.max(0, balance - Math.max(0, due.payment - short));
+    if (warned) return { ...s, phase: "foreclosed", ended: true, coin, mortgage: { balance, arrears, warned: true } };
+    warned = true;
+  }
+  return { ...s, coin, mortgage: { balance, arrears, warned },
+    year: s.year + 1, seasonIndex: 0, day: 1, phase: "brief" };
 }
 
 // Clear an overgrown field for coin, at the escalating price. A no-op if the field is
@@ -269,6 +297,17 @@ function clearField(s, id) {
   const cost = clearCost(s);
   if (cost == null || s.coin < cost) return s;
   return { ...mapField(s, id, (x) => ({ ...x, cleared: true })), coin: s.coin - cost };
+}
+
+// Hire a clone hand from Vane's wagon for coin. A no-op if unaffordable. The new hand is a
+// fresh mouth (food + winter fuel scale with the crew already), so hiring raises running costs.
+function hire(s) {
+  const cost = hireCost(s);
+  if (s.coin < cost) return s;
+  const used = new Set(s.hands.map((h) => h.name));
+  const name = HAND_NAMES.find((n) => !used.has(n)) || `Hand ${s.hands.length + 1}`;
+  const id = "hand" + s.hands.length;
+  return { ...s, coin: s.coin - cost, hands: [...s.hands, makeHand(id, name)] };
 }
 
 function plant(s, id, cropKey) {

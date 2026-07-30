@@ -7,6 +7,9 @@ export function makeHand(id, name, { body = "average", mind = "average" } = {}) 
   return { id, name, body, mind, task: "rest", strain: 0, morale: 4, alive: true, traits: [] };
 }
 
+// A small alt-1800s name pool for hands hired at Vane's wagon (see reducer.hire).
+export const HAND_NAMES = ["Sal", "Enoch", "Del", "Mara", "Gideon", "Tabitha", "Amos", "Lettie"];
+
 export function initialState(seed = 1, lineageName = "Crane") {
   return {
     // rngSeed = the original game seed (for display/restart); rngState = the PRNG's resumable cursor
@@ -20,6 +23,8 @@ export function initialState(seed = 1, lineageName = "Crane") {
     theme: "night",
     weather: { key: "cold-rain", label: "Cold rain", grow: 0 },
     coin: 100, larder: 80, fuel: 0, seed: 20,
+    mortgage: { balance: BALANCE.debtStart, arrears: 0, warned: false },
+    upgrades: [],              // owned tool/building ids (later phases)
     regard: 20,
     reckoning: 0,            // hidden
     fields: [0, 1, 2, 3].map((i) => ({ id: i, crop: null, progress: 0, fert: 3, taint: 0, tended: false, cleared: i === 0 })),
@@ -27,7 +32,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     foremanId: "reuben",
     log: [],
     logSeasonStart: 0,        // index into log where the current season's entries begin (dusk scoping)
-    phase: "brief",            // brief → planting → day → dusk → (next season) ; yearend at the end
+    phase: "brief",            // brief → planting → day → dusk → (next season) ; winter's dusk → settlement → foreclosed (or the next Spring's brief)
     daylog: [],                // what happened on the current day (shown at dusk of resolve)
     jobsDoneToday: [],         // odd-job ids already claimed today (reset each dawn)
     standing: {},              // per-NPC relationship points (npcId -> number)

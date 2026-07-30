@@ -111,6 +111,11 @@ export function clearCost(state) {
   const idx = already - 1; // 1 cleared → index 0 (the 2nd field's price)
   return idx >= 0 && idx < BALANCE.clearCosts.length ? BALANCE.clearCosts[idx] : null;
 }
+// The coin price of the NEXT hire (hands start at 1 = Reuben, so hands.length-1 indexes the
+// cost of the next one). Pure.
+export const hireCost = (s) => { const n = s.hands.length - 1; return BALANCE.hireCosts[n] ?? BALANCE.hireCosts[BALANCE.hireCosts.length - 1]; };
+export const canHire = (s) => s.coin >= hireCost(s);
+
 export const isWinter = (s) => season(s) === "winter";
 export const burnsFuel = (s) => season(s) === "fall" || season(s) === "winter";
 export const ripeFields = (s) => s.fields.filter(ripe);
@@ -223,4 +228,18 @@ export function nextTownScene(state, npc) {
   const st = standingOf(state, npc);
   const next = deck.find((d) => d.minStanding <= st && !seen.includes(d.id));
   return next ? next.id : (SMALLTALK[npc] || null);
+}
+
+// True when the NPC has no fresh content left (their next talk would be small-talk filler).
+export function talkIsDry(state, npc) {
+  return nextTownScene(state, npc) === (SMALLTALK[npc] || null);
+}
+
+// The mortgage due at this year's settlement: the scheduled payment + upkeep (with sensible
+// defaults past the authored years). Pure.
+export function mortgageDue(state) {
+  const y = state.year;
+  const payment = BALANCE.mortgageSchedule[y] ?? 130;
+  const upkeep = BALANCE.upkeepSchedule[y] ?? 35;
+  return { payment, upkeep, total: payment + upkeep };
 }

@@ -37,13 +37,13 @@ describe("resolve day", () => {
     expect(s.fields.find((f) => f.id === 0).crop).toBe(null);
   });
   it("cotton needs two hands: one brings in half the crop, two bring in the whole", () => {
-    // cotton yield 5 at fert 3 → 5 units at 12 coin; one hand gets floor(5/2)=2, two get 5.
+    // cotton yield 6 at fert 3, sale 18; one hand gets floor(6/2)=3, two get 6.
     let one = inDay();
     one.fields[0] = { ...one.fields[0], crop: "cotton", progress: 2, fert: 3 };
     one = reduce(one, { type: "ASSIGN", handId: "reuben", task: "harvest", targetFieldId: 0 });
     const c1 = one.coin;
     one = reduce(one, { type: "TURN_IN" });
-    expect(one.coin - c1).toBe(2 * 12);
+    expect(one.coin - c1).toBe(3 * 18);
     expect(one.fields.find((f) => f.id === 0).crop).toBe(null);
 
     let two = inDay();
@@ -53,7 +53,7 @@ describe("resolve day", () => {
     two = reduce(two, { type: "ASSIGN", handId: "del", task: "harvest", targetFieldId: 0 });
     const c2 = two.coin;
     two = reduce(two, { type: "TURN_IN" });
-    expect(two.coin - c2).toBe(5 * 12); // the whole crop
+    expect(two.coin - c2).toBe(6 * 18); // the whole crop
   });
   it("a starving hand accrues strain and can be lost", () => {
     // Winter: burns fuel too, so an unfed, unwarmed, idle hand racks up hunger

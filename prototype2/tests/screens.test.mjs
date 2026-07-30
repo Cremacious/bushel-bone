@@ -126,6 +126,15 @@ describe("the day screen", () => {
     [...root.querySelectorAll(".pa-action")].find((b) => /Forage/i.test(b.textContent)).click();
     expect(state.playerActionsLeft).toBe(1);
   });
+  it("has no wasted Rest personal action, and reassures unspent time is fine", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    const dispatch = () => {};
+    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    const labels = [...root.querySelectorAll(".pa-action .pa-label")].map((e) => e.textContent);
+    expect(labels).not.toContain("Rest");
+    expect(root.textContent).toMatch(/Unspent time is fine/);
+  });
   it("disables Harvest when nothing is ripe, and lists only living hands", () => {
     const root = document.createElement("div");
     let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
@@ -150,7 +159,7 @@ describe("dusk + year end", () => {
     expect(state.phase).toBe("brief");
   });
 
-  it("winter's end reaches the year-1 verdict screen with a replay control", () => {
+  it("winter's end reaches the year-end settlement phase (the render screen is Task 5)", () => {
     const root = document.createElement("div");
     let state = initialState(1); state.seasonIndex = 3; // winter (no planting phase)
     state = reduce(state, { type: "BEGIN_SEASON" });
@@ -158,10 +167,8 @@ describe("dusk + year end", () => {
     const dispatch = (a) => { state = reduce(state, a); };
     let stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
     [...root.querySelectorAll(".choicecard")].find((b) => /Turn the page/.test(b.textContent)).click();
-    expect(state.phase).toBe("yearend");
-    stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    expect(root.textContent).toContain("survived another year");
-    expect([...root.querySelectorAll(".choicecard")].some((b) => /another first year/.test(b.textContent))).toBe(true);
+    expect(state.phase).toBe("settlement");
+    expect(state.ended).toBe(false);
   });
 });
 
@@ -337,5 +344,39 @@ describe("the left panel in town", () => {
     renderShell(root, s, () => {});
     expect(root.querySelector(".townplate")).toBeTruthy();
     expect(root.querySelector(".boardpanel .fieldgrid")).toBeFalsy();
+  });
+});
+
+describe("the year-end settlement screen", () => {
+  it("shows the mortgage due and turns the year", () => {
+    const root = document.createElement("div");
+    let s = { ...initialState(1), year: 2, phase: "settlement", coin: 200 };
+    const dispatch = (a) => { s = reduce(s, a); };
+    const stage = renderShell(root, s, dispatch); renderScreen(stage, s, dispatch);
+    expect(root.textContent).toMatch(/mortgage|the bank|owe/i);
+    const turn = [...root.querySelectorAll(".choicecard")].find((b) => /Turn the year/i.test(b.textContent));
+    expect(turn).toBeTruthy();
+    turn.click();
+    expect(s.year).toBe(3);
+  });
+  it("the foreclosed screen shows the run ended and offers a new line", () => {
+    const root = document.createElement("div");
+    let s = { ...initialState(1), year: 4, phase: "foreclosed", ended: true };
+    const dispatch = () => {};
+    const stage = renderShell(root, s, dispatch); renderScreen(stage, s, dispatch);
+    expect(root.textContent).toMatch(/taken the land|foreclos|the bank/i);
+    expect([...root.querySelectorAll(".choicecard")].some((b) => /new line|begin/i.test(b.textContent))).toBe(true);
+  });
+});
+
+describe("dialogue intel highlights", () => {
+  it("renders colored intel highlights in dialogue (economy task 3)", () => {
+    const root = document.createElement("div");
+    let s = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    s = { ...s, phase: "scene", scene: { id: "meredith_rumor", result: null } };
+    const stage = renderShell(root, s, () => {}); renderScreen(stage, s, () => {});
+    const hl = root.querySelector(".hl.mkt");
+    expect(hl).toBeTruthy();
+    expect(hl.textContent.length).toBeGreaterThan(0);
   });
 });

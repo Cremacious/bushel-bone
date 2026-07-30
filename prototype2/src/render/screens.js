@@ -4,11 +4,11 @@ import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard, fieldCard, actionCostTag } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
-import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, actionEffects, playerActionEffects } from "../core/selectors.js";
+import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, actionEffects, playerActionEffects, talkIsDry, mortgageDue, hireCost, canHire } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
 import { counselFor } from "../content/counsel.js";
 import { BALANCE } from "../core/balance.js";
-import { LOCATIONS } from "../core/town.js";
+import { LOCATIONS, TALKS } from "../core/town.js";
 
 // Fleshed out across Tasks 8-12. Renders the active screen into the shell's stage.
 export function renderScreen(stage, state, dispatch) {
@@ -35,8 +35,11 @@ const SCREENS = {
       el("div", { class: "eyebrow t-label", text: eyebrow }),
       el("h2", { class: "t-title", text: title }),
       htmlProse(body),
-      choiceCard({ text: "Begin", sub: "set the season to its work", primary: true }, begin),
     );
+    if (mortgageDue(s).total > 0) {
+      stage.append(el("p", { class: "t-sub", text: "The bank's notes come due this winter." }));
+    }
+    stage.append(choiceCard({ text: "Begin", sub: "set the season to its work", primary: true }, begin));
   },
 
   // A scripted NPC scene: the speaker's beat, then either the choices or the chosen
@@ -128,11 +131,38 @@ const SCREENS = {
     for (const w of d.warnings) stage.append(el("p", { class: "warnline t-sub", text: w }));
     stage.append(choiceCard({ text: "Turn the page", sub: "on to what comes next", primary: true }, () => dispatch({ type: "END_SEASON" })));
   },
-  yearend: (stage, s, dispatch) => {
-    stage.append(el("div", { class: "verdict t-label", text: "Year One · closed" }),
-      el("h2", { class: "t-title", text: "“I survived another year.”" }),
-      el("p", { class: "prose t-prose", text: "The Winter broke, and the household woke to the thaw. You made it. Not everyone does." }),
-      choiceCard({ text: "Play another first year", sub: "a new seed, a new weather", primary: true }, () => { try { location.reload && location.reload(); } catch { /* jsdom: no-op */ } }));
+  settlement: (stage, s, dispatch) => {
+    const due = mortgageDue(s);
+    stage.append(
+      el("div", { class: "eyebrow t-label", text: `Year ${s.year} · the accounts` }),
+      el("h2", { class: "t-title", text: "The year, settled" }),
+    );
+    // the year's carried figures
+    const book = el("div", { class: "daybook" }, [
+      line("Coin in hand", `${s.coin} m`, 0),
+      line("Larder", `${Math.floor(s.larder)} food`, 1),
+      line("Fuel", `${s.fuel}`, 2),
+      line("The crew that stands", livingHands(s).map((h) => h.name).join(", ") || "only you", 3),
+    ]);
+    stage.append(book);
+    // the mortgage line
+    if (due.total > 0) {
+      stage.append(el("p", { class: "prose t-prose", text:
+        `The bank wants ${due.payment}m against the mortgage this winter${due.upkeep ? `, and ${due.upkeep}m in upkeep` : ""}. ` +
+        (s.coin >= due.total ? "You have it." : "You are short, and short is not a thing the bank forgets.") }));
+    } else {
+      stage.append(el("p", { class: "prose t-prose", text: "The bank asks nothing of you yet. Next year the notes come due." }));
+    }
+    if (s.mortgage.warned) stage.append(el("p", { class: "warnline t-sub", text: "You are behind on the mortgage. Fall behind again and the bank takes the land." }));
+    stage.append(choiceCard({ text: "Turn the year", sub: "on into the next Spring", primary: true }, () => dispatch({ type: "TURN_YEAR" })));
+  },
+  foreclosed: (stage, s) => {
+    stage.append(
+      el("div", { class: "verdict t-label", text: `Year ${s.year} · the end of it` }),
+      el("h2", { class: "t-title", text: "The bank has taken the land." }),
+      el("p", { class: "prose t-prose", text: `Your line held the ${s.lineageName} place ${s.year - 1} full ${s.year - 1 === 1 ? "year" : "years"} before the notes came due for good. The ground goes back to the Company. Another family will work it now.` }),
+      choiceCard({ text: "Begin a new line", sub: "a new name, a new ground", primary: true }, () => { try { location.reload && location.reload(); } catch { /* jsdom: no-op */ } }),
+    );
   },
   // Read-only status tabs, open anytime. They read state and never dispatch a mutation.
   fields: (stage, s) => {
@@ -222,14 +252,18 @@ const SCREENS = {
     stage.append(
       el("p", { class: "place-scene t-prose", text: tok("{{loc." + l.loc + ".desc}}") }),
       el("div", { class: "loc-standing t-label", text: `${tok("{{npc." + l.npc + "}}")} · ${standingWord(standingOf(s, l.npc))}` }),
-      choiceCard({
+      ...(TALKS[l.npc] ? [choiceCard({
         text: `Talk to ${tok("{{npc." + l.npc + "}}")}`,
         sub: "see what they have to say today",
-        tag: canTalk ? "-1 action" : null,
-        tagValence: "bad",
+        tag: canTalk ? (talkIsDry(s, l.npc) ? "free" : "-1 action") : null,
+        tagValence: canTalk && talkIsDry(s, l.npc) ? "" : "bad",
         disabled: !canTalk,
         why,
-      }, () => dispatch({ type: "VISIT", npc: l.npc })),
+      }, () => dispatch({ type: "VISIT", npc: l.npc }))] : []),
+      ...(l.npc === "ambrose" ? [choiceCard({
+        text: "Hire a hand", sub: "a clone from the wagon",
+        tag: `${hireCost(s)}m`, tagValence: "", disabled: !canHire(s), why: "not enough coin",
+      }, () => dispatch({ type: "HIRE" }))] : []),
       choiceCard({ text: "Walk on", sub: "back to the crossroads" },
         () => dispatch({ type: "WALK_TO", place: null })),
     );
@@ -271,7 +305,6 @@ function personalActions(s, dispatch) {
       label: "Work a field", desc: `tend ${fieldLabel(workTarget).toLowerCase()} yourself, a day's growth toward harvest` }] : []),
     ...(worn ? [{ kind: "care", target: worn.id,
       label: `Sit with ${worn.name}`, desc: `ease a ${conditionOf(worn)} hand, brings their tiredness down` }] : []),
-    { kind: "rest", label: "Rest", desc: "a quiet day; keep your own strength" },
   ];
   return el("div", { class: "personal" }, [
     el("div", { class: "personal-h t-label", text: `Your day: ${left} of ${BALANCE.playerActionsPerDay} actions left` }),
@@ -284,8 +317,9 @@ function personalActions(s, dispatch) {
         el("span", { class: "pa-label t-choice", text: o.label }),
         el("span", { class: "pa-desc t-sub", text: o.desc }),
         ...playerActionEffects(o.kind).map((e) => el("span", { class: "efftag " + e.valence, text: e.label })),
-        ...(o.kind === "rest" ? [] : [actionCostTag()]),
+        actionCostTag(),
       ]))),
+    el("p", { class: "t-sub actionsfree", text: "Unspent time is fine. Turn in whenever you are ready." }),
     el("div", { class: "day-cta" }, [
       choiceCard({ text: "Turn in for the night", sub: "the day resolves: crops grow, the crew eats", primary: true }, () => dispatch({ type: "TURN_IN" })),
       el("button", { class: "runbtn t-label", text: "Let the days run →", onClick: () => dispatch({ type: "RUN_DAYS" }) }),

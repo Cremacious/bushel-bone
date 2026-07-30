@@ -10,11 +10,11 @@ import { BALANCE } from "./balance.js";
 //  - premium cash: cotton, two seasons, worth the most of anything.
 // Balance values are first-pass, owned by the balance model (Q-003).
 export const CROPS = {
-  turnip: { name: "Turnip", tier: "staple", seed: 3, seasons: 1, yield: 7, food: 1.5, sale: 2 },
-  potato: { name: "Potato", tier: "staple", seed: 6, seasons: 1, yield: 10, food: 2, sale: 2 },
-  wheat:  { name: "Wheat", tier: "cash", seed: 4, seasons: 2, yield: 8, food: 0, sale: 6 },
-  corn:   { name: "Corn", tier: "cash", seed: 5, seasons: 2, yield: 9, food: 0, sale: 7 },
-  cotton: { name: "Cotton", tier: "cash", seed: 10, seasons: 2, yield: 5, food: 0, sale: 12, needsTwo: true },
+  turnip: { name: "Turnip", tier: "staple", seed: 3, seasons: 1, yield: 7, food: 2.5, sale: 2 },
+  potato: { name: "Potato", tier: "staple", seed: 6, seasons: 1, yield: 10, food: 3, sale: 2 },
+  wheat:  { name: "Wheat", tier: "cash", seed: 4, seasons: 2, yield: 9, food: 0, sale: 9 },
+  corn:   { name: "Corn", tier: "cash", seed: 5, seasons: 2, yield: 10, food: 0, sale: 10 },
+  cotton: { name: "Cotton", tier: "cash", seed: 10, seasons: 2, yield: 6, food: 0, sale: 18, needsTwo: true },
 };
 
 export function ripe(field) {
