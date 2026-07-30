@@ -19,6 +19,7 @@ export const BALANCE = {
     wornAt: 25, failingAt: 50, lostAt: 100,
   },
   clearCosts: [40, 90, 150], // coin to clear the 2nd, 3rd, 4th field (Q-003 first pass)
+  hireCosts: [60, 110, 300], // coin to hire the 2nd, 3rd, 4th hand (the last repeats past that)
   standing: { perTalk: 12, known: 15, friendly: 40, close: 70 }, // town relationships (Q-003)
   debtStart: 600,                                    // the inherited mortgage balance (m)
   mortgageSchedule: { 1: 0, 2: 50, 3: 150, 4: 150 }, // payment due at each year-end; 150 default 5+

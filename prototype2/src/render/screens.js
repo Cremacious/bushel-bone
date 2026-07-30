@@ -4,11 +4,11 @@ import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard, fieldCard, actionCostTag } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
-import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, actionEffects, playerActionEffects, talkIsDry, mortgageDue } from "../core/selectors.js";
+import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, actionEffects, playerActionEffects, talkIsDry, mortgageDue, hireCost, canHire } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
 import { counselFor } from "../content/counsel.js";
 import { BALANCE } from "../core/balance.js";
-import { LOCATIONS } from "../core/town.js";
+import { LOCATIONS, TALKS } from "../core/town.js";
 
 // Fleshed out across Tasks 8-12. Renders the active screen into the shell's stage.
 export function renderScreen(stage, state, dispatch) {
@@ -252,14 +252,18 @@ const SCREENS = {
     stage.append(
       el("p", { class: "place-scene t-prose", text: tok("{{loc." + l.loc + ".desc}}") }),
       el("div", { class: "loc-standing t-label", text: `${tok("{{npc." + l.npc + "}}")} · ${standingWord(standingOf(s, l.npc))}` }),
-      choiceCard({
+      ...(TALKS[l.npc] ? [choiceCard({
         text: `Talk to ${tok("{{npc." + l.npc + "}}")}`,
         sub: "see what they have to say today",
         tag: canTalk ? (talkIsDry(s, l.npc) ? "free" : "-1 action") : null,
         tagValence: canTalk && talkIsDry(s, l.npc) ? "" : "bad",
         disabled: !canTalk,
         why,
-      }, () => dispatch({ type: "VISIT", npc: l.npc })),
+      }, () => dispatch({ type: "VISIT", npc: l.npc }))] : []),
+      ...(l.npc === "ambrose" ? [choiceCard({
+        text: "Hire a hand", sub: "a clone from the wagon",
+        tag: `${hireCost(s)}m`, tagValence: "", disabled: !canHire(s), why: "not enough coin",
+      }, () => dispatch({ type: "HIRE" }))] : []),
       choiceCard({ text: "Walk on", sub: "back to the crossroads" },
         () => dispatch({ type: "WALK_TO", place: null })),
     );

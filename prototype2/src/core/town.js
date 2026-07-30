@@ -11,6 +11,7 @@ export const LOCATIONS = [
   { id: "doc",    npc: "bell",     loc: "doc",    purpose: "medicine, and rumor" },
   { id: "jail",   npc: "coldwater",loc: "jail",   purpose: "the law" },
   { id: "nan",    npc: "nan",      loc: "gate",   purpose: "the old ways" },
+  { id: "wagon",  npc: "ambrose",  loc: "wagon",  purpose: "clone hands, for a price" },
 ];
 
 // The odd-job deck: small paid errands. Each day a deterministic slice is on offer

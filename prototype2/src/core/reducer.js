@@ -1,7 +1,7 @@
-import { season } from "./state.js";
+import { season, makeHand, HAND_NAMES } from "./state.js";
 import { CROPS, ripe, dailyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
-import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost, nextTownScene, mortgageDue } from "./selectors.js";
+import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost, nextTownScene, mortgageDue, hireCost } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
 import { ODD_JOBS, SMALLTALK } from "./town.js";
 
@@ -61,6 +61,8 @@ export function reduce(state, action) {
       return { ...state, screen: "home", townAt: null };
     case "CLEAR_FIELD":
       return clearField(state, action.fieldId);
+    case "HIRE":
+      return hire(state);
     default:
       return state;
   }
@@ -295,6 +297,17 @@ function clearField(s, id) {
   const cost = clearCost(s);
   if (cost == null || s.coin < cost) return s;
   return { ...mapField(s, id, (x) => ({ ...x, cleared: true })), coin: s.coin - cost };
+}
+
+// Hire a clone hand from Vane's wagon for coin. A no-op if unaffordable. The new hand is a
+// fresh mouth (food + winter fuel scale with the crew already), so hiring raises running costs.
+function hire(s) {
+  const cost = hireCost(s);
+  if (s.coin < cost) return s;
+  const used = new Set(s.hands.map((h) => h.name));
+  const name = HAND_NAMES.find((n) => !used.has(n)) || `Hand ${s.hands.length + 1}`;
+  const id = "hand" + s.hands.length;
+  return { ...s, coin: s.coin - cost, hands: [...s.hands, makeHand(id, name)] };
 }
 
 function plant(s, id, cropKey) {

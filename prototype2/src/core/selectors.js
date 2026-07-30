@@ -111,6 +111,11 @@ export function clearCost(state) {
   const idx = already - 1; // 1 cleared → index 0 (the 2nd field's price)
   return idx >= 0 && idx < BALANCE.clearCosts.length ? BALANCE.clearCosts[idx] : null;
 }
+// The coin price of the NEXT hire (hands start at 1 = Reuben, so hands.length-1 indexes the
+// cost of the next one). Pure.
+export const hireCost = (s) => { const n = s.hands.length - 1; return BALANCE.hireCosts[n] ?? BALANCE.hireCosts[BALANCE.hireCosts.length - 1]; };
+export const canHire = (s) => s.coin >= hireCost(s);
+
 export const isWinter = (s) => season(s) === "winter";
 export const burnsFuel = (s) => season(s) === "fall" || season(s) === "winter";
 export const ripeFields = (s) => s.fields.filter(ripe);

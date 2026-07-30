@@ -7,6 +7,9 @@ export function makeHand(id, name, { body = "average", mind = "average" } = {}) 
   return { id, name, body, mind, task: "rest", strain: 0, morale: 4, alive: true, traits: [] };
 }
 
+// A small alt-1800s name pool for hands hired at Vane's wagon (see reducer.hire).
+export const HAND_NAMES = ["Sal", "Enoch", "Del", "Mara", "Gideon", "Tabitha", "Amos", "Lettie"];
+
 export function initialState(seed = 1, lineageName = "Crane") {
   return {
     // rngSeed = the original game seed (for display/restart); rngState = the PRNG's resumable cursor
