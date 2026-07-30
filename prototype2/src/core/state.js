@@ -29,7 +29,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     foremanId: "reuben",
     log: [],
     logSeasonStart: 0,        // index into log where the current season's entries begin (dusk scoping)
-    phase: "brief",            // brief → planting → day → dusk → (next season) ; yearend at the end
+    phase: "brief",            // brief → planting → day → dusk → (next season) ; winter's dusk → settlement → foreclosed (or the next Spring's brief)
     daylog: [],                // what happened on the current day (shown at dusk of resolve)
     jobsDoneToday: [],         // odd-job ids already claimed today (reset each dawn)
     standing: {},              // per-NPC relationship points (npcId -> number)

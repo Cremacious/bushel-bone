@@ -347,6 +347,28 @@ describe("the left panel in town", () => {
   });
 });
 
+describe("the year-end settlement screen", () => {
+  it("shows the mortgage due and turns the year", () => {
+    const root = document.createElement("div");
+    let s = { ...initialState(1), year: 2, phase: "settlement", coin: 200 };
+    const dispatch = (a) => { s = reduce(s, a); };
+    const stage = renderShell(root, s, dispatch); renderScreen(stage, s, dispatch);
+    expect(root.textContent).toMatch(/mortgage|the bank|owe/i);
+    const turn = [...root.querySelectorAll(".choicecard")].find((b) => /Turn the year/i.test(b.textContent));
+    expect(turn).toBeTruthy();
+    turn.click();
+    expect(s.year).toBe(3);
+  });
+  it("the foreclosed screen shows the run ended and offers a new line", () => {
+    const root = document.createElement("div");
+    let s = { ...initialState(1), year: 4, phase: "foreclosed", ended: true };
+    const dispatch = () => {};
+    const stage = renderShell(root, s, dispatch); renderScreen(stage, s, dispatch);
+    expect(root.textContent).toMatch(/taken the land|foreclos|the bank/i);
+    expect([...root.querySelectorAll(".choicecard")].some((b) => /new line|begin/i.test(b.textContent))).toBe(true);
+  });
+});
+
 describe("dialogue intel highlights", () => {
   it("renders colored intel highlights in dialogue (economy task 3)", () => {
     const root = document.createElement("div");
