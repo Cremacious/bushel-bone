@@ -34,7 +34,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     logSeasonStart: 0,        // index into log where the current season's entries begin (dusk scoping)
     phase: "brief",            // brief → planting → day → dusk → (next season) ; winter's dusk → settlement → foreclosed (or the next Spring's brief)
     daylog: [],                // what happened on the current day (shown at dusk of resolve)
-    jobsDoneToday: [],         // odd-job ids already claimed today (reset each dawn)
+    jobsDoneThisSeason: [],    // odd-job ids already claimed this season (reset each season)
     standing: {},              // per-NPC relationship points (npcId -> number)
     talksSeen: [],             // talk scene ids already played (drives the rotating deck)
     townAt: null,              // the walkable place id the player is standing at in town; null = the street overview

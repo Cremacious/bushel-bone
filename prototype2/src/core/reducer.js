@@ -76,8 +76,8 @@ export function reduce(state, action) {
 // winter). Shared by BEGIN_SEASON and a scene closing with after: "BEGIN_SEASON".
 function beginSeason(s) {
   return season(s) === "winter"
-    ? runDays({ ...withInitialRoles({ ...s, phase: "day", day: 1 }), seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length })
-    : { ...s, phase: "planting", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length };
+    ? runDays({ ...withInitialRoles({ ...s, phase: "day", day: 1 }), seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length, jobsDoneThisSeason: [] })
+    : { ...s, phase: "planting", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length, jobsDoneThisSeason: [] };
 }
 
 // Roles persist across days (set once via SET_ROLE), so opening a season needs no per-day
@@ -97,13 +97,15 @@ function spendAction(s, { kind, target }) {
 }
 
 // Take a paid odd-job: spend one of the season's actions, take the coin, mark it done so it
-// cannot be double-claimed. A no-op off the day phase, with no actions, or if already done.
+// cannot be double-claimed. Jobs are season-scarce (see town.JOBS_PER_SEASON): once taken, a
+// job stays gone for the rest of the season, not just the day. A no-op off the day phase,
+// with no actions, or if already done this season.
 function acceptJob(s, id) {
   if (s.phase !== "day" || s.seasonActionsLeft <= 0) return s;
   const job = ODD_JOBS.find((j) => j.id === id);
-  if (!job || (s.jobsDoneToday || []).includes(id)) return s;
+  if (!job || (s.jobsDoneThisSeason || []).includes(id)) return s;
   return { ...s, coin: s.coin + job.coin, seasonActionsLeft: s.seasonActionsLeft - 1,
-    jobsDoneToday: [...(s.jobsDoneToday || []), id] };
+    jobsDoneThisSeason: [...(s.jobsDoneThisSeason || []), id] };
 }
 
 // Call on a townsperson: open whichever of their talks comes next (see nextTownScene). A
@@ -234,7 +236,7 @@ function resolveDay(s) {
   if (day > BALANCE.daysPerSeason) { day = BALANCE.daysPerSeason; phase = "dusk"; }
 
   return { ...s, hands, fields, larder, fuel, coin, seed, day, phase,
-    daylog, jobsDoneToday: [],
+    daylog,
     log: [...s.log, ...daylog] };
 }
 

@@ -14,17 +14,24 @@ function inTown(seed = 1) {
 }
 
 describe("townOffers()", () => {
-  it("offers JOBS_PER_DAY jobs, deterministically for a given day+seed", () => {
+  it("offers JOBS_PER_SEASON jobs, deterministically for a given season+seed", () => {
     const s = inTown(42);
     const a = townOffers(s).jobs.map((j) => j.id);
     const b = townOffers(s).jobs.map((j) => j.id);
     expect(a).toEqual(b);            // pure
     expect(a.length).toBe(2);
   });
-  it("marks a job done once it is in jobsDoneToday", () => {
+  it("stays the same offer across days within a season", () => {
+    let s = inTown(42);
+    const a = townOffers(s).jobs.map((j) => j.id);
+    s = reduce(s, { type: "TURN_IN" }); // resolve a day, still the same season
+    const b = townOffers(s).jobs.map((j) => j.id);
+    expect(b).toEqual(a);
+  });
+  it("marks a job done once it is in jobsDoneThisSeason", () => {
     let s = inTown(42);
     const first = townOffers(s).jobs[0].id;
-    s = { ...s, jobsDoneToday: [first] };
+    s = { ...s, jobsDoneThisSeason: [first] };
     expect(townOffers(s).jobs.find((j) => j.id === first).done).toBe(true);
   });
 });
@@ -47,13 +54,27 @@ describe("town actions", () => {
     s = reduce(s, { type: "ACCEPT_JOB", id: job.id });
     expect(s.coin).toBe(coin0 + job.coin);
     expect(s.seasonActionsLeft).toBe(acts0 - 1);
-    expect(s.jobsDoneToday).toContain(job.id);
+    expect(s.jobsDoneThisSeason).toContain(job.id);
   });
   it("ACCEPT_JOB is a no-op with no actions left or off the day phase", () => {
     let s = inTown(42); s = { ...s, seasonActionsLeft: 0 };
     expect(reduce(s, { type: "ACCEPT_JOB", id: offers2(s).jobs[0].id })).toEqual(s);
     let b = reduce(initialState(1), { type: "BEGIN_SEASON" }); // planting phase
     expect(reduce(b, { type: "ACCEPT_JOB", id: "haul_mill" })).toEqual(b);
+  });
+  it("a taken job stays gone across days but is offered fresh next season", () => {
+    let s = inTown(42);
+    const before = offers2(s).jobs.map((j) => j.id);
+    for (const id of before) s = reduce(s, { type: "ACCEPT_JOB", id });
+    expect(offers2(s).jobs.every((j) => j.done)).toBe(true);
+    // advance days within the same season: still done, not refilled
+    s = reduce(s, { type: "TURN_IN" });
+    expect(offers2(s).jobs.every((j) => j.done)).toBe(true);
+    // close out the season and open the next: jobsDoneThisSeason resets
+    s = reduce(s, { type: "END_SEASON" });
+    s = reduce(s, { type: "BEGIN_SEASON" });
+    expect(s.jobsDoneThisSeason).toEqual([]);
+    expect(offers2(s).jobs.every((j) => !j.done)).toBe(true);
   });
   it("VISIT spends an action and opens the location's talk scene", () => {
     let s = inTown(42);
