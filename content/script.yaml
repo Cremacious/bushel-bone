@@ -750,7 +750,7 @@ scenes:
         result: "You let them lie abed. The fever breaks on its own and they rise the stronger for the rest."
       work:
         text: "Work them through it"
-        sub: "the work done, the hand worn hard"
+        sub: "push them, and they may not last a hard week"
         result: "They keep to the field, grey and swaying, and the fever burns worse for it. It cost them more than it saved."
 
   ev_gate_child:

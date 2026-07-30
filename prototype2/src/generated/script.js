@@ -401,7 +401,7 @@ export default {
   "ev_sick_hand.rest.sub": "their work lost, their strength back",
   "ev_sick_hand.rest.result": "You let them lie abed. The fever breaks on its own and they rise the stronger for the rest.",
   "ev_sick_hand.work.text": "Work them through it",
-  "ev_sick_hand.work.sub": "the work done, the hand worn hard",
+  "ev_sick_hand.work.sub": "push them, and they may not last a hard week",
   "ev_sick_hand.work.result": "They keep to the field, grey and swaying, and the fever burns worse for it. It cost them more than it saved.",
   "ev_gate_child.eyebrow": "The gate",
   "ev_gate_child.title": "A child at the gate",

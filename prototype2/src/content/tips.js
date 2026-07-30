@@ -2,6 +2,8 @@
 // the first time the player reaches the mechanic it explains, and only when tutorials are
 // on. Multi-page tips are an array of strings. Tokens ({{npc.reuben}} etc.) are resolved
 // at render time. Reuben's voice throughout; he is always shown with his name and avatar.
+import { SCENES } from "./scenes.js";
+
 export const TIPS = {
   orient: [
     "Now then. Coin buys seed and fuel. The larder feeds us through to spring. Fuel keeps the cold out come winter. Seed goes in the ground before coin ever does. Tap any of those four figures, any time, and I will tell you plain what it means. And that row of dots up by my name is how the hands are holding up; the Regard beside it is how the town has come to look at you.",
@@ -22,7 +24,18 @@ export const TIPS = {
   town: [
     "This is Marrow's Cross. Walk where you like, it costs you nothing to go from door to door. It is stopping to call on a body, or taking on a piece of paid work, that spends a piece of your day, same as work at home. There is coin to be had and folk worth knowing, and the more you call on a body, the more they warm to you, and the more they will tell you. A stranger gets pleasantries. A friend gets the truth. When you are done, head back to the farm.",
   ],
+  dread: [
+    "The land keeps its own ledger, and it is not one you get to read. You will feel the reckoning long before you ever see it counted. Tend the hands well, and treat them fair, and you will have the less to fear from it.",
+  ],
 };
+
+// True when a scene is an event that would raise the hidden reckoning on some choice.
+// The first such event a guided player meets earns the one-time dread tip.
+function raisesDread(sceneId) {
+  const sc = SCENES[sceneId];
+  if (!sc || !sc.event || !sc.fx) return false;
+  return Object.values(sc.fx).some((d) => d && d.reckoning > 0);
+}
 
 // The tip owed for the current context, or null. Fires once each (tracked in tipsSeen),
 // only when tutorials are on, and never on top of another overlay.
@@ -32,6 +45,7 @@ export function pendingTip(state) {
   const isWinter = state.seasonIndex === 3;
   const cands = [];
   if (state.phase === "scene" && state.scene && state.scene.id === "silas_welcome") cands.push("orient");
+  if (state.phase === "scene" && state.scene && raisesDread(state.scene.id)) cands.push("dread");
   if (state.phase === "planting") cands.push("plant");
   if (state.phase === "day") cands.push("assign");
   if (isWinter && (state.phase === "day" || state.phase === "brief")) cands.push("winter");
