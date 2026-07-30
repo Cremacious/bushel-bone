@@ -19,4 +19,5 @@ export const BALANCE = {
     wornAt: 25, failingAt: 50, lostAt: 100,
   },
   clearCosts: [40, 90, 150], // coin to clear the 2nd, 3rd, 4th field (Q-003 first pass)
+  standing: { perTalk: 12, known: 15, friendly: 40, close: 70 }, // town relationships (Q-003)
 };

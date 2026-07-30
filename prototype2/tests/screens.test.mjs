@@ -216,6 +216,31 @@ describe("tab views", () => {
   });
 });
 
+describe("town exploration UI", () => {
+  it("the Day screen offers a ride to town", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    const dispatch = (a) => { state = reduce(state, a); };
+    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    const ride = [...root.querySelectorAll("button")].find((b) => /Ride to|Marrow/i.test(b.textContent));
+    expect(ride).toBeTruthy();
+    ride.click();
+    expect(state.screen).toBe("town");
+  });
+  it("the Town screen shows each NPC's standing and calling on one opens their talk", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    state = { ...state, screen: "town" };
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    expect(root.querySelector(".loc-standing")).toBeTruthy();
+    const call = [...root.querySelectorAll(".townloc .loc-talk")].find((b) => !b.disabled);
+    call.click();
+    expect(state.phase).toBe("scene");
+  });
+});
+
 describe("clearing land on the planting grid", () => {
   it("an overgrown field shows a Clear control that spends coin to clear it", () => {
     const root = document.createElement("div");

@@ -427,3 +427,238 @@ scenes:
         text: "“I will keep it in mind.”"
         sub: "let her get back to the bar"
         result: "She is already three faces down the counter, pouring and listening."
+
+  # Town talk scenes, remaining five (town-exploration task 2): the last five
+  # townsfolk get their intro, a deeper scene (gated by standing), and a short
+  # small-talk filler for when their deck is exhausted. Same shape as above.
+
+  silas_town:
+    eyebrow: "The bank"
+    title: "Silas Ridley"
+    body: >-
+      <div class="prose"><p>{{npc.silas}} finds you on the street and does not waste words on greeting. He asks after the fields, the fences, and whether you have kept count of what you owe, in that order, and nothing warmer. When you answer him plain, he nods once, as if a column has been added correctly and no more needs saying. He touches his hat at parting, which from him passes for cordial.</p></div>
+    choices:
+      go_on:
+        text: "“The count is kept, Mr. Ridley.”"
+        sub: "answer him plain"
+        result: "He nods once, satisfied by the arithmetic of it, and is gone before you can say more."
+
+  grange_intro:
+    eyebrow: "The church"
+    title: "Elias Grange"
+    body: >-
+      <div class="prose"><p>{{npc.grange}} meets you on the church steps, thin as a fence post and twice as grave. He speaks of the parish roll, of the dead who are owed a Sunday word, and of a duty that does not end at a man's own gate. He asks after your uncle's grave and seems unsurprised there is none to tend. Before you go he says, quiet, that the ground remembers what a man buries in it, and lets the words sit.</p></div>
+    choices:
+      go_on:
+        text: "“I will keep Sunday, Preacher.”"
+        sub: "give him the answer he wants"
+        result: "He inclines his head, the nearest thing to warmth he offers, and returns to his ledger of souls."
+
+  bell_intro:
+    eyebrow: "The doctor's rooms"
+    title: "Doc Bell"
+    body: >-
+      <div class="prose"><p>{{npc.bell}} looks up from a jar of something pickled and says he heard the newcomer had not yet fallen sick or hurt, which he counts a personal failure on the town's part. He asks brief, pointed questions, of the hands, of sleep, of food, of cold, the way a man takes inventory. He writes nothing down when you answer, though you get the sense he forgets nothing either.</p></div>
+    choices:
+      go_on:
+        text: "“I am well enough, Doc.”"
+        sub: "answer his questions"
+        result: "He grunts, unconvinced, and tells you to come back when that changes, because it will."
+
+  coldwater_intro:
+    eyebrow: "The jail"
+    title: "Nathaniel Coldwater"
+    body: >-
+      <div class="prose"><p>{{npc.coldwater}} stands in the jailhouse doorway and looks at you the way he looks at everyone, long and unhurried, as if reading a warrant not yet written. He asks how the hands you keep are getting on, and waits out the silence after the question rather than filling it himself. When you answer, he only says he likes to know a man's ground before trouble finds it, then goes back inside without another word.</p></div>
+    choices:
+      go_on:
+        text: "“They are getting on fine, Sheriff.”"
+        sub: "meet his stare"
+        result: "He holds your eye a moment longer than comfort allows, then nods once and lets you go."
+
+  nan_intro:
+    eyebrow: "The gate"
+    title: "Old Nan"
+    body: >-
+      <div class="prose"><p>{{npc.nan}} is waiting at the gate when you come out, as if she knew the hour you would. She does not ask your name, only looks past you toward the east field a long moment before speaking. She says the ground has always kept its own accounts, longer than any bank's, and that a body learns to listen or a body learns the hard way. Then she is up the road before you think to ask what she means.</p></div>
+    choices:
+      go_on:
+        text: "“What is it you hear, out there?”"
+        sub: "ask more than you meant to"
+        result: "She only smiles, the way the old do at a question already answered once for someone else, and does not look back."
+
+  meredith_deep:
+    eyebrow: "The saloon"
+    title: "Meredith Vane"
+    body: >-
+      <div class="prose"><p>{{npc.meredith}} waits until the bar empties before she says more. She tells you plain that a saloonkeeper hears every debt in {{place.town}} before the bank does, and that yours is spoken of kindly enough, so far. Then, quieter, she asks whether you have had any word from her brother's wagon, and something in her face goes careful when she says his name. She does not explain herself, and you do not press.</p></div>
+    choices:
+      go_on:
+        text: "“I will send word, if I do.”"
+        sub: "let the matter lie"
+        result: "She thanks you plainly and goes back to wiping a glass that was already clean."
+
+  crake_deep:
+    eyebrow: "The smithy"
+    title: "Hollis Crake"
+    body: >-
+      <div class="prose"><p>{{npc.crake}} sets down the shears he is mending and, for once, does not go straight back to work. He tells you, short and flat, that the arm went to a thresher some ten years back, and that a man learns to work around what is gone or he does not work at all. He says your fences are holding better than most newcomers manage, which from him is no small word. Then he picks the shears back up, and the conversation is over.</p></div>
+    choices:
+      go_on:
+        text: "“I am obliged for the word, Mr. Crake.”"
+        sub: "take the rare praise"
+        result: "He only grunts and bends back to the iron, having said, by his measure, quite enough."
+
+  tolliver_deep:
+    eyebrow: "The general store"
+    title: "Prudence Tolliver"
+    body: >-
+      <div class="prose"><p>{{npc.tolliver}} counts your coin twice before she speaks of anything but goods. She tells you, without much softness, that she buried a husband and has kept this store solvent alone since, and that she has no patience left for men who ask for credit and mean charity. She allows, grudging, that you have not asked her for either. It is, from her, near a compliment.</p></div>
+    choices:
+      go_on:
+        text: "“I mean to keep it that way, Mrs. Tolliver.”"
+        sub: "promise her nothing you cannot pay"
+        result: "She almost smiles, catches herself, and turns to straighten a shelf instead."
+
+  silas_deep:
+    eyebrow: "The bank"
+    title: "Silas Ridley"
+    body: >-
+      <div class="prose"><p>{{npc.silas}} unlocks a drawer and shows you, without preamble, the ledger page in your uncle's account. The payments came regular for years, he says, and then in the last year came early, more than was owed, as if {{npc.malachi}} meant to clear something ahead of a date only he knew. He closes the drawer before you can look too long, and says only that a man who pays ahead is usually running from something behind. He offers no guess as to what.</p></div>
+    choices:
+      go_on:
+        text: "“Did he say why?”"
+        sub: "press for more than he wants to give"
+        result: "“He did not,” Silas says, and that is the whole of the answer you get."
+
+  grange_deep:
+    eyebrow: "The church"
+    title: "Elias Grange"
+    body: >-
+      <div class="prose"><p>{{npc.grange}} shows you the parish register, where the names of the dead run back further than the town's founding, by any honest count. He says a preacher's true work is not the sermon but the accounting, who is owed a grave, who is owed a prayer, who is owed neither and gets one anyway. He asks, not unkindly, whether you pray for your uncle, and does not wait long for an answer before he tells you it would do no harm. Something behind his grave manner looks, for a moment, like fear worn down into habit.</p></div>
+    choices:
+      go_on:
+        text: "“I will say a word for him.”"
+        sub: "give the preacher what he asks"
+        result: "He nods, satisfied, and marks something small in the register you do not see."
+
+  bell_deep:
+    eyebrow: "The doctor's rooms"
+    title: "Doc Bell"
+    body: >-
+      <div class="prose"><p>{{npc.bell}} pours two fingers of something medicinal and admits, dry as ever, that half his practice these days is fevers no textbook accounts for, and hands that will not stop shaking though nothing ails them plain. He says he keeps his own notes on it, separate from the town's official record, and has not decided who ought to see them. He studies you a moment over his spectacles, the way he studies a wound before deciding how deep it runs, then changes the subject, as if he had said more than he meant to.</p></div>
+    choices:
+      go_on:
+        text: "“What sort of fevers, Doc?”"
+        sub: "ask the question he was hoping you would not"
+        result: "“The sort I would rather not name before I am certain,” he says, and pours himself another two fingers."
+
+  coldwater_deep:
+    eyebrow: "The jail"
+    title: "Nathaniel Coldwater"
+    body: >-
+      <div class="prose"><p>{{npc.coldwater}} does not raise his voice, which is somehow worse than if he had. He tells you, plain, that he has walked more than one homestead where a farmer's hands went missing quiet and no one asked after them, and that he means to keep asking regardless whether anyone wants him to. He says the law in {{place.town}} does not much care how a man runs his own ground, but he does, and he wanted that said once, to your face, so no one can claim later he gave no warning. He touches his hat and goes, and you are left certain he meant every word.</p></div>
+    choices:
+      go_on:
+        text: "“I hear you, Sheriff.”"
+        sub: "let the warning land"
+        result: "He only nods, once, and does not soften it with anything more."
+
+  nan_deep:
+    eyebrow: "The gate"
+    title: "Old Nan"
+    body: >-
+      <div class="prose"><p>{{npc.nan}} takes your hand a moment longer than a greeting requires and turns it over, reading the calluses like a page. She tells you the ground under the east field has always kept what is given it, kindness and cruelty both, and pays each back in its own season and its own coin. She does not say when, or how, only that it has never yet forgotten a debt and does not intend to start with you. Then she lets your hand go and walks on before you can ask her to say it plainer.</p></div>
+    choices:
+      go_on:
+        text: "“What does it pay back, exactly?”"
+        sub: "ask her to say it plain"
+        result: "She only shakes her head, the way the old do at a question too large for a doorway, and is gone."
+
+  meredith_small:
+    eyebrow: "The saloon"
+    title: "Meredith Vane"
+    body: >-
+      <div class="prose"><p>{{npc.meredith}} wipes down the bar and allows there is nothing worth the telling today. “Quiet season,” she says. “I will let you know the moment that changes.”</p></div>
+    choices:
+      go_on:
+        text: "“Obliged, all the same.”"
+        sub: "leave her to the bar"
+        result: "She lifts a glass in something like a toast and goes back to her pouring."
+
+  crake_small:
+    eyebrow: "The smithy"
+    title: "Hollis Crake"
+    body: >-
+      <div class="prose"><p>{{npc.crake}} nods you a greeting without breaking his hammer's rhythm. Nothing new at the forge today, only iron and the work it takes.</p></div>
+    choices:
+      go_on:
+        text: "“I will not keep you from it.”"
+        sub: "leave the smith to his iron"
+        result: "He is already back at the anvil before the door swings shut."
+
+  tolliver_small:
+    eyebrow: "The general store"
+    title: "Prudence Tolliver"
+    body: >-
+      <div class="prose"><p>{{npc.tolliver}} counts her till and spares you half a nod. “Shelves are stocked, accounts are square,” she says. “Come back when you need something.”</p></div>
+    choices:
+      go_on:
+        text: "“I will, Mrs. Tolliver.”"
+        sub: "take your leave of the counter"
+        result: "She has already turned back to her ledger, pencil moving."
+
+  silas_small:
+    eyebrow: "The bank"
+    title: "Silas Ridley"
+    body: >-
+      <div class="prose"><p>{{npc.silas}} passes you on the street and touches his hat, brief and correct. “The ledger has nothing new to say of you today,” he says, and keeps walking.</p></div>
+    choices:
+      go_on:
+        text: "“Good day, Mr. Ridley.”"
+        sub: "let him go on his way"
+        result: "He is already three doors down, hat set square, minding his dates."
+
+  grange_small:
+    eyebrow: "The church"
+    title: "Elias Grange"
+    body: >-
+      <div class="prose"><p>{{npc.grange}} is sweeping the church steps and pauses only long enough to nod. “No burying today,” he says. “Small mercies.”</p></div>
+    choices:
+      go_on:
+        text: "“Small mercies, Preacher.”"
+        sub: "agree and move on"
+        result: "He returns to his sweeping, unhurried, as though the churchyard had all the time there was."
+
+  bell_small:
+    eyebrow: "The doctor's rooms"
+    title: "Doc Bell"
+    body: >-
+      <div class="prose"><p>{{npc.bell}} is cleaning a lens when you pass his window. He raises two fingers in greeting, dry as ever. “Nothing catching today,” he says. “Come back if that changes.”</p></div>
+    choices:
+      go_on:
+        text: "“I will hold you to that, Doc.”"
+        sub: "take him at his word"
+        result: "He goes back to his lens without looking up again."
+
+  coldwater_small:
+    eyebrow: "The jail"
+    title: "Nathaniel Coldwater"
+    body: >-
+      <div class="prose"><p>{{npc.coldwater}} is leaning in the jailhouse doorway, watching the street the way he watches everything. He gives you a long look and a short nod, and says nothing at all.</p></div>
+    choices:
+      go_on:
+        text: "“Sheriff.”"
+        sub: "nod back and keep walking"
+        result: "He watches you the whole way up the street. You can feel it between your shoulders."
+
+  nan_small:
+    eyebrow: "The gate"
+    title: "Old Nan"
+    body: >-
+      <div class="prose"><p>Old Nan is at the roadside picking something small and green. She does not look up. “Ground's quiet today,” she says. “That will not last.”</p></div>
+    choices:
+      go_on:
+        text: "“I will keep that in mind.”"
+        sub: "leave her to her picking"
+        result: "She only hums something wordless and keeps to her work."

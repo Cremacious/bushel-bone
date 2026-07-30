@@ -19,6 +19,33 @@ export const SCENES = {
   crake_intro:    { choices: ["go_on"], fx: {}, returnTo: "town" },
   tolliver_intro: { choices: ["go_on"], fx: {}, returnTo: "town" },
   meredith_rumor: { choices: ["go_on"], fx: {}, returnTo: "town" },
+
+  // Talk-deck scenes for the remaining five townsfolk, plus every NPC's deeper
+  // scene and small-talk filler (town-exploration task 2). All single-beat
+  // "go_on" cards, same shape as the three intros above.
+  silas_town:      { choices: ["go_on"], fx: {}, returnTo: "town" },
+  grange_intro:    { choices: ["go_on"], fx: {}, returnTo: "town" },
+  bell_intro:      { choices: ["go_on"], fx: {}, returnTo: "town" },
+  coldwater_intro: { choices: ["go_on"], fx: {}, returnTo: "town" },
+  nan_intro:       { choices: ["go_on"], fx: {}, returnTo: "town" },
+
+  meredith_deep:   { choices: ["go_on"], fx: {}, returnTo: "town" },
+  crake_deep:      { choices: ["go_on"], fx: {}, returnTo: "town" },
+  tolliver_deep:   { choices: ["go_on"], fx: {}, returnTo: "town" },
+  silas_deep:      { choices: ["go_on"], fx: {}, returnTo: "town" },
+  grange_deep:     { choices: ["go_on"], fx: {}, returnTo: "town" },
+  bell_deep:       { choices: ["go_on"], fx: {}, returnTo: "town" },
+  coldwater_deep:  { choices: ["go_on"], fx: {}, returnTo: "town" },
+  nan_deep:        { choices: ["go_on"], fx: {}, returnTo: "town" },
+
+  meredith_small:   { choices: ["go_on"], fx: {}, returnTo: "town" },
+  crake_small:      { choices: ["go_on"], fx: {}, returnTo: "town" },
+  tolliver_small:   { choices: ["go_on"], fx: {}, returnTo: "town" },
+  silas_small:      { choices: ["go_on"], fx: {}, returnTo: "town" },
+  grange_small:     { choices: ["go_on"], fx: {}, returnTo: "town" },
+  bell_small:       { choices: ["go_on"], fx: {}, returnTo: "town" },
+  coldwater_small:  { choices: ["go_on"], fx: {}, returnTo: "town" },
+  nan_small:        { choices: ["go_on"], fx: {}, returnTo: "town" },
 };
 
 // The opening scene for a given state, if any. Year 1's Spring opens on Ridley's call.

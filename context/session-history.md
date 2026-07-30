@@ -7,6 +7,29 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 16 — 2026-07-30 — Gameplay overhaul: the daily loop, the living town, standing, and the 1-field start (built & merged)
+
+**Worked on:** A ground-up rework of the minute-to-minute after the built weekly loop played "interesting but not fun." Brainstormed the new design with Chris, wrote the spec (`docs/superpowers/specs/2026-07-29-gameplay-overhaul-daily-loop-economy.md`), and executed four phases subagent-driven on `feat/proto2-daily-loop`. The daily loop + town + 1-field start were **merged to main** (merge `76c139d`); town exploration/standing is on the branch, verified, awaiting a merge.
+
+**Locked this session:** D-049 (day-by-day loop; **10-day season**, a change to the GDD-locked 20-day calendar), D-050 (the stepped build-up economy + three coin engines incl. an optional Grand-Exchange crop market), D-051 (town as a menu-map with per-NPC standing + rotating talk decks; four new NPCs).
+
+**Built (each task spec- + code-quality-reviewed, then browser-verified):**
+- **Phase A — the daily loop.** Retired the week×5 turn for a day-by-day phase machine (`brief → planting → day×10 → dusk → yearend`); a **personal action economy** (2 actions/day, applied at once); **standing orders** (Reuben pre-fills the crew once, they persist); **"Let the days run"** fast-forward with an `interrupts()` stopper. 10-day season (`daysPerSeason`), `resolveDay` at per-day magnitudes.
+- **Phase A polish** (from Chris's playtest notes): scroll preservation across in-beat re-renders; a visible **strain meter** (condition word + bar) so rest reads as meaningful; a **"worked today ✓"** field badge; clearer personal-action copy. Also caught two real bugs — `counsel.js`/`tips.js` gated on the dead `"week"` phase (Reuben's counsel + the assign tip would never fire).
+- **Phase B — the living town.** The Town tab is a menu-map: **paid odd-jobs** (the 2nd coin engine, a deterministic daily deck) and **talks**; four new NPCs (Crake, Tolliver, Fenwick, the Ostranders) in `content/names.yaml`; town scenes in `content/script.yaml`.
+- **Phase C slice — the 1-field start.** Begin with **one cleared field** and three overgrown; **CLEAR_FIELD** clears the next at an escalating cost (40/90/150m). The first rung of the ladder.
+- **Town exploration & standing.** Surfaced **"Ride to Marrow's Cross →"** on the Day screen (the keystone fix for "nothing to spend actions on"); all 8 NPCs callable with visible **standing**; a **talk deck** per NPC (intro + deeper + small-talk) so repeat visits reveal new scenes as standing rises. 21 new talk scenes, in voice, seeding the reckoning/cruelty/debt/market threads.
+
+**Fixed properly along the way:** reverted a lazy balance shortcut (starting fuel 0→40 had contradicted the opening narration and erased the winter-fuel challenge) — fuel starts at 0 again, and the playthrough survives by *chopping*.
+
+**State:** **30 files / 149 tests green.** Browser-verified end to end (a full year to "I survived another year"; the town: odd-jobs pay + spend an action, talks open and return, standing rises and unlocks deeper scenes).
+
+**Flagged for Chris:** a `silas_deep` scene invents a canon detail (Malachi overpaid his mortgage before "a date only he knew") — keep or soften; a small standing-tier tuning (one call = +12 but "Known" starts at 15, so the word lags the unlock).
+
+**Next:** playtest the town; merge the exploration branch; then Phase C proper (hiring hands → more mouths, the tools ladder) or Phase D (the crop market price model + the depot venue). Standing milestone-2 items (#24 art direction, a Vercel proof-of-concept) still open.
+
+---
+
 ## Session 15 — 2026-07-28 — Prototype rebuild Plan 2: the weekly loop & the hands (built & merged)
 
 **Worked on:** Executed **Plan 2** of the prototype rebuild subagent-driven, on branch `feat/prototype2-weekly-loop`, now **merged to main** (merge `f04dc93`). Makes one full **Year 1 (Spring → Winter) playable** in `prototype2/`: plant the four fields, assign each hand a weekly task and spend your own week, watch crops grow and the larder drain, keep the crew fed and warm, and lose a hand to a bad winter if you fail. This is the fun engine (the season time-economy, D-043/D-048) rendered in the V0.3 design.

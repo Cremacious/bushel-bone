@@ -58,14 +58,14 @@ describe("town actions", () => {
   it("VISIT spends an action and opens the location's talk scene", () => {
     let s = inTown(42);
     const acts0 = s.playerActionsLeft;
-    s = reduce(s, { type: "VISIT", sceneId: "crake_intro" });
+    s = reduce(s, { type: "VISIT", npc: "crake" });
     expect(s.phase).toBe("scene");
     expect(s.scene.id).toBe("crake_intro");
     expect(s.playerActionsLeft).toBe(acts0 - 1);
   });
   it("closing a town scene returns to the Town screen, not the brief", () => {
     let s = inTown(42);
-    s = reduce(s, { type: "VISIT", sceneId: "crake_intro" });
+    s = reduce(s, { type: "VISIT", npc: "crake" });
     s = reduce(s, { type: "CLOSE_SCENE" });
     expect(s.screen).toBe("town");
     expect(s.phase).toBe("day");
