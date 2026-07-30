@@ -52,6 +52,12 @@ export function fieldCard(field, proj, extra) {
   return el("div", { class: "fieldcard" + (proj.ripe ? " ripe" : "") }, [head, body, ...(extra ? [extra] : [])]);
 }
 
+// A "-1 action" cost tag, in the same tag grammar as the +/- effect tags, for any choice
+// that spends one of the day's actions.
+export function actionCostTag() {
+  return el("span", { class: "efftag bad costtag", text: "-1 action" });
+}
+
 export function warnLines(list) {
   return list.length ? el("div", { class: "warnlines" }, list.map((w) => el("div", { class: "warnline t-sub", text: w }))) : null;
 }

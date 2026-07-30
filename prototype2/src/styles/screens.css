@@ -60,7 +60,7 @@ h2.t-title { margin: 0 0 14px; }
 .plant-bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
 .plant-bar .choicecard { width: auto; min-width: 200px; margin: 0; }
 .fieldgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.fieldcard { border: 1px solid var(--rule-fine); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.fieldcard { border: 1px solid var(--rule-fine); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; background: var(--leaf); }
 .fieldcard.ripe { border-color: var(--good); }
 .fc-head { display: flex; justify-content: space-between; align-items: baseline; }
 .fc-fert { color: var(--ink-faint); font-size: 0.82rem; }
@@ -183,6 +183,7 @@ h2.t-title { margin: 0 0 14px; }
 .efftag.bad { color: var(--bad); }
 .taskbtn .tb-label { font-style: normal; }
 .strain-advice { margin-left: 8px; }
+.assignnote { color: var(--ink-faint); font-style: italic; margin: 0 0 12px; }
 
 /* --- ledgerrow (the Ledger tab: plain-language explanation of the four figures) --- */
 .ledgerrow { border-bottom: 1px solid var(--rule-fine); padding: 12px 0; }
@@ -245,19 +246,6 @@ h2.t-title { margin: 0 0 14px; }
 /* --- the Town tab: the menu-map + the day's odd-jobs --- */
 .townhint { margin-bottom: 14px; }
 .townsub { margin: 14px 0 8px; }
-.jobcard { border: 1px solid var(--rule-fine); border-left: 3px solid var(--lamp); padding: 10px 12px; margin-bottom: 8px; }
-.jobline { margin-bottom: 2px; }
-.jobmeta { color: var(--ink-faint); }
-.jobtake { display: inline-block; margin-top: 8px; cursor: pointer; border: 1px solid var(--lamp);
-  color: var(--lamp); background: none; padding: 5px 12px; letter-spacing: .03em; }
-.jobtake.disabled { opacity: .45; cursor: default; border-color: var(--rule-fine); color: var(--ink-faint); }
-.townloc { display: flex; justify-content: space-between; align-items: center; gap: 12px;
-  border-bottom: 1px solid var(--rule-fine); padding: 10px 0; }
-.loc-head { display: flex; flex-direction: column; gap: 2px; }
-.loc-why { color: var(--ink-faint); }
-.loc-talk { cursor: pointer; border: 1px solid var(--rule-fine); background: none; color: inherit; padding: 5px 12px; }
-.loc-talk:hover:not(.disabled) { border-color: var(--lamp); }
-.loc-talk.disabled { opacity: .45; cursor: default; }
 .loc-soon { color: var(--ink-faint); font-style: italic; }
 
 /* --- clearing overgrown fields on the planting grid --- */
@@ -275,9 +263,8 @@ h2.t-title { margin: 0 0 14px; }
 .loc-standing { color: var(--ink-faint); }
 
 /* --- the town walk: overview -> place scene -> talk (town-walk task 7) --- */
-.walkbtn, .homebtn { cursor: pointer; background: none; border: 1px solid var(--rule-fine); color: var(--lamp); padding: 6px 12px; letter-spacing: .03em; }
-.walkbtn:hover, .homebtn:hover { border-color: var(--lamp); }
-.homebtn { margin-top: 16px; }
 .place-scene { margin: 6px 0 12px; }
-.place-nav { display: flex; gap: 10px; margin-top: 16px; }
-.townloc { align-items: center; }
+
+/* --- the left panel's town plate (town-polish task 2) --- */
+.townplate-art { border: 1px solid var(--rule-fine); min-height: 180px; display: flex; align-items: flex-end; padding: 12px; background: repeating-linear-gradient(45deg, var(--paper-3) 0 2px, transparent 2px 9px); }
+.townplate-cap { color: var(--ink-faint); font-style: italic; }

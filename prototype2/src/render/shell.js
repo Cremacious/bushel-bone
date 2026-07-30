@@ -102,11 +102,28 @@ function pips(state) {
 function brassLedger(state) {
   const larderShort = warnings(state).some((w) => /larder/i.test(w));
   const fuelWant = burnsFuel(state) ? mouths(state) * BALANCE.fuelPerMouthPerDay : 0;
+  const ac = actionCounter(state);
   return el("div", { class: "ledger" }, [
     cell("Coin", state.coin, { unit: "m" }),
     cell("Larder", Math.floor(state.larder), { valence: state.larder <= 0 ? "bad" : larderShort ? "warn" : null }),
     cell("Fuel", state.fuel, { valence: fuelWant > state.fuel ? "bad" : null }),
     cell("Seed", state.seed),
+    ...(ac ? [ac] : []),
+  ]);
+}
+
+// The persistent actions-today counter: a plain "left / max" readout plus pips, visible in
+// the brass ledger only during the day phase (when spending an action actually means
+// something). Answers "how many actions do I have left" without opening a screen.
+function actionCounter(state) {
+  if (state.phase !== "day") return null;
+  const left = state.playerActionsLeft, max = BALANCE.playerActionsPerDay;
+  const pips = [];
+  for (let i = 0; i < max; i++) pips.push(el("span", { class: "apip" + (i < left ? " on" : "") }));
+  return el("div", { class: "actioncount" }, [
+    el("span", { class: "ac-k t-label", text: "Actions today" }),
+    el("span", { class: "ac-pips" }, pips),
+    el("span", { class: "ac-v t-label", text: `${left} / ${max}` }),
   ]);
 }
 

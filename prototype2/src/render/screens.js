@@ -2,7 +2,7 @@ import { el } from "./dom.js";
 import { seasonLabel, DAYS_PER_SEASON, livingHands } from "../core/state.js";
 import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
-import { choiceCard, fieldCard } from "./components.js";
+import { choiceCard, fieldCard, actionCostTag } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
 import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, actionEffects, playerActionEffects } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
@@ -87,6 +87,7 @@ const SCREENS = {
       el("h2", { class: "t-title", text: "Set the crew, and spend your day" }),
     );
     stage.append(goalPanel(s));                // what the cold months will want (foreshadowing)
+    stage.append(el("p", { class: "t-sub assignnote", text: "Set your crew's orders any time today. They hold until you turn in for the night." }));
     const plantedFields = s.fields.filter((f) => f.crop);
     const ripeList = ripeFields(s);
     const living = livingHands(s);
@@ -175,8 +176,11 @@ const SCREENS = {
   town: (stage, s, dispatch) => {
     const canAct = s.phase === "day" && s.playerActionsLeft > 0;
     const why = s.phase !== "day" ? "Come back during the day." : s.playerActionsLeft <= 0 ? "You are spent for the day." : null;
-    const home = () => el("button", { class: "homebtn t-label", text: "← Head back to the farm",
-      onClick: () => dispatch({ type: "LEAVE_TOWN" }) });
+    const spent = !canAct;
+    // Leaving town is always free; it never carries a cost tag.
+    const homeCard = () => choiceCard({ text: "Head back to the farm", sub: "on to the day's work" },
+      () => dispatch({ type: "LEAVE_TOWN" }));
+    const spentNote = () => el("p", { class: "t-sub", text: "You are spent for the day. Head home to turn in." });
 
     if (!s.townAt) {
       const { jobs } = townOffers(s);
@@ -185,27 +189,26 @@ const SCREENS = {
         el("h2", { class: "t-title", text: "Where to?" }),
         el("p", { class: "t-sub townhint", text: canAct ? `You have ${s.playerActionsLeft} of the day to spend here.` : (why || "The town is quiet.") }),
       );
+      if (spent) stage.append(homeCard(), spentNote());
       stage.append(el("div", { class: "eyebrow t-label townsub", text: "Work going" }));
       for (const j of jobs) {
         const blocked = !canAct || j.done;
-        stage.append(el("div", { class: "jobcard" }, [
-          el("div", { class: "jobline t-choice", text: j.line }),
-          el("div", { class: "jobmeta t-sub", text: j.done ? "done today" : (why || `+${j.coin} coin · ${tok("{{npc." + j.giver + "}}")}`) }),
-          el("button", { class: "jobtake t-label" + (blocked ? " disabled" : ""), ...(blocked ? { disabled: true } : {}),
-            text: j.done ? "done" : `Take it (+${j.coin})`, onClick: blocked ? undefined : () => dispatch({ type: "ACCEPT_JOB", id: j.id }) }),
-        ]));
+        stage.append(choiceCard({
+          text: j.line,
+          sub: j.done ? "done today" : (why || `+${j.coin} coin · ${tok("{{npc." + j.giver + "}}")}`),
+          tag: (canAct && !j.done) ? "-1 action" : null,
+          tagValence: "bad",
+          disabled: blocked,
+          why: j.done ? "done today" : why,
+        }, () => dispatch({ type: "ACCEPT_JOB", id: j.id })));
       }
       stage.append(el("div", { class: "eyebrow t-label townsub", text: "The town" }));
       for (const l of LOCATIONS) {
-        stage.append(el("div", { class: "townloc" }, [
-          el("div", { class: "loc-head" }, [
-            el("span", { class: "loc-who t-choice", text: tok("{{loc." + l.loc + ".sub}}") }),
-            el("span", { class: "loc-why t-sub", text: l.purpose }),
-          ]),
-          el("button", { class: "walkbtn t-label", text: "Walk there →", onClick: () => dispatch({ type: "WALK_TO", place: l.id }) }),
-        ]));
+        // Walking to a place is free; it never carries a cost tag.
+        stage.append(choiceCard({ text: tok("{{loc." + l.loc + ".sub}}"), sub: l.purpose },
+          () => dispatch({ type: "WALK_TO", place: l.id })));
       }
-      stage.append(home());
+      if (!spent) stage.append(homeCard());
       return;
     }
 
@@ -214,16 +217,23 @@ const SCREENS = {
     stage.append(
       el("div", { class: "eyebrow t-label", text: tok("{{loc." + l.loc + ".cap}}") }),
       el("h2", { class: "t-title", text: tok("{{loc." + l.loc + ".sub}}") }),
+    );
+    if (spent) stage.append(homeCard(), spentNote());
+    stage.append(
       el("p", { class: "place-scene t-prose", text: tok("{{loc." + l.loc + ".desc}}") }),
       el("div", { class: "loc-standing t-label", text: `${tok("{{npc." + l.npc + "}}")} · ${standingWord(standingOf(s, l.npc))}` }),
-      el("button", { class: "loc-talk t-choice" + (canTalk ? "" : " disabled"), ...(canTalk ? {} : { disabled: true }),
-        text: `Talk to ${tok("{{npc." + l.npc + "}}")}`, onClick: canTalk ? () => dispatch({ type: "VISIT", npc: l.npc }) : undefined }),
-      ...(canTalk ? [] : [el("p", { class: "t-sub", text: why })]),
-      el("div", { class: "place-nav" }, [
-        el("button", { class: "walkbtn t-label", text: "← Walk on", onClick: () => dispatch({ type: "WALK_TO", place: null }) }),
-        home(),
-      ]),
+      choiceCard({
+        text: `Talk to ${tok("{{npc." + l.npc + "}}")}`,
+        sub: "see what they have to say today",
+        tag: canTalk ? "-1 action" : null,
+        tagValence: "bad",
+        disabled: !canTalk,
+        why,
+      }, () => dispatch({ type: "VISIT", npc: l.npc })),
+      choiceCard({ text: "Walk on", sub: "back to the crossroads" },
+        () => dispatch({ type: "WALK_TO", place: null })),
     );
+    if (!spent) stage.append(homeCard());
   },
   almanac: (stage) => {
     stage.append(el("div", { class: "eyebrow t-label", text: "The almanac" }), el("h2", { class: "t-title", text: "Not yet kept" }));
@@ -274,6 +284,7 @@ function personalActions(s, dispatch) {
         el("span", { class: "pa-label t-choice", text: o.label }),
         el("span", { class: "pa-desc t-sub", text: o.desc }),
         ...playerActionEffects(o.kind).map((e) => el("span", { class: "efftag " + e.valence, text: e.label })),
+        ...(o.kind === "rest" ? [] : [actionCostTag()]),
       ]))),
     el("div", { class: "day-cta" }, [
       choiceCard({ text: "Turn in for the night", sub: "the day resolves: crops grow, the crew eats", primary: true }, () => dispatch({ type: "TURN_IN" })),

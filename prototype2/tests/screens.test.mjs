@@ -3,6 +3,7 @@ import { initialState } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
 import { renderShell } from "../src/render/shell.js";
 import { renderScreen } from "../src/render/screens.js";
+import { townOffers } from "../src/core/selectors.js";
 
 function mount(state) {
   const root = document.createElement("div");
@@ -172,9 +173,10 @@ describe("the town screen", () => {
     const dispatch = (a) => { state = reduce(state, a); rerender(); };
     function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
     rerender();
-    expect(root.querySelectorAll(".walkbtn").length).toBeGreaterThanOrEqual(5);
+    const placeCards = [...root.querySelectorAll(".choicecard")].filter((b) => /gossip|tools and ironwork|seed, goods|mortgage|parish|medicine|the law|the old ways/.test(b.textContent));
+    expect(placeCards.length).toBeGreaterThanOrEqual(5);
     const coin0 = state.coin;
-    const jobBtn = root.querySelector(".jobcard .jobtake");
+    const jobBtn = [...root.querySelectorAll(".choicecard")].find((b) => /coin/.test(b.textContent) && !b.disabled);
     expect(jobBtn).toBeTruthy();
     jobBtn.click();
     expect(state.coin).toBeGreaterThan(coin0);
@@ -184,7 +186,8 @@ describe("the town screen", () => {
     let state = { ...initialState(42), screen: "town", phase: "brief" };
     const dispatch = () => {};
     const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    const jobBtn = root.querySelector(".jobcard .jobtake");
+    const { jobs } = townOffers(state);
+    const jobBtn = [...root.querySelectorAll(".choicecard")].find((b) => b.textContent.includes(jobs[0].line));
     expect(jobBtn.disabled).toBe(true);
   });
 });
@@ -234,15 +237,23 @@ describe("town exploration UI", () => {
     const dispatch = (a) => { state = reduce(state, a); rerender(); };
     function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
     rerender();
-    root.querySelector(".walkbtn").click(); // walk to the first place on offer
+    firstPlaceCard(root).click(); // walk to the first place on offer
     expect(root.querySelector(".loc-standing")).toBeTruthy();
     expect(root.querySelector(".place-scene")).toBeTruthy();
-    const call = root.querySelector(".loc-talk");
+    const call = [...root.querySelectorAll(".choicecard")].find((b) => /Talk to/.test(b.textContent));
     expect(call.disabled).toBeFalsy();
     call.click();
     expect(state.phase).toBe("scene");
   });
 });
+
+// The overview's place list sits right after the "The town" section label; jobs (which
+// come first) always carry a coin/"-1 action" tag, so walking to the next choicecard after
+// the label is the reliable way to grab "the first place on offer" regardless of job state.
+function firstPlaceCard(root) {
+  const label = [...root.querySelectorAll(".townsub")].find((e) => /The town/.test(e.textContent));
+  return label.nextElementSibling;
+}
 
 describe("the town walk", () => {
   function town(mut) {
@@ -256,7 +267,7 @@ describe("the town walk", () => {
   }
   it("the overview lists places to walk to and a way home", () => {
     const { root, get } = town();
-    const walk = root.querySelector(".walkbtn");
+    const walk = firstPlaceCard(root);
     expect(walk).toBeTruthy();
     expect([...root.querySelectorAll("button")].some((b) => /farm|home/i.test(b.textContent))).toBe(true);
     walk.click();
@@ -265,7 +276,7 @@ describe("the town walk", () => {
   it("at a place the scene paints and offers a talk", () => {
     const { root } = town({ townAt: "saloon" });
     expect(root.querySelector(".place-scene")).toBeTruthy();
-    expect([...root.querySelectorAll(".loc-talk")].some((b) => /Talk to/i.test(b.textContent))).toBe(true);
+    expect([...root.querySelectorAll(".choicecard")].some((b) => /Talk to/i.test(b.textContent))).toBe(true);
   });
 });
 
@@ -294,5 +305,37 @@ describe("the winter goal panel", () => {
     expect(panel).toBeTruthy();
     expect(panel.textContent).toMatch(/0\s*\/\s*40/);   // wood have/need
     expect(panel.querySelector(".goalbar")).toBeTruthy();
+  });
+});
+
+describe("town polish", () => {
+  it("the talk action renders as a choice card with an action-cost tag", () => {
+    const root = document.createElement("div");
+    let s = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    s = { ...s, screen: "town", townAt: "saloon" };
+    renderShell(root, s, () => {}); renderScreen(root.querySelector("#stage"), s, () => {});
+    const talk = [...root.querySelectorAll(".choicecard")].find((b) => /Talk to/.test(b.textContent));
+    expect(talk).toBeTruthy();
+    expect(talk.textContent).toMatch(/-1 action/);
+  });
+  it("floats Head back to the farm to the top when actions are spent", () => {
+    const root = document.createElement("div");
+    let s = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    s = { ...s, screen: "town", townAt: null, playerActionsLeft: 0 };
+    renderShell(root, s, () => {}); renderScreen(root.querySelector("#stage"), s, () => {});
+    const buttons = [...root.querySelectorAll("#stage button")];
+    const homeIdx = buttons.findIndex((b) => /farm/i.test(b.textContent));
+    expect(homeIdx).toBe(0); // the first control on the screen
+  });
+});
+
+describe("the left panel in town", () => {
+  it("shows a town plate, not the fields, when in town", () => {
+    const root = document.createElement("div");
+    let s = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    s = { ...s, screen: "town" };
+    renderShell(root, s, () => {});
+    expect(root.querySelector(".townplate")).toBeTruthy();
+    expect(root.querySelector(".boardpanel .fieldgrid")).toBeFalsy();
   });
 });

@@ -44,3 +44,20 @@ describe("shell render", () => {
     expect(document.documentElement.getAttribute("data-theme")).toBe("day");
   });
 });
+
+describe("persistent action counter", () => {
+  it("shows an actions-today counter in the chrome during the day", () => {
+    const root = document.createElement("div");
+    let s = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" }); // day
+    renderShell(root, s, () => {});
+    const c = root.querySelector(".actioncount");
+    expect(c).toBeTruthy();
+    expect(c.textContent).toMatch(/2\s*\/\s*2/);
+  });
+  it("does not show the counter outside the day phase", () => {
+    const root = document.createElement("div");
+    let s = initialState(1); // brief phase
+    renderShell(root, s, () => {});
+    expect(root.querySelector(".actioncount")).toBeFalsy();
+  });
+});
