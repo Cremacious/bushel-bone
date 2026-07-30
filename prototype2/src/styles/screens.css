@@ -277,3 +277,18 @@ h2.t-title { margin: 0 0 14px; }
 /* --- the left panel's town plate (town-polish task 2) --- */
 .townplate-art { border: 1px solid var(--rule-fine); min-height: 180px; display: flex; align-items: flex-end; padding: 12px; background: repeating-linear-gradient(45deg, var(--paper-3) 0 2px, transparent 2px 9px); }
 .townplate-cap { color: var(--ink-faint); font-style: italic; }
+
+/* --- the beat screen (v0.4 phase1 task 3): short and scannable, no scrolling wall --- */
+.beat-title { margin-bottom: 6px; }
+.beat-reason { color: var(--ink-soft); font-style: italic; margin: 2px 0; }
+.beat-status { color: var(--ink-faint); margin: 8px 0 14px; font-family: "Courier Prime", monospace; font-size: .85rem; }
+.crewbeat { border: 1px solid var(--rule-fine); padding: 8px 12px; margin-bottom: 8px; }
+.crewbeat-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.rolerow { display: flex; gap: 6px; flex-wrap: wrap; }
+.rolebtn { all: unset; cursor: pointer; border: 1px solid var(--rule-fine); border-radius: 2px; padding: 5px 12px; font-size: .82rem; color: var(--ink-soft); }
+.rolebtn.sel { border-color: var(--lamp); color: var(--ink); background: color-mix(in srgb, var(--lamp) 16%, transparent); }
+.seasonact { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 14px; }
+.seasonbtn { all: unset; cursor: pointer; border: 1px solid var(--rule-fine); border-radius: 2px; padding: 6px 12px; font-size: .85rem; color: var(--ink-soft); }
+.seasonbtn:hover:not(.disabled) { border-color: var(--lamp); }
+.seasonbtn.disabled { opacity: .45; cursor: default; }
+.season-h { margin: 12px 0 4px; }

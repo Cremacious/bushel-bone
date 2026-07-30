@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { lookupName, tok } from "../src/content/names.js";
 import { L } from "../src/content/script.js";
 import { LOCATIONS, ODD_JOBS, TALKS, SMALLTALK } from "../src/core/town.js";
-import { initialState } from "../src/core/state.js";
+import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 import { townOffers } from "../src/core/selectors.js";
 import { townOffers as offers2 } from "../src/core/selectors.js";
@@ -14,17 +14,24 @@ function inTown(seed = 1) {
 }
 
 describe("townOffers()", () => {
-  it("offers JOBS_PER_DAY jobs, deterministically for a given day+seed", () => {
+  it("offers JOBS_PER_SEASON jobs, deterministically for a given season+seed", () => {
     const s = inTown(42);
     const a = townOffers(s).jobs.map((j) => j.id);
     const b = townOffers(s).jobs.map((j) => j.id);
     expect(a).toEqual(b);            // pure
     expect(a.length).toBe(2);
   });
-  it("marks a job done once it is in jobsDoneToday", () => {
+  it("stays the same offer across days within a season", () => {
+    let s = inTown(42);
+    const a = townOffers(s).jobs.map((j) => j.id);
+    s = reduce(s, { type: "TURN_IN" }); // resolve a day, still the same season
+    const b = townOffers(s).jobs.map((j) => j.id);
+    expect(b).toEqual(a);
+  });
+  it("marks a job done once it is in jobsDoneThisSeason", () => {
     let s = inTown(42);
     const first = townOffers(s).jobs[0].id;
-    s = { ...s, jobsDoneToday: [first] };
+    s = { ...s, jobsDoneThisSeason: [first] };
     expect(townOffers(s).jobs.find((j) => j.id === first).done).toBe(true);
   });
 });
@@ -43,25 +50,39 @@ describe("town actions", () => {
   it("ACCEPT_JOB pays coin, spends one action, and marks the job done", () => {
     let s = inTown(42);
     const job = offers2(s).jobs[0];
-    const coin0 = s.coin, acts0 = s.playerActionsLeft;
+    const coin0 = s.coin, acts0 = s.seasonActionsLeft;
     s = reduce(s, { type: "ACCEPT_JOB", id: job.id });
     expect(s.coin).toBe(coin0 + job.coin);
-    expect(s.playerActionsLeft).toBe(acts0 - 1);
-    expect(s.jobsDoneToday).toContain(job.id);
+    expect(s.seasonActionsLeft).toBe(acts0 - 1);
+    expect(s.jobsDoneThisSeason).toContain(job.id);
   });
   it("ACCEPT_JOB is a no-op with no actions left or off the day phase", () => {
-    let s = inTown(42); s = { ...s, playerActionsLeft: 0 };
+    let s = inTown(42); s = { ...s, seasonActionsLeft: 0 };
     expect(reduce(s, { type: "ACCEPT_JOB", id: offers2(s).jobs[0].id })).toEqual(s);
     let b = reduce(initialState(1), { type: "BEGIN_SEASON" }); // planting phase
     expect(reduce(b, { type: "ACCEPT_JOB", id: "haul_mill" })).toEqual(b);
   });
+  it("a taken job stays gone across days but is offered fresh next season", () => {
+    let s = inTown(42);
+    const before = offers2(s).jobs.map((j) => j.id);
+    for (const id of before) s = reduce(s, { type: "ACCEPT_JOB", id });
+    expect(offers2(s).jobs.every((j) => j.done)).toBe(true);
+    // advance days within the same season: still done, not refilled
+    s = reduce(s, { type: "TURN_IN" });
+    expect(offers2(s).jobs.every((j) => j.done)).toBe(true);
+    // close out the season and open the next: jobsDoneThisSeason resets
+    s = reduce(s, { type: "END_SEASON" });
+    s = reduce(s, { type: "BEGIN_SEASON" });
+    expect(s.jobsDoneThisSeason).toEqual([]);
+    expect(offers2(s).jobs.every((j) => !j.done)).toBe(true);
+  });
   it("VISIT spends an action and opens the location's talk scene", () => {
     let s = inTown(42);
-    const acts0 = s.playerActionsLeft;
+    const acts0 = s.seasonActionsLeft;
     s = reduce(s, { type: "VISIT", npc: "crake" });
     expect(s.phase).toBe("scene");
     expect(s.scene.id).toBe("crake_intro");
-    expect(s.playerActionsLeft).toBe(acts0 - 1);
+    expect(s.seasonActionsLeft).toBe(acts0 - 1);
   });
   it("closing a town scene returns to the Town screen, not the brief", () => {
     let s = inTown(42);
@@ -103,10 +124,10 @@ describe("town scenes resolve", () => {
 describe("walking the town", () => {
   it("WALK_TO sets the current place and costs no action", () => {
     let s = inTown(1);
-    const acts0 = s.playerActionsLeft;
+    const acts0 = s.seasonActionsLeft;
     s = reduce(s, { type: "WALK_TO", place: "saloon" });
     expect(s.townAt).toBe("saloon");
-    expect(s.playerActionsLeft).toBe(acts0); // free
+    expect(s.seasonActionsLeft).toBe(acts0); // free
     expect(s.screen).toBe("town");
   });
   it("WALK_TO null returns to the town overview", () => {
@@ -125,9 +146,9 @@ describe("walking the town", () => {
 describe("free-if-dry talks", () => {
   it("a fresh NPC's talk costs an action and grants standing", () => {
     let s = inTown(1);
-    const acts0 = s.playerActionsLeft;
+    const acts0 = s.seasonActionsLeft;
     s = reduce(s, { type: "VISIT", npc: "crake" });
-    expect(s.playerActionsLeft).toBe(acts0 - 1);
+    expect(s.seasonActionsLeft).toBe(acts0 - 1);
     expect((s.standing || {}).crake).toBeGreaterThan(0);
   });
   it("a dry talk (deck exhausted) costs no action and no standing", () => {
@@ -135,10 +156,10 @@ describe("free-if-dry talks", () => {
     // exhaust crake's real cards so nextTownScene falls to the filler
     const realIds = (TALKS.crake || []).map((d) => d.id);
     s = { ...s, talksSeen: realIds, standing: { crake: 999 } };
-    const acts0 = s.playerActionsLeft, st0 = (s.standing || {}).crake;
+    const acts0 = s.seasonActionsLeft, st0 = (s.standing || {}).crake;
     s = reduce(s, { type: "VISIT", npc: "crake" });
     expect(s.scene.id).toBe(SMALLTALK.crake); // the filler opened
-    expect(s.playerActionsLeft).toBe(acts0);  // free
+    expect(s.seasonActionsLeft).toBe(acts0);  // free
     expect((s.standing || {}).crake).toBe(st0); // no standing gained
   });
 });

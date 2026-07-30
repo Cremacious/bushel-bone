@@ -1,21 +1,21 @@
 import { describe, it, expect } from "vitest";
-import { initialState } from "../src/core/state.js";
+import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 import { duskSummary } from "../src/core/selectors.js";
 
 describe("duskSummary season scoping", () => {
   it("does not re-report a death from an earlier season", () => {
     // Starve Reuben to death during Fall (burns fuel, so hunger + cold stack fast
-    // enough to kill within the 10-day season; "idle" keeps rest recovery from
-    // masking the shortfall). Standing orders persist day to day (no re-suggestion),
-    // so setting "idle" once after SOW holds for the whole season.
+    // enough to kill within the 10-day season). Nothing is planted, so the default
+    // field-role hand does no work (no rest recovery masking the shortfall, matching
+    // the old "idle" task's behavior).
     let s = initialState(1);
     s.seasonIndex = 2; // fall
     s = reduce(s, { type: "BEGIN_SEASON" }); // phase planting
-    s = reduce(s, { type: "SOW" }); // phase day
     s.larder = 0;
-    s.fuel = 0; // no fuel banked, so fall's cold bites immediately too
-    s.hands[0] = { ...s.hands[0], task: "idle" };
+    s.fuel = 0; // no fuel banked, so fall's cold bites immediately too; set BEFORE SOW so
+    // its auto-run (which runs to the first beat) feels the shortfall from day one too.
+    s = reduce(s, { type: "SOW" }); // phase day
     for (let i = 0; i < 10; i++) {
       s = reduce(s, { type: "TURN_IN" });
     }

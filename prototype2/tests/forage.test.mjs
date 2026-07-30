@@ -4,15 +4,17 @@ import { reduce } from "../src/core/reducer.js";
 import { BALANCE } from "../src/core/balance.js";
 import { yearNeeds, suggestPlan } from "../src/core/selectors.js";
 
+// Day 1, constructed directly rather than via SOW (which now auto-runs to the first beat) so
+// these tests can exercise a single day's mechanics in isolation.
 function inDay(seed = 1) {
-  let s = reduce(initialState(seed), { type: "BEGIN_SEASON" });
-  return reduce(s, { type: "SOW" });
+  const s = reduce(initialState(seed), { type: "BEGIN_SEASON" });
+  return { ...s, phase: "day", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason };
 }
 
 describe("forage", () => {
   it("a hand set to forage adds food to the larder (net of the day's eating)", () => {
     let s = inDay();
-    s = reduce(s, { type: "ASSIGN", handId: "reuben", task: "forage" });
+    s = reduce(s, { type: "SET_ROLE", handId: "reuben", role: "forage" });
     const before = s.larder;
     s = reduce(s, { type: "TURN_IN" });
     // gained forageFood, then the household ate 2 mouths x food/day
@@ -20,9 +22,9 @@ describe("forage", () => {
   });
   it("the player foraging adds food too", () => {
     let s = inDay();
-    s = reduce(s, { type: "ASSIGN", handId: "reuben", task: "rest" });
+    s = reduce(s, { type: "SET_ROLE", handId: "reuben", role: "rest" });
     const before = s.larder;
-    s = reduce(s, { type: "DO_PLAYER_ACTION", kind: "forage" }); // applies immediately
+    s = reduce(s, { type: "SPEND_ACTION", kind: "forage" }); // applies immediately
     s = reduce(s, { type: "TURN_IN" });
     expect(s.larder).toBe(before + BALANCE.forageFood - 2 * BALANCE.foodPerMouthPerDay);
   });

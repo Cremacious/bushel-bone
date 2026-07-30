@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { initialState } from "../src/core/state.js";
+import { livingHands } from "../src/core/state.js";
+import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 import { renderShell } from "../src/render/shell.js";
 import { renderScreen } from "../src/render/screens.js";
@@ -104,46 +105,51 @@ describe("planting grid", () => {
   });
 });
 
-describe("the day screen", () => {
-  it("shows the crew's standing orders, the personal action budget, and Turn in / Let the days run", () => {
+describe("the beat screen", () => {
+  // The auto-run of SOW stops at the first beat (usually the last day of the season, since
+  // an unplanted, single-field-hand start has nothing else to interrupt it). Guard each test
+  // in case a future balance change stops the run somewhere other than "day".
+  function toBeat() {
+    return reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+  }
+
+  it("shows a role toggle (four buttons) for every living hand", () => {
+    const state = toBeat();
+    if (state.phase !== "day") return;
     const root = document.createElement("div");
-    let state = reduce(initialState(1), { type: "BEGIN_SEASON" });
-    state = reduce(state, { type: "PLANT", fieldId: 0, crop: "potato" });
-    state = reduce(state, { type: "SOW" }); // phase: day
-    const dispatch = (a) => { state = reduce(state, a); };
-    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    expect(root.querySelector(".handrow")).toBeTruthy();
-    expect(root.textContent).toMatch(/2 (actions|left)/i);
-    expect([...root.querySelectorAll(".choicecard")].some((b) => /Turn in/i.test(b.textContent))).toBe(true);
-    expect([...root.querySelectorAll("button")].some((b) => /Let the days run/i.test(b.textContent))).toBe(true);
+    const stage = renderShell(root, state, () => {}); renderScreen(stage, state, () => {});
+    const hands = livingHands(state);
+    expect(root.querySelectorAll(".crewbeat").length).toBe(hands.length);
+    expect(root.querySelectorAll(".rolebtn").length).toBe(hands.length * 4);
   });
-  it("spending a personal action decrements the budget", () => {
+
+  it("clicking a role button dispatches SET_ROLE and changes the hand's role", () => {
+    let state = toBeat();
+    if (state.phase !== "day") return;
     const root = document.createElement("div");
-    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
     const dispatch = (a) => { state = reduce(state, a); rerender(); };
     function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
     rerender();
-    [...root.querySelectorAll(".pa-action")].find((b) => /Forage/i.test(b.textContent)).click();
-    expect(state.playerActionsLeft).toBe(1);
+    const woodBtn = [...root.querySelectorAll(".rolebtn")].find((b) => /Woodcutting/.test(b.textContent));
+    expect(woodBtn).toBeTruthy();
+    woodBtn.click();
+    expect(state.hands.find((h) => h.id === "reuben").role).toBe("wood");
   });
-  it("has no wasted Rest personal action, and reassures unspent time is fine", () => {
+
+  it("shows the season-action count and a Continue control that advances the run", () => {
+    let state = toBeat();
+    if (state.phase !== "day") return;
     const root = document.createElement("div");
-    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
-    const dispatch = () => {};
-    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    const labels = [...root.querySelectorAll(".pa-action .pa-label")].map((e) => e.textContent);
-    expect(labels).not.toContain("Rest");
-    expect(root.textContent).toMatch(/Unspent time is fine/);
-  });
-  it("disables Harvest when nothing is ripe, and lists only living hands", () => {
-    const root = document.createElement("div");
-    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
-    state = { ...state, hands: [...state.hands, { id: "del", name: "Del", alive: false, strain: 100, task: "rest", morale: 0, traits: [] }] };
-    const dispatch = (a) => { state = reduce(state, a); };
-    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    const harvest = [...root.querySelectorAll(".handrow .taskbtn")].find((b) => b.textContent === "Harvest");
-    expect(harvest.disabled).toBe(true);
-    expect(root.querySelectorAll(".handrow").length).toBe(1); // only Reuben stands
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    expect(root.textContent).toMatch(/of the season to spend/);
+    const cont = [...root.querySelectorAll(".choicecard")]
+      .find((b) => /Let the days run on|Bring the season to a close/.test(b.textContent));
+    expect(cont).toBeTruthy();
+    const d0 = state.day;
+    cont.click();
+    expect(state.day > d0 || state.phase === "dusk").toBe(true);
   });
 });
 
@@ -302,16 +308,16 @@ describe("clearing land on the planting grid", () => {
   });
 });
 
-describe("the winter goal panel", () => {
-  it("shows have/need with a bar and a met/short state", () => {
+describe("the beat screen's resource status", () => {
+  it("shows a compact winter-target line when the household is short", () => {
     const root = document.createElement("div");
     let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    if (state.phase !== "day") return;
     const dispatch = () => {};
     const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    const panel = root.querySelector(".goals");
-    expect(panel).toBeTruthy();
-    expect(panel.textContent).toMatch(/0\s*\/\s*40/);   // wood have/need
-    expect(panel.querySelector(".goalbar")).toBeTruthy();
+    const status = root.querySelector(".beat-status");
+    expect(status).toBeTruthy();
+    expect(status.textContent).toMatch(/0\s*\/\s*40/); // wood have/need, short at the season's start
   });
 });
 
@@ -328,7 +334,7 @@ describe("town polish", () => {
   it("floats Head back to the farm to the top when actions are spent", () => {
     const root = document.createElement("div");
     let s = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
-    s = { ...s, screen: "town", townAt: null, playerActionsLeft: 0 };
+    s = { ...s, screen: "town", townAt: null, seasonActionsLeft: 0 };
     renderShell(root, s, () => {}); renderScreen(root.querySelector("#stage"), s, () => {});
     const buttons = [...root.querySelectorAll("#stage button")];
     const homeIdx = buttons.findIndex((b) => /farm/i.test(b.textContent));

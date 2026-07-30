@@ -1,7 +1,7 @@
 import { BALANCE } from "./balance.js";
 import { CROPS, ripe } from "./crops.js";
 import { livingHands, season, SEASONS, DAYS_PER_SEASON } from "./state.js";
-import { LOCATIONS, ODD_JOBS, JOBS_PER_DAY, TALKS, SMALLTALK } from "./town.js";
+import { LOCATIONS, ODD_JOBS, JOBS_PER_SEASON, TALKS, SMALLTALK } from "./town.js";
 
 // The season's closing figures for the Dusk Report (Screen 06). Pure read.
 export function duskSummary(s) {
@@ -116,6 +116,10 @@ export function clearCost(state) {
 export const hireCost = (s) => { const n = s.hands.length - 1; return BALANCE.hireCosts[n] ?? BALANCE.hireCosts[BALANCE.hireCosts.length - 1]; };
 export const canHire = (s) => s.coin >= hireCost(s);
 
+// The coin price of a seed bundle at Tolliver's store, and whether it's affordable. Pure.
+export const seedBundleCost = () => BALANCE.seedBundle * BALANCE.seedPrice;
+export const canBuySeed = (s) => s.coin >= seedBundleCost();
+
 export const isWinter = (s) => season(s) === "winter";
 export const burnsFuel = (s) => season(s) === "fall" || season(s) === "winter";
 export const ripeFields = (s) => s.fields.filter(ripe);
@@ -183,27 +187,25 @@ export function interrupts(state) {
   if (state.phase !== "day") return [];
   const St = BALANCE.strain;
   const reasons = [];
-  const harvesting = new Set(
-    state.hands.filter((h) => h.alive && h.task === "harvest").map((h) => h.targetFieldId)
-  );
-  if (state.fields.some((f) => ripe(f) && !harvesting.has(f.id))) reasons.push("A crop stands ripe and no one is set to bring it in.");
-  if (state.hands.some((h) => h.alive && h.strain >= St.failingAt)) reasons.push("A hand is failing and needs seeing to.");
+  const hasFieldHand = state.hands.some((h) => h.alive && h.role === "field");
+  if (!hasFieldHand && state.fields.some((f) => ripe(f))) reasons.push("A crop stands ripe and no hand is set to the fields.");
+  const failing = state.hands.find((h) => h.alive && h.strain >= St.failingAt);
+  if (failing) reasons.push(`${failing.name} is worn to failing and needs rest.`);
   if (state.larder <= 0) reasons.push("The larder is empty.");
   if (state.day >= DAYS_PER_SEASON) reasons.push("It is the last day of the season.");
   return reasons;
 }
 
-// The town as it stands today: which odd-jobs are on offer (a deterministic slice of the
-// deck, rotating by day so it feels fresh) and their done state, plus the callable locations.
-// Pure: same state in, same offers out (no Math.random; the day+seed picks the slice).
+// The town as it stands this season: which odd-jobs are on offer (a scarce, deterministic
+// slice of the deck, stable for the whole season so it feels like a real, limited offer) and
+// their done state, plus the callable locations. Pure: same state in, same offers out (no
+// Math.random; the season+year+seed picks the slice, not the day, so it does not refill daily).
 export function townOffers(state) {
-  const done = state.jobsDoneToday || [];
+  const done = state.jobsDoneThisSeason || [];
   const n = ODD_JOBS.length;
-  // A deterministic per-day starting index into the deck (day, season, year, and the game
-  // seed all feed it, so the offer varies across days and across runs without any RNG call).
-  const start = ((state.day + state.seasonIndex * 7 + state.year * 31 + (state.rngSeed % n)) % n + n) % n;
+  const start = ((state.seasonIndex * 5 + state.year * 31 + (state.rngSeed % n)) % n + n) % n;
   const jobs = [];
-  for (let i = 0; i < Math.min(JOBS_PER_DAY, n); i++) {
+  for (let i = 0; i < Math.min(JOBS_PER_SEASON, n); i++) {
     const j = ODD_JOBS[(start + i) % n];
     jobs.push({ ...j, done: done.includes(j.id) });
   }
@@ -234,6 +236,10 @@ export function nextTownScene(state, npc) {
 export function talkIsDry(state, npc) {
   return nextTownScene(state, npc) === (SMALLTALK[npc] || null);
 }
+
+// Plain labels/descriptions for a hand's standing role (the beat screen's role toggle).
+export const roleLabel = (r) => ({ field: "Fields", wood: "Woodcutting", forage: "Foraging", rest: "Rest" }[r] || r);
+export const roleDesc = (r) => ({ field: "tend and bring in the crops", wood: "lay in wood for winter", forage: "gather food from the wild", rest: "recover from the work" }[r] || "");
 
 // The mortgage due at this year's settlement: the scheduled payment + upkeep (with sensible
 // defaults past the authored years). Pure.

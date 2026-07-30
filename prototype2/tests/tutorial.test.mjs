@@ -3,6 +3,7 @@ import { boot } from "../src/main.js";
 import { fxTag } from "../src/render/screens.js";
 import { pendingTip } from "../src/content/tips.js";
 import { initialState } from "../src/core/state.js";
+import { EVENTS } from "../src/core/events.js";
 
 describe("Reuben's tutorial opt-in", () => {
   it("a New Game boots with Reuben's prompt, shown with his name and avatar", () => {
@@ -41,7 +42,9 @@ describe("Reuben's tutorial opt-in", () => {
 describe("Reuben's guided tips", () => {
   function newGameWithTips() {
     const root = document.createElement("div");
-    const app = boot(root, { seed: 1, lineageName: "Mackall", tutorialPrompt: true });
+    // eventsSeen: pre-exhausted so an event beat cannot interrupt the tip sequencing this
+    // block is actually testing (unrelated to the event system; see tests/events.test.mjs).
+    const app = boot(root, { seed: 1, lineageName: "Mackall", tutorialPrompt: true, eventsSeen: EVENTS.map((e) => e.id) });
     app.dispatch({ type: "SET_TUTORIALS", on: true }); // "Walk me through it"
     return { root, app };
   }

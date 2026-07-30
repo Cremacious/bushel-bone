@@ -2,9 +2,9 @@ import { el } from "./dom.js";
 import { seasonLabel, DAYS_PER_SEASON, livingHands } from "../core/state.js";
 import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
-import { choiceCard, fieldCard, actionCostTag } from "./components.js";
+import { choiceCard, fieldCard } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
-import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, actionEffects, playerActionEffects, talkIsDry, mortgageDue, hireCost, canHire } from "../core/selectors.js";
+import { fieldLabel, conditionOf, duskSummary, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, talkIsDry, mortgageDue, hireCost, canHire, seedBundleCost, canBuySeed, interrupts, roleLabel, roleDesc, burnsFuel } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
 import { counselFor } from "../content/counsel.js";
 import { BALANCE } from "../core/balance.js";
@@ -84,40 +84,66 @@ const SCREENS = {
       el("p", { class: "t-sub plant-hint", text: "Set each field on the left, then sow." }),
     );
   },
+  // The BEAT screen: shown only when the auto-run of days stops (interrupts()) or the season
+  // ends. Short and scannable (the playtest complaint was scrolling): the beat itself, a
+  // one-line resource status, the crew's role toggles, your season actions, and the way on.
   day: (stage, s, dispatch) => {
+    const reasons = interrupts(s);
+    const title = reasons.length ? reasons[0] : "A quiet stretch.";
     stage.append(
       el("div", { class: "eyebrow t-label", text: `Day ${s.day} of ${DAYS_PER_SEASON}` }),
-      el("h2", { class: "t-title", text: "Set the crew, and spend your day" }),
+      el("h2", { class: "t-title beat-title", text: title }),
     );
-    stage.append(goalPanel(s));                // what the cold months will want (foreshadowing)
-    stage.append(el("p", { class: "t-sub assignnote", text: "Set your crew's orders any time today. They hold until you turn in for the night." }));
-    const plantedFields = s.fields.filter((f) => f.crop);
-    const ripeList = ripeFields(s);
-    const living = livingHands(s);
-    // A task is offered only when there is something to do it to; otherwise disabled with a
-    // plain reason, so a hand is never quietly tired for empty motion (D-039).
-    const why = { tend: plantedFields.length ? null : "no crop is in the ground to tend",
-      harvest: ripeList.length ? null : "nothing is ripe to bring in" };
-    const TASKS = [["rest", "Rest"], ["tend", "Tend"], ["harvest", "Harvest"], ["forage", "Forage"], ["chop", "Chop wood"]];
-    for (const h of living) {
-      const row = el("div", { class: "handrow" }, [
-        el("span", { class: "hname t-choice", text: h.name }),
-        strainMeter(h),
-      ]);
-      const sel = el("div", { class: "taskpick" }, TASKS.map(([task, label]) => {
-        const blocked = !!why[task];
-        const tags = blocked ? [] : actionEffects(task).map((e) =>
-          el("span", { class: "efftag " + e.valence, text: e.label }));
-        return el("button", { class: "taskbtn t-sub" + (h.task === task ? " sel" : "") + (blocked ? " disabled" : ""),
-          ...(blocked ? { disabled: true, title: why[task] } : {}),
-          onClick: blocked ? undefined : () => dispatch({ type: "ASSIGN", handId: h.id, task,
-            targetFieldId: task === "tend" ? plantedFields[0].id : task === "harvest" ? ripeList[0].id : undefined }) },
-          [el("span", { class: "tb-label", text: label }), ...tags]);
-      }));
-      row.append(sel);
-      stage.append(row);
+    for (const r of reasons.slice(1)) stage.append(el("p", { class: "beat-reason", text: r }));
+
+    // Resource status, compact: the ledger figures + (in the cold months, or when short) the
+    // winter targets, so the season's stakes stay visible without the old full goal panel.
+    const n = yearNeeds(s);
+    const short = n.fuel.have < n.fuel.need || n.food.have < n.food.need;
+    let status = `Larder ${Math.floor(s.larder)} · Fuel ${s.fuel}`;
+    if (burnsFuel(s) || short) status += ` · winter wants: wood ${n.fuel.have}/${n.fuel.need}, food ${n.food.have}/${n.food.need}`;
+    stage.append(el("p", { class: "beat-status", text: status }));
+
+    // The crew: name + Tiredness + a role toggle. Standing orders, so this is set-and-forget.
+    const ROLES = ["field", "wood", "forage", "rest"];
+    for (const h of livingHands(s)) {
+      stage.append(el("div", { class: "crewbeat" }, [
+        el("div", { class: "crewbeat-head" }, [
+          el("span", { class: "hname t-choice", text: h.name }),
+          el("span", { class: "strain-advice t-sub", text: tirednessAdvice(h) }),
+        ]),
+        el("div", { class: "rolerow" }, ROLES.map((r) =>
+          el("button", { class: "rolebtn" + (h.role === r ? " sel" : ""), title: roleDesc(r),
+            onClick: () => dispatch({ type: "SET_ROLE", handId: h.id, role: r }) }, [
+            el("span", { text: roleLabel(r) }),
+          ]))),
+      ]));
     }
-    stage.append(personalActions(s, dispatch));
+
+    // Your season: the shared action pool, spent at a beat.
+    const growing = s.fields.filter((f) => f.crop && !ripe(f));
+    const worn = livingHands(s).find((h) => h.strain >= BALANCE.strain.wornAt);
+    const left = s.seasonActionsLeft;
+    stage.append(el("p", { class: "t-sub season-h", text: `You have ${left} of the season to spend.` }));
+    const seasonOpts = [
+      { kind: "forage", label: "Forage" },
+      ...(growing.length ? [{ kind: "work", target: growing[0].id, label: "Work a field" }] : []),
+      ...(worn ? [{ kind: "care", target: worn.id, label: `Sit with ${worn.name}` }] : []),
+    ];
+    stage.append(el("div", { class: "seasonact" },
+      seasonOpts.map((o) => el("button", { class: "seasonbtn" + (left <= 0 ? " disabled" : ""),
+        ...(left <= 0 ? { disabled: true } : {}),
+        onClick: left > 0 ? () => dispatch({ type: "SPEND_ACTION", kind: o.kind, target: o.target }) : undefined,
+        text: o.label }))));
+    stage.append(el("button", { class: "seasonbtn", text: "Ride to Marrow's Cross →",
+      onClick: () => dispatch({ type: "SET_SCREEN", screen: "town" }) }));
+
+    // The way on.
+    stage.append(s.day >= DAYS_PER_SEASON
+      ? choiceCard({ text: "Bring the season to a close", sub: "the day-book, and what comes next", primary: true },
+          () => dispatch({ type: "CONTINUE" }))
+      : choiceCard({ text: "Let the days run on", sub: "until something wants you", primary: true },
+          () => dispatch({ type: "CONTINUE" })));
   },
   dusk: (stage, s, dispatch) => {
     const d = duskSummary(s);
@@ -190,7 +216,7 @@ const SCREENS = {
         el("span", { class: "hname t-choice", text: h.name + (isForeman ? " · foreman" : "") }),
         el("span", { class: "hcond t-sub", text: conditionOf(h) }),
       ]);
-      row.append(el("div", { class: "t-sub", text: "at task: " + (TASK_LABEL[h.task] || h.task) }));
+      row.append(el("div", { class: "t-sub", text: "set to: " + roleLabel(h.role) }));
       stage.append(row);
     }
   },
@@ -204,8 +230,8 @@ const SCREENS = {
     }
   },
   town: (stage, s, dispatch) => {
-    const canAct = s.phase === "day" && s.playerActionsLeft > 0;
-    const why = s.phase !== "day" ? "Come back during the day." : s.playerActionsLeft <= 0 ? "You are spent for the day." : null;
+    const canAct = s.phase === "day" && s.seasonActionsLeft > 0;
+    const why = s.phase !== "day" ? "Come back during the day." : s.seasonActionsLeft <= 0 ? "You are spent for the season." : null;
     const spent = !canAct;
     // Leaving town is always free; it never carries a cost tag.
     const homeCard = () => choiceCard({ text: "Head back to the farm", sub: "on to the day's work" },
@@ -217,7 +243,7 @@ const SCREENS = {
       stage.append(
         el("div", { class: "eyebrow t-label", text: "Marrow's Cross" }),
         el("h2", { class: "t-title", text: "Where to?" }),
-        el("p", { class: "t-sub townhint", text: canAct ? `You have ${s.playerActionsLeft} of the day to spend here.` : (why || "The town is quiet.") }),
+        el("p", { class: "t-sub townhint", text: canAct ? `You have ${s.seasonActionsLeft} of the season to spend here.` : (why || "The town is quiet.") }),
       );
       if (spent) stage.append(homeCard(), spentNote());
       stage.append(el("div", { class: "eyebrow t-label townsub", text: "Work going" }));
@@ -264,6 +290,10 @@ const SCREENS = {
         text: "Hire a hand", sub: "a clone from the wagon",
         tag: `${hireCost(s)}m`, tagValence: "", disabled: !canHire(s), why: "not enough coin",
       }, () => dispatch({ type: "HIRE" }))] : []),
+      ...(l.npc === "tolliver" ? [choiceCard({
+        text: "Buy seed", sub: `${BALANCE.seedBundle} seed from the store`,
+        tag: `${seedBundleCost()}m`, tagValence: "", disabled: !canBuySeed(s), why: "not enough coin",
+      }, () => dispatch({ type: "BUY_SEED" }))] : []),
       choiceCard({ text: "Walk on", sub: "back to the crossroads" },
         () => dispatch({ type: "WALK_TO", place: null })),
     );
@@ -277,55 +307,7 @@ const SCREENS = {
 };
 export { SCREENS };
 
-// --- daily-work guidance: the Tiredness read, Reuben's counsel, the goal foreshadowing ---
-
-// A hand's condition, made legible: a labeled Tiredness meter (colored by band) plus a plain
-// verdict, so the player can SEE when a hand is wearing down and rest or care actually
-// matters (D-039).
-function strainMeter(h) {
-  const cond = conditionOf(h);
-  const pct = Math.min(100, Math.round((h.strain / BALANCE.strain.lostAt) * 100));
-  return el("div", { class: "strain cond-" + cond }, [
-    el("span", { class: "strain-word t-label", text: "Tiredness" }),
-    el("div", { class: "strain-bar" }, [el("div", { class: "strain-fill", style: `width:${Math.max(3, pct)}%` })]),
-    el("span", { class: "strain-advice t-sub", text: tirednessAdvice(h) }),
-  ]);
-}
-
-// Your own day: spend up to playerActionsPerDay actions. Applied at once (instant feedback).
-function personalActions(s, dispatch) {
-  const left = s.playerActionsLeft;
-  const growing = s.fields.filter((f) => f.crop && !ripe(f));
-  const worn = livingHands(s).find((h) => h.strain >= BALANCE.strain.wornAt);
-  // Prefer a field no one has worked yet today, so the player's labor visibly adds a push.
-  const workTarget = growing.find((f) => !f.tended) || growing[0];
-  const opts = [
-    { kind: "forage", label: "Forage", desc: `+${BALANCE.forageFood} food to the larder` },
-    ...(growing.length ? [{ kind: "work", target: workTarget.id,
-      label: "Work a field", desc: `tend ${fieldLabel(workTarget).toLowerCase()} yourself, a day's growth toward harvest` }] : []),
-    ...(worn ? [{ kind: "care", target: worn.id,
-      label: `Sit with ${worn.name}`, desc: `ease a ${conditionOf(worn)} hand, brings their tiredness down` }] : []),
-  ];
-  return el("div", { class: "personal" }, [
-    el("div", { class: "personal-h t-label", text: `Your day: ${left} of ${BALANCE.playerActionsPerDay} actions left` }),
-    el("button", { class: "ridebtn t-label", text: "Ride to Marrow's Cross →",
-      onClick: () => dispatch({ type: "SET_SCREEN", screen: "town" }) }),
-    el("div", { class: "ridehint t-sub", text: "or spend the day here:" }),
-    el("div", { class: "pa-grid" }, opts.map((o) =>
-      el("button", { class: "pa-action" + (left <= 0 ? " disabled" : ""), ...(left <= 0 ? { disabled: true } : {}),
-        onClick: left > 0 ? () => dispatch({ type: "DO_PLAYER_ACTION", kind: o.kind, target: o.target }) : undefined }, [
-        el("span", { class: "pa-label t-choice", text: o.label }),
-        el("span", { class: "pa-desc t-sub", text: o.desc }),
-        ...playerActionEffects(o.kind).map((e) => el("span", { class: "efftag " + e.valence, text: e.label })),
-        actionCostTag(),
-      ]))),
-    el("p", { class: "t-sub actionsfree", text: "Unspent time is fine. Turn in whenever you are ready." }),
-    el("div", { class: "day-cta" }, [
-      choiceCard({ text: "Turn in for the night", sub: "the day resolves: crops grow, the crew eats", primary: true }, () => dispatch({ type: "TURN_IN" })),
-      el("button", { class: "runbtn t-label", text: "Let the days run →", onClick: () => dispatch({ type: "RUN_DAYS" }) }),
-    ]),
-  ]);
-}
+// --- daily-work guidance: Reuben's counsel ---
 
 // Reuben's counsel block (Year 1), or nothing. Returned as an array to spread into append.
 function counsel(s) {
@@ -335,30 +317,6 @@ function counsel(s) {
     el("div", { class: "counsel-who t-label" }, [el("span", { class: "counsel-dot" }), document.createTextNode(" Reuben's counsel")]),
     el("p", { class: "counsel-text t-sub", text: c.text }),
   ])];
-}
-
-// The cold-months targets, read plainly: have / need with a bar, green when met, amber short.
-function goalPanel(s) {
-  const n = yearNeeds(s);
-  const row = (label, have, need) => {
-    const met = have >= need;
-    const pct = Math.max(2, Math.min(100, Math.round((have / (need || 1)) * 100)));
-    return el("div", { class: "goalrow2" }, [
-      el("div", { class: "goal-line" }, [
-        el("span", { class: "goal-k t-choice", text: label }),
-        el("span", { class: "goal-fig t-sub" + (met ? " good" : " warn") }, [
-          document.createTextNode(`${have} / ${need} `),
-          el("span", { class: "goal-note", text: met ? "✓ laid in" : `(${need - have} to go)` }),
-        ]),
-      ]),
-      el("div", { class: "goalbar" }, [el("div", { class: "goalbar-fill" + (met ? " good" : " warn"), style: `width:${pct}%` })]),
-    ]);
-  };
-  return el("div", { class: "goals" }, [
-    el("div", { class: "goals-h t-label", text: "To last the winter, lay in:" }),
-    row("Wood", n.fuel.have, n.fuel.need),
-    row("Food", n.food.have, n.food.need),
-  ]);
 }
 
 // The script bodies are HTML (from #46) and carry their own `.prose` wrapper; render
@@ -386,10 +344,6 @@ function line(label, value, i = 0) {
   return el("div", { class: "bookline m-line", style: `--i:${i}` },
     [el("span", { class: "t-sub", text: label }), el("span", { class: "t-choice", text: value })]);
 }
-
-// Plain-language task words for the Hands tab (the day screen's own TASKS array is
-// choice-button labels, not read-only prose, so this is a small, separate map).
-const TASK_LABEL = { rest: "resting", tend: "tending a field", harvest: "bringing in the harvest", chop: "chopping wood" };
 
 // The Ledger tab explains the four figures the masthead only shows as numbers.
 const LEDGER_ROWS = [

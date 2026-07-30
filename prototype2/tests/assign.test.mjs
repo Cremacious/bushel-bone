@@ -4,22 +4,21 @@ import { reduce } from "../src/core/reducer.js";
 import { BALANCE } from "../src/core/balance.js";
 
 describe("assignment", () => {
-  it("ASSIGN sets a living hand's daily task (with an optional field target)", () => {
+  it("SET_ROLE sets a living hand's standing role", () => {
     let s = initialState(1);
-    s = reduce(s, { type: "ASSIGN", handId: "reuben", task: "tend", targetFieldId: 0 });
+    s = reduce(s, { type: "SET_ROLE", handId: "reuben", role: "wood" });
     const h = s.hands.find((x) => x.id === "reuben");
-    expect(h.task).toBe("tend");
-    expect(h.targetFieldId).toBe(0);
+    expect(h.role).toBe("wood");
   });
-  it("ASSIGN ignores an unknown or dead hand", () => {
+  it("SET_ROLE ignores an unknown or dead hand", () => {
     const s = initialState(1);
-    expect(reduce(s, { type: "ASSIGN", handId: "ghost", task: "chop" })).toBe(s);
+    expect(reduce(s, { type: "SET_ROLE", handId: "ghost", role: "wood" })).toBe(s);
   });
-  it("DO_PLAYER_ACTION 'forage' spends a player action and adds food immediately", () => {
+  it("SPEND_ACTION 'forage' spends a season action and adds food immediately", () => {
     let s = { ...initialState(1), phase: "day" };
     const before = s.larder;
-    s = reduce(s, { type: "DO_PLAYER_ACTION", kind: "forage" });
+    s = reduce(s, { type: "SPEND_ACTION", kind: "forage" });
     expect(s.larder).toBe(before + BALANCE.forageFood);
-    expect(s.playerActionsLeft).toBe(1);
+    expect(s.seasonActionsLeft).toBe(BALANCE.seasonActionsPerSeason - 1);
   });
 });

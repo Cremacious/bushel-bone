@@ -14,8 +14,8 @@ export const LOCATIONS = [
   { id: "wagon",  npc: "ambrose",  loc: "wagon",  purpose: "clone hands, for a price" },
 ];
 
-// The odd-job deck: small paid errands. Each day a deterministic slice is on offer
-// (see selectors.townOffers). giver is an npc id (for flavor); coin is the pay.
+// The odd-job deck: small paid errands. Each season a deterministic, scarce slice is on
+// offer (see selectors.townOffers). giver is an npc id (for flavor); coin is the pay.
 export const ODD_JOBS = [
   { id: "haul_mill",   giver: "meredith", coin: 8,  line: "Haul grain sacks for the miller a day." },
   { id: "sit_patient", giver: "bell",     coin: 6,  line: "Sit the night with one of Doc's patients." },
@@ -24,8 +24,9 @@ export const ODD_JOBS = [
   { id: "load_wagon",  giver: "crake",    coin: 9,  line: "Load and strap the toolwright's wagon." },
 ];
 
-// How many jobs are on offer on a given day.
-export const JOBS_PER_DAY = 2;
+// How many jobs are on offer across a whole season (a scarce, rotating handful, not a
+// daily refill — see selectors.townOffers).
+export const JOBS_PER_SEASON = 2;
 
 // Each NPC's talk deck: ordered intro-first, each gated by a minStanding (0 = always). As
 // standing rises, deeper scenes unlock. Scene ids match content/script.yaml + scenes.js.

@@ -1,13 +1,13 @@
-// Three scripted player policies for the balance sim (economy task 7). Each is a pure
-// `policy(state) => action` function: no Math.random, decided entirely from the state the real
-// reducer hands back, so a run is fully deterministic for a given seed. `structural(s)` handles
-// every phase that isn't a real decision (scene/brief/dusk/settlement); each policy only differs
-// in what it does during `planting` (crop choice) and `day` (assignment, personal actions,
-// expansion).
+// Three scripted player policies for the balance sim (economy task 7; reworked for the v0.4
+// beat loop / role model in Phase 1 Task 4). Each is a pure `policy(state) => action` function:
+// no Math.random, decided entirely from the state the real reducer hands back, so a run is
+// fully deterministic for a given seed. `structural(s)` handles every phase that isn't a real
+// decision (scene/brief/dusk/settlement); each policy only differs in what it does during
+// `planting` (crop choice) and `day` (standing roles, season actions, expansion).
 import { CROPS, ripe } from "../src/core/crops.js";
 import { BALANCE } from "../src/core/balance.js";
 import { livingHands, season } from "../src/core/state.js";
-import { ripeFields, mouths, burnsFuel, suggestPlan, clearCost, hireCost, mortgageDue } from "../src/core/selectors.js";
+import { mouths, burnsFuel, clearCost, hireCost, mortgageDue, canBuySeed } from "../src/core/selectors.js";
 import { SCENES, openingSceneId } from "../src/content/scenes.js";
 
 // --- shared structural step: every phase that isn't a real player decision -----------------
@@ -29,23 +29,25 @@ function structural(s) {
 }
 
 // --- planting ---------------------------------------------------------------------------------
+// v0.4 phase2: seed is a real coin sink (BUY_SEED at Tolliver's), so affordability is a seed
+// check only (no coin fallback).
 function affordable(s, cropKey) {
   const c = CROPS[cropKey];
-  if (!c) return false;
-  const seedSpent = Math.min(s.seed, c.seed);
-  const coinSpent = c.seed - seedSpent;
-  return coinSpent <= s.coin;
+  return !!c && c.seed <= s.seed;
 }
 
-// Fill cleared, empty fields one at a time via `chooseCrop(s, field)`. Falls back to the
-// cheapest staple (turnip) if the preferred crop is unaffordable, and to SOW (leaving the field
-// fallow) if even that can't be afforded, so the policy never asks for a no-op PLANT that would
-// wedge the harness.
+// Fill cleared, empty fields one at a time via `chooseCrop(s, field)`. Restocks seed from
+// Tolliver's the moment it runs low so the policy can keep planting, falls back to the
+// cheapest staple (turnip) if the preferred crop is still unaffordable, and to SOW (leaving
+// the field fallow) only if seed truly cannot be bought, so the policy never asks for a
+// no-op PLANT that would wedge the harness.
 function plantStep(s, chooseCrop) {
   const field = s.fields.find((f) => f.cleared && !f.crop);
   if (!field) return { type: "SOW" };
+  if (s.seed < 6 && canBuySeed(s)) return { type: "BUY_SEED" };
   let crop = chooseCrop(s, field);
   if (!affordable(s, crop)) crop = "turnip";
+  if (!affordable(s, crop) && canBuySeed(s)) return { type: "BUY_SEED" };
   if (!affordable(s, crop)) return { type: "SOW" };
   return { type: "PLANT", fieldId: field.id, crop };
 }
@@ -63,77 +65,68 @@ const optimalCrop = (s, field) => {
 const normalCrop = (s, field) => (field.id % 2 === 0 ? "potato" : "corn"); // a mixed, middling line
 const sloppyCrop = () => "potato"; // never diversifies
 
-// --- day: assignment ----------------------------------------------------------------------
-// optimal reuses the game's own recommended plan (Reuben's suggestPlan): harvest ripe fields
-// first (pairing a second hand onto a two-hand crop), then forage if the larder is going short,
-// else chop against the cold, else tend a growing field, else rest.
-const optimalAssign = (s) => suggestPlan(s).hands;
+// --- day: standing roles ---------------------------------------------------------------------
+// A worn hand always rests first, no matter the policy's ambition (past that point they are a
+// liability, not labor); the policies differ in what they do with a hand that is fit to work.
 
-// normal: harvest ripe fields but never pairs a second hand onto a two-hand crop (so cotton
-// always comes in shorthanded), only reacts to food/fuel once they are fully exhausted.
+// optimal: keeps at most one hand chopping (banks fuel ahead of the cold, or catches up once it
+// runs short), sends a hand foraging when the larder is thin, and puts everyone else fit to the
+// fields. So a well-played line always has fuel in hand come fall and never starves for it.
+function optimalAssign(s) {
+  const cold = burnsFuel(s);
+  const fuelShort = s.fuel < mouths(s) * BALANCE.fuelPerMouthPerDay * BALANCE.daysPerSeason; // less than a season's worth banked
+  const foodShort = s.larder < mouths(s) * BALANCE.foodPerMouthPerDay * 3; // a few days' buffer
+  const roles = {};
+  let woodAssigned = false;
+  for (const h of livingHands(s)) {
+    if (h.strain >= BALANCE.strain.wornAt) { roles[h.id] = "rest"; continue; }
+    if ((cold || fuelShort) && !woodAssigned) { roles[h.id] = "wood"; woodAssigned = true; continue; }
+    if (foodShort) { roles[h.id] = "forage"; continue; }
+    roles[h.id] = "field";
+  }
+  return roles;
+}
+
+// normal: a plainer split — the first hand chops through the cold seasons (and only then),
+// everyone else fields, no reaction to a thin larder. Rest still comes first for a worn hand.
 function normalAssign(s) {
-  const living = livingHands(s);
-  const ripeList = ripeFields(s);
-  const hands = {};
-  let i = 0;
-  for (const f of ripeList) {
-    if (i >= living.length) break;
-    hands[living[i++].id] = { task: "harvest", targetFieldId: f.id };
-  }
-  const growing = s.fields.filter((f) => f.crop && !ripeList.some((r) => r.id === f.id)).map((f) => f.id);
-  for (; i < living.length; i++) {
-    const h = living[i];
-    if (s.larder <= 0) hands[h.id] = { task: "forage", targetFieldId: undefined };
-    else if (burnsFuel(s) && s.fuel <= 0) hands[h.id] = { task: "chop", targetFieldId: undefined };
-    else if (growing.length) hands[h.id] = { task: "tend", targetFieldId: growing.shift() };
-    else hands[h.id] = { task: "rest", targetFieldId: undefined };
-  }
-  return hands;
+  const cold = burnsFuel(s);
+  const roles = {};
+  livingHands(s).forEach((h, i) => {
+    if (h.strain >= BALANCE.strain.wornAt) { roles[h.id] = "rest"; return; }
+    roles[h.id] = cold && i === 0 ? "wood" : "field";
+  });
+  return roles;
 }
 
-// sloppy: only bothers to harvest a ripe field once the season is already more than half spent
-// (so crops sit ripe and unclaimed for days), ignores fuel entirely until winter actually bites,
-// never forages, and otherwise just alternates tend/rest.
+// sloppy: everyone stays on the fields, always — never chops, never forages, never rests a
+// worn hand — so the fuel store never fills and winter bites exactly as it should.
 function sloppyAssign(s) {
-  const living = livingHands(s);
-  const hands = {};
-  let i = 0;
-  if (s.day > 8) {
-    for (const f of ripeFields(s)) {
-      if (i >= living.length) break;
-      hands[living[i++].id] = { task: "harvest", targetFieldId: f.id };
-    }
-  }
-  const growing = s.fields.filter((f) => f.crop).map((f) => f.id);
-  for (; i < living.length; i++) {
-    const h = living[i];
-    if (season(s) === "winter" && s.fuel <= 0) hands[h.id] = { task: "chop", targetFieldId: undefined };
-    else if (i % 2 === 0 && growing.length) hands[h.id] = { task: "tend", targetFieldId: growing.shift() };
-    else hands[h.id] = { task: "rest", targetFieldId: undefined };
-  }
-  return hands;
+  const roles = {};
+  livingHands(s).forEach((h) => { roles[h.id] = "field"; });
+  return roles;
 }
 
-// --- day: the player's own personal actions -------------------------------------------------
+// --- day: the player's own season actions ----------------------------------------------------
 function optimalPersonal(s) {
-  if (s.playerActionsLeft <= 0) return null;
-  if (s.day <= 5 && s.larder < mouths(s) * 20) return { type: "DO_PLAYER_ACTION", kind: "forage" };
+  if (s.seasonActionsLeft <= 0) return null;
+  if (s.larder < mouths(s) * 20) return { type: "SPEND_ACTION", kind: "forage" };
   const worn = s.hands.find((h) => h.alive && h.strain >= BALANCE.strain.wornAt);
-  if (worn) return { type: "DO_PLAYER_ACTION", kind: "care", target: worn.id };
+  if (worn) return { type: "SPEND_ACTION", kind: "care", target: worn.id };
   const growing = s.fields.find((f) => f.crop && !ripe(f));
-  if (growing) return { type: "DO_PLAYER_ACTION", kind: "work", target: growing.id };
+  if (growing) return { type: "SPEND_ACTION", kind: "work", target: growing.id };
   return null;
 }
 function normalPersonal(s) {
-  if (s.playerActionsLeft <= 0) return null;
-  if (s.larder < mouths(s) * 10 && s.day % 3 === 0) return { type: "DO_PLAYER_ACTION", kind: "forage" };
+  if (s.seasonActionsLeft <= 0) return null;
+  if (s.larder < mouths(s) * 10 && s.seasonActionsLeft > 2) return { type: "SPEND_ACTION", kind: "forage" };
   return null;
 }
 const sloppyPersonal = () => null; // never forages, never takes odd jobs
 
 // --- day: expansion (clear a field / hire a hand) -------------------------------------------
 function optimalExpand(s) {
-  const buffer = mortgageDue(s).total + s.mortgage.arrears + 50; // always keep the mortgage covered, plus a cushion
+  const buffer = mortgageDue(s).total + s.mortgage.arrears + 15; // keep the mortgage covered, thin cushion
   const cc = clearCost(s);
   if (cc != null && s.coin - cc >= buffer) {
     const f = s.fields.find((x) => !x.cleared);
@@ -148,7 +141,7 @@ function optimalExpand(s) {
   return null;
 }
 function normalExpand(s) {
-  const buffer = mortgageDue(s).total + s.mortgage.arrears + 40; // a modest cushion
+  const buffer = mortgageDue(s).total + s.mortgage.arrears + 25; // a modest cushion
   const cc = clearCost(s);
   if (cc != null && s.coin - cc >= buffer) {
     const f = s.fields.find((x) => !x.cleared);
@@ -170,20 +163,20 @@ function sloppyExpand(s) {
   return null;
 }
 
-// --- day: assemble one action from assignment → personal → expansion → turn the day in -----
+// --- day: assemble one action from roles → personal → expansion → advance the beat ----------
 function dayStep(s, { assign, personal, expand }) {
   const desired = assign(s);
   for (const h of livingHands(s)) {
     const want = desired[h.id];
-    if (want && (h.task !== want.task || h.targetFieldId !== want.targetFieldId)) {
-      return { type: "ASSIGN", handId: h.id, task: want.task, targetFieldId: want.targetFieldId };
+    if (want && h.role !== want) {
+      return { type: "SET_ROLE", handId: h.id, role: want };
     }
   }
   const p = personal(s);
   if (p) return p;
   const e = expand(s);
   if (e) return e;
-  return { type: "TURN_IN" };
+  return { type: "CONTINUE" }; // roles and this beat's spending are set — advance to the next beat
 }
 
 // --- the three exported policies -------------------------------------------------------------

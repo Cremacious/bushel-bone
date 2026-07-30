@@ -10,6 +10,10 @@ import { startFront } from "./front.js";
 // front porch (title/naming/letter), exactly as the year1.html harness does.
 export function boot(root, opts = {}) {
   let state = initialState(opts.seed ?? ((Math.random() * 1e9) >>> 0), opts.lineageName ?? "Crane");
+  // Test seam: some callers (e.g. tutorial tests) drive the day loop while asserting on
+  // mechanics unrelated to the event system; pre-seeding eventsSeen lets them opt out of
+  // event beats without touching the real seeded roll (reducer.maybeEvent).
+  if (opts.eventsSeen) state = { ...state, eventsSeen: opts.eventsSeen };
   let lastView = null; // the beat currently on screen; a change replays the Turn motion
   function dispatch(action) {
     state = reduce(state, action);

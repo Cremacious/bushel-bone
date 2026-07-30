@@ -9,17 +9,17 @@ describe("initial state", () => {
     expect(season(s)).toBe("spring");
     expect(s.day).toBe(1);
     expect(DAYS_PER_SEASON).toBe(10);
-    expect(s.coin).toBe(100);
-    expect(s.larder).toBe(80);
-    expect(s.seed).toBe(20); // planting-seed resource, distinct from the rng seed
+    expect(s.coin).toBe(75);
+    expect(s.larder).toBe(55);
+    expect(s.seed).toBe(8); // planting-seed resource, distinct from the rng seed (v0.4 phase2: seed is a real coin sink)
     expect(s.rngSeed).toBe(123); // the original rng seed survives, unshadowed
     expect(livingHands(s).map((h) => h.name)).toEqual(["Reuben"]);
     expect(s.lineageName).toBe("Mackall");
   });
-  it("starts the loop scaffolding: brief phase, full player actions, home tab", () => {
+  it("starts the loop scaffolding: brief phase, full season actions, home tab", () => {
     const s = initialState(1);
     expect(s.phase).toBe("brief");
-    expect(s.playerActionsLeft).toBe(BALANCE.playerActionsPerDay);
+    expect(s.seasonActionsLeft).toBe(BALANCE.seasonActionsPerSeason);
     expect(s.screen).toBe("home");
   });
   it("hands start with a zero strain track and no fields are tended", () => {

@@ -1,9 +1,11 @@
-import { season, makeHand, HAND_NAMES } from "./state.js";
+import { season, makeHand, HAND_NAMES, livingHands } from "./state.js";
 import { CROPS, ripe, dailyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
-import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost, nextTownScene, mortgageDue, hireCost } from "./selectors.js";
+import { burnsFuel, fieldLabel, interrupts, clearCost, nextTownScene, mortgageDue, hireCost } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
 import { ODD_JOBS, SMALLTALK } from "./town.js";
+import { mulberry32 } from "./rng.js";
+import { EVENTS, EVENT_CHANCE } from "./events.js";
 
 // Pure: (state, action) => nextState. Never mutates the input.
 // Later plans add cases (resolveEvent, ...). For now: theme + the day/season/year
@@ -37,12 +39,14 @@ export function reduce(state, action) {
     case "FALLOW":
       return mapField(state, action.fieldId, (f) => ({ ...f, crop: null, progress: 0 }));
     case "SOW":
-      return { ...withStandingOrders({ ...state, phase: "day", day: 1 }),
-        playerActionsLeft: BALANCE.playerActionsPerDay };
-    case "ASSIGN":
-      return mapHand(state, action.handId, (h) => ({ ...h, task: action.task, targetFieldId: action.targetFieldId }));
-    case "DO_PLAYER_ACTION":
-      return doPlayerAction(state, action);
+      return runDays({ ...withInitialRoles({ ...state, phase: "day", day: 1 }),
+        seasonActionsLeft: BALANCE.seasonActionsPerSeason });
+    case "CONTINUE":
+      return continueRun(state);
+    case "SET_ROLE":
+      return mapHand(state, action.handId, (h) => ({ ...h, role: action.role }));
+    case "SPEND_ACTION":
+      return spendAction(state, action);
     case "TURN_IN":
       return resolveDay(state);
     case "RUN_DAYS":
@@ -63,6 +67,8 @@ export function reduce(state, action) {
       return clearField(state, action.fieldId);
     case "HIRE":
       return hire(state);
+    case "BUY_SEED":
+      return buySeed(state);
     default:
       return state;
   }
@@ -72,45 +78,40 @@ export function reduce(state, action) {
 // winter). Shared by BEGIN_SEASON and a scene closing with after: "BEGIN_SEASON".
 function beginSeason(s) {
   return season(s) === "winter"
-    ? { ...withStandingOrders({ ...s, phase: "day", day: 1 }), playerActionsLeft: BALANCE.playerActionsPerDay, logSeasonStart: s.log.length }
-    : { ...s, phase: "planting", day: 1, logSeasonStart: s.log.length };
+    ? runDays({ ...withInitialRoles({ ...s, phase: "day", day: 1 }), seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length, jobsDoneThisSeason: [] })
+    : { ...s, phase: "planting", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length, jobsDoneThisSeason: [] };
 }
 
-// Pre-fill the crew's standing orders from Reuben's recommendation for the board as it
-// stands. Called once when the season's play begins (SOW); the player overrides via ASSIGN,
-// and the orders then PERSIST day to day (no nagging re-assignment each dawn).
-function withStandingOrders(s) {
-  const plan = suggestPlan(s);
-  const hands = s.hands.map((h) => (h.alive && plan.hands[h.id])
-    ? { ...h, task: plan.hands[h.id].task, targetFieldId: plan.hands[h.id].targetFieldId } : h);
-  return { ...s, hands };
-}
+// Roles persist across days (set once via SET_ROLE), so opening a season needs no per-day
+// pre-fill. Kept as a seam for future season-open setup.
+function withInitialRoles(s) { return s; }
 
-// The proprietor spends one of their day's actions on their own labor. Applied at once for
-// instant feedback. work → help a field along; forage → food on the table; care → ease a hand.
-function doPlayerAction(s, { kind, target }) {
-  if (s.phase !== "day" || s.playerActionsLeft <= 0) return s;
+// The proprietor spends one of the season's actions on their own labor at a beat. Applied at
+// once. A no-op with none left.
+function spendAction(s, { kind, target }) {
+  if (s.seasonActionsLeft <= 0) return s;
   const St = BALANCE.strain;
-  let ns = { ...s, playerActionsLeft: s.playerActionsLeft - 1 };
+  let ns = { ...s, seasonActionsLeft: s.seasonActionsLeft - 1 };
   if (kind === "forage") ns.larder = s.larder + BALANCE.forageFood;
   else if (kind === "work" && target != null) ns.fields = s.fields.map((f) => (f.id === target && f.crop) ? { ...f, tended: true } : f);
   else if (kind === "care" && target != null) ns.hands = s.hands.map((h) => (h.id === target && h.alive) ? { ...h, strain: Math.max(0, h.strain - St.careRecovery) } : h);
-  // kind === "rest": spends the action, no effect (a quiet day)
   return ns;
 }
 
-// Take a paid odd-job: spend one of the day's actions, take the coin, mark it done so it
-// cannot be double-claimed. A no-op off the day phase, with no actions, or if already done.
+// Take a paid odd-job: spend one of the season's actions, take the coin, mark it done so it
+// cannot be double-claimed. Jobs are season-scarce (see town.JOBS_PER_SEASON): once taken, a
+// job stays gone for the rest of the season, not just the day. A no-op off the day phase,
+// with no actions, or if already done this season.
 function acceptJob(s, id) {
-  if (s.phase !== "day" || s.playerActionsLeft <= 0) return s;
+  if (s.phase !== "day" || s.seasonActionsLeft <= 0) return s;
   const job = ODD_JOBS.find((j) => j.id === id);
-  if (!job || (s.jobsDoneToday || []).includes(id)) return s;
-  return { ...s, coin: s.coin + job.coin, playerActionsLeft: s.playerActionsLeft - 1,
-    jobsDoneToday: [...(s.jobsDoneToday || []), id] };
+  if (!job || (s.jobsDoneThisSeason || []).includes(id)) return s;
+  return { ...s, coin: s.coin + job.coin, seasonActionsLeft: s.seasonActionsLeft - 1,
+    jobsDoneThisSeason: [...(s.jobsDoneThisSeason || []), id] };
 }
 
 // Call on a townsperson: open whichever of their talks comes next (see nextTownScene). A
-// talk with real content still spends one of the day's actions and raises standing; once
+// talk with real content still spends one of the season's actions and raises standing; once
 // the deck is exhausted at the current standing, the small-talk filler is free (no action,
 // no standing) so a visit is never a wasted action. Either way the talk is remembered so
 // the deck rotates. A no-op off the day phase; real talks still need an action.
@@ -119,10 +120,10 @@ function visit(s, npc) {
   const sceneId = nextTownScene(s, npc);
   if (!sceneId) return s;
   const dry = sceneId === (SMALLTALK[npc] || null);
-  if (!dry && s.playerActionsLeft <= 0) return s; // real talks still need an action
+  if (!dry && s.seasonActionsLeft <= 0) return s; // real talks still need an action
   const seen = s.talksSeen || [];
   return { ...s,
-    playerActionsLeft: dry ? s.playerActionsLeft : s.playerActionsLeft - 1,
+    seasonActionsLeft: dry ? s.seasonActionsLeft : s.seasonActionsLeft - 1,
     standing: dry ? s.standing : { ...(s.standing || {}), [npc]: ((s.standing || {})[npc] || 0) + BALANCE.standing.perTalk },
     talksSeen: seen.includes(sceneId) ? seen : [...seen, sceneId],
     phase: "scene", scene: { id: sceneId, result: null }, screen: "home" };
@@ -138,6 +139,12 @@ function chooseScene(s, choiceId) {
   if (fx.regard != null) ns.regard = Math.max(0, Math.min(100, ns.regard + fx.regard));
   if (fx.coin != null) ns.coin = Math.max(0, ns.coin + fx.coin);
   if (fx.reckoning != null) ns.reckoning = Math.max(0, ns.reckoning + fx.reckoning);
+  if (fx.larder != null) ns.larder = Math.max(0, ns.larder + fx.larder);
+  if (fx.fuel != null) ns.fuel = Math.max(0, ns.fuel + fx.fuel);
+  if (fx.seed != null) ns.seed = Math.max(0, ns.seed + fx.seed);
+  if (fx.strainAll != null) ns.hands = ns.hands.map((h) => h.alive ? { ...h, strain: Math.max(0, Math.min(BALANCE.strain.lostAt, h.strain + fx.strainAll)) } : h);
+  if (fx.strainOne != null) { const w = ns.hands.find((h) => h.alive); if (w) ns.hands = ns.hands.map((h) => h.id === w.id ? { ...h, strain: Math.max(0, Math.min(BALANCE.strain.lostAt, h.strain + fx.strainOne)) } : h); }
+  if (fx.loseHand) { const v = ns.hands.find((h) => h.alive && h.id !== "reuben"); if (v) ns.hands = ns.hands.map((h) => h.id === v.id ? { ...h, alive: false } : h); }
   return { ...ns, scene: { ...s.scene, result: choiceId } };
 }
 
@@ -145,6 +152,7 @@ function closeScene(s) {
   const sc = SCENES[s.scene && s.scene.id];
   const base = { ...s, scene: null };
   if (sc && sc.after === "BEGIN_SEASON") return beginSeason(base);
+  if (sc && sc.returnTo === "run") return { ...base, phase: "day" }; // an event beat: resume the running day
   if (sc && sc.returnTo) return { ...base, screen: sc.returnTo, phase: "day" }; // back to town, mid-day
   return { ...base, phase: "brief" };
 }
@@ -171,53 +179,44 @@ function resolveDay(s) {
   const St = BALANCE.strain;
   const byId = (id) => fields.find((f) => f.id === id);
 
-  // 1) Labor: each living hand does its task. Strain follows REAL work — a hand told to
-  // tend bare ground or harvest an unripe field did nothing, so it must not pay the
-  // hard-labor strain for empty motion.
-
-  // 1a) Harvest is a field-level job: hands assigned to the same ripe field work it
-  // together, and the field is brought in once. A crop that needs two hands (cotton)
-  // yields only HALF when a single hand works it; two or more bring in the whole crop.
-  const harvestCrews = {};
-  for (const h of hands) {
-    if (h.alive && h.task === "harvest" && h.targetFieldId != null) {
-      (harvestCrews[h.targetFieldId] = harvestCrews[h.targetFieldId] || []).push(h.id);
-    }
+  // 1) Labor by role. Field hands bring in what is ripe (pooling on a field; a two-hand crop
+  // needs two), else tend the least-grown crop. Wood/forage are direct; rest recovers. Only
+  // real work charges strain.
+  const ripeList = fields.filter((f) => f.crop && ripe(f)).sort((a, b) => a.id - b.id);
+  const growing = fields.filter((f) => f.crop && !ripe(f)).sort((a, b) => a.progress - b.progress);
+  const fieldHands = hands.filter((h) => h.alive && h.role === "field");
+  const harvestCrews = {}; let hi = 0;
+  for (const f of ripeList) {
+    const need = CROPS[f.crop].needsTwo ? 2 : 1;
+    const crew = [];
+    while (crew.length < need && hi < fieldHands.length) crew.push(fieldHands[hi++]);
+    if (crew.length) harvestCrews[f.id] = crew.map((h) => h.id);
   }
+  const tenders = fieldHands.slice(hi);
   const workedHarvest = new Set();
   for (const fid of Object.keys(harvestCrews)) {
-    const crew = harvestCrews[fid];
-    const f = byId(Number(fid));
-    if (!f || !ripe(f)) continue; // nothing to bring in → no work, no strain
+    const crew = harvestCrews[fid]; const f = byId(Number(fid)); if (!f || !ripe(f)) continue;
     const c = CROPS[f.crop];
     let units = Math.round(c.yield * (f.fert / 3));
-    const shorthanded = c.needsTwo && crew.length < 2;
-    if (shorthanded) units = Math.floor(units / 2); // one pair of hands, half the crop
+    const shorthanded = c.needsTwo && crew.length < 2; if (shorthanded) units = Math.floor(units / 2);
     if (c.food > 0) larder += units * c.food; else coin += units * c.sale;
-    daylog.push(`Brought in ${c.name.toLowerCase()} from ${fieldLabel(f).toLowerCase()}${shorthanded ? ", but a single hand got only half of it" : ""}.`);
+    daylog.push(`Brought in ${c.name.toLowerCase()} from ${fieldLabel(f).toLowerCase()}${shorthanded ? ", a single hand getting only half" : ""}.`);
     f.crop = null; f.progress = 0; f.fert = Math.max(0, f.fert - 1);
     crew.forEach((id) => workedHarvest.add(id));
   }
-
-  // 1b) Tend / chop / forage are per-hand.
-  const doLabor = (task, targetFieldId) => {
-    if (task === "tend" && targetFieldId != null) {
-      const f = byId(targetFieldId);
-      if (f && f.crop) { f.tended = true; return true; }
-    } else if (task === "chop") {
-      fuel += BALANCE.fuelPerChopDay; return true;
-    } else if (task === "forage") {
-      larder += BALANCE.forageFood; return true; // gather wild food onto the table now
-    }
-    return false;
-  };
+  let gi = 0;
   for (const h of hands) {
     if (!h.alive) continue;
-    const hard = h.task === "harvest" ? workedHarvest.has(h.id) : doLabor(h.task, h.targetFieldId);
-    h.strain += hard ? St.hardLabor : (h.task === "rest" ? -St.restRecovery : 0);
+    let worked = false;
+    if (h.role === "field") {
+      if (workedHarvest.has(h.id)) worked = true;
+      else if (tenders.includes(h) && gi < growing.length) { growing[gi++].tended = true; worked = true; }
+    } else if (h.role === "wood") { fuel += BALANCE.fuelPerChopDay; worked = true; }
+    else if (h.role === "forage") { larder += BALANCE.forageFood; worked = true; }
+    h.strain += worked ? St.hardLabor : (h.role === "rest" ? -St.restRecovery : 0);
   }
 
-  // 2) Crop growth (uses today's tended flags, set above and by DO_PLAYER_ACTION "work"), then reset tended.
+  // 2) Crop growth (uses today's tended flags, set above and by SPEND_ACTION "work"), then reset tended.
   for (const f of fields) { if (f.crop) f.progress += dailyGrowth(f, s.weather); f.tended = false; }
 
   // 3) Eating: the household eats; a shortfall strains everyone alike. The already-worn
@@ -245,9 +244,35 @@ function resolveDay(s) {
   let day = s.day + 1, phase = s.phase;
   if (day > BALANCE.daysPerSeason) { day = BALANCE.daysPerSeason; phase = "dusk"; }
 
-  return { ...s, hands, fields, larder, fuel, coin, seed, day, phase,
-    playerActionsLeft: BALANCE.playerActionsPerDay, daylog, jobsDoneToday: [],
+  const next = { ...s, hands, fields, larder, fuel, coin, seed, day, phase,
+    daylog,
     log: [...s.log, ...daylog] };
+  return maybeEvent(next);
+}
+
+// After a day resolves, maybe an event stirs: a seeded roll; if it fires, pick a fresh,
+// eligible event and pause the run at its scene (the scene IS the beat). Consumes rngState so
+// a seed replays identically. Never fires on the last day (that beat is the season's close).
+function maybeEvent(s) {
+  if (s.phase !== "day" || s.day >= BALANCE.daysPerSeason) return s;
+  const rng = mulberry32(s.rngState);
+  const roll = rng();
+  let rngState = rng.getState();
+  if (roll >= EVENT_CHANCE) return { ...s, rngState };
+  const seen = s.eventsSeen || [];
+  const eligible = EVENTS.filter((e) => !seen.includes(e.id) && eventEligible(s, e));
+  if (!eligible.length) return { ...s, rngState };
+  const rng2 = mulberry32(rngState);
+  const pick = eligible[Math.floor(rng2() * eligible.length)];
+  rngState = rng2.getState();
+  return { ...s, rngState, eventsSeen: [...seen, pick.id],
+    phase: "scene", scene: { id: pick.id, result: null } };
+}
+function eventEligible(s, e) {
+  const g = e.gate; if (!g) return true;
+  if (g.season && !g.season.includes(season(s))) return false;
+  if (g.minHands && livingHands(s).length <= g.minHands) return false; // needs a hand beyond Reuben
+  return true;
 }
 
 // "Let the days run": resolve day after day while nothing wants the player, stopping the
@@ -261,6 +286,15 @@ function runDays(s) {
     cur = resolveDay(cur);
   }
   return cur;
+}
+
+// Resume the season after the player has dealt with a beat: advance at least one day past the
+// current stop, then run on to the next beat (or into dusk). The one-day step guarantees
+// progress even when the same interrupt (e.g. a ripe field the player chose to leave) persists.
+function continueRun(s) {
+  if (s.phase !== "day") return s;
+  const stepped = resolveDay(s);
+  return stepped.phase === "day" ? runDays(stepped) : stepped;
 }
 
 function endSeason(s) {
@@ -314,12 +348,14 @@ function plant(s, id, cropKey) {
   const field = s.fields.find((f) => f.id === id);
   const crop = CROPS[cropKey];
   if (!field || !field.cleared || field.crop || !crop) return s; // uncleared, taken, or unknown crop
-  const seedSpent = Math.min(s.seed, crop.seed);
-  const coinSpent = crop.seed - seedSpent;               // seed first, then coin
-  if (coinSpent > s.coin) return s;                      // cannot afford
-  return {
-    ...mapField(s, id, (f) => ({ ...f, crop: cropKey, progress: 0, tended: false })),
-    seed: s.seed - seedSpent,
-    coin: s.coin - coinSpent,
-  };
+  if (s.seed < crop.seed) return s;               // must have the seed; buy it at the store
+  return { ...mapField(s, id, (f) => ({ ...f, crop: cropKey, progress: 0, tended: false })), seed: s.seed - crop.seed };
+}
+
+// Buy a bundle of seed from Tolliver's store. Coin -> seed: the sink that makes coin matter
+// and turns planting into a budgeted choice. A no-op if the bundle can't be afforded.
+function buySeed(s) {
+  const cost = BALANCE.seedBundle * BALANCE.seedPrice;
+  if (s.coin < cost) return s;
+  return { ...s, coin: s.coin - cost, seed: s.seed + BALANCE.seedBundle };
 }

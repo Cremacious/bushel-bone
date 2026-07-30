@@ -13,6 +13,8 @@ describe("reducer", () => {
     let s = initialState(1);
     s = reduce(s, { type: "BEGIN_SEASON" });
     if (s.phase === "planting") s = reduce(s, { type: "SOW" });
+    s = { ...s, phase: "day", day: 1 }; // normalize past SOW's auto-run to the first beat, so
+    // this test can exercise TURN_IN's own day-by-day mechanics directly.
     expect(s.phase).toBe("day");
     expect(season(s)).toBe("spring");
     for (let i = 0; i < 9; i++) s = reduce(s, { type: "TURN_IN" });

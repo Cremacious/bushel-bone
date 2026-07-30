@@ -38,11 +38,13 @@ describe("fieldProjection", () => {
     expect(p.when).toBe("ripe");
   });
   it("during the playing day the ripen day is not double-counted (no off-by-one)", () => {
-    // Plant then SOW into day 1: state.day is 1 (this day not yet resolved). A potato
-    // needs 10 days, so it ripens at day 10 — must read "ripens day 10", not "won't ripen".
+    // Plant, then construct day 1 directly (bypassing SOW's auto-run to the first beat, which
+    // would otherwise carry the field hand's own tending clean past this projection): state.day
+    // is 1 (this day not yet resolved). A potato needs 10 days, so it ripens at day 10 — must
+    // read "ripens day 10", not "won't ripen".
     let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
     s = reduce(s, { type: "PLANT", fieldId: 0, crop: "potato" });
-    s = reduce(s, { type: "SOW" }); // phase "day", day 1
+    s = { ...s, phase: "day", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason };
     expect(s.phase).toBe("day");
     expect(fieldProjection(s, s.fields.find((f) => f.id === 0)).when).toBe("ripens day 10");
   });
