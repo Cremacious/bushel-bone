@@ -302,7 +302,7 @@ function goalPanel(s) {
     ]);
   };
   return el("div", { class: "goals" }, [
-    el("div", { class: "goals-h t-label", text: "To last the winter, lay in —" }),
+    el("div", { class: "goals-h t-label", text: "To last the winter, lay in:" }),
     row("Wood", n.fuel.have, n.fuel.need),
     row("Food", n.food.have, n.food.need),
   ]);
