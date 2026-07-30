@@ -8,7 +8,7 @@ import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, year
 import { SCENES, openingSceneId } from "../content/scenes.js";
 import { counselFor } from "../content/counsel.js";
 import { BALANCE } from "../core/balance.js";
-import { TALKS } from "../core/town.js";
+import { LOCATIONS } from "../core/town.js";
 
 // Fleshed out across Tasks 8-12. Renders the active screen into the shell's stage.
 export function renderScreen(stage, state, dispatch) {
@@ -173,46 +173,57 @@ const SCREENS = {
     }
   },
   town: (stage, s, dispatch) => {
-    const { jobs, locations } = townOffers(s);
     const canAct = s.phase === "day" && s.playerActionsLeft > 0;
     const why = s.phase !== "day" ? "Come back during the day." : s.playerActionsLeft <= 0 ? "You are spent for the day." : null;
+    const home = () => el("button", { class: "homebtn t-label", text: "← Head back to the farm",
+      onClick: () => dispatch({ type: "LEAVE_TOWN" }) });
+
+    if (!s.townAt) {
+      const { jobs } = townOffers(s);
+      stage.append(
+        el("div", { class: "eyebrow t-label", text: "Marrow's Cross" }),
+        el("h2", { class: "t-title", text: "Where to?" }),
+        el("p", { class: "t-sub townhint", text: canAct ? `You have ${s.playerActionsLeft} of the day to spend here.` : (why || "The town is quiet.") }),
+      );
+      stage.append(el("div", { class: "eyebrow t-label townsub", text: "Work going" }));
+      for (const j of jobs) {
+        const blocked = !canAct || j.done;
+        stage.append(el("div", { class: "jobcard" }, [
+          el("div", { class: "jobline t-choice", text: j.line }),
+          el("div", { class: "jobmeta t-sub", text: j.done ? "done today" : (why || `+${j.coin} coin · ${tok("{{npc." + j.giver + "}}")}`) }),
+          el("button", { class: "jobtake t-label" + (blocked ? " disabled" : ""), ...(blocked ? { disabled: true } : {}),
+            text: j.done ? "done" : `Take it (+${j.coin})`, onClick: blocked ? undefined : () => dispatch({ type: "ACCEPT_JOB", id: j.id }) }),
+        ]));
+      }
+      stage.append(el("div", { class: "eyebrow t-label townsub", text: "The town" }));
+      for (const l of LOCATIONS) {
+        stage.append(el("div", { class: "townloc" }, [
+          el("div", { class: "loc-head" }, [
+            el("span", { class: "loc-who t-choice", text: tok("{{loc." + l.loc + ".sub}}") }),
+            el("span", { class: "loc-why t-sub", text: l.purpose }),
+          ]),
+          el("button", { class: "walkbtn t-label", text: "Walk there →", onClick: () => dispatch({ type: "WALK_TO", place: l.id }) }),
+        ]));
+      }
+      stage.append(home());
+      return;
+    }
+
+    const l = LOCATIONS.find((x) => x.id === s.townAt) || LOCATIONS[0];
+    const canTalk = canAct;
     stage.append(
-      el("div", { class: "eyebrow t-label", text: "Marrow's Cross" }),
-      el("h2", { class: "t-title", text: "The town at the crossroads" }),
-      el("p", { class: "t-sub townhint", text: canAct
-        ? `You have ${s.playerActionsLeft} of the day to spend here.`
-        : (why || "The town is quiet.") }),
+      el("div", { class: "eyebrow t-label", text: tok("{{loc." + l.loc + ".cap}}") }),
+      el("h2", { class: "t-title", text: tok("{{loc." + l.loc + ".sub}}") }),
+      el("p", { class: "place-scene t-prose", text: tok("{{loc." + l.loc + ".desc}}") }),
+      el("div", { class: "loc-standing t-label", text: `${tok("{{npc." + l.npc + "}}")} · ${standingWord(standingOf(s, l.npc))}` }),
+      el("button", { class: "loc-talk t-choice" + (canTalk ? "" : " disabled"), ...(canTalk ? {} : { disabled: true }),
+        text: `Talk to ${tok("{{npc." + l.npc + "}}")}`, onClick: canTalk ? () => dispatch({ type: "VISIT", npc: l.npc }) : undefined }),
+      ...(canTalk ? [] : [el("p", { class: "t-sub", text: why })]),
+      el("div", { class: "place-nav" }, [
+        el("button", { class: "walkbtn t-label", text: "← Walk on", onClick: () => dispatch({ type: "WALK_TO", place: null }) }),
+        home(),
+      ]),
     );
-    stage.append(el("div", { class: "eyebrow t-label townsub", text: "Work going" }));
-    for (const j of jobs) {
-      const blocked = !canAct || j.done;
-      const sub = j.done ? "done today" : (why || `+${j.coin} coin · ${tok("{{npc." + j.giver + "}}")}`);
-      stage.append(el("div", { class: "jobcard" }, [
-        el("div", { class: "jobline t-choice", text: j.line }),
-        el("div", { class: "jobmeta t-sub", text: sub }),
-        el("button", { class: "jobtake t-label" + (blocked ? " disabled" : ""), ...(blocked ? { disabled: true } : {}),
-          text: j.done ? "done" : `Take it (+${j.coin})`,
-          onClick: blocked ? undefined : () => dispatch({ type: "ACCEPT_JOB", id: j.id }) }),
-      ]));
-    }
-    stage.append(el("div", { class: "eyebrow t-label townsub", text: "The town" }));
-    for (const l of locations) {
-      const hasTalk = !!TALKS[l.npc];
-      const canTalk = hasTalk && canAct;
-      stage.append(el("div", { class: "townloc" }, [
-        el("div", { class: "loc-head" }, [
-          el("span", { class: "loc-who t-choice", text: tok("{{npc." + l.npc + "}}") }),
-          el("span", { class: "loc-why t-sub", text: l.purpose }),
-        ]),
-        el("div", { class: "loc-right" }, [
-          hasTalk ? el("span", { class: "loc-standing t-label", text: standingWord(standingOf(s, l.npc)) }) : null,
-          hasTalk
-            ? el("button", { class: "loc-talk t-label" + (canTalk ? "" : " disabled"), ...(canTalk ? {} : { disabled: true }),
-                text: "Call on them", onClick: canTalk ? () => dispatch({ type: "VISIT", npc: l.npc }) : undefined })
-            : el("span", { class: "loc-soon t-sub", text: "not today" }),
-        ].filter(Boolean)),
-      ]));
-    }
   },
   almanac: (stage) => {
     stage.append(el("div", { class: "eyebrow t-label", text: "The almanac" }), el("h2", { class: "t-title", text: "Not yet kept" }));

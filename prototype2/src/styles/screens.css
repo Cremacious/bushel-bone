@@ -273,3 +273,11 @@ h2.t-title { margin: 0 0 14px; }
 .ridehint { color: var(--ink-faint); margin-bottom: 8px; }
 .loc-right { display: flex; align-items: center; gap: 12px; }
 .loc-standing { color: var(--ink-faint); }
+
+/* --- the town walk: overview -> place scene -> talk (town-walk task 7) --- */
+.walkbtn, .homebtn { cursor: pointer; background: none; border: 1px solid var(--rule-fine); color: var(--lamp); padding: 6px 12px; letter-spacing: .03em; }
+.walkbtn:hover, .homebtn:hover { border-color: var(--lamp); }
+.homebtn { margin-top: 16px; }
+.place-scene { margin: 6px 0 12px; }
+.place-nav { display: flex; gap: 10px; margin-top: 16px; }
+.townloc { align-items: center; }

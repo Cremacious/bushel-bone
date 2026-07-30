@@ -165,14 +165,14 @@ describe("dusk + year end", () => {
 });
 
 describe("the town screen", () => {
-  it("lists locations and the day's odd-jobs, and taking a job pays coin", () => {
+  it("the overview lists places to walk to and the day's odd-jobs, and taking a job pays coin", () => {
     const root = document.createElement("div");
     let state = reduce(reduce(initialState(42), { type: "BEGIN_SEASON" }), { type: "SOW" });
     state = { ...state, screen: "town" };
     const dispatch = (a) => { state = reduce(state, a); rerender(); };
     function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
     rerender();
-    expect(root.querySelectorAll(".townloc").length).toBeGreaterThanOrEqual(5);
+    expect(root.querySelectorAll(".walkbtn").length).toBeGreaterThanOrEqual(5);
     const coin0 = state.coin;
     const jobBtn = root.querySelector(".jobcard .jobtake");
     expect(jobBtn).toBeTruthy();
@@ -227,17 +227,45 @@ describe("town exploration UI", () => {
     ride.click();
     expect(state.screen).toBe("town");
   });
-  it("the Town screen shows each NPC's standing and calling on one opens their talk", () => {
+  it("walking to a place shows the NPC's standing and talking to them opens their talk", () => {
     const root = document.createElement("div");
     let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
     state = { ...state, screen: "town" };
     const dispatch = (a) => { state = reduce(state, a); rerender(); };
     function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
     rerender();
+    root.querySelector(".walkbtn").click(); // walk to the first place on offer
     expect(root.querySelector(".loc-standing")).toBeTruthy();
-    const call = [...root.querySelectorAll(".townloc .loc-talk")].find((b) => !b.disabled);
+    expect(root.querySelector(".place-scene")).toBeTruthy();
+    const call = root.querySelector(".loc-talk");
+    expect(call.disabled).toBeFalsy();
     call.click();
     expect(state.phase).toBe("scene");
+  });
+});
+
+describe("the town walk", () => {
+  function town(mut) {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    state = { ...state, screen: "town", ...(mut || {}) };
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    return { root, get: () => state };
+  }
+  it("the overview lists places to walk to and a way home", () => {
+    const { root, get } = town();
+    const walk = root.querySelector(".walkbtn");
+    expect(walk).toBeTruthy();
+    expect([...root.querySelectorAll("button")].some((b) => /farm|home/i.test(b.textContent))).toBe(true);
+    walk.click();
+    expect(get().townAt).toBeTruthy(); // walking set a place
+  });
+  it("at a place the scene paints and offers a talk", () => {
+    const { root } = town({ townAt: "saloon" });
+    expect(root.querySelector(".place-scene")).toBeTruthy();
+    expect([...root.querySelectorAll(".loc-talk")].some((b) => /Talk to/i.test(b.textContent))).toBe(true);
   });
 });
 
