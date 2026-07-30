@@ -323,18 +323,33 @@ function counsel(s) {
 // them as real nodes in a plain typographic container (no second `.prose` to nest).
 function htmlProse(html) { const d = el("div", { class: "t-prose" }); d.innerHTML = html; return d; }
 
-// Turn a choice's state deltas into a player-facing stat tag ("+2 regard", "−3 regard",
-// "−60 coin"), colored by valence, so a choice's cost/benefit is legible up front (D-039).
-// This is the general grammar for any choice with mechanical stakes, not just scenes.
-const STAT_LABEL = { regard: "regard", coin: "coin", food: "food", fuel: "fuel", seed: "seed", reckoning: "dread" };
+// Every fx key a choice can carry, mapped to a player-facing label and a valence direction:
+// `up:true` means a positive delta is GOOD (green); `up:false` means a positive delta is BAD (red).
+// Tiredness and Dread rising are bad; the fix for "+16 strainOne" reading as green (Part A2).
+const FX_META = {
+  regard:    { label: "regard",             up: true  },
+  coin:      { label: "coin",               up: true  },
+  larder:    { label: "food",               up: true  },  // events use `larder`; players read "food"
+  fuel:      { label: "fuel",               up: true  },
+  seed:      { label: "seed",               up: true  },
+  reckoning: { label: "dread",              up: false },  // more dread is bad
+  strainOne: { label: "Tiredness · a hand", up: false },  // more tiredness is bad
+  strainAll: { label: "Tiredness · the crew", up: false },
+};
+
+// Turn a choice's state deltas into player-facing stat tags, colored by MEANING (not sign):
+// tiredness/dread rising is bad, everything else rising is good. `loseHand` is a boolean stake.
 export function fxTag(fx = {}) {
   const parts = [];
   let good = false, bad = false;
   for (const [k, v] of Object.entries(fx)) {
     if (!v) continue;
-    parts.push(`${v > 0 ? "+" : "−"}${Math.abs(v)} ${STAT_LABEL[k] || k}`);
-    const positive = k === "reckoning" ? v < 0 : v > 0; // more dread is bad; more of anything else is good
-    if (positive) good = true; else bad = true;
+    if (k === "loseHand") { parts.push("a hand may be lost"); bad = true; continue; }
+    const meta = FX_META[k];
+    if (!meta) { parts.push(`${v > 0 ? "+" : "−"}${Math.abs(v)} ${k}`); continue; } // unknown: raw, uncolored
+    parts.push(`${v > 0 ? "+" : "−"}${Math.abs(v)} ${meta.label}`);
+    const isGood = meta.up ? v > 0 : v < 0;
+    if (isGood) good = true; else bad = true;
   }
   return { text: parts.join(" · "), valence: bad && !good ? "bad" : good && !bad ? "good" : "" };
 }

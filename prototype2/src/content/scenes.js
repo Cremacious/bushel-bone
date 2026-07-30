@@ -54,7 +54,7 @@ export const SCENES = {
   ev_good_rain:   { event: true, returnTo: "run", choices: ["glad"], fx: { glad: { larder: 6 } } },
   ev_peddler:     { event: true, returnTo: "run", choices: ["buy", "pass"], fx: { buy: { coin: -8, seed: 12 }, pass: {} } },
   ev_sick_hand:   { event: true, returnTo: "run", choices: ["doc", "rest", "work"], fx: { doc: { coin: -12 }, rest: { strainOne: -10 }, work: { strainOne: 16 } } },
-  ev_gate_child:  { event: true, returnTo: "run", choices: ["take", "turn_away"], fx: { take: { larder: -6, morale: 1 }, turn_away: { reckoning: 3 } } },
+  ev_gate_child:  { event: true, returnTo: "run", choices: ["take", "turn_away"], fx: { take: { larder: -6 }, turn_away: { reckoning: 3 } } },
   ev_blight:      { event: true, returnTo: "run", choices: ["treat", "lose"], fx: { treat: { coin: -10 }, lose: { larder: -10 } } },
   ev_omen_field:  { event: true, returnTo: "run", choices: ["heed", "shrug"], fx: { heed: { coin: -6 }, shrug: { reckoning: 4 } } },
 };
