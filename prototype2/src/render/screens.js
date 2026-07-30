@@ -2,7 +2,7 @@ import { el } from "./dom.js";
 import { seasonLabel, DAYS_PER_SEASON, livingHands } from "../core/state.js";
 import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
-import { choiceCard, fieldCard } from "./components.js";
+import { choiceCard, fieldCard, actionCostTag } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
 import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, actionEffects, playerActionEffects } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
@@ -87,6 +87,7 @@ const SCREENS = {
       el("h2", { class: "t-title", text: "Set the crew, and spend your day" }),
     );
     stage.append(goalPanel(s));                // what the cold months will want (foreshadowing)
+    stage.append(el("p", { class: "t-sub assignnote", text: "Set your crew's orders any time today. They hold until you turn in for the night." }));
     const plantedFields = s.fields.filter((f) => f.crop);
     const ripeList = ripeFields(s);
     const living = livingHands(s);
@@ -274,6 +275,7 @@ function personalActions(s, dispatch) {
         el("span", { class: "pa-label t-choice", text: o.label }),
         el("span", { class: "pa-desc t-sub", text: o.desc }),
         ...playerActionEffects(o.kind).map((e) => el("span", { class: "efftag " + e.valence, text: e.label })),
+        ...(o.kind === "rest" ? [] : [actionCostTag()]),
       ]))),
     el("div", { class: "day-cta" }, [
       choiceCard({ text: "Turn in for the night", sub: "the day resolves: crops grow, the crew eats", primary: true }, () => dispatch({ type: "TURN_IN" })),

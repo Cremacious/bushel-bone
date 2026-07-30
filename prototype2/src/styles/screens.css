@@ -183,6 +183,7 @@ h2.t-title { margin: 0 0 14px; }
 .efftag.bad { color: var(--bad); }
 .taskbtn .tb-label { font-style: normal; }
 .strain-advice { margin-left: 8px; }
+.assignnote { color: var(--ink-faint); font-style: italic; margin: 0 0 12px; }
 
 /* --- ledgerrow (the Ledger tab: plain-language explanation of the four figures) --- */
 .ledgerrow { border-bottom: 1px solid var(--rule-fine); padding: 12px 0; }

@@ -71,6 +71,13 @@ html, body { height: 100%; }
 .cell-v.warn { color: var(--warn); }
 .cell-v.bad { color: var(--bad); }
 
+.actioncount { display: flex; align-items: center; gap: 8px; margin-left: auto; padding: 4px 10px; border: 1px solid var(--lamp); border-radius: 99px; }
+.ac-k { color: var(--lamp); }
+.ac-pips { display: flex; gap: 3px; }
+.apip { width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--lamp); }
+.apip.on { background: var(--lamp); }
+.ac-v { font-family: "Courier Prime", monospace; }
+
 .household { display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; padding: 9px 20px;
   border-bottom: 1px solid var(--rule-fine); }
 .household .hh-k { font-size: 0.62rem; }
