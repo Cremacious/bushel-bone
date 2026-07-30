@@ -17,14 +17,15 @@ describe("year-end settlement", () => {
     expect(s.phase).toBe("settlement");
     expect(s.ended).toBe(false);
   });
-  it("Year 1 has no payment; TURN_YEAR advances to Year 2 Spring carrying state", () => {
+  it("Year 1 carries a light first note (20); TURN_YEAR pays it and advances to Year 2 Spring", () => {
     let s = reduce(atWinterDusk(1, (s) => ({ ...s, coin: 100 })), { type: "END_SEASON" });
-    expect(mortgageDue(s).total).toBe(0);
+    expect(mortgageDue(s)).toEqual({ payment: 20, upkeep: 0, total: 20 });
     s = reduce(s, { type: "TURN_YEAR" });
     expect(s.year).toBe(2);
     expect(s.seasonIndex).toBe(0);
     expect(s.phase).toBe("brief");
-    expect(s.coin).toBe(100);
+    expect(s.coin).toBe(80);
+    expect(s.mortgage.arrears).toBe(0);
   });
   it("a payment is deducted; a shortfall becomes arrears + a warning (survivable)", () => {
     let s = reduce(atWinterDusk(1, (s) => ({ ...s, year: 3, coin: 10 })), { type: "END_SEASON" });

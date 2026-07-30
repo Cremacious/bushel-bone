@@ -34,6 +34,6 @@ export const BALANCE = {
   hireCosts: [60, 110, 300], // coin to hire the 2nd, 3rd, 4th hand (the last repeats past that)
   standing: { perTalk: 12, known: 15, friendly: 40, close: 70 }, // town relationships (Q-003)
   debtStart: 600,                                    // the inherited mortgage balance (m)
-  mortgageSchedule: { 1: 0, 2: 30, 3: 80, 4: 110 },  // payment due at each year-end; 130 default 5+ (tuned via sim)
+  mortgageSchedule: { 1: 20, 2: 30, 3: 80, 4: 110 }, // payment due at each year-end; a light Y1 note, then 130 default 5+ (tuned via sim)
   upkeepSchedule:   { 1: 0, 2: 0, 3: 10, 4: 20 },    // flat yearly upkeep, rising; 30 default 5+ (tuned via sim)
 };

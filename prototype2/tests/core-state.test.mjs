@@ -9,8 +9,8 @@ describe("initial state", () => {
     expect(season(s)).toBe("spring");
     expect(s.day).toBe(1);
     expect(DAYS_PER_SEASON).toBe(10);
-    expect(s.coin).toBe(100);
-    expect(s.larder).toBe(80);
+    expect(s.coin).toBe(60);
+    expect(s.larder).toBe(40);
     expect(s.seed).toBe(8); // planting-seed resource, distinct from the rng seed (v0.4 phase2: seed is a real coin sink)
     expect(s.rngSeed).toBe(123); // the original rng seed survives, unshadowed
     expect(livingHands(s).map((h) => h.name)).toEqual(["Reuben"]);
