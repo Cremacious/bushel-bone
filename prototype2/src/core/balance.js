@@ -3,14 +3,16 @@
 // strain are all per-day. The player has `seasonActionsPerSeason` personal actions each
 // season (v0.4: the beat loop's shared pool, spent at a beat rather than every single day).
 //
-// Curve validated by the sim (`sim/run.js`, three policies over the real reducer):
-//   optimal  — survives 4 years, expands to ~4 fields / 2-3 hands, then the debt catches it in Y5.
-//   normal   — survives to Y4, forecloses on the bubble (short by a little on the Y4 note).
-//   sloppy   — potato-only, misses harvests, forecloses by Y4.
-// So a well-played line clearly outlasts a careless one; normal is a genuine knife-edge.
-// KNOWN follow-up: cash income is lumpy (2-season crops + no winter planting stall the coin
-// engine after Y2); smoothing that is the next balance lever. Re-run `node sim/run.js` after
-// any number change here.
+// Curve validated by the sim (`sim/run.js`, three policies over the real reducer) after the
+// v0.4 Phase-2 tightening (seed a coin sink, scarce jobs, cut abundance, a Y1 note):
+//   optimal  — must clear a 2nd field fast to escape the 1-field trap; expands to ~4 fields,
+//              survives 4 years on a knife-edge (a near-miss in Y3), then the debt catches it.
+//   normal   — 2 fields + a hire, forecloses Y4 by a hair.
+//   sloppy   — never leaves the fields, starves/overspends, forecloses by Year 2.
+// So the early game genuinely bites (a careless line loses the farm in Y1-2) while a careful
+// line survives, tight. KNOWN follow-ups: 1-field start is a hard trap (the player MUST reach
+// 2 fields early); cash income is lumpy (2-season crops + no winter planting). Re-run
+// `node sim/run.js` after any number change here.
 export const BALANCE = {
   daysPerSeason: 10,          // a season is 10 days (updates the old 20; tunable in playtest)
   seasonActionsPerSeason: 5,  // the proprietor's own actions per season (v0.4: replaces the per-day pool)
@@ -28,9 +30,9 @@ export const BALANCE = {
     coldPerDay: 5,            // per cold day with no fuel
     wornAt: 25, failingAt: 50, lostAt: 100,
   },
-  seedPrice: 2,               // coin per seed unit at Tolliver's store (v0.4 phase2: seed is a real coin sink)
+  seedPrice: 1,               // coin per seed unit at Tolliver (tuned via sim)
   seedBundle: 10,              // seed units per purchase
-  clearCosts: [40, 90, 150], // coin to clear the 2nd, 3rd, 4th field (Q-003 first pass)
+  clearCosts: [30, 70, 120], // coin to clear the 2nd/3rd/4th field (tuned via sim)
   hireCosts: [60, 110, 300], // coin to hire the 2nd, 3rd, 4th hand (the last repeats past that)
   standing: { perTalk: 12, known: 15, friendly: 40, close: 70 }, // town relationships (Q-003)
   debtStart: 600,                                    // the inherited mortgage balance (m)

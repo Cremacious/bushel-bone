@@ -22,7 +22,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     seasonActionsLeft: BALANCE.seasonActionsPerSeason, // your own actions this season (reset each season)
     theme: "night",
     weather: { key: "cold-rain", label: "Cold rain", grow: 0 },
-    coin: 60, larder: 40, fuel: 0, seed: 8,
+    coin: 75, larder: 55, fuel: 0, seed: 8,
     mortgage: { balance: BALANCE.debtStart, arrears: 0, warned: false },
     upgrades: [],              // owned tool/building ids (later phases)
     regard: 20,

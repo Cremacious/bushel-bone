@@ -126,7 +126,7 @@ const sloppyPersonal = () => null; // never forages, never takes odd jobs
 
 // --- day: expansion (clear a field / hire a hand) -------------------------------------------
 function optimalExpand(s) {
-  const buffer = mortgageDue(s).total + s.mortgage.arrears + 50; // always keep the mortgage covered, plus a cushion
+  const buffer = mortgageDue(s).total + s.mortgage.arrears + 15; // keep the mortgage covered, thin cushion
   const cc = clearCost(s);
   if (cc != null && s.coin - cc >= buffer) {
     const f = s.fields.find((x) => !x.cleared);
@@ -141,7 +141,7 @@ function optimalExpand(s) {
   return null;
 }
 function normalExpand(s) {
-  const buffer = mortgageDue(s).total + s.mortgage.arrears + 40; // a modest cushion
+  const buffer = mortgageDue(s).total + s.mortgage.arrears + 25; // a modest cushion
   const cc = clearCost(s);
   if (cc != null && s.coin - cc >= buffer) {
     const f = s.fields.find((x) => !x.cleared);
