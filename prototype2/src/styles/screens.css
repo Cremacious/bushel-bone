@@ -253,3 +253,10 @@ h2.t-title { margin: 0 0 14px; }
 .clearbtn { all: unset; cursor: pointer; border: 1px solid var(--lamp); color: var(--lamp);
   padding: 6px 10px; text-align: center; letter-spacing: .03em; }
 .clearbtn.disabled { opacity: .45; cursor: not-allowed; border-color: var(--rule-fine); color: var(--ink-faint); }
+
+/* --- ride-to-town affordance (Day screen) + per-NPC standing (Town screen) --- */
+.ridebtn { display: inline-block; margin: 0 0 6px; cursor: pointer; background: none;
+  border: 1px solid var(--lamp); color: var(--lamp); padding: 8px 14px; letter-spacing: .03em; }
+.ridehint { color: var(--ink-faint); margin-bottom: 8px; }
+.loc-right { display: flex; align-items: center; gap: 12px; }
+.loc-standing { color: var(--ink-faint); }

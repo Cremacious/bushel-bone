@@ -4,10 +4,11 @@ import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard, fieldCard } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
-import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers } from "../core/selectors.js";
+import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
 import { counselFor } from "../content/counsel.js";
 import { BALANCE } from "../core/balance.js";
+import { TALKS } from "../core/town.js";
 
 // Fleshed out across Tasks 8-12. Renders the active screen into the shell's stage.
 export function renderScreen(stage, state, dispatch) {
@@ -195,16 +196,20 @@ const SCREENS = {
     }
     stage.append(el("div", { class: "eyebrow t-label townsub", text: "The town" }));
     for (const l of locations) {
-      const canTalk = !!l.talk && canAct;
+      const hasTalk = !!TALKS[l.npc];
+      const canTalk = hasTalk && canAct;
       stage.append(el("div", { class: "townloc" }, [
         el("div", { class: "loc-head" }, [
           el("span", { class: "loc-who t-choice", text: tok("{{npc." + l.npc + "}}") }),
           el("span", { class: "loc-why t-sub", text: l.purpose }),
         ]),
-        l.talk
-          ? el("button", { class: "loc-talk t-label" + (canTalk ? "" : " disabled"), ...(canTalk ? {} : { disabled: true }),
-              text: "Call on them", onClick: canTalk ? () => dispatch({ type: "VISIT", sceneId: l.talk }) : undefined })
-          : el("span", { class: "loc-soon t-sub", text: "not today" }),
+        el("div", { class: "loc-right" }, [
+          hasTalk ? el("span", { class: "loc-standing t-label", text: standingWord(standingOf(s, l.npc)) }) : null,
+          hasTalk
+            ? el("button", { class: "loc-talk t-label" + (canTalk ? "" : " disabled"), ...(canTalk ? {} : { disabled: true }),
+                text: "Call on them", onClick: canTalk ? () => dispatch({ type: "VISIT", npc: l.npc }) : undefined })
+            : el("span", { class: "loc-soon t-sub", text: "not today" }),
+        ].filter(Boolean)),
       ]));
     }
   },
@@ -253,6 +258,9 @@ function personalActions(s, dispatch) {
   ];
   return el("div", { class: "personal" }, [
     el("div", { class: "personal-h t-label", text: `Your day — ${left} of ${BALANCE.playerActionsPerDay} actions left` }),
+    el("button", { class: "ridebtn t-label", text: "Ride to Marrow's Cross →",
+      onClick: () => dispatch({ type: "SET_SCREEN", screen: "town" }) }),
+    el("div", { class: "ridehint t-sub", text: "or spend the day here:" }),
     el("div", { class: "pa-grid" }, opts.map((o) =>
       el("button", { class: "pa-action" + (left <= 0 ? " disabled" : ""), ...(left <= 0 ? { disabled: true } : {}),
         onClick: left > 0 ? () => dispatch({ type: "DO_PLAYER_ACTION", kind: o.kind, target: o.target }) : undefined }, [
