@@ -7,6 +7,18 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 18 — 2026-07-30 — v0.4: the beat-driven loop, the tightening, and events (built & merged)
+
+**Worked on:** The third and deepest pass on the minute-to-minute, driven by a blunt playtest: the day loop was set-and-forget ("spam Turn in"), the economy had no teeth (odd-jobs an infinite coin printer, seed free, coin a dead 291m pile, labor trivial, resources drowning), and there was no reason to play past Year 1. Brainstormed → spec (`2026-07-30-v04-beat-driven-loop-design.md`) → three phased plans → subagent-driven → merged to main (`b7509bd`). D-054 locks it.
+
+- **Phase 1 — the beat loop.** Time **auto-advances**; the player sets each hand a **role** (Fields / Woodcutting / Foraging / Rest) once and acts only at **beats** (a harvest, a failing hand, a scarcity threat, an event, the season's close). Retires the per-day task-button wall and the "40 empty days" tedium. A **season action pool** (the D-043 vision) replaces the per-day budget. The beat screen is compact (no scrolling). Labor bites (strain bumped). `RUN_DAYS`/`interrupts()` became the beat engine; `resolveDay` reads roles.
+- **Phase 2 — the tightening (exploits killed, sim-rebalanced).** **Seed is a real coin sink** (buy at Tolliver's to plant; no coin fallback). **Jobs are season-scarce** (~2/season, each costing a season action). **Leaner start** (coin 75, larder 55) **+ a Day-1 Year-1 note** (20) so the winter deadline is earned. Tuned against the sim: a **careless line loses the farm by Year 2**, a careful line survives 4 years on a knife-edge, sloppy fails early (the "genuinely can hurt you" lethality Chris chose). Noted: the 1-field start is a hard early trap (must reach 2 fields fast); cash income is lumpy.
+- **Phase 3 — events (the drama).** A **seeded, non-repeating deck across the seven families** (weather, pests, wildlife, opportunity, town, personal, reckoning) fires as beats via a per-day roll in `resolveDay` (reuses the scene engine + PRNG). Eight starter events (fox, an early frost, a soft rain, a peddler, a sick hand, a foundling, blight, an omen), each a choice with legible consequences shown as tags ("Take them in -6 larder +1 morale" vs "Turn them back +3 dread") and threats telegraphed in the highlight colors. The event fx grammar extends the scene fx (larder/fuel/seed/strain/loseHand; Reuben is never lost). The sim resolves events deterministically and the curve holds.
+
+**State:** 204 tests green (the sim `sim/run.js` + `tests/sim.test.mjs` guard the curve as a live regression test). Beat loop, tightening, and events all browser-verified (an event fired in play, rendered with its tradeoff tags, applied its consequence). Merged to main + pushed. **Next: Phase 4 (polish)** — the day-book income/expense breakdown, distinct button visuals, deeper town/NPC card content — pure polish on a now-working loop. Then a real playtest of the drama.
+
+---
+
 ## Session 17 — 2026-07-30 — Legibility, the town walk, town polish, and the Economy & Progression spine (built & merged)
 
 **Worked on:** Four playtest-driven passes on `prototype2/`, each brainstormed → spec → plan → subagent-driven → browser-verified → merged to main.
