@@ -43,6 +43,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     overlay: null,             // a modal over the shell: { type, ... } (e.g. a Reuben tutorial prompt)
     tutorialsOn: false,        // Reuben's guided tips, opted into on New Game
     tipsSeen: [],              // ids of guided tips already shown (each fires once)
+    eventsSeen: [],            // event ids already drawn this run (no repeats; see reducer.maybeEvent)
     ended: false,
   };
 }

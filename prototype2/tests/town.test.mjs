@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { lookupName, tok } from "../src/content/names.js";
 import { L } from "../src/content/script.js";
 import { LOCATIONS, ODD_JOBS, TALKS, SMALLTALK } from "../src/core/town.js";
-import { initialState } from "../src/core/state.js";
+import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 import { townOffers } from "../src/core/selectors.js";
 import { townOffers as offers2 } from "../src/core/selectors.js";

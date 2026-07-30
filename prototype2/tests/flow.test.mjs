@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { initialState, DAYS_PER_SEASON } from "../src/core/state.js";
+import { DAYS_PER_SEASON } from "../src/core/state.js";
+import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 import { BALANCE } from "../src/core/balance.js";
 

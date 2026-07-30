@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { initialState, livingHands } from "../src/core/state.js";
+import { livingHands } from "../src/core/state.js";
+import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 import { renderShell } from "../src/render/shell.js";
 import { renderScreen } from "../src/render/screens.js";

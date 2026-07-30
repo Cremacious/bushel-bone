@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { initialState, season } from "../src/core/state.js";
+import { season } from "../src/core/state.js";
+import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 
 function toDusk(s) {

@@ -1,9 +1,11 @@
-import { season, makeHand, HAND_NAMES } from "./state.js";
+import { season, makeHand, HAND_NAMES, livingHands } from "./state.js";
 import { CROPS, ripe, dailyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
 import { burnsFuel, fieldLabel, interrupts, clearCost, nextTownScene, mortgageDue, hireCost } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
 import { ODD_JOBS, SMALLTALK } from "./town.js";
+import { mulberry32 } from "./rng.js";
+import { EVENTS, EVENT_CHANCE } from "./events.js";
 
 // Pure: (state, action) => nextState. Never mutates the input.
 // Later plans add cases (resolveEvent, ...). For now: theme + the day/season/year
@@ -150,6 +152,7 @@ function closeScene(s) {
   const sc = SCENES[s.scene && s.scene.id];
   const base = { ...s, scene: null };
   if (sc && sc.after === "BEGIN_SEASON") return beginSeason(base);
+  if (sc && sc.returnTo === "run") return { ...base, phase: "day" }; // an event beat: resume the running day
   if (sc && sc.returnTo) return { ...base, screen: sc.returnTo, phase: "day" }; // back to town, mid-day
   return { ...base, phase: "brief" };
 }
@@ -241,9 +244,35 @@ function resolveDay(s) {
   let day = s.day + 1, phase = s.phase;
   if (day > BALANCE.daysPerSeason) { day = BALANCE.daysPerSeason; phase = "dusk"; }
 
-  return { ...s, hands, fields, larder, fuel, coin, seed, day, phase,
+  const next = { ...s, hands, fields, larder, fuel, coin, seed, day, phase,
     daylog,
     log: [...s.log, ...daylog] };
+  return maybeEvent(next);
+}
+
+// After a day resolves, maybe an event stirs: a seeded roll; if it fires, pick a fresh,
+// eligible event and pause the run at its scene (the scene IS the beat). Consumes rngState so
+// a seed replays identically. Never fires on the last day (that beat is the season's close).
+function maybeEvent(s) {
+  if (s.phase !== "day" || s.day >= BALANCE.daysPerSeason) return s;
+  const rng = mulberry32(s.rngState);
+  const roll = rng();
+  let rngState = rng.getState();
+  if (roll >= EVENT_CHANCE) return { ...s, rngState };
+  const seen = s.eventsSeen || [];
+  const eligible = EVENTS.filter((e) => !seen.includes(e.id) && eventEligible(s, e));
+  if (!eligible.length) return { ...s, rngState };
+  const rng2 = mulberry32(rngState);
+  const pick = eligible[Math.floor(rng2() * eligible.length)];
+  rngState = rng2.getState();
+  return { ...s, rngState, eventsSeen: [...seen, pick.id],
+    phase: "scene", scene: { id: pick.id, result: null } };
+}
+function eventEligible(s, e) {
+  const g = e.gate; if (!g) return true;
+  if (g.season && !g.season.includes(season(s))) return false;
+  if (g.minHands && livingHands(s).length <= g.minHands) return false; // needs a hand beyond Reuben
+  return true;
 }
 
 // "Let the days run": resolve day after day while nothing wants the player, stopping the

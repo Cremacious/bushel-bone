@@ -2,6 +2,20 @@ import { describe, it, expect } from "vitest";
 import { initialState, SEASONS, DAYS_PER_SEASON } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
 import { BALANCE } from "../src/core/balance.js";
+import { SCENES } from "../src/content/scenes.js";
+
+// Event beats (reducer.maybeEvent) can now pause a running day at a scene; resolve any scene
+// in the way (choose the first offered choice, then close) so a realistic playthrough keeps
+// moving, same as the sim harness's structural() step (sim/policies.js).
+function resolveScenes(s) {
+  while (s.phase === "scene") {
+    const sc = SCENES[s.scene.id];
+    s = s.scene.result == null && sc && sc.choices && sc.choices.length
+      ? reduce(s, { type: "CHOOSE_SCENE", choiceId: sc.choices[0] })
+      : reduce(s, { type: "CLOSE_SCENE" });
+  }
+  return s;
+}
 
 // A cautious full-year line on the beat loop, played beat by beat with real fuel/food
 // management: plant food; each beat set the crew's role by the season (field to bring the
@@ -13,12 +27,13 @@ describe("a full Year-1 daily playthrough", () => {
   it("plays Spring→Winter without wedging and keeps Reuben alive on a fuel-and-food-minding line", () => {
     let s = initialState(12345, "Mackall");
     s = reduce(s, { type: "BEGIN_SEASON" });
-    if (s.phase === "scene") s = reduce(s, { type: "CLOSE_SCENE" });
+    s = resolveScenes(s);
     for (let season = 0; season < SEASONS.length; season++) {
-      if (s.phase === "brief") s = reduce(s, { type: "BEGIN_SEASON" });
+      if (s.phase === "brief") { s = reduce(s, { type: "BEGIN_SEASON" }); s = resolveScenes(s); }
       if (s.phase === "planting") {
         s.fields.forEach((f) => { if (!f.crop) s = reduce(s, { type: "PLANT", fieldId: f.id, crop: "potato" }); });
         s = reduce(s, { type: "SOW" }); // auto-runs to the first beat
+        s = resolveScenes(s);
       }
       let guard = 0;
       while (s.phase === "day" && guard++ < 50) {
@@ -34,6 +49,7 @@ describe("a full Year-1 daily playthrough", () => {
         // larder ahead of the eating.
         if (s.seasonActionsLeft > 0) s = reduce(s, { type: "SPEND_ACTION", kind: "forage" });
         s = reduce(s, { type: "CONTINUE" }); // advance past this beat, toward the next (or dusk)
+        s = resolveScenes(s); // an event beat may have interrupted CONTINUE; play through it
       }
       expect(s.phase).toBe("dusk");
       s = reduce(s, { type: "END_SEASON" });

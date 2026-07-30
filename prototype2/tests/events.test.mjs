@@ -27,3 +27,31 @@ describe("event fx grammar", () => {
     for (const e of EVENTS) { expect(SCENES[e.id]).toBeTruthy(); expect(SCENES[e.id].choices.length).toBeGreaterThan(0); }
   });
 });
+
+describe("events fire as beats", () => {
+  it("across several seasons an event fires and is recorded, without repeats", async () => {
+    // walk a few seasons with a seed, resolving any event scene by its first choice
+    let s = reduce(initialState(7), { type: "BEGIN_SEASON" });
+    let firedIds = [], guard = 0;
+    while (s.year <= 2 && guard++ < 500) {
+      if (s.phase === "brief") s = reduce(s, { type: "BEGIN_SEASON" });
+      else if (s.phase === "scene") {
+        if (!s.scene.result) { firedIds.push(s.scene.id); s = reduce(s, { type: "CHOOSE_SCENE", choiceId: SCENES[s.scene.id].choices[0] }); }
+        else s = reduce(s, { type: "CLOSE_SCENE" });
+      }
+      else if (s.phase === "planting") { s.fields.forEach((f) => { if (f.cleared && !f.crop) s = reduce(s, { type: "PLANT", fieldId: f.id, crop: "potato" }); }); s = reduce(s, { type: "SOW" }); }
+      else if (s.phase === "day") s = reduce(s, { type: "CONTINUE" });
+      else if (s.phase === "dusk") s = reduce(s, { type: "END_SEASON" });
+      else if (s.phase === "settlement") s = reduce(s, { type: "TURN_YEAR" });
+      else break;
+    }
+    const eventIds = firedIds.filter((id) => id.startsWith("ev_"));
+    expect(eventIds.length).toBeGreaterThan(0);                       // events fired
+    expect(new Set(eventIds).size).toBe(eventIds.length);             // no repeats within the run
+  });
+  it("closing an event scene returns to the running day", () => {
+    let s = { ...initialState(1), phase: "scene", scene: { id: "ev_good_rain", result: "glad" } };
+    s = reduce(s, { type: "CLOSE_SCENE" });
+    expect(s.phase).toBe("day");
+  });
+});

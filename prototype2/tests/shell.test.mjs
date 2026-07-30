@@ -15,7 +15,7 @@ describe("design tokens", () => {
   });
 });
 
-import { initialState } from "../src/core/state.js";
+import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 import { renderShell, TABS } from "../src/render/shell.js";
 
