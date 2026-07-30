@@ -4,7 +4,7 @@ import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard, fieldCard } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
-import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord } from "../core/selectors.js";
+import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, actionEffects, playerActionEffects } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
 import { counselFor } from "../content/counsel.js";
 import { BALANCE } from "../core/balance.js";
@@ -86,7 +86,6 @@ const SCREENS = {
       el("div", { class: "eyebrow t-label", text: `Day ${s.day} of ${DAYS_PER_SEASON}` }),
       el("h2", { class: "t-title", text: "Set the crew, and spend your day" }),
     );
-    stage.append(...counsel(s));               // Reuben's plain-language guidance (Year 1)
     stage.append(goalPanel(s));                // what the cold months will want (foreshadowing)
     const plantedFields = s.fields.filter((f) => f.crop);
     const ripeList = ripeFields(s);
@@ -103,13 +102,15 @@ const SCREENS = {
       ]);
       const sel = el("div", { class: "taskpick" }, TASKS.map(([task, label]) => {
         const blocked = !!why[task];
+        const tags = blocked ? [] : actionEffects(task).map((e) =>
+          el("span", { class: "efftag " + e.valence, text: e.label }));
         return el("button", { class: "taskbtn t-sub" + (h.task === task ? " sel" : "") + (blocked ? " disabled" : ""),
-          ...(blocked ? { disabled: true, title: why[task] } : {}), text: label,
+          ...(blocked ? { disabled: true, title: why[task] } : {}),
           onClick: blocked ? undefined : () => dispatch({ type: "ASSIGN", handId: h.id, task,
-            targetFieldId: task === "tend" ? plantedFields[0].id : task === "harvest" ? ripeList[0].id : undefined }) });
+            targetFieldId: task === "tend" ? plantedFields[0].id : task === "harvest" ? ripeList[0].id : undefined }) },
+          [el("span", { class: "tb-label", text: label }), ...tags]);
       }));
       row.append(sel);
-      row.append(el("div", { class: "taskdesc t-sub", text: TASK_DESC[h.task] || "" }));
       stage.append(row);
     }
     stage.append(personalActions(s, dispatch));
@@ -221,23 +222,18 @@ const SCREENS = {
 };
 export { SCREENS };
 
-// --- daily-work guidance: task descriptions, Reuben's counsel, the goal foreshadowing ---
-const TASK_DESC = {
-  rest: "mend a worn hand",
-  tend: "push a crop toward harvest",
-  harvest: "bring in a ripe field",
-  forage: `gather about ${BALANCE.forageFood} food from the wild`,
-  chop: `lay in ${BALANCE.fuelPerChopDay} wood for winter`,
-};
+// --- daily-work guidance: the Tiredness read, Reuben's counsel, the goal foreshadowing ---
 
-// A hand's condition, made legible: the word (colored by band) plus a strain bar, so the
-// player can SEE when a hand is wearing down and rest or care actually matters (D-039).
+// A hand's condition, made legible: a labeled Tiredness meter (colored by band) plus a plain
+// verdict, so the player can SEE when a hand is wearing down and rest or care actually
+// matters (D-039).
 function strainMeter(h) {
   const cond = conditionOf(h);
   const pct = Math.min(100, Math.round((h.strain / BALANCE.strain.lostAt) * 100));
   return el("div", { class: "strain cond-" + cond }, [
-    el("span", { class: "strain-word t-label", text: cond }),
+    el("span", { class: "strain-word t-label", text: "Tiredness" }),
     el("div", { class: "strain-bar" }, [el("div", { class: "strain-fill", style: `width:${Math.max(3, pct)}%` })]),
+    el("span", { class: "strain-advice t-sub", text: tirednessAdvice(h) }),
   ]);
 }
 
@@ -266,6 +262,7 @@ function personalActions(s, dispatch) {
         onClick: left > 0 ? () => dispatch({ type: "DO_PLAYER_ACTION", kind: o.kind, target: o.target }) : undefined }, [
         el("span", { class: "pa-label t-choice", text: o.label }),
         el("span", { class: "pa-desc t-sub", text: o.desc }),
+        ...playerActionEffects(o.kind).map((e) => el("span", { class: "efftag " + e.valence, text: e.label })),
       ]))),
     el("div", { class: "day-cta" }, [
       choiceCard({ text: "Turn in for the night", sub: "the day resolves — crops grow, the crew eats", primary: true }, () => dispatch({ type: "TURN_IN" })),

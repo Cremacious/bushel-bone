@@ -178,6 +178,12 @@ h2.t-title { margin: 0 0 14px; }
 .taskbtn.sel { border-color: var(--lamp); color: var(--ink); background: color-mix(in srgb, var(--lamp) 16%, transparent); }
 .taskbtn.disabled { opacity: .5; cursor: not-allowed; }
 
+.efftag { font-family: "Courier Prime", monospace; font-style: normal; font-size: .72rem; margin-left: 6px; }
+.efftag.good { color: var(--good); }
+.efftag.bad { color: var(--bad); }
+.taskbtn .tb-label { font-style: normal; }
+.strain-advice { margin-left: 8px; }
+
 /* --- ledgerrow (the Ledger tab: plain-language explanation of the four figures) --- */
 .ledgerrow { border-bottom: 1px solid var(--rule-fine); padding: 12px 0; }
 .ledgerrow:first-of-type { border-top: 1px solid var(--rule-fine); }
