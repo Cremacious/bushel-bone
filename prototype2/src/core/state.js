@@ -32,6 +32,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     jobsDoneToday: [],         // odd-job ids already claimed today (reset each dawn)
     standing: {},              // per-NPC relationship points (npcId -> number)
     talksSeen: [],             // talk scene ids already played (drives the rotating deck)
+    townAt: null,              // the walkable place id the player is standing at in town; null = the street overview
     screen: "home",            // the active tab (home shows the current phase)
     scene: null,               // an active scripted scene: { id, result } (see content/scenes.js)
     overlay: null,             // a modal over the shell: { type, ... } (e.g. a Reuben tutorial prompt)
