@@ -1,7 +1,7 @@
 import { season, makeHand, HAND_NAMES } from "./state.js";
 import { CROPS, ripe, dailyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
-import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost, nextTownScene, mortgageDue, hireCost } from "./selectors.js";
+import { burnsFuel, fieldLabel, interrupts, clearCost, nextTownScene, mortgageDue, hireCost } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
 import { ODD_JOBS, SMALLTALK } from "./town.js";
 
@@ -37,8 +37,10 @@ export function reduce(state, action) {
     case "FALLOW":
       return mapField(state, action.fieldId, (f) => ({ ...f, crop: null, progress: 0 }));
     case "SOW":
-      return { ...withStandingOrders({ ...state, phase: "day", day: 1 }),
-        playerActionsLeft: BALANCE.playerActionsPerDay };
+      return runDays({ ...withInitialRoles({ ...state, phase: "day", day: 1 }),
+        seasonActionsLeft: BALANCE.seasonActionsPerSeason });
+    case "CONTINUE":
+      return continueRun(state);
     case "SET_ROLE":
       return mapHand(state, action.handId, (h) => ({ ...h, role: action.role }));
     case "DO_PLAYER_ACTION":
@@ -72,19 +74,13 @@ export function reduce(state, action) {
 // winter). Shared by BEGIN_SEASON and a scene closing with after: "BEGIN_SEASON".
 function beginSeason(s) {
   return season(s) === "winter"
-    ? { ...withStandingOrders({ ...s, phase: "day", day: 1 }), playerActionsLeft: BALANCE.playerActionsPerDay, logSeasonStart: s.log.length }
-    : { ...s, phase: "planting", day: 1, logSeasonStart: s.log.length };
+    ? runDays({ ...withInitialRoles({ ...s, phase: "day", day: 1 }), seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length })
+    : { ...s, phase: "planting", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length };
 }
 
-// Pre-fill the crew's standing orders from Reuben's recommendation for the board as it
-// stands. Called once when the season's play begins (SOW); the player overrides via ASSIGN,
-// and the orders then PERSIST day to day (no nagging re-assignment each dawn).
-function withStandingOrders(s) {
-  const plan = suggestPlan(s);
-  const hands = s.hands.map((h) => (h.alive && plan.hands[h.id])
-    ? { ...h, task: plan.hands[h.id].task, targetFieldId: plan.hands[h.id].targetFieldId } : h);
-  return { ...s, hands };
-}
+// Roles persist across days (set once via SET_ROLE), so opening a season needs no per-day
+// pre-fill. Kept as a seam for future season-open setup.
+function withInitialRoles(s) { return s; }
 
 // The proprietor spends one of their day's actions on their own labor. Applied at once for
 // instant feedback. work → help a field along; forage → food on the table; care → ease a hand.
@@ -252,6 +248,15 @@ function runDays(s) {
     cur = resolveDay(cur);
   }
   return cur;
+}
+
+// Resume the season after the player has dealt with a beat: advance at least one day past the
+// current stop, then run on to the next beat (or into dusk). The one-day step guarantees
+// progress even when the same interrupt (e.g. a ripe field the player chose to leave) persists.
+function continueRun(s) {
+  if (s.phase !== "day") return s;
+  const stepped = resolveDay(s);
+  return stepped.phase === "day" ? runDays(stepped) : stepped;
 }
 
 function endSeason(s) {
