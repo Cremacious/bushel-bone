@@ -13,6 +13,7 @@
 export const BALANCE = {
   daysPerSeason: 10,          // a season is 10 days (updates the old 20; tunable in playtest)
   playerActionsPerDay: 2,     // the proprietor's own actions per day
+  seasonActionsPerSeason: 5,  // the proprietor's own actions per season (v0.4: replaces the per-day pool)
   foodPerMouthPerDay: 0.75,   // larder eaten per mouth per day (tuned via sim)
   fuelPerMouthPerDay: 1,      // fuel burned per mouth per day (fall/winter only)
   fuelPerChopDay: 4,          // fuel a hand lays in per day of chopping
@@ -20,8 +21,8 @@ export const BALANCE = {
   growthPerDay: 0.1,          // a 1-season crop ripens in ~10 days
   tendGrowthBonus: 0.1,       // extra progress when a crop was tended that day (doubles growthPerDay, so tending is always felt: Q-003)
   strain: {
-    hardLabor: 2,             // per day of real work
-    restRecovery: 6,          // per day of rest
+    hardLabor: 4,             // per day of real work
+    restRecovery: 8,          // per day of rest
     careRecovery: 5,          // when you sit with a hand (a personal action)
     hungerPerDay: 5,          // per day the larder can't feed the household
     coldPerDay: 5,            // per cold day with no fuel

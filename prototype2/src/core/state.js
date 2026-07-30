@@ -2,9 +2,9 @@
 // This is the Year-1 starting state; later plans extend it (events, town, years).
 import { BALANCE } from "./balance.js";
 
-export function makeHand(id, name, { body = "average", mind = "average" } = {}) {
+export function makeHand(id, name, { body = "average", mind = "average", role = "field" } = {}) {
   // strain 0..100 drives the condition track (Steady→Worn→Failing→Lost); see selectors.conditionOf.
-  return { id, name, body, mind, task: "rest", strain: 0, morale: 4, alive: true, traits: [] };
+  return { id, name, body, mind, role, strain: 0, morale: 4, alive: true, traits: [] };
 }
 
 // A small alt-1800s name pool for hands hired at Vane's wagon (see reducer.hire).
@@ -19,7 +19,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     year: 1,
     seasonIndex: 0,          // 0=spring..3=winter
     day: 1,                  // 1..DAYS_PER_SEASON
-    playerActionsLeft: BALANCE.playerActionsPerDay, // your own actions this day (reset each dawn)
+    seasonActionsLeft: BALANCE.seasonActionsPerSeason, // your own actions this season (reset each season)
     theme: "night",
     weather: { key: "cold-rain", label: "Cold rain", grow: 0 },
     coin: 100, larder: 80, fuel: 0, seed: 20,

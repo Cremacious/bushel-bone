@@ -39,8 +39,8 @@ export function reduce(state, action) {
     case "SOW":
       return { ...withStandingOrders({ ...state, phase: "day", day: 1 }),
         playerActionsLeft: BALANCE.playerActionsPerDay };
-    case "ASSIGN":
-      return mapHand(state, action.handId, (h) => ({ ...h, task: action.task, targetFieldId: action.targetFieldId }));
+    case "SET_ROLE":
+      return mapHand(state, action.handId, (h) => ({ ...h, role: action.role }));
     case "DO_PLAYER_ACTION":
       return doPlayerAction(state, action);
     case "TURN_IN":
@@ -171,50 +171,41 @@ function resolveDay(s) {
   const St = BALANCE.strain;
   const byId = (id) => fields.find((f) => f.id === id);
 
-  // 1) Labor: each living hand does its task. Strain follows REAL work — a hand told to
-  // tend bare ground or harvest an unripe field did nothing, so it must not pay the
-  // hard-labor strain for empty motion.
-
-  // 1a) Harvest is a field-level job: hands assigned to the same ripe field work it
-  // together, and the field is brought in once. A crop that needs two hands (cotton)
-  // yields only HALF when a single hand works it; two or more bring in the whole crop.
-  const harvestCrews = {};
-  for (const h of hands) {
-    if (h.alive && h.task === "harvest" && h.targetFieldId != null) {
-      (harvestCrews[h.targetFieldId] = harvestCrews[h.targetFieldId] || []).push(h.id);
-    }
+  // 1) Labor by role. Field hands bring in what is ripe (pooling on a field; a two-hand crop
+  // needs two), else tend the least-grown crop. Wood/forage are direct; rest recovers. Only
+  // real work charges strain.
+  const ripeList = fields.filter((f) => f.crop && ripe(f)).sort((a, b) => a.id - b.id);
+  const growing = fields.filter((f) => f.crop && !ripe(f)).sort((a, b) => a.progress - b.progress);
+  const fieldHands = hands.filter((h) => h.alive && h.role === "field");
+  const harvestCrews = {}; let hi = 0;
+  for (const f of ripeList) {
+    const need = CROPS[f.crop].needsTwo ? 2 : 1;
+    const crew = [];
+    while (crew.length < need && hi < fieldHands.length) crew.push(fieldHands[hi++]);
+    if (crew.length) harvestCrews[f.id] = crew.map((h) => h.id);
   }
+  const tenders = fieldHands.slice(hi);
   const workedHarvest = new Set();
   for (const fid of Object.keys(harvestCrews)) {
-    const crew = harvestCrews[fid];
-    const f = byId(Number(fid));
-    if (!f || !ripe(f)) continue; // nothing to bring in → no work, no strain
+    const crew = harvestCrews[fid]; const f = byId(Number(fid)); if (!f || !ripe(f)) continue;
     const c = CROPS[f.crop];
     let units = Math.round(c.yield * (f.fert / 3));
-    const shorthanded = c.needsTwo && crew.length < 2;
-    if (shorthanded) units = Math.floor(units / 2); // one pair of hands, half the crop
+    const shorthanded = c.needsTwo && crew.length < 2; if (shorthanded) units = Math.floor(units / 2);
     if (c.food > 0) larder += units * c.food; else coin += units * c.sale;
-    daylog.push(`Brought in ${c.name.toLowerCase()} from ${fieldLabel(f).toLowerCase()}${shorthanded ? ", but a single hand got only half of it" : ""}.`);
+    daylog.push(`Brought in ${c.name.toLowerCase()} from ${fieldLabel(f).toLowerCase()}${shorthanded ? ", a single hand getting only half" : ""}.`);
     f.crop = null; f.progress = 0; f.fert = Math.max(0, f.fert - 1);
     crew.forEach((id) => workedHarvest.add(id));
   }
-
-  // 1b) Tend / chop / forage are per-hand.
-  const doLabor = (task, targetFieldId) => {
-    if (task === "tend" && targetFieldId != null) {
-      const f = byId(targetFieldId);
-      if (f && f.crop) { f.tended = true; return true; }
-    } else if (task === "chop") {
-      fuel += BALANCE.fuelPerChopDay; return true;
-    } else if (task === "forage") {
-      larder += BALANCE.forageFood; return true; // gather wild food onto the table now
-    }
-    return false;
-  };
+  let gi = 0;
   for (const h of hands) {
     if (!h.alive) continue;
-    const hard = h.task === "harvest" ? workedHarvest.has(h.id) : doLabor(h.task, h.targetFieldId);
-    h.strain += hard ? St.hardLabor : (h.task === "rest" ? -St.restRecovery : 0);
+    let worked = false;
+    if (h.role === "field") {
+      if (workedHarvest.has(h.id)) worked = true;
+      else if (tenders.includes(h) && gi < growing.length) { growing[gi++].tended = true; worked = true; }
+    } else if (h.role === "wood") { fuel += BALANCE.fuelPerChopDay; worked = true; }
+    else if (h.role === "forage") { larder += BALANCE.forageFood; worked = true; }
+    h.strain += worked ? St.hardLabor : (h.role === "rest" ? -St.restRecovery : 0);
   }
 
   // 2) Crop growth (uses today's tended flags, set above and by DO_PLAYER_ACTION "work"), then reset tended.
@@ -246,7 +237,7 @@ function resolveDay(s) {
   if (day > BALANCE.daysPerSeason) { day = BALANCE.daysPerSeason; phase = "dusk"; }
 
   return { ...s, hands, fields, larder, fuel, coin, seed, day, phase,
-    playerActionsLeft: BALANCE.playerActionsPerDay, daylog, jobsDoneToday: [],
+    daylog, jobsDoneToday: [],
     log: [...s.log, ...daylog] };
 }
 
