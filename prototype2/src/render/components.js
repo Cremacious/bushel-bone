@@ -45,7 +45,7 @@ export function fieldCard(field, proj, extra) {
     );
     // Immediate feedback that this field got worked today (by you or a tending hand):
     // a visible mark, so "Work a field" is never a choice that seems to do nothing.
-    if (field.tended) body.append(el("div", { class: "fc-worked t-label", text: "worked today ✓" }));
+    if (field.tended) body.append(el("div", { class: "fc-worked t-label", text: "tended today ✓ · +growth" }));
   } else {
     body.append(el("div", { class: "fc-crop t-sub", text: "fallow" }));
   }

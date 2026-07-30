@@ -9,7 +9,7 @@ export const BALANCE = {
   fuelPerChopDay: 4,          // fuel a hand lays in per day of chopping
   forageFood: 3,              // food a hand/you gather per day of foraging
   growthPerDay: 0.1,          // a 1-season crop ripens in ~10 days
-  tendGrowthBonus: 0.05,      // extra progress when a crop was tended that day
+  tendGrowthBonus: 0.1,       // extra progress when a crop was tended that day (doubles growthPerDay, so tending is always felt: Q-003)
   strain: {
     hardLabor: 2,             // per day of real work
     restRecovery: 6,          // per day of rest
