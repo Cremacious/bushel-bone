@@ -45,6 +45,8 @@ export function reduce(state, action) {
       return mapHand(state, action.handId, (h) => ({ ...h, role: action.role }));
     case "DO_PLAYER_ACTION":
       return doPlayerAction(state, action);
+    case "SPEND_ACTION":
+      return spendAction(state, action);
     case "TURN_IN":
       return resolveDay(state);
     case "RUN_DAYS":
@@ -95,8 +97,23 @@ function doPlayerAction(s, { kind, target }) {
   return ns;
 }
 
+// The proprietor spends one of the season's actions on their own labor at a beat. Applied at
+// once. A no-op with none left.
+function spendAction(s, { kind, target }) {
+  if (s.seasonActionsLeft <= 0) return s;
+  const St = BALANCE.strain;
+  let ns = { ...s, seasonActionsLeft: s.seasonActionsLeft - 1 };
+  if (kind === "forage") ns.larder = s.larder + BALANCE.forageFood;
+  else if (kind === "work" && target != null) ns.fields = s.fields.map((f) => (f.id === target && f.crop) ? { ...f, tended: true } : f);
+  else if (kind === "care" && target != null) ns.hands = s.hands.map((h) => (h.id === target && h.alive) ? { ...h, strain: Math.max(0, h.strain - St.careRecovery) } : h);
+  return ns;
+}
+
 // Take a paid odd-job: spend one of the day's actions, take the coin, mark it done so it
 // cannot be double-claimed. A no-op off the day phase, with no actions, or if already done.
+// NOTE: still keyed on playerActionsLeft (pre-v0.4), same as doPlayerAction below; the town
+// action economy's move to the season pool is out of this task's scope (see screens.js's
+// town gating, which now reads seasonActionsLeft for display/enable purposes only).
 function acceptJob(s, id) {
   if (s.phase !== "day" || s.playerActionsLeft <= 0) return s;
   const job = ODD_JOBS.find((j) => j.id === id);

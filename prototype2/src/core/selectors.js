@@ -183,11 +183,10 @@ export function interrupts(state) {
   if (state.phase !== "day") return [];
   const St = BALANCE.strain;
   const reasons = [];
-  const harvesting = new Set(
-    state.hands.filter((h) => h.alive && h.task === "harvest").map((h) => h.targetFieldId)
-  );
-  if (state.fields.some((f) => ripe(f) && !harvesting.has(f.id))) reasons.push("A crop stands ripe and no one is set to bring it in.");
-  if (state.hands.some((h) => h.alive && h.strain >= St.failingAt)) reasons.push("A hand is failing and needs seeing to.");
+  const hasFieldHand = state.hands.some((h) => h.alive && h.role === "field");
+  if (!hasFieldHand && state.fields.some((f) => ripe(f))) reasons.push("A crop stands ripe and no hand is set to the fields.");
+  const failing = state.hands.find((h) => h.alive && h.strain >= St.failingAt);
+  if (failing) reasons.push(`${failing.name} is worn to failing and needs rest.`);
   if (state.larder <= 0) reasons.push("The larder is empty.");
   if (state.day >= DAYS_PER_SEASON) reasons.push("It is the last day of the season.");
   return reasons;
@@ -234,6 +233,10 @@ export function nextTownScene(state, npc) {
 export function talkIsDry(state, npc) {
   return nextTownScene(state, npc) === (SMALLTALK[npc] || null);
 }
+
+// Plain labels/descriptions for a hand's standing role (the beat screen's role toggle).
+export const roleLabel = (r) => ({ field: "Fields", wood: "Woodcutting", forage: "Foraging", rest: "Rest" }[r] || r);
+export const roleDesc = (r) => ({ field: "tend and bring in the crops", wood: "lay in wood for winter", forage: "gather food from the wild", rest: "recover from the work" }[r] || "");
 
 // The mortgage due at this year's settlement: the scheduled payment + upkeep (with sensible
 // defaults past the authored years). Pure.
