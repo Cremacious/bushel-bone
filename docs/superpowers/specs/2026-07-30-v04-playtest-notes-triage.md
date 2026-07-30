@@ -60,7 +60,7 @@ Raw fx keys leak into the UI and their color/valence is wrong, so event choices 
 ---
 
 ## The design decisions to settle (before the spec)
-1. **The clone reveal (Theme 9):** how the beat plays and how early (a scripted Day-1/early-Year-1 sequence vs an organic first-town-visit trigger).
-2. **Reward-talks & job variety (Theme 5):** how deep the reward system goes (simple payloads vs question/trade minigames).
+1. **The clone reveal (Theme 9):** **SETTLED** — a **scripted Year-1 sequence**, with the nudge fired **before** the player can stumble onto the wagon on their own. **The town view must mask the wagon until the reveal** — today it reads "Vane's wagon / clone hands, for a price," which spoils the reveal. Pre-reveal the wagon is unremarkable/locked (no "clone" label, hiring gated); the reveal scene is where "clone" lands, and the label updates after.
+2. **Reward-talks & job variety (Theme 5):** **SETTLED** — a **hybrid**, applied broadly (NPCs, jobs, and other sections, not jobs alone). One card grammar supports both **simple payloads** (intel / gift / standing) and **light interactions** (a haggle gamble, a question with a right answer, a moral fork), reusing the choice-card engine (no net-new UI screens). Author a **deep pool** so replays rarely repeat the same card — this is how NPCs get "more to do and say" and how variety survives multiple runs.
 
 Everything else (Themes 1-4, 6-8, 10) is a clear clarity/polish/content pass.
