@@ -4,11 +4,11 @@ import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard, fieldCard } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
-import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord } from "../core/selectors.js";
+import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, actionEffects, playerActionEffects } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
 import { counselFor } from "../content/counsel.js";
 import { BALANCE } from "../core/balance.js";
-import { TALKS } from "../core/town.js";
+import { LOCATIONS } from "../core/town.js";
 
 // Fleshed out across Tasks 8-12. Renders the active screen into the shell's stage.
 export function renderScreen(stage, state, dispatch) {
@@ -86,7 +86,6 @@ const SCREENS = {
       el("div", { class: "eyebrow t-label", text: `Day ${s.day} of ${DAYS_PER_SEASON}` }),
       el("h2", { class: "t-title", text: "Set the crew, and spend your day" }),
     );
-    stage.append(...counsel(s));               // Reuben's plain-language guidance (Year 1)
     stage.append(goalPanel(s));                // what the cold months will want (foreshadowing)
     const plantedFields = s.fields.filter((f) => f.crop);
     const ripeList = ripeFields(s);
@@ -103,13 +102,15 @@ const SCREENS = {
       ]);
       const sel = el("div", { class: "taskpick" }, TASKS.map(([task, label]) => {
         const blocked = !!why[task];
+        const tags = blocked ? [] : actionEffects(task).map((e) =>
+          el("span", { class: "efftag " + e.valence, text: e.label }));
         return el("button", { class: "taskbtn t-sub" + (h.task === task ? " sel" : "") + (blocked ? " disabled" : ""),
-          ...(blocked ? { disabled: true, title: why[task] } : {}), text: label,
+          ...(blocked ? { disabled: true, title: why[task] } : {}),
           onClick: blocked ? undefined : () => dispatch({ type: "ASSIGN", handId: h.id, task,
-            targetFieldId: task === "tend" ? plantedFields[0].id : task === "harvest" ? ripeList[0].id : undefined }) });
+            targetFieldId: task === "tend" ? plantedFields[0].id : task === "harvest" ? ripeList[0].id : undefined }) },
+          [el("span", { class: "tb-label", text: label }), ...tags]);
       }));
       row.append(sel);
-      row.append(el("div", { class: "taskdesc t-sub", text: TASK_DESC[h.task] || "" }));
       stage.append(row);
     }
     stage.append(personalActions(s, dispatch));
@@ -172,46 +173,57 @@ const SCREENS = {
     }
   },
   town: (stage, s, dispatch) => {
-    const { jobs, locations } = townOffers(s);
     const canAct = s.phase === "day" && s.playerActionsLeft > 0;
     const why = s.phase !== "day" ? "Come back during the day." : s.playerActionsLeft <= 0 ? "You are spent for the day." : null;
+    const home = () => el("button", { class: "homebtn t-label", text: "← Head back to the farm",
+      onClick: () => dispatch({ type: "LEAVE_TOWN" }) });
+
+    if (!s.townAt) {
+      const { jobs } = townOffers(s);
+      stage.append(
+        el("div", { class: "eyebrow t-label", text: "Marrow's Cross" }),
+        el("h2", { class: "t-title", text: "Where to?" }),
+        el("p", { class: "t-sub townhint", text: canAct ? `You have ${s.playerActionsLeft} of the day to spend here.` : (why || "The town is quiet.") }),
+      );
+      stage.append(el("div", { class: "eyebrow t-label townsub", text: "Work going" }));
+      for (const j of jobs) {
+        const blocked = !canAct || j.done;
+        stage.append(el("div", { class: "jobcard" }, [
+          el("div", { class: "jobline t-choice", text: j.line }),
+          el("div", { class: "jobmeta t-sub", text: j.done ? "done today" : (why || `+${j.coin} coin · ${tok("{{npc." + j.giver + "}}")}`) }),
+          el("button", { class: "jobtake t-label" + (blocked ? " disabled" : ""), ...(blocked ? { disabled: true } : {}),
+            text: j.done ? "done" : `Take it (+${j.coin})`, onClick: blocked ? undefined : () => dispatch({ type: "ACCEPT_JOB", id: j.id }) }),
+        ]));
+      }
+      stage.append(el("div", { class: "eyebrow t-label townsub", text: "The town" }));
+      for (const l of LOCATIONS) {
+        stage.append(el("div", { class: "townloc" }, [
+          el("div", { class: "loc-head" }, [
+            el("span", { class: "loc-who t-choice", text: tok("{{loc." + l.loc + ".sub}}") }),
+            el("span", { class: "loc-why t-sub", text: l.purpose }),
+          ]),
+          el("button", { class: "walkbtn t-label", text: "Walk there →", onClick: () => dispatch({ type: "WALK_TO", place: l.id }) }),
+        ]));
+      }
+      stage.append(home());
+      return;
+    }
+
+    const l = LOCATIONS.find((x) => x.id === s.townAt) || LOCATIONS[0];
+    const canTalk = canAct;
     stage.append(
-      el("div", { class: "eyebrow t-label", text: "Marrow's Cross" }),
-      el("h2", { class: "t-title", text: "The town at the crossroads" }),
-      el("p", { class: "t-sub townhint", text: canAct
-        ? `You have ${s.playerActionsLeft} of the day to spend here.`
-        : (why || "The town is quiet.") }),
+      el("div", { class: "eyebrow t-label", text: tok("{{loc." + l.loc + ".cap}}") }),
+      el("h2", { class: "t-title", text: tok("{{loc." + l.loc + ".sub}}") }),
+      el("p", { class: "place-scene t-prose", text: tok("{{loc." + l.loc + ".desc}}") }),
+      el("div", { class: "loc-standing t-label", text: `${tok("{{npc." + l.npc + "}}")} · ${standingWord(standingOf(s, l.npc))}` }),
+      el("button", { class: "loc-talk t-choice" + (canTalk ? "" : " disabled"), ...(canTalk ? {} : { disabled: true }),
+        text: `Talk to ${tok("{{npc." + l.npc + "}}")}`, onClick: canTalk ? () => dispatch({ type: "VISIT", npc: l.npc }) : undefined }),
+      ...(canTalk ? [] : [el("p", { class: "t-sub", text: why })]),
+      el("div", { class: "place-nav" }, [
+        el("button", { class: "walkbtn t-label", text: "← Walk on", onClick: () => dispatch({ type: "WALK_TO", place: null }) }),
+        home(),
+      ]),
     );
-    stage.append(el("div", { class: "eyebrow t-label townsub", text: "Work going" }));
-    for (const j of jobs) {
-      const blocked = !canAct || j.done;
-      const sub = j.done ? "done today" : (why || `+${j.coin} coin · ${tok("{{npc." + j.giver + "}}")}`);
-      stage.append(el("div", { class: "jobcard" }, [
-        el("div", { class: "jobline t-choice", text: j.line }),
-        el("div", { class: "jobmeta t-sub", text: sub }),
-        el("button", { class: "jobtake t-label" + (blocked ? " disabled" : ""), ...(blocked ? { disabled: true } : {}),
-          text: j.done ? "done" : `Take it (+${j.coin})`,
-          onClick: blocked ? undefined : () => dispatch({ type: "ACCEPT_JOB", id: j.id }) }),
-      ]));
-    }
-    stage.append(el("div", { class: "eyebrow t-label townsub", text: "The town" }));
-    for (const l of locations) {
-      const hasTalk = !!TALKS[l.npc];
-      const canTalk = hasTalk && canAct;
-      stage.append(el("div", { class: "townloc" }, [
-        el("div", { class: "loc-head" }, [
-          el("span", { class: "loc-who t-choice", text: tok("{{npc." + l.npc + "}}") }),
-          el("span", { class: "loc-why t-sub", text: l.purpose }),
-        ]),
-        el("div", { class: "loc-right" }, [
-          hasTalk ? el("span", { class: "loc-standing t-label", text: standingWord(standingOf(s, l.npc)) }) : null,
-          hasTalk
-            ? el("button", { class: "loc-talk t-label" + (canTalk ? "" : " disabled"), ...(canTalk ? {} : { disabled: true }),
-                text: "Call on them", onClick: canTalk ? () => dispatch({ type: "VISIT", npc: l.npc }) : undefined })
-            : el("span", { class: "loc-soon t-sub", text: "not today" }),
-        ].filter(Boolean)),
-      ]));
-    }
   },
   almanac: (stage) => {
     stage.append(el("div", { class: "eyebrow t-label", text: "The almanac" }), el("h2", { class: "t-title", text: "Not yet kept" }));
@@ -221,23 +233,18 @@ const SCREENS = {
 };
 export { SCREENS };
 
-// --- daily-work guidance: task descriptions, Reuben's counsel, the goal foreshadowing ---
-const TASK_DESC = {
-  rest: "mend a worn hand",
-  tend: "push a crop toward harvest",
-  harvest: "bring in a ripe field",
-  forage: `gather about ${BALANCE.forageFood} food from the wild`,
-  chop: `lay in ${BALANCE.fuelPerChopDay} wood for winter`,
-};
+// --- daily-work guidance: the Tiredness read, Reuben's counsel, the goal foreshadowing ---
 
-// A hand's condition, made legible: the word (colored by band) plus a strain bar, so the
-// player can SEE when a hand is wearing down and rest or care actually matters (D-039).
+// A hand's condition, made legible: a labeled Tiredness meter (colored by band) plus a plain
+// verdict, so the player can SEE when a hand is wearing down and rest or care actually
+// matters (D-039).
 function strainMeter(h) {
   const cond = conditionOf(h);
   const pct = Math.min(100, Math.round((h.strain / BALANCE.strain.lostAt) * 100));
   return el("div", { class: "strain cond-" + cond }, [
-    el("span", { class: "strain-word t-label", text: cond }),
+    el("span", { class: "strain-word t-label", text: "Tiredness" }),
     el("div", { class: "strain-bar" }, [el("div", { class: "strain-fill", style: `width:${Math.max(3, pct)}%` })]),
+    el("span", { class: "strain-advice t-sub", text: tirednessAdvice(h) }),
   ]);
 }
 
@@ -251,13 +258,13 @@ function personalActions(s, dispatch) {
   const opts = [
     { kind: "forage", label: "Forage", desc: `+${BALANCE.forageFood} food to the larder` },
     ...(growing.length ? [{ kind: "work", target: workTarget.id,
-      label: "Work a field", desc: `tend ${fieldLabel(workTarget).toLowerCase()} yourself — a day's growth toward harvest` }] : []),
+      label: "Work a field", desc: `tend ${fieldLabel(workTarget).toLowerCase()} yourself, a day's growth toward harvest` }] : []),
     ...(worn ? [{ kind: "care", target: worn.id,
-      label: `Sit with ${worn.name}`, desc: `ease a ${conditionOf(worn)} hand — brings their strain down` }] : []),
+      label: `Sit with ${worn.name}`, desc: `ease a ${conditionOf(worn)} hand, brings their tiredness down` }] : []),
     { kind: "rest", label: "Rest", desc: "a quiet day; keep your own strength" },
   ];
   return el("div", { class: "personal" }, [
-    el("div", { class: "personal-h t-label", text: `Your day — ${left} of ${BALANCE.playerActionsPerDay} actions left` }),
+    el("div", { class: "personal-h t-label", text: `Your day: ${left} of ${BALANCE.playerActionsPerDay} actions left` }),
     el("button", { class: "ridebtn t-label", text: "Ride to Marrow's Cross →",
       onClick: () => dispatch({ type: "SET_SCREEN", screen: "town" }) }),
     el("div", { class: "ridehint t-sub", text: "or spend the day here:" }),
@@ -266,9 +273,10 @@ function personalActions(s, dispatch) {
         onClick: left > 0 ? () => dispatch({ type: "DO_PLAYER_ACTION", kind: o.kind, target: o.target }) : undefined }, [
         el("span", { class: "pa-label t-choice", text: o.label }),
         el("span", { class: "pa-desc t-sub", text: o.desc }),
+        ...playerActionEffects(o.kind).map((e) => el("span", { class: "efftag " + e.valence, text: e.label })),
       ]))),
     el("div", { class: "day-cta" }, [
-      choiceCard({ text: "Turn in for the night", sub: "the day resolves — crops grow, the crew eats", primary: true }, () => dispatch({ type: "TURN_IN" })),
+      choiceCard({ text: "Turn in for the night", sub: "the day resolves: crops grow, the crew eats", primary: true }, () => dispatch({ type: "TURN_IN" })),
       el("button", { class: "runbtn t-label", text: "Let the days run →", onClick: () => dispatch({ type: "RUN_DAYS" }) }),
     ]),
   ]);
@@ -284,21 +292,27 @@ function counsel(s) {
   ])];
 }
 
-// The cold months' fuel + food targets, so the day's work has a visible goal to plan toward.
+// The cold-months targets, read plainly: have / need with a bar, green when met, amber short.
 function goalPanel(s) {
   const n = yearNeeds(s);
-  const row = (label, have, need, unit) => {
-    const short = Math.max(0, need - have);
-    return el("div", { class: "goalrow" }, [
-      el("span", { class: "goal-k t-label", text: label }),
-      el("span", { class: "goal-v t-sub" + (short > 0 ? " warn" : " good"),
-        text: short > 0 ? `${have} of ~${need} ${unit} · ${short} short` : `${have} of ~${need} ${unit} · laid in` }),
+  const row = (label, have, need) => {
+    const met = have >= need;
+    const pct = Math.max(2, Math.min(100, Math.round((have / (need || 1)) * 100)));
+    return el("div", { class: "goalrow2" }, [
+      el("div", { class: "goal-line" }, [
+        el("span", { class: "goal-k t-choice", text: label }),
+        el("span", { class: "goal-fig t-sub" + (met ? " good" : " warn") }, [
+          document.createTextNode(`${have} / ${need} `),
+          el("span", { class: "goal-note", text: met ? "✓ laid in" : `(${need - have} to go)` }),
+        ]),
+      ]),
+      el("div", { class: "goalbar" }, [el("div", { class: "goalbar-fill" + (met ? " good" : " warn"), style: `width:${pct}%` })]),
     ]);
   };
   return el("div", { class: "goals" }, [
-    el("div", { class: "goals-h t-label", text: "The cold months will want" }),
-    row("Wood", n.fuel.have, n.fuel.need, "wood"),
-    row("Food", n.food.have, n.food.need, "food"),
+    el("div", { class: "goals-h t-label", text: "To last the winter, lay in:" }),
+    row("Wood", n.fuel.have, n.fuel.need),
+    row("Food", n.food.have, n.food.need),
   ]);
 }
 

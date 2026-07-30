@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import { initialState } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
 import { fieldProjection, suggestPlan } from "../src/core/selectors.js";
+import { BALANCE } from "../src/core/balance.js";
+import { dailyGrowth } from "../src/core/crops.js";
 
 function planted(crop, progress, fert = 3) {
   const s = reduce(initialState(1), { type: "BEGIN_SEASON" }); // spring, phase planting
@@ -91,5 +93,22 @@ describe("suggestPlan", () => {
   it("recommends resting when there is no field work to do", () => {
     const s = day(); // nothing planted
     expect(suggestPlan(s).hands.reuben.task).toBe("rest");
+  });
+});
+
+describe("tending visibly shortens the ripen day", () => {
+  it("a field tended each day ripens sooner than an untended one", () => {
+    // simulate several days of growth on a potato, tended vs not, from a fresh planting
+    const grow = (tended) => {
+      let f = { crop: "potato", progress: 0, tended };
+      for (let d = 0; d < 6; d++) { f = { ...f, progress: f.progress + dailyGrowth({ crop: "potato", tended }, { grow: 0 }) }; }
+      return f.progress;
+    };
+    expect(grow(true)).toBeGreaterThan(grow(false));
+    // and the projection reports fewer days to ripe when partly grown by tending
+    const s = { phase: "day", day: 1 };
+    const tended = { id: 0, crop: "potato", progress: grow(true), fert: 3 };
+    const untended = { id: 0, crop: "potato", progress: grow(false), fert: 3 };
+    expect(fieldProjection(s, tended).daysToRipe).toBeLessThanOrEqual(fieldProjection(s, untended).daysToRipe);
   });
 });

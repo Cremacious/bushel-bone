@@ -53,6 +53,10 @@ export function reduce(state, action) {
       return acceptJob(state, action.id);
     case "VISIT":
       return visit(state, action.npc);
+    case "WALK_TO":
+      return { ...state, screen: "town", townAt: action.place || null };
+    case "LEAVE_TOWN":
+      return { ...state, screen: "home", townAt: null };
     case "CLEAR_FIELD":
       return clearField(state, action.fieldId);
     default:

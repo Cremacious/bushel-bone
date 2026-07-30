@@ -22,6 +22,17 @@ describe("front porch — title / naming / letter", () => {
     expect(root.querySelector(".fr-menuitem.disabled .fr-mi-label").textContent).toBe("Continue");
   });
 
+  it("the naming step shows the trimmed prompt, a surname input, and a Continue control", () => {
+    const { root } = mount();
+    [...root.querySelectorAll(".fr-menuitem")].find((b) => /New Game/.test(b.textContent)).click();
+    expect(root.querySelector(".fr-name")).toBeTruthy();
+    expect(root.textContent).toContain("This land will carry your family's name");
+    expect(root.textContent).not.toContain("Before the letter comes");
+    expect(root.textContent).not.toContain("name over the door");
+    expect(root.querySelector(".fr-input")).toBeTruthy();
+    expect([...root.querySelectorAll("button")].some((b) => /Continue/.test(b.textContent))).toBe(true);
+  });
+
   it("New Game opens the naming step; naming carries into the letter with the surname in it", () => {
     const { root } = mount();
     [...root.querySelectorAll(".fr-menuitem")].find((b) => /New Game/.test(b.textContent)).click();
@@ -33,6 +44,8 @@ describe("front porch — title / naming / letter", () => {
     expect(root.querySelector(".fr-letter")).toBeTruthy();
     expect(root.textContent).toContain("MACKALL");
     expect(root.querySelector(".fr-pageno").textContent).toBe("Page 1 of 2");
+    // the paging nav (Back / Next) is present on page 1
+    expect(root.querySelector(".fr-actions")).toBeTruthy();
   });
 
   it("paging to the last page and Begin fires onStart with the normalized lineage", () => {
@@ -43,6 +56,8 @@ describe("front porch — title / naming / letter", () => {
     [...root.querySelectorAll("button")].find((b) => /Continue/.test(b.textContent)).click();
     [...root.querySelectorAll("button")].find((b) => /Next/.test(b.textContent)).click(); // → page 2
     expect(root.querySelector(".fr-pageno").textContent).toBe("Page 2 of 2");
+    // the paging nav (Back / Begin) is still present on page 2, same as page 1
+    expect(root.querySelector(".fr-actions")).toBeTruthy();
     [...root.querySelectorAll("button")].find((b) => /Begin/.test(b.textContent)).click();
     expect(getStarted()).toBe("Mackall");
   });

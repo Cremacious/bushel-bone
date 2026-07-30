@@ -57,8 +57,9 @@
 .fr-letter { justify-content: flex-start; }
 .fr-letterwrap { max-width: 720px; width: 100%; margin: 0 auto; padding: 7vh 24px 40px; box-sizing: border-box; }
 /* a consistent-height box so page 1 (the tall letter) and page 2 (short narration) start
-   at the same top and the paging controls never jump between pages. */
-.fr-pagebox { min-height: 54vh; }
+   at the same top and the paging controls never jump between pages. Sized to comfortably
+   fit page 1 (the taller of the two, the letter), so page 2 never has to grow into it. */
+.fr-pagebox { min-height: 62vh; }
 .fr-page { animation: bb-line .28s ease-out both; }
 .fr-letter-h { font-family: "IM Fell English", Georgia, serif; font-style: italic; color: var(--ink-faint);
   text-align: center; margin-bottom: 18px; font-size: 1rem; }
@@ -72,7 +73,10 @@
 .fr-date { font-variant-numeric: tabular-nums; color: #5f5138; margin-top: 6px; font-size: 0.9rem; }
 .fr-doc p { font-size: 1.06rem; line-height: 1.62; margin: 0 0 0.9em; color: #2a2216; }
 .fr-signoff { font-family: "IM Fell English", Georgia, serif; font-style: italic; text-align: right; color: #5f5138; }
-/* page 2 is plain cream narration on the black ground, not a letter */
+/* page 2 is plain cream narration on the black ground, not a letter. Its text column
+   shares .fr-doc's horizontal padding (44px) so the prose starts in the same place
+   left-to-right as the letter's body, even though the box itself carries no paper look. */
+.fr-narration { padding: 0 44px; box-sizing: border-box; }
 .fr-narration p { font-size: 1.12rem; line-height: 1.78; color: var(--ink); margin: 0 0 1.1em; }
 .fr-narration .said { color: var(--dialogue); font-style: italic; }
 .fr-pageno { text-align: center; letter-spacing: .18em; margin-top: 18px; }

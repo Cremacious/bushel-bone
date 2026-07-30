@@ -82,12 +82,19 @@ h2.t-title { margin: 0 0 14px; }
 .counsel-text { font-style: italic; color: var(--ink-soft); line-height: 1.55; }
 
 /* --- the cold-months goal foreshadowing --- */
-.goals { border: 1px solid var(--rule-fine); padding: 10px 12px; margin-bottom: 14px; }
-.goals-h { margin-bottom: 6px; }
-.goalrow { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 0; }
-.goal-v { font-style: normal; }
-.goal-v.warn { color: var(--warn); }
-.goal-v.good { color: var(--good); }
+.goals { border: 1px solid var(--rule-fine); padding: 12px 14px; margin-bottom: 14px; }
+.goals-h { margin-bottom: 10px; }
+.goalrow2 { margin-bottom: 12px; }
+.goalrow2:last-child { margin-bottom: 0; }
+.goal-line { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+.goal-fig { font-family: "Courier Prime", monospace; font-style: normal; }
+.goal-fig.good { color: var(--good); }
+.goal-fig.warn { color: var(--warn); }
+.goal-note { font-size: .82rem; }
+.goalbar { height: 8px; background: var(--paper); border: 1px solid var(--rule-fine); border-radius: 3px; overflow: hidden; }
+.goalbar-fill { height: 100%; }
+.goalbar-fill.good { background: var(--good); }
+.goalbar-fill.warn { background: var(--warn); }
 
 /* --- one-line "what this task does" under each crew picker --- */
 .taskdesc { color: var(--ink-faint); font-style: italic; margin: 4px 0 12px; }
@@ -170,6 +177,12 @@ h2.t-title { margin: 0 0 14px; }
 .taskbtn:focus-visible { outline: 2px solid var(--lamp); outline-offset: -2px; }
 .taskbtn.sel { border-color: var(--lamp); color: var(--ink); background: color-mix(in srgb, var(--lamp) 16%, transparent); }
 .taskbtn.disabled { opacity: .5; cursor: not-allowed; }
+
+.efftag { font-family: "Courier Prime", monospace; font-style: normal; font-size: .72rem; margin-left: 6px; }
+.efftag.good { color: var(--good); }
+.efftag.bad { color: var(--bad); }
+.taskbtn .tb-label { font-style: normal; }
+.strain-advice { margin-left: 8px; }
 
 /* --- ledgerrow (the Ledger tab: plain-language explanation of the four figures) --- */
 .ledgerrow { border-bottom: 1px solid var(--rule-fine); padding: 12px 0; }
@@ -260,3 +273,11 @@ h2.t-title { margin: 0 0 14px; }
 .ridehint { color: var(--ink-faint); margin-bottom: 8px; }
 .loc-right { display: flex; align-items: center; gap: 12px; }
 .loc-standing { color: var(--ink-faint); }
+
+/* --- the town walk: overview -> place scene -> talk (town-walk task 7) --- */
+.walkbtn, .homebtn { cursor: pointer; background: none; border: 1px solid var(--rule-fine); color: var(--lamp); padding: 6px 12px; letter-spacing: .03em; }
+.walkbtn:hover, .homebtn:hover { border-color: var(--lamp); }
+.homebtn { margin-top: 16px; }
+.place-scene { margin: 6px 0 12px; }
+.place-nav { display: flex; gap: 10px; margin-top: 16px; }
+.townloc { align-items: center; }

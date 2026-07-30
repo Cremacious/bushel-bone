@@ -3,8 +3,10 @@
 // on. Multi-page tips are an array of strings. Tokens ({{npc.reuben}} etc.) are resolved
 // at render time. Reuben's voice throughout; he is always shown with his name and avatar.
 export const TIPS = {
-  plant: [
+  orient: [
     "Now then. Coin buys seed and fuel. The larder feeds us through to spring. Fuel keeps the cold out come winter. Seed goes in the ground before coin ever does. Tap any of those four figures, any time, and I will tell you plain what it means. And that row of dots up by my name is how the hands are holding up; the Regard beside it is how the town has come to look at you.",
+  ],
+  plant: [
     "This is the season's planting. Turnip and potato are quick, ready in a single season, and go straight to the larder to feed us. Wheat and corn take two full seasons, but they are grown for the market, not the table: sold for coin, and worth more of it than the quick roots ever fetch. Cotton is slower still and the best-paying of anything we grow, coin and nothing else. Plant enough to feed us, and something over to sell.",
     "Mind the fertility dots on each field. Only the harvest wears them down, so a field brought in with none left gives back nothing for the season's work. To mend a point, leave that field fallow and let it rest the season.",
   ],
@@ -18,7 +20,7 @@ export const TIPS = {
     "Winter is the test. Every mouth needs food in the larder and wood on the pile, every day of it. Watch those two figures close. Come up short on wood, and the frailest of us freezes first.",
   ],
   town: [
-    "This is Marrow's Cross. Riding in is how a day gets spent when the fields can spare you. There is paid work going most days, coin in hand by dusk, and folk worth knowing. Each errand or call costs you a piece of the day, same as work at home, so choose what is worth your while. And mind this: the more you call on a body, the more they warm to you, and the more they will tell you. A stranger gets pleasantries. A friend gets the truth.",
+    "This is Marrow's Cross. Walk where you like, it costs you nothing to go from door to door. It is stopping to call on a body, or taking on a piece of paid work, that spends a piece of your day, same as work at home. There is coin to be had and folk worth knowing, and the more you call on a body, the more they warm to you, and the more they will tell you. A stranger gets pleasantries. A friend gets the truth. When you are done, head back to the farm.",
   ],
 };
 
@@ -29,6 +31,7 @@ export function pendingTip(state) {
   const seen = state.tipsSeen || [];
   const isWinter = state.seasonIndex === 3;
   const cands = [];
+  if (state.phase === "scene" && state.scene && state.scene.id === "silas_welcome") cands.push("orient");
   if (state.phase === "planting") cands.push("plant");
   if (state.phase === "day") cands.push("assign");
   if (isWinter && (state.phase === "day" || state.phase === "brief")) cands.push("winter");

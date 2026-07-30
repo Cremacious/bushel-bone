@@ -26,6 +26,37 @@ export function conditionOf(hand) {
   return "steady";
 }
 
+// Plain-language verdict on a hand's tiredness, for the day screen (spec D.1).
+export function tirednessAdvice(hand) {
+  const c = conditionOf(hand);
+  return c === "failing" ? "rest him now" : c === "worn" ? "rest him soon" : "fine to work";
+}
+
+// The effect tags shown on a crew task button (spec D.2). Green gains, red costs. Any real
+// work tires the crew (matches resolveDay: hard labor adds strain, rest recovers it), so the
+// tag grammar teaches the rest-vs-work tradeoff. Single source of truth for the tag text.
+export function actionEffects(task) {
+  switch (task) {
+    case "rest":    return [{ label: "-Tiredness", valence: "good" }];
+    case "tend":    return [{ label: "+Growth", valence: "good" }, { label: "+Tiredness", valence: "bad" }];
+    case "harvest": return [{ label: "+Yield", valence: "good" }, { label: "+Tiredness", valence: "bad" }];
+    case "forage":  return [{ label: "+Food", valence: "good" }, { label: "+Tiredness", valence: "bad" }];
+    case "chop":    return [{ label: "+Wood", valence: "good" }, { label: "+Tiredness", valence: "bad" }];
+    default:        return [];
+  }
+}
+
+// The effect tags for the player's own actions. The player has no tiredness track, so no
+// self-cost; "care" eases a hand's tiredness.
+export function playerActionEffects(kind) {
+  switch (kind) {
+    case "forage": return [{ label: `+${BALANCE.forageFood} Food`, valence: "good" }];
+    case "work":   return [{ label: "+Growth", valence: "good" }];
+    case "care":   return [{ label: "-Tiredness", valence: "good" }];
+    default:       return []; // rest: a calm day, no effect
+  }
+}
+
 // A plain-language read of a planted field: when it ripens and what it will yield, at the
 // base growth rate (ignoring tend/weather, which only ever help). Pure. Days are counted
 // from the current playing day (or the season's start during planting).

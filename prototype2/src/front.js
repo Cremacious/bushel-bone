@@ -59,13 +59,11 @@ const VIEWS = {
     function toggleContinue() { cont.toggleAttribute("disabled", !input.value.trim()); }
     const node = screen("name", [
       el("div", { class: "fr-narrow fr-centered" }, [
-        el("div", { class: "fr-eyebrow t-label", text: "Before the letter comes" }),
         el("h2", { class: "t-title", text: "Name your line" }),
-        el("p", { class: "fr-body", text: "A family holds this land, season on season, and gives it their name. What is the name they will carry?" }),
+        el("p", { class: "fr-body", text: "This land will carry your family's name for as long as your line holds it. What is it?" }),
         el("div", { class: "fr-rule rule-hatch" }),
         el("label", { class: "fr-label t-label", text: "Family surname" }),
         input,
-        el("p", { class: "fr-hint t-sub", text: "This is the name over the door for as long as your line holds the land." }),
         el("div", { class: "fr-actions" }, [
           actionBtn("Back", { onClick: () => set({ view: "title" }) }),
           cont,

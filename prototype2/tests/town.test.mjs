@@ -99,3 +99,25 @@ describe("town scenes resolve", () => {
     expect(crake).toContain("{{lineage}}");     // lineage resolves later, from save state
   });
 });
+
+describe("walking the town", () => {
+  it("WALK_TO sets the current place and costs no action", () => {
+    let s = inTown(1);
+    const acts0 = s.playerActionsLeft;
+    s = reduce(s, { type: "WALK_TO", place: "saloon" });
+    expect(s.townAt).toBe("saloon");
+    expect(s.playerActionsLeft).toBe(acts0); // free
+    expect(s.screen).toBe("town");
+  });
+  it("WALK_TO null returns to the town overview", () => {
+    let s = reduce(inTown(1), { type: "WALK_TO", place: "saloon" });
+    s = reduce(s, { type: "WALK_TO", place: null });
+    expect(s.townAt).toBe(null);
+  });
+  it("LEAVE_TOWN heads home and clears the place", () => {
+    let s = reduce(inTown(1), { type: "WALK_TO", place: "saloon" });
+    s = reduce(s, { type: "LEAVE_TOWN" });
+    expect(s.screen).toBe("home");
+    expect(s.townAt).toBe(null);
+  });
+});
