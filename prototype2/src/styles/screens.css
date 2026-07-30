@@ -60,7 +60,7 @@ h2.t-title { margin: 0 0 14px; }
 .plant-bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
 .plant-bar .choicecard { width: auto; min-width: 200px; margin: 0; }
 .fieldgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.fieldcard { border: 1px solid var(--rule-fine); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.fieldcard { border: 1px solid var(--rule-fine); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; background: var(--leaf); }
 .fieldcard.ripe { border-color: var(--good); }
 .fc-head { display: flex; justify-content: space-between; align-items: baseline; }
 .fc-fert { color: var(--ink-faint); font-size: 0.82rem; }
@@ -282,3 +282,7 @@ h2.t-title { margin: 0 0 14px; }
 .place-scene { margin: 6px 0 12px; }
 .place-nav { display: flex; gap: 10px; margin-top: 16px; }
 .townloc { align-items: center; }
+
+/* --- the left panel's town plate (town-polish task 2) --- */
+.townplate-art { border: 1px solid var(--rule-fine); min-height: 180px; display: flex; align-items: flex-end; padding: 12px; background: repeating-linear-gradient(45deg, var(--paper-3) 0 2px, transparent 2px 9px); }
+.townplate-cap { color: var(--ink-faint); font-style: italic; }

@@ -296,3 +296,14 @@ describe("the winter goal panel", () => {
     expect(panel.querySelector(".goalbar")).toBeTruthy();
   });
 });
+
+describe("the left panel in town", () => {
+  it("shows a town plate, not the fields, when in town", () => {
+    const root = document.createElement("div");
+    let s = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    s = { ...s, screen: "town" };
+    renderShell(root, s, () => {});
+    expect(root.querySelector(".townplate")).toBeTruthy();
+    expect(root.querySelector(".boardpanel .fieldgrid")).toBeFalsy();
+  });
+});

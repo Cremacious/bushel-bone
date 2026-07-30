@@ -7,6 +7,13 @@ import { CROPS } from "../core/crops.js";
 // it stacks above the leaf. Interactive crop pickers during planting, a read-only projection
 // board during the day, and nothing on other phases (the plate shows its art/portrait then).
 export function boardPanel(state, dispatch) {
+  if (state.screen === "town") {
+    const cap = state.townAt ? "A place in Marrow's Cross" : "Marrow's Cross";
+    return el("div", { class: "boardpanel townplate" }, [
+      el("div", { class: "boardpanel-h t-label", text: "Marrow's Cross" }),
+      el("div", { class: "townplate-art" }, [el("span", { class: "townplate-cap t-sub", text: cap })]),
+    ]);
+  }
   if (state.phase === "planting") {
     return el("div", { class: "boardpanel" }, [
       el("div", { class: "boardpanel-h t-label", text: "The fields" }),
