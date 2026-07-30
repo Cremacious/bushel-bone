@@ -46,6 +46,17 @@ export const SCENES = {
   bell_small:       { choices: ["go_on"], fx: {}, returnTo: "town" },
   coldwater_small:  { choices: ["go_on"], fx: {}, returnTo: "town" },
   nan_small:        { choices: ["go_on"], fx: {}, returnTo: "town" },
+
+  // The event deck's mechanics (core/events.js holds the deck + gating). Each is a real
+  // tradeoff: every choice costs something, even the "safe" one. Prose lands in a later task.
+  ev_fox:         { event: true, returnTo: "run", choices: ["chase", "leave"], fx: { chase: { strainOne: 12 }, leave: { larder: -8 } } },
+  ev_early_frost: { event: true, returnTo: "run", choices: ["chop", "gamble"], fx: { chop: { strainAll: 8, fuel: 8 }, gamble: { fuel: -10 } } },
+  ev_good_rain:   { event: true, returnTo: "run", choices: ["glad"], fx: { glad: { larder: 6 } } },
+  ev_peddler:     { event: true, returnTo: "run", choices: ["buy", "pass"], fx: { buy: { coin: -8, seed: 12 }, pass: {} } },
+  ev_sick_hand:   { event: true, returnTo: "run", choices: ["doc", "rest", "work"], fx: { doc: { coin: -12 }, rest: { strainOne: -10 }, work: { strainOne: 16 } } },
+  ev_foundling:   { event: true, returnTo: "run", choices: ["take", "turn_away"], fx: { take: { larder: -6, morale: 1 }, turn_away: { reckoning: 3 } } },
+  ev_blight:      { event: true, returnTo: "run", choices: ["treat", "lose"], fx: { treat: { coin: -10 }, lose: { larder: -10 } } },
+  ev_omen_field:  { event: true, returnTo: "run", choices: ["heed", "shrug"], fx: { heed: { coin: -6 }, shrug: { reckoning: 4 } } },
 };
 
 // The opening scene for a given state, if any. Year 1's Spring opens on Ridley's call.

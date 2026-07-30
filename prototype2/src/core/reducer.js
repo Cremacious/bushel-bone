@@ -137,6 +137,12 @@ function chooseScene(s, choiceId) {
   if (fx.regard != null) ns.regard = Math.max(0, Math.min(100, ns.regard + fx.regard));
   if (fx.coin != null) ns.coin = Math.max(0, ns.coin + fx.coin);
   if (fx.reckoning != null) ns.reckoning = Math.max(0, ns.reckoning + fx.reckoning);
+  if (fx.larder != null) ns.larder = Math.max(0, ns.larder + fx.larder);
+  if (fx.fuel != null) ns.fuel = Math.max(0, ns.fuel + fx.fuel);
+  if (fx.seed != null) ns.seed = Math.max(0, ns.seed + fx.seed);
+  if (fx.strainAll != null) ns.hands = ns.hands.map((h) => h.alive ? { ...h, strain: Math.max(0, Math.min(BALANCE.strain.lostAt, h.strain + fx.strainAll)) } : h);
+  if (fx.strainOne != null) { const w = ns.hands.find((h) => h.alive); if (w) ns.hands = ns.hands.map((h) => h.id === w.id ? { ...h, strain: Math.max(0, Math.min(BALANCE.strain.lostAt, h.strain + fx.strainOne)) } : h); }
+  if (fx.loseHand) { const v = ns.hands.find((h) => h.alive && h.id !== "reuben"); if (v) ns.hands = ns.hands.map((h) => h.id === v.id ? { ...h, alive: false } : h); }
   return { ...ns, scene: { ...s.scene, result: choiceId } };
 }
 
