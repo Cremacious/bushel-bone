@@ -348,3 +348,15 @@ describe("the left panel in town", () => {
     expect(root.querySelector(".boardpanel .fieldgrid")).toBeFalsy();
   });
 });
+
+describe("dialogue intel highlights", () => {
+  it("renders colored intel highlights in dialogue (economy task 3)", () => {
+    const root = document.createElement("div");
+    let s = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    s = { ...s, phase: "scene", scene: { id: "meredith_rumor", result: null } };
+    const stage = renderShell(root, s, () => {}); renderScreen(stage, s, () => {});
+    const hl = root.querySelector(".hl.mkt");
+    expect(hl).toBeTruthy();
+    expect(hl.textContent.length).toBeGreaterThan(0);
+  });
+});

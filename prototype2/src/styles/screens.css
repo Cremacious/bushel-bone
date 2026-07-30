@@ -31,6 +31,14 @@ h2.t-title { margin: 0 0 14px; }
 /* An aside/note line inside a scene (e.g. the Vane wagon's winter-mouth warning). */
 .prose .note { color: var(--ink-faint); font-style: italic; }
 
+/* Dialogue intel highlights: one hue per category so useful info catches the eye. */
+.prose .hl { font-style: normal; font-weight: 600; }
+.prose .hl.mkt  { color: #b8863b; } /* market intel: what will sell */
+.prose .hl.wx   { color: #5b83a6; } /* weather / season warning */
+.prose .hl.omen { color: var(--bad); } /* the reckoning, an omen */
+.prose .hl.ppl  { color: var(--good); } /* person / story thread */
+.prose .hl.off  { color: var(--lamp); } /* an opportunity / offer */
+
 /* --- choicecard (Screens 04-06: Morning Brief / Dusk / verdict actions) --- */
 .choicecard {
   all: unset;
