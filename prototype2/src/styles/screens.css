@@ -82,12 +82,19 @@ h2.t-title { margin: 0 0 14px; }
 .counsel-text { font-style: italic; color: var(--ink-soft); line-height: 1.55; }
 
 /* --- the cold-months goal foreshadowing --- */
-.goals { border: 1px solid var(--rule-fine); padding: 10px 12px; margin-bottom: 14px; }
-.goals-h { margin-bottom: 6px; }
-.goalrow { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 0; }
-.goal-v { font-style: normal; }
-.goal-v.warn { color: var(--warn); }
-.goal-v.good { color: var(--good); }
+.goals { border: 1px solid var(--rule-fine); padding: 12px 14px; margin-bottom: 14px; }
+.goals-h { margin-bottom: 10px; }
+.goalrow2 { margin-bottom: 12px; }
+.goalrow2:last-child { margin-bottom: 0; }
+.goal-line { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+.goal-fig { font-family: "Courier Prime", monospace; font-style: normal; }
+.goal-fig.good { color: var(--good); }
+.goal-fig.warn { color: var(--warn); }
+.goal-note { font-size: .82rem; }
+.goalbar { height: 8px; background: var(--paper); border: 1px solid var(--rule-fine); border-radius: 3px; overflow: hidden; }
+.goalbar-fill { height: 100%; }
+.goalbar-fill.good { background: var(--good); }
+.goalbar-fill.warn { background: var(--warn); }
 
 /* --- one-line "what this task does" under each crew picker --- */
 .taskdesc { color: var(--ink-faint); font-style: italic; margin: 4px 0 12px; }

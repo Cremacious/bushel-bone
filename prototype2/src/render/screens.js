@@ -284,21 +284,27 @@ function counsel(s) {
   ])];
 }
 
-// The cold months' fuel + food targets, so the day's work has a visible goal to plan toward.
+// The cold-months targets, read plainly: have / need with a bar, green when met, amber short.
 function goalPanel(s) {
   const n = yearNeeds(s);
-  const row = (label, have, need, unit) => {
-    const short = Math.max(0, need - have);
-    return el("div", { class: "goalrow" }, [
-      el("span", { class: "goal-k t-label", text: label }),
-      el("span", { class: "goal-v t-sub" + (short > 0 ? " warn" : " good"),
-        text: short > 0 ? `${have} of ~${need} ${unit} · ${short} short` : `${have} of ~${need} ${unit} · laid in` }),
+  const row = (label, have, need) => {
+    const met = have >= need;
+    const pct = Math.max(2, Math.min(100, Math.round((have / (need || 1)) * 100)));
+    return el("div", { class: "goalrow2" }, [
+      el("div", { class: "goal-line" }, [
+        el("span", { class: "goal-k t-choice", text: label }),
+        el("span", { class: "goal-fig t-sub" + (met ? " good" : " warn") }, [
+          document.createTextNode(`${have} / ${need} `),
+          el("span", { class: "goal-note", text: met ? "✓ laid in" : `(${need - have} to go)` }),
+        ]),
+      ]),
+      el("div", { class: "goalbar" }, [el("div", { class: "goalbar-fill" + (met ? " good" : " warn"), style: `width:${pct}%` })]),
     ]);
   };
   return el("div", { class: "goals" }, [
-    el("div", { class: "goals-h t-label", text: "The cold months will want" }),
-    row("Wood", n.fuel.have, n.fuel.need, "wood"),
-    row("Food", n.food.have, n.food.need, "food"),
+    el("div", { class: "goals-h t-label", text: "To last the winter, lay in —" }),
+    row("Wood", n.fuel.have, n.fuel.need),
+    row("Food", n.food.have, n.food.need),
   ]);
 }
 

@@ -255,3 +255,16 @@ describe("clearing land on the planting grid", () => {
     expect(state.fields.filter((f) => f.cleared).length).toBe(2);
   });
 });
+
+describe("the winter goal panel", () => {
+  it("shows have/need with a bar and a met/short state", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    const dispatch = () => {};
+    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    const panel = root.querySelector(".goals");
+    expect(panel).toBeTruthy();
+    expect(panel.textContent).toMatch(/0\s*\/\s*40/);   // wood have/need
+    expect(panel.querySelector(".goalbar")).toBeTruthy();
+  });
+});
