@@ -7,6 +7,23 @@ Body: what was worked on, what was decided, what artifacts were produced, what's
 
 ---
 
+## Session 17 — 2026-07-30 — Legibility, the town walk, town polish, and the Economy & Progression spine (built & merged)
+
+**Worked on:** Four playtest-driven passes on `prototype2/`, each brainstormed → spec → plan → subagent-driven → browser-verified → merged to main.
+
+1. **Legibility & onboarding** (merge into `main`): naming/intro polish; the orientation tip moved to Silas's Welcome and the two planting tips shown together; the wordy day counsel removed; a redesigned winter-goal panel (have/need bars); Reuben's **Tiredness** read + plain advice; **+/- stat tags on every action** (all work tires, only rest recovers); visible tending (+growth). Plus an em-dash sweep of the render layer.
+2. **The town walk**: location-first town — **"Where to?"** lists places, **Walk there** is free and paints a scene, then **Talk to X** costs an action, with **"Head back to the farm."**
+3. **Town polish**: a persistent **"Actions today N / M"** counter + **"-1 action"** cost tags; a **town plate** on the left panel in town; solid field backgrounds; the town restyled to choice cards; head-home floats to the top when spent.
+4. **Economy & Progression** (the big one, D-052): the game is no longer a Year-1 slice. **Continuous multi-year play** with a year-end **mortgage settlement** (payment + upkeep from coin; a shortfall → arrears + a one-year warning; a second consecutive miss → **foreclosure**), the settlement + foreclosed screens, the brief naming the coming debt; **hiring hands at Vane's wagon** (each a new mouth); and a **balance simulation on the REAL reducer** (optimal/normal/sloppy policies over 4 years) that validated and then tuned the unlock curve, kept as a live regression test. Three quick town fixes folded in: the wasted **Rest** action deleted, **free-if-dry** talks, and the **dialogue highlight system** (market gold / weather blue / omen red / people green / offer lamp).
+
+**Locked:** D-052 (multi-year continuity + the mortgage squeeze + hiring + the JS sim, which supersedes the "balance model is Python" convention), D-053 (the town is walked location-first; talks always pay off or are free; the legibility grammar of Tiredness + stat tags + highlighted intel).
+
+**Balance:** tuned against the sim — softer debt (mortgage 0/30/80/110, upkeep 0/0/10/20), lighter food floor (0.75/mouth/day), richer food + cash crops. Result: optimal survives 4 years and clearly outlasts a careless line that forecloses by Y4; normal is a knife-edge. **Known follow-up (noted in `balance.js`):** cash income is lumpy (2-season crops + no winter planting stall the coin engine after Y2).
+
+**State:** ~184 tests green; multi-year rollover (settlement → turn the year → the debt-warned brief) and hiring (coin 100→40, crew grew) browser-verified. All merged to main and pushed. **Next:** the Living Town (the roguelite card engine + random events scoped earlier), or smoothing the cash-income lumpiness the sim found.
+
+---
+
 ## Session 16 — 2026-07-30 — Gameplay overhaul: the daily loop, the living town, standing, and the 1-field start (built & merged)
 
 **Worked on:** A ground-up rework of the minute-to-minute after the built weekly loop played "interesting but not fun." Brainstormed the new design with Chris, wrote the spec (`docs/superpowers/specs/2026-07-29-gameplay-overhaul-daily-loop-economy.md`), and executed four phases subagent-driven on `feat/proto2-daily-loop`. The daily loop + town + 1-field start were **merged to main** (merge `76c139d`); town exploration/standing is on the branch, verified, awaiting a merge.
