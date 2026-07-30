@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { lookupName, tok } from "../src/content/names.js";
 import { L } from "../src/content/script.js";
-import { LOCATIONS, ODD_JOBS } from "../src/core/town.js";
+import { LOCATIONS, ODD_JOBS, TALKS, SMALLTALK } from "../src/core/town.js";
 import { initialState } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
 import { townOffers } from "../src/core/selectors.js";
@@ -119,5 +119,26 @@ describe("walking the town", () => {
     s = reduce(s, { type: "LEAVE_TOWN" });
     expect(s.screen).toBe("home");
     expect(s.townAt).toBe(null);
+  });
+});
+
+describe("free-if-dry talks", () => {
+  it("a fresh NPC's talk costs an action and grants standing", () => {
+    let s = inTown(1);
+    const acts0 = s.playerActionsLeft;
+    s = reduce(s, { type: "VISIT", npc: "crake" });
+    expect(s.playerActionsLeft).toBe(acts0 - 1);
+    expect((s.standing || {}).crake).toBeGreaterThan(0);
+  });
+  it("a dry talk (deck exhausted) costs no action and no standing", () => {
+    let s = inTown(1);
+    // exhaust crake's real cards so nextTownScene falls to the filler
+    const realIds = (TALKS.crake || []).map((d) => d.id);
+    s = { ...s, talksSeen: realIds, standing: { crake: 999 } };
+    const acts0 = s.playerActionsLeft, st0 = (s.standing || {}).crake;
+    s = reduce(s, { type: "VISIT", npc: "crake" });
+    expect(s.scene.id).toBe(SMALLTALK.crake); // the filler opened
+    expect(s.playerActionsLeft).toBe(acts0);  // free
+    expect((s.standing || {}).crake).toBe(st0); // no standing gained
   });
 });

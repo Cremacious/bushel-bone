@@ -224,3 +224,8 @@ export function nextTownScene(state, npc) {
   const next = deck.find((d) => d.minStanding <= st && !seen.includes(d.id));
   return next ? next.id : (SMALLTALK[npc] || null);
 }
+
+// True when the NPC has no fresh content left (their next talk would be small-talk filler).
+export function talkIsDry(state, npc) {
+  return nextTownScene(state, npc) === (SMALLTALK[npc] || null);
+}

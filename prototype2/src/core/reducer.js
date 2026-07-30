@@ -3,7 +3,7 @@ import { CROPS, ripe, dailyGrowth } from "./crops.js";
 import { BALANCE } from "./balance.js";
 import { burnsFuel, fieldLabel, suggestPlan, interrupts, clearCost, nextTownScene } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
-import { ODD_JOBS } from "./town.js";
+import { ODD_JOBS, SMALLTALK } from "./town.js";
 
 // Pure: (state, action) => nextState. Never mutates the input.
 // Later plans add cases (resolveEvent, ...). For now: theme + the day/season/year
@@ -105,16 +105,21 @@ function acceptJob(s, id) {
     jobsDoneToday: [...(s.jobsDoneToday || []), id] };
 }
 
-// Call on a townsperson: spend one action, open whichever of their talks comes next (see
-// nextTownScene), raise your standing with them, and remember the talk so the deck rotates.
-// A no-op off the day phase or with no actions left.
+// Call on a townsperson: open whichever of their talks comes next (see nextTownScene). A
+// talk with real content still spends one of the day's actions and raises standing; once
+// the deck is exhausted at the current standing, the small-talk filler is free (no action,
+// no standing) so a visit is never a wasted action. Either way the talk is remembered so
+// the deck rotates. A no-op off the day phase; real talks still need an action.
 function visit(s, npc) {
-  if (s.phase !== "day" || s.playerActionsLeft <= 0) return s;
+  if (s.phase !== "day") return s;
   const sceneId = nextTownScene(s, npc);
   if (!sceneId) return s;
+  const dry = sceneId === (SMALLTALK[npc] || null);
+  if (!dry && s.playerActionsLeft <= 0) return s; // real talks still need an action
   const seen = s.talksSeen || [];
-  return { ...s, playerActionsLeft: s.playerActionsLeft - 1,
-    standing: { ...(s.standing || {}), [npc]: ((s.standing || {})[npc] || 0) + BALANCE.standing.perTalk },
+  return { ...s,
+    playerActionsLeft: dry ? s.playerActionsLeft : s.playerActionsLeft - 1,
+    standing: dry ? s.standing : { ...(s.standing || {}), [npc]: ((s.standing || {})[npc] || 0) + BALANCE.standing.perTalk },
     talksSeen: seen.includes(sceneId) ? seen : [...seen, sceneId],
     phase: "scene", scene: { id: sceneId, result: null }, screen: "home" };
 }

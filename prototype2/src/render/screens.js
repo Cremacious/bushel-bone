@@ -4,7 +4,7 @@ import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard, fieldCard, actionCostTag } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
-import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, actionEffects, playerActionEffects } from "../core/selectors.js";
+import { fieldLabel, conditionOf, ripeFields, duskSummary, fieldProjection, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, actionEffects, playerActionEffects, talkIsDry } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
 import { counselFor } from "../content/counsel.js";
 import { BALANCE } from "../core/balance.js";
@@ -225,8 +225,8 @@ const SCREENS = {
       choiceCard({
         text: `Talk to ${tok("{{npc." + l.npc + "}}")}`,
         sub: "see what they have to say today",
-        tag: canTalk ? "-1 action" : null,
-        tagValence: "bad",
+        tag: canTalk ? (talkIsDry(s, l.npc) ? "free" : "-1 action") : null,
+        tagValence: canTalk && talkIsDry(s, l.npc) ? "" : "bad",
         disabled: !canTalk,
         why,
       }, () => dispatch({ type: "VISIT", npc: l.npc })),
