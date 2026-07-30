@@ -20,7 +20,7 @@ export const TIPS = {
     "Winter is the test. Every mouth needs food in the larder and wood on the pile, every day of it. Watch those two figures close. Come up short on wood, and the frailest of us freezes first.",
   ],
   town: [
-    "This is Marrow's Cross. Riding in is how a day gets spent when the fields can spare you. There is paid work going most days, coin in hand by dusk, and folk worth knowing. Each errand or call costs you a piece of the day, same as work at home, so choose what is worth your while. And mind this: the more you call on a body, the more they warm to you, and the more they will tell you. A stranger gets pleasantries. A friend gets the truth.",
+    "This is Marrow's Cross. Walk where you like, it costs you nothing to go from door to door. It is stopping to call on a body, or taking on a piece of paid work, that spends a piece of your day, same as work at home. There is coin to be had and folk worth knowing, and the more you call on a body, the more they warm to you, and the more they will tell you. A stranger gets pleasantries. A friend gets the truth. When you are done, head back to the farm.",
   ],
 };
 
