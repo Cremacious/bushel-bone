@@ -4,7 +4,7 @@ import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
 import { choiceCard, fieldCard } from "./components.js";
 import { CROPS, ripe } from "../core/crops.js";
-import { fieldLabel, conditionOf, duskSummary, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, talkIsDry, mortgageDue, hireCost, canHire, interrupts, roleLabel, roleDesc, burnsFuel } from "../core/selectors.js";
+import { fieldLabel, conditionOf, duskSummary, yearNeeds, townOffers, standingOf, standingWord, tirednessAdvice, talkIsDry, mortgageDue, hireCost, canHire, seedBundleCost, canBuySeed, interrupts, roleLabel, roleDesc, burnsFuel } from "../core/selectors.js";
 import { SCENES, openingSceneId } from "../content/scenes.js";
 import { counselFor } from "../content/counsel.js";
 import { BALANCE } from "../core/balance.js";
@@ -290,6 +290,10 @@ const SCREENS = {
         text: "Hire a hand", sub: "a clone from the wagon",
         tag: `${hireCost(s)}m`, tagValence: "", disabled: !canHire(s), why: "not enough coin",
       }, () => dispatch({ type: "HIRE" }))] : []),
+      ...(l.npc === "tolliver" ? [choiceCard({
+        text: "Buy seed", sub: `${BALANCE.seedBundle} seed from the store`,
+        tag: `${seedBundleCost()}m`, tagValence: "", disabled: !canBuySeed(s), why: "not enough coin",
+      }, () => dispatch({ type: "BUY_SEED" }))] : []),
       choiceCard({ text: "Walk on", sub: "back to the crossroads" },
         () => dispatch({ type: "WALK_TO", place: null })),
     );

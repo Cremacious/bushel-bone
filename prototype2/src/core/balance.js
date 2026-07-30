@@ -28,6 +28,8 @@ export const BALANCE = {
     coldPerDay: 5,            // per cold day with no fuel
     wornAt: 25, failingAt: 50, lostAt: 100,
   },
+  seedPrice: 2,               // coin per seed unit at Tolliver's store (v0.4 phase2: seed is a real coin sink)
+  seedBundle: 10,              // seed units per purchase
   clearCosts: [40, 90, 150], // coin to clear the 2nd, 3rd, 4th field (Q-003 first pass)
   hireCosts: [60, 110, 300], // coin to hire the 2nd, 3rd, 4th hand (the last repeats past that)
   standing: { perTalk: 12, known: 15, friendly: 40, close: 70 }, // town relationships (Q-003)

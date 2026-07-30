@@ -65,6 +65,8 @@ export function reduce(state, action) {
       return clearField(state, action.fieldId);
     case "HIRE":
       return hire(state);
+    case "BUY_SEED":
+      return buySeed(state);
     default:
       return state;
   }
@@ -309,12 +311,14 @@ function plant(s, id, cropKey) {
   const field = s.fields.find((f) => f.id === id);
   const crop = CROPS[cropKey];
   if (!field || !field.cleared || field.crop || !crop) return s; // uncleared, taken, or unknown crop
-  const seedSpent = Math.min(s.seed, crop.seed);
-  const coinSpent = crop.seed - seedSpent;               // seed first, then coin
-  if (coinSpent > s.coin) return s;                      // cannot afford
-  return {
-    ...mapField(s, id, (f) => ({ ...f, crop: cropKey, progress: 0, tended: false })),
-    seed: s.seed - seedSpent,
-    coin: s.coin - coinSpent,
-  };
+  if (s.seed < crop.seed) return s;               // must have the seed; buy it at the store
+  return { ...mapField(s, id, (f) => ({ ...f, crop: cropKey, progress: 0, tended: false })), seed: s.seed - crop.seed };
+}
+
+// Buy a bundle of seed from Tolliver's store. Coin -> seed: the sink that makes coin matter
+// and turns planting into a budgeted choice. A no-op if the bundle can't be afforded.
+function buySeed(s) {
+  const cost = BALANCE.seedBundle * BALANCE.seedPrice;
+  if (s.coin < cost) return s;
+  return { ...s, coin: s.coin - cost, seed: s.seed + BALANCE.seedBundle };
 }

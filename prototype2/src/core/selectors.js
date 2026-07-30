@@ -116,6 +116,10 @@ export function clearCost(state) {
 export const hireCost = (s) => { const n = s.hands.length - 1; return BALANCE.hireCosts[n] ?? BALANCE.hireCosts[BALANCE.hireCosts.length - 1]; };
 export const canHire = (s) => s.coin >= hireCost(s);
 
+// The coin price of a seed bundle at Tolliver's store, and whether it's affordable. Pure.
+export const seedBundleCost = () => BALANCE.seedBundle * BALANCE.seedPrice;
+export const canBuySeed = (s) => s.coin >= seedBundleCost();
+
 export const isWinter = (s) => season(s) === "winter";
 export const burnsFuel = (s) => season(s) === "fall" || season(s) === "winter";
 export const ripeFields = (s) => s.fields.filter(ripe);

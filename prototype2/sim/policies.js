@@ -7,7 +7,7 @@
 import { CROPS, ripe } from "../src/core/crops.js";
 import { BALANCE } from "../src/core/balance.js";
 import { livingHands, season } from "../src/core/state.js";
-import { mouths, burnsFuel, clearCost, hireCost, mortgageDue } from "../src/core/selectors.js";
+import { mouths, burnsFuel, clearCost, hireCost, mortgageDue, canBuySeed } from "../src/core/selectors.js";
 import { SCENES, openingSceneId } from "../src/content/scenes.js";
 
 // --- shared structural step: every phase that isn't a real player decision -----------------
@@ -29,23 +29,25 @@ function structural(s) {
 }
 
 // --- planting ---------------------------------------------------------------------------------
+// v0.4 phase2: seed is a real coin sink (BUY_SEED at Tolliver's), so affordability is a seed
+// check only (no coin fallback).
 function affordable(s, cropKey) {
   const c = CROPS[cropKey];
-  if (!c) return false;
-  const seedSpent = Math.min(s.seed, c.seed);
-  const coinSpent = c.seed - seedSpent;
-  return coinSpent <= s.coin;
+  return !!c && c.seed <= s.seed;
 }
 
-// Fill cleared, empty fields one at a time via `chooseCrop(s, field)`. Falls back to the
-// cheapest staple (turnip) if the preferred crop is unaffordable, and to SOW (leaving the field
-// fallow) if even that can't be afforded, so the policy never asks for a no-op PLANT that would
-// wedge the harness.
+// Fill cleared, empty fields one at a time via `chooseCrop(s, field)`. Restocks seed from
+// Tolliver's the moment it runs low so the policy can keep planting, falls back to the
+// cheapest staple (turnip) if the preferred crop is still unaffordable, and to SOW (leaving
+// the field fallow) only if seed truly cannot be bought, so the policy never asks for a
+// no-op PLANT that would wedge the harness.
 function plantStep(s, chooseCrop) {
   const field = s.fields.find((f) => f.cleared && !f.crop);
   if (!field) return { type: "SOW" };
+  if (s.seed < 6 && canBuySeed(s)) return { type: "BUY_SEED" };
   let crop = chooseCrop(s, field);
   if (!affordable(s, crop)) crop = "turnip";
+  if (!affordable(s, crop) && canBuySeed(s)) return { type: "BUY_SEED" };
   if (!affordable(s, crop)) return { type: "SOW" };
   return { type: "PLANT", fieldId: field.id, crop };
 }
