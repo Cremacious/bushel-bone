@@ -3,6 +3,8 @@ import { initialState } from "../src/core/state.js";
 import { reduce } from "../src/core/reducer.js";
 import { EVENTS } from "../src/core/events.js";
 import { SCENES } from "../src/content/scenes.js";
+import { L } from "../src/content/script.js";
+import { tok } from "../src/content/names.js";
 
 describe("event fx grammar", () => {
   it("a choice applies a larder delta", () => {
@@ -53,5 +55,17 @@ describe("events fire as beats", () => {
     let s = { ...initialState(1), phase: "scene", scene: { id: "ev_good_rain", result: "glad" } };
     s = reduce(s, { type: "CLOSE_SCENE" });
     expect(s.phase).toBe("day");
+  });
+});
+
+describe("every event has prose", () => {
+  it("resolves body + every choice text for each event", () => {
+    for (const e of EVENTS) {
+      const body = tok(L(e.id + ".body"));
+      expect(body && body.length, `${e.id}.body missing`).toBeGreaterThan(20);
+      for (const c of SCENES[e.id].choices) {
+        expect(tok(L(`${e.id}.${c}.text`)).length, `${e.id}.${c}.text missing`).toBeGreaterThan(0);
+      }
+    }
   });
 });

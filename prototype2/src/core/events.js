@@ -3,11 +3,11 @@
 // lives in content/script.yaml; mechanics (choices/fx) in content/scenes.js with `event: true`.
 export const EVENTS = [
   { id: "ev_fox",         family: "wildlife" },
-  { id: "ev_early_frost", family: "weather", gate: { season: ["fall", "winter"] } },
+  { id: "ev_frost_snap",  family: "weather", gate: { season: ["fall", "winter"] } },
   { id: "ev_good_rain",   family: "weather", gate: { season: ["spring", "summer"] } },
   { id: "ev_peddler",     family: "opportunity" },
   { id: "ev_sick_hand",   family: "personal", gate: { minHands: 1 } },
-  { id: "ev_foundling",   family: "personal" },
+  { id: "ev_gate_child",  family: "personal" },
   { id: "ev_blight",      family: "pests", gate: { season: ["summer", "fall"] } },
   { id: "ev_omen_field",  family: "reckoning" },
 ];

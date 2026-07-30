@@ -672,3 +672,128 @@ scenes:
         text: "“I will keep that in mind.”"
         sub: "leave her to her picking"
         result: "She only hums something wordless and keeps to her work."
+
+  # Event scenes (v0.4 phase 3, task 3): the starter deck of seven-family events.
+  # Mechanics (choices + fx) live in prototype2/src/content/scenes.js; this is
+  # the matching prose. Rendered through the scene renderer like a town-talk
+  # scene, but returns to the run instead of the town menu.
+
+  ev_fox:
+    eyebrow: "The coop"
+    title: "A fox in the night"
+    body: >-
+      <div class="prose"><p>A fox has been at the coop two nights running. You find feathers in the yard and a hen gone. Sit a hand up with a lantern and it costs them a hard night, or leave it be and lose more of the larder to its teeth.</p></div>
+    choices:
+      chase:
+        text: "Sit up for it"
+        sub: "a hand loses a night to the watch"
+        result: "The hand keeps the lantern lit till dawn and the fox does not come again. They are grey-faced by morning."
+      leave:
+        text: "Leave it to the dark"
+        sub: "the larder pays for the sleep"
+        result: "In the morning another hen is gone, and a good measure of the larder with it."
+
+  ev_frost_snap:
+    eyebrow: "The sky"
+    title: "An early frost"
+    body: >-
+      <div class="prose"><p>Old Nan was right. A <span class="hl wx">hard frost comes early</span> this year, and the woodpile will not carry the cold at this rate. Set the crew to the axe now, or trust what you have and hope for a short winter.</p></div>
+    choices:
+      chop:
+        text: "To the axe, all of you"
+        sub: "wood laid in, but it wears the crew"
+        result: "The crew swings till their arms shake and the woodpile grows. It cost them dearly."
+      gamble:
+        text: "Trust the pile"
+        sub: "a gamble on a short winter"
+        result: "You bank on the weather turning. It does not, and the woodpile burns down faster than it should."
+
+  ev_good_rain:
+    eyebrow: "The sky"
+    title: "A soft rain"
+    body: >-
+      <div class="prose"><p>A <span class="hl wx">warm rain comes</span> just when the ground wanted it. The forage greens along the fence line and the crew brings in more than expected. A rare kindness from the sky.</p></div>
+    choices:
+      glad:
+        text: "Thank the sky"
+        sub: "a little extra on the table"
+        result: "The larder is fuller than it has any right to be. You do not question it."
+
+  ev_peddler:
+    eyebrow: "The track"
+    title: "A peddler's cart"
+    body: >-
+      <div class="prose"><p>A peddler's cart stops at your gate, wheels caked with the mud of the low country. He has <span class="hl off">seed to sell, cheap</span>, more than the store would give for the coin. His eyes do not quite meet yours.</p></div>
+    choices:
+      buy:
+        text: "Buy his seed"
+        sub: "coin for a good store of seed"
+        result: "You count out the coin and he hands over the sacks. He is gone down the track before you think to check them, but the seed is sound."
+      pass:
+        text: "Wave him on"
+        sub: "keep your coin"
+        result: "He shrugs and clucks to his horse, and the cart creaks away."
+
+  ev_sick_hand:
+    eyebrow: "The bunk"
+    title: "A hand takes ill"
+    body: >-
+      <div class="prose"><p>One of the crew is down with a <span class="hl omen">fever and a shake</span> in the hands. Doc Bell would see to them, for coin. You could rest them and let it pass, losing their work. Or drive them back to the field and hope it is nothing.</p></div>
+    choices:
+      doc:
+        text: "Send for Doc"
+        sub: "coin for the doctor's care"
+        result: "Doc comes, leaves a bitter draught, and takes his fee. By the next day the shake has eased."
+      rest:
+        text: "Rest them"
+        sub: "their work lost, their strength back"
+        result: "You let them lie abed. The fever breaks on its own and they rise the stronger for the rest."
+      work:
+        text: "Work them through it"
+        sub: "the work done, the hand worn hard"
+        result: "They keep to the field, grey and swaying, and the fever burns worse for it. It cost them more than it saved."
+
+  ev_gate_child:
+    eyebrow: "The gate"
+    title: "A child at the gate"
+    body: >-
+      <div class="prose"><p>A child stands at the fence-line at dusk, thin and silent, no folk in sight. Take them in and there is another mouth at the table, but in time another pair of hands. Or turn them back to the road, and carry what that does to you.</p></div>
+    choices:
+      take:
+        text: "Take them in"
+        sub: "a mouth now, a hand in time"
+        result: "You give the child a place by the fire. The larder stretches thinner, but the household is one more."
+      turn_away:
+        text: "Turn them back"
+        sub: "the road, and what it costs you"
+        result: "You send the child on. The gate stays shut a long while after, and something in the ground seems to take note."
+
+  ev_blight:
+    eyebrow: "The field"
+    title: "Blight in the rows"
+    body: >-
+      <div class="prose"><p>A <span class="hl omen">grey rot</span> shows on the leaves in one of the fields, spreading down the rows. Buy what the store has to check it, for coin, or cut your losses and let that field go.</p></div>
+    choices:
+      treat:
+        text: "Treat the rows"
+        sub: "coin to save the crop"
+        result: "You dust the rows with what the store had. The rot slows, and the field is saved, mostly."
+      lose:
+        text: "Let it go"
+        sub: "the field's food lost"
+        result: "You leave it. The rot takes what it wants, and the field gives up little at harvest."
+
+  ev_omen_field:
+    eyebrow: "The east field"
+    title: "The ground, wrong"
+    body: >-
+      <div class="prose"><p>The <span class="hl omen">east field feels wrong underfoot</span>, warm where it should be cold, and the crows will not light on it. Old Nan would know a rite to ease it, for a small price. Or you can tell yourself it is nothing.</p></div>
+    choices:
+      heed:
+        text: "Send to Old Nan"
+        sub: "a small price for the old rite"
+        result: "Nan comes at dusk, mutters over the field, and salts its corners. The wrongness settles, for now."
+      shrug:
+        text: "It is nothing"
+        sub: "leave the ground be"
+        result: "You tell yourself it is the weather. The crows still will not light there, and the feeling does not pass."
