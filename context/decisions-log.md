@@ -317,6 +317,11 @@ Working session with Chris, reviewing fixes for GitHub issues #27 to #42 one at 
 - **Events are the drama:** a seeded, non-repeating deck across the seven families (weather/pests/wildlife/opportunity/town/personal/reckoning) fires as beats via a per-day roll in `resolveDay`; each is a scene (reuses the engine) with a choice and legible consequences (fx: larder/fuel/seed/coin/strain/reckoning/loseHand; Reuben never lost), threats telegraphed via the highlight colors.
 **Rationale:** the loop had no moment-to-moment decisions and no squeeze, so it was tedious and trivially easy; beats + real scarcity + events are the Oregon-Trail attrition the design promised. Because Year 1 IS the core loop (later years only add unlocks), fixing Year 1's core fixes every year. Numbers owned by the sim (a live regression test). Known follow-ups: the 1-field start is a hard early trap; cash income is lumpy; Phase 4 polish (day-book ledger breakdown, button visuals, town card content) remains.
 
+### D-055. Every season opens on a guaranteed day-1 beat (no auto-run before the player acts).
+**Context:** playtest (Session 19) found the beat loop auto-ran straight to the first random event after planting, so the player's first turn landed wherever that event fell (spring day 4, summer day 2). It read as "the season started without me" and hid the point of the season action pool.
+- **Planting (`SOW`) and each season's open no longer auto-run past day 1.** The player lands on a **day-1 beat** to survey the fields, set the crew, and optionally spend a season action; their first "Let the days run on" (`CONTINUE`) begins the run. The day counter is not a spent resource (the 5 season actions are the budget); the opening beat plus the relabel make that legible.
+**Rationale:** a fixed opening turn removes the "already day 4" confusion and teaches the action economy, at no economic cost (a stop is added, not a resource). Sim curve unchanged. Part of the v0.4 Phase 4B clarity pass. The rest of Phase 4 (4A vocabulary, 4C visual/info, 4D the NPC/job variety grammar, 4E the scripted clone reveal) landed the same session; see `context/session-history.md` Session 19.
+
 ---
 
 *Add new decisions below with the next session number.*
