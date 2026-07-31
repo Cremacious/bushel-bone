@@ -380,15 +380,61 @@ describe("clearing land on the planting grid", () => {
 });
 
 describe("the beat screen's resource status", () => {
-  it("shows a compact winter-target line when the household is short", () => {
+  it("shows a resource strip with Larder and Fuel cells", () => {
     const root = document.createElement("div");
     let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
     if (state.phase !== "day") return;
-    const dispatch = () => {};
-    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    const status = root.querySelector(".beat-status");
-    expect(status).toBeTruthy();
-    expect(status.textContent).toMatch(/0\s*\/\s*40/); // wood have/need, short at the season's start
+    const stage = renderShell(root, state, () => {}); renderScreen(stage, state, () => {});
+    const strip = root.querySelector(".beat-strip");
+    expect(strip).toBeTruthy();
+    expect(strip.textContent).toContain("Larder");
+    expect(strip.textContent).toContain("Fuel");
+  });
+  it("reddens a short winter-target cell and leaves an ample one plain", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    if (state.phase !== "day") return;
+    // At the season's start no wood is laid by, so the winter Wood target is short.
+    const stage = renderShell(root, state, () => {}); renderScreen(stage, state, () => {});
+    const strip = root.querySelector(".beat-strip");
+    const shortCell = [...strip.querySelectorAll(".beat-cell")].find((c) => /0\s*\/\s*40/.test(c.textContent));
+    expect(shortCell).toBeTruthy();
+    expect(shortCell.classList.contains("warn")).toBe(true);
+  });
+  it("does not redden the winter-target cells once the household is amply stocked", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    if (state.phase !== "day") return;
+    state = { ...state, fuel: 999, larder: 999 };
+    const stage = renderShell(root, state, () => {}); renderScreen(stage, state, () => {});
+    const strip = root.querySelector(".beat-strip");
+    expect([...strip.querySelectorAll(".beat-cell.warn")].length).toBe(0);
+  });
+});
+
+describe("the planting chip grow-time", () => {
+  it("shows a ripens sub-label on each crop chip", () => {
+    const root = document.createElement("div");
+    let state = reduce(initialState(1), { type: "BEGIN_SEASON" }); // planting
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    expect(root.querySelector(".crop-when")).toBeTruthy();
+    expect(root.textContent).toContain("ripens ~10d"); // turnip, one season
+  });
+});
+
+describe("the dusk crew snapshot", () => {
+  it("lists each living hand with its end-of-season condition", () => {
+    const root = document.createElement("div");
+    let state = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
+    for (let i = 0; i < 10; i++) state = reduce(state, { type: "TURN_IN" });
+    if (state.phase !== "dusk") return;
+    const stage = renderShell(root, state, () => {}); renderScreen(stage, state, () => {});
+    const crew = root.querySelector(".crewsnap-line");
+    expect(crew).toBeTruthy();
+    expect(crew.textContent).toContain("Reuben");
+    expect(crew.textContent).toMatch(/steady|worn|failing/);
   });
 });
 

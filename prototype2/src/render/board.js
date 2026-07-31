@@ -1,6 +1,6 @@
 import { el } from "./dom.js";
 import { fieldCard } from "./components.js";
-import { fieldProjection, clearCost } from "../core/selectors.js";
+import { fieldProjection, clearCost, cropSummary } from "../core/selectors.js";
 import { CROPS } from "../core/crops.js";
 
 // The "place" panel: your fields. On desktop it sits on the LEFT (over the plate); on phone
@@ -49,8 +49,12 @@ function plantingCell(s, f, dispatch) {
     extra = el("div", { class: "croppick" }, Object.entries(CROPS).map(([key, c]) => {
       const afford = s.seed + s.coin >= c.seed;
       const note = c.needsTwo ? " · two" : "";
+      const { days, lean } = cropSummary(key);
       return el("button", { class: "cropchip t-sub" + (afford ? "" : " disabled"), ...(afford ? {} : { disabled: true }),
-        text: `${c.name} · ${c.seed}${note}`, onClick: afford ? () => dispatch({ type: "PLANT", fieldId: f.id, crop: key }) : undefined });
+        onClick: afford ? () => dispatch({ type: "PLANT", fieldId: f.id, crop: key }) : undefined }, [
+        el("span", { class: "cropchip-name", text: `${c.name} · ${c.seed}${note}` }),
+        el("span", { class: "crop-when", text: `ripens ~${days}d · ${lean}` }),
+      ]);
     }));
   }
   return fieldCard(f, proj, extra);

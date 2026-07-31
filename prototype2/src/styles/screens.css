@@ -134,6 +134,9 @@ h2.t-title { margin: 0 0 14px; }
 }
 .cropchip:focus-visible { outline: 2px solid var(--lamp); outline-offset: -2px; }
 .cropchip.disabled { opacity: .45; cursor: not-allowed; color: var(--ink-faint); }
+.cropchip-name { display: block; }
+/* The grow-time sub-label under a crop's name: small and muted so the chip stays scannable. */
+.crop-when { display: block; margin-top: 2px; font-size: .68rem; font-style: italic; color: var(--ink-faint); }
 .linkbtn {
   all: unset;
   cursor: pointer;
@@ -205,6 +208,14 @@ h2.t-title { margin: 0 0 14px; }
 .daybook { margin-top: 12px; }
 .bookline { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dotted var(--rule); }
 .bookline:last-child { border-bottom: none; }
+
+/* --- the Dusk crew snapshot: each living hand's end-of-season condition, worded and colored,
+   so a season spent on Rest or Care visibly pays off. --- */
+.crewsnap-h { margin: 16px 0 6px; }
+.crewsnap-line { margin: 3px 0; font-style: normal; }
+.crewsnap-cond { text-transform: capitalize; }
+.crewsnap-cond.good { color: var(--good); }
+.crewsnap-cond.bad { color: var(--bad); }
 
 /* --- warnings + the reckoning's omen line --- */
 .warnlines { display: flex; flex-direction: column; gap: 4px; padding: 8px 20px; border-bottom: 1px solid var(--rule-fine); background: color-mix(in srgb, var(--bad) 7%, transparent); }
@@ -284,7 +295,16 @@ h2.t-title { margin: 0 0 14px; }
 /* --- the beat screen (v0.4 phase1 task 3): short and scannable, no scrolling wall --- */
 .beat-title { margin-bottom: 6px; }
 .beat-reason { color: var(--ink-soft); font-style: italic; margin: 2px 0; }
-.beat-status { color: var(--ink-faint); margin: 8px 0 14px; font-family: "Courier Prime", monospace; font-size: .85rem; }
+/* The resource strip: a tinted row of labeled cells (figure over a small label), replacing the
+   old faint mono line. Compact, wraps on narrow screens; a short cell reddens to amber. */
+.beat-strip { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 14px; }
+.beat-cell { display: flex; flex-direction: column; gap: 1px; min-width: 0;
+  border: 1px solid var(--rule-fine); border-radius: 3px; padding: 6px 12px;
+  background: color-mix(in srgb, var(--lamp) 6%, transparent); }
+.beat-cell-v { font-family: "Courier Prime", monospace; font-size: .98rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.beat-cell-k { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+.beat-cell.warn { border-color: var(--warn); background: color-mix(in srgb, var(--warn) 12%, transparent); }
+.beat-cell.warn .beat-cell-v { color: var(--warn); }
 .crewbeat { border: 1px solid var(--rule-fine); padding: 8px 12px; margin-bottom: 8px; }
 .crewbeat-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
 .rolerow { display: flex; gap: 6px; flex-wrap: wrap; }

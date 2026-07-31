@@ -99,13 +99,22 @@ const SCREENS = {
     );
     for (const r of reasons.slice(1)) stage.append(el("p", { class: "beat-reason", text: r }));
 
-    // Resource status, compact: the ledger figures + (in the cold months, or when short) the
-    // winter targets, so the season's stakes stay visible without the old full goal panel.
+    // Resource status, compact: a tinted strip of labeled cells. Larder + Fuel always; in the
+    // cold months (or when short) the winter targets too, each cell reddening when it falls short.
     const n = yearNeeds(s);
-    const short = n.fuel.have < n.fuel.need || n.food.have < n.food.need;
-    let status = `Larder ${Math.floor(s.larder)} · Fuel ${s.fuel}`;
-    if (burnsFuel(s) || short) status += ` · winter wants: wood ${n.fuel.have}/${n.fuel.need}, food ${n.food.have}/${n.food.need}`;
-    stage.append(el("p", { class: "beat-status", text: status }));
+    const woodShort = n.fuel.have < n.fuel.need;
+    const foodShort = n.food.have < n.food.need;
+    const strip = el("div", { class: "beat-strip" }, [
+      beatCell("Larder", Math.floor(s.larder)),
+      beatCell("Fuel", s.fuel),
+    ]);
+    if (burnsFuel(s) || woodShort || foodShort) {
+      strip.append(
+        beatCell("Wood for winter", `${n.fuel.have}/${n.fuel.need}`, woodShort),
+        beatCell("Food for winter", `${n.food.have}/${n.food.need}`, foodShort),
+      );
+    }
+    stage.append(strip);
 
     // The crew: name + Tiredness + a role toggle. Standing orders, so this is set-and-forget.
     const ROLES = ["field", "wood", "forage", "rest"];
@@ -184,6 +193,23 @@ const SCREENS = {
       line("Fuel laid by", `${d.fuel}`, 2), line("The crew that stands", d.crew.join(", ") || "only you", 3),
     ]);
     stage.append(book);
+    // The crew snapshot: each living hand's end-of-season condition, worded and colored, so a
+    // season spent on Rest or Care visibly pays off (steady green, worn neutral, failing red).
+    const living = livingHands(s);
+    if (living.length) {
+      stage.append(el("div", { class: "eyebrow t-label crewsnap-h", text: "The crew" }));
+      const condClass = { steady: "good", worn: "", failing: "bad", lost: "bad" };
+      for (const h of living) {
+        const cond = conditionOf(h);
+        const cls = condClass[cond] || "";
+        stage.append(el("p", { class: "crewsnap-line t-sub" }, [
+          el("span", { class: "crewsnap-name", text: h.name }),
+          document.createTextNode(", "),
+          el("span", { class: "crewsnap-cond" + (cls ? " " + cls : ""), text: cond }),
+          document.createTextNode("."),
+        ]));
+      }
+    }
     for (const l of d.lostThisSeason) stage.append(el("p", { class: "omen t-sub", text: l }));
     for (const w of d.warnings) stage.append(el("p", { class: "warnline t-sub", text: w }));
     stage.append(choiceCard({ text: "Turn the page", sub: "on to what comes next", primary: true }, () => dispatch({ type: "END_SEASON" })));
@@ -383,6 +409,14 @@ export function fxTag(fx = {}) {
     if (isGood) good = true; else bad = true;
   }
   return { text: parts.join(" · "), valence: bad && !good ? "bad" : good && !bad ? "good" : "" };
+}
+
+// One cell of the beat resource strip: a figure over a small label, reddening when short.
+function beatCell(label, value, warn = false) {
+  return el("div", { class: "beat-cell" + (warn ? " warn" : "") }, [
+    el("span", { class: "beat-cell-v", text: String(value) }),
+    el("span", { class: "beat-cell-k", text: label }),
+  ]);
 }
 
 // A day-book line; `i` staggers the Dusk "Rule" reveal (reference §7), 160ms apart.

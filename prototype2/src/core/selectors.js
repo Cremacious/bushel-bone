@@ -81,6 +81,13 @@ export function fieldProjection(state, field) {
     daysToRipe, when, yield: y, needsTwo: !!c.needsTwo };
 }
 
+// A crop's untended time-to-ripen (in days at the base growth rate) and what it leans toward
+// (food into the larder, or coin at market). Pure; drives the planting-chip sub-label.
+export function cropSummary(cropKey) {
+  const c = CROPS[cropKey];
+  return { days: Math.round(c.seasons / BALANCE.growthPerDay), lean: c.food > 0 ? "food" : "coin" };
+}
+
 export const mouths = (s) => 1 + livingHands(s).length; // the farmer + living hands
 
 // The household's survival targets for the cold months (fall + winter) still to come this

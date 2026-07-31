@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { initialState, makeHand } from "../src/core/state.js";
-import { conditionOf, mouths, warnings } from "../src/core/selectors.js";
+import { conditionOf, mouths, warnings, cropSummary } from "../src/core/selectors.js";
 
 describe("selectors", () => {
   it("condition track bands on strain", () => {
@@ -35,5 +35,9 @@ describe("selectors", () => {
     s.larder = 0;
     s.fuel = 0;
     expect(warnings(s)).toEqual([]);
+  });
+  it("cropSummary reports untended grow-time in days and what the crop leans toward", () => {
+    expect(cropSummary("turnip")).toEqual({ days: 10, lean: "food" });
+    expect(cropSummary("wheat")).toEqual({ days: 20, lean: "coin" });
   });
 });
