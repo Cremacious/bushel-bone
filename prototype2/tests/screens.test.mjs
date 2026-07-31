@@ -250,7 +250,7 @@ describe("dusk + year end", () => {
 });
 
 describe("the town screen", () => {
-  it("the overview lists places to walk to and the day's odd-jobs, and taking a job pays coin", () => {
+  it("the overview lists places to walk to and the day's odd-jobs, and taking a job opens its scene card", () => {
     const root = document.createElement("div");
     let state = reduce(reduce(initialState(42), { type: "BEGIN_SEASON" }), { type: "SOW" });
     state = { ...state, screen: "town" };
@@ -259,11 +259,11 @@ describe("the town screen", () => {
     rerender();
     const placeCards = [...root.querySelectorAll(".choicecard")].filter((b) => /gossip|tools and ironwork|seed, goods|mortgage|parish|medicine|the law|the old ways/.test(b.textContent));
     expect(placeCards.length).toBeGreaterThanOrEqual(5);
-    const coin0 = state.coin;
     const jobBtn = [...root.querySelectorAll(".choicecard")].find((b) => /coin/.test(b.textContent) && !b.disabled);
     expect(jobBtn).toBeTruthy();
     jobBtn.click();
-    expect(state.coin).toBeGreaterThan(coin0);
+    expect(state.phase).toBe("scene");           // the job now opens a card; payoff is in its choices
+    expect(typeof state.scene.id).toBe("string");
   });
   it("disables jobs when it is not the day phase", () => {
     const root = document.createElement("div");

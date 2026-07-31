@@ -15,13 +15,15 @@ export const LOCATIONS = [
 ];
 
 // The odd-job deck: small paid errands. Each season a deterministic, scarce slice is on
-// offer (see selectors.townOffers). giver is an npc id (for flavor); coin is the pay.
+// offer (see selectors.townOffers). giver is an npc id (for flavor); coin is the pay; scene is
+// the card that opens when the job is accepted (its choices carry the real payoff, authored in
+// Phase 4D Task 2). coin is retained as the flat fallback until each scene lands.
 export const ODD_JOBS = [
-  { id: "haul_mill",   giver: "meredith", coin: 8,  line: "Haul grain sacks for the miller a day." },
-  { id: "sit_patient", giver: "bell",     coin: 6,  line: "Sit the night with one of Doc's patients." },
-  { id: "mend_fence",  giver: "ostrander",coin: 7,  line: "Mend a stretch of the Ostrander fence." },
-  { id: "dig_grave",   giver: "grange",   coin: 5,  line: "Dig and fill for the preacher, quiet work." },
-  { id: "load_wagon",  giver: "crake",    coin: 9,  line: "Load and strap the toolwright's wagon." },
+  { id: "haul_mill",   giver: "meredith", coin: 8,  scene: "job_haul_mill",   line: "Haul grain sacks for the miller a day." },
+  { id: "sit_patient", giver: "bell",     coin: 6,  scene: "job_sit_patient", line: "Sit the night with one of Doc's patients." },
+  { id: "mend_fence",  giver: "ostrander",coin: 7,  scene: "job_mend_fence",  line: "Mend a stretch of the Ostrander fence." },
+  { id: "dig_grave",   giver: "grange",   coin: 5,  scene: "job_dig_grave",   line: "Dig and fill for the preacher, quiet work." },
+  { id: "load_wagon",  giver: "crake",    coin: 9,  scene: "job_load_wagon",  line: "Load and strap the toolwright's wagon." },
 ];
 
 // How many jobs are on offer across a whole season (a scarce, rotating handful, not a

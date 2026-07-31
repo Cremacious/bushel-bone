@@ -47,12 +47,15 @@ describe("town names", () => {
 });
 
 describe("town actions", () => {
-  it("ACCEPT_JOB pays coin, spends one action, and marks the job done", () => {
+  it("ACCEPT_JOB opens the job's scene card, spends an action, marks it done, and pays no coin directly", () => {
     let s = inTown(42);
     const job = offers2(s).jobs[0];
     const coin0 = s.coin, acts0 = s.seasonActionsLeft;
     s = reduce(s, { type: "ACCEPT_JOB", id: job.id });
-    expect(s.coin).toBe(coin0 + job.coin);
+    expect(s.phase).toBe("scene");
+    expect(s.scene).toEqual({ id: job.scene, result: null });
+    expect(s.screen).toBe("home");
+    expect(s.coin).toBe(coin0); // payoff now comes from the scene's choices
     expect(s.seasonActionsLeft).toBe(acts0 - 1);
     expect(s.jobsDoneThisSeason).toContain(job.id);
   });
@@ -65,7 +68,12 @@ describe("town actions", () => {
   it("a taken job stays gone across days but is offered fresh next season", () => {
     let s = inTown(42);
     const before = offers2(s).jobs.map((j) => j.id);
-    for (const id of before) s = reduce(s, { type: "ACCEPT_JOB", id });
+    // Take one job via the card-opening action (it marks the job done and opens its scene),
+    // then mark the rest done directly. Accepting opens a scene, so we can only dispatch
+    // ACCEPT_JOB once before returning to the day; the direct fill stands in for closing out.
+    s = reduce(s, { type: "ACCEPT_JOB", id: before[0] });
+    expect(s.jobsDoneThisSeason).toContain(before[0]);
+    s = { ...s, jobsDoneThisSeason: before, phase: "day", scene: null };
     expect(offers2(s).jobs.every((j) => j.done)).toBe(true);
     // advance days within the same season: still done, not refilled
     s = reduce(s, { type: "TURN_IN" });

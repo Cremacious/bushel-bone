@@ -124,8 +124,13 @@ function acceptJob(s, id) {
   if (s.phase !== "day" || s.seasonActionsLeft <= 0) return s;
   const job = ODD_JOBS.find((j) => j.id === id);
   if (!job || (s.jobsDoneThisSeason || []).includes(id)) return s;
-  return { ...s, coin: s.coin + job.coin, seasonActionsLeft: s.seasonActionsLeft - 1,
+  const base = { ...s, seasonActionsLeft: s.seasonActionsLeft - 1,
     jobsDoneThisSeason: [...(s.jobsDoneThisSeason || []), id] };
+  // The payoff now comes from the job's scene card (its choices, authored in Task 2). Open it
+  // instead of paying straight away. Until a job has a scene, fall back to the flat coin so the
+  // loop stays playable pre-content.
+  if (!job.scene) return { ...base, coin: s.coin + job.coin };
+  return { ...base, phase: "scene", scene: { id: job.scene, result: null }, screen: "home" };
 }
 
 // Call on a townsperson: open whichever of their talks comes next (see nextTownScene). A
@@ -147,13 +152,13 @@ function visit(s, npc) {
     phase: "scene", scene: { id: sceneId, result: null }, screen: "home" };
 }
 
-// A scripted scene: apply the chosen option's state deltas and record the choice, so the
-// renderer can show the result prose and a "go on" that closes the scene.
-function chooseScene(s, choiceId) {
-  const sc = SCENES[s.scene && s.scene.id];
-  if (!sc || !sc.choices.includes(choiceId)) return s;
-  const fx = (sc.fx && sc.fx[choiceId]) || {};
+// Apply a scene/event/outcome's fx block to state. Pure: never mutates the input, returns a
+// fresh state. Each key clamps the way the loop expects (coin/larder/fuel/seed floor at 0,
+// regard 0..100, strain 0..lostAt). Shared by chooseScene's flat and haggle paths (and any
+// future fx sink).
+export function applyFx(s, fx) {
   let ns = { ...s };
+  if (!fx) return ns;
   if (fx.regard != null) ns.regard = Math.max(0, Math.min(100, ns.regard + fx.regard));
   if (fx.coin != null) ns.coin = Math.max(0, ns.coin + fx.coin);
   if (fx.reckoning != null) ns.reckoning = Math.max(0, ns.reckoning + fx.reckoning);
@@ -163,7 +168,37 @@ function chooseScene(s, choiceId) {
   if (fx.strainAll != null) ns.hands = ns.hands.map((h) => h.alive ? { ...h, strain: Math.max(0, Math.min(BALANCE.strain.lostAt, h.strain + fx.strainAll)) } : h);
   if (fx.strainOne != null) { const w = ns.hands.find((h) => h.alive); if (w) ns.hands = ns.hands.map((h) => h.id === w.id ? { ...h, strain: Math.max(0, Math.min(BALANCE.strain.lostAt, h.strain + fx.strainOne)) } : h); }
   if (fx.loseHand) { const v = ns.hands.find((h) => h.alive && h.id !== "reuben"); if (v) ns.hands = ns.hands.map((h) => h.id === v.id ? { ...h, alive: false } : h); }
-  return { ...ns, scene: { ...s.scene, result: choiceId } };
+  return ns;
+}
+
+// Cumulative-weight pick over an odds map, given a roll in [0,1). Iterates the map's own key
+// order (the outcome ids). Robust if the weights do not sum to exactly 1: the last bucket
+// catches any remainder, so a roll past the summed weight still lands somewhere.
+function pickWeighted(odds, roll) {
+  const keys = Object.keys(odds);
+  let acc = 0;
+  for (const k of keys) { acc += odds[k]; if (roll < acc) return k; }
+  return keys[keys.length - 1];
+}
+
+// A scripted scene: apply the chosen option's state deltas and record the choice, so the
+// renderer can show the result prose and a "go on" that closes the scene. A haggle scene's
+// risky option (sc.haggle.on) instead rolls a seeded outcome from sc.haggle.odds and records
+// that OUTCOME id as the result; every other option, and every non-haggle scene, resolves flat.
+function chooseScene(s, choiceId) {
+  const sc = SCENES[s.scene && s.scene.id];
+  if (!sc || !sc.choices.includes(choiceId)) return s;
+  if (sc.haggle && sc.haggle.on === choiceId) {
+    const rng = mulberry32(s.rngState);
+    const roll = rng();
+    const rngState = rng.getState();
+    const outcomeId = pickWeighted(sc.haggle.odds, roll);
+    const outFx = (sc.haggle.outcomes && sc.haggle.outcomes[outcomeId]) || {};
+    const ns = applyFx({ ...s, rngState }, outFx);
+    return { ...ns, scene: { ...s.scene, result: outcomeId } };
+  }
+  const fx = (sc.fx && sc.fx[choiceId]) || {};
+  return { ...applyFx(s, fx), scene: { ...s.scene, result: choiceId } };
 }
 
 function closeScene(s) {
