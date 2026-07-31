@@ -98,7 +98,8 @@ export const SCENES = {
   // town's wagon line and opens hiring. reuben_hands is the one-time early nudge that fires on
   // Sow, pointing the newcomer to town. Both carry placeholder mechanics only; the prose is
   // authored in a later task.
-  vane_reveal:  { revealsClones: true, returnTo: "town", choices: ["go_on"], fx: {} },
+  vane_reveal:  { revealsClones: true, returnTo: "town", choices: ["fair", "stock"],
+    fx: { fair: { regard: 2, reckoning: -1 }, stock: { regard: -2, reckoning: 2 } } },
   reuben_hands: { returnTo: "run", choices: ["go_on"], fx: {} },
 
   // The event deck's mechanics (core/events.js holds the deck + gating). Each is a real

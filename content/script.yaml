@@ -1079,3 +1079,31 @@ scenes:
         sub: "the fuller pay, done careless"
         result: >-
           You take the shortcuts and the fuller coin. The fill sits uneven and the corners are wrong, and something in the <span class="hl omen">ground takes note</span> of the haste.
+
+  # --- The clone reveal (Phase 4E) ---
+  reuben_hands:
+    eyebrow: "The lean-to"
+    title: "Too much ground for two"
+    body: >-
+      <div class="prose"><p>{{npc.reuben}} finds you at the fence and does not soften it. <span class="said">"Four fields and the two of us. I have done the sum a hundred times and it comes out the same. We want hands, and we want them before the weeds do."</span> He looks off toward the road. <span class="said">"There is a man keeps a wagon in town. {{npc.ambrose}}. He deals in help, and he comes dear, and he comes quick. I will say no more of him than that. Go and see for yourself."</span></p></div>
+    choices:
+      go_on:
+        text: "Ride in and see him"
+        sub: "ask in town about hands"
+        result: "Reuben watches you to the gate and says nothing more. The road to the Cross is short, and the wagon is not hard to find."
+  vane_reveal:
+    eyebrow: "The property track"
+    title: "What the wagon carries"
+    dir: "[a black wagon hung with lanterns, the canvas drawn close, and a courteous man who does not quite meet the eye]"
+    body: >-
+      <div class="prose"><p>You came for hired help. {{npc.ambrose}} meets you beside a black wagon hung with cold lanterns, courteous, his eyes going everywhere but yours. Behind the canvas, a shape that breathes. He draws it back without ceremony.</p><p>A woman. She steps down slow, blinking at the daylight like a thing new to it, and she does not know your name, or her own, or how she came to be standing in the road. She has the look of a person and none of the history of one. <span class="said">"Grown, not born,"</span> {{npc.ambrose}} says, gentle as a man selling cloth. <span class="said">"Strong in the ground. She will want feeding, same as you or I."</span> He speaks of her the way a man speaks of stock.</p><p class="note">The ground under your boots is very quiet, the way it goes quiet when it is listening.</p></div>
+    choices:
+      fair:
+        text: "Whatever the making, she is a person"
+        sub: "you will deal with her as one"
+        result: "You meet her eyes and hold them until she is the one to look away. Whatever she was grown for, she is a person standing in the cold, and you decide, standing there, to treat her as one. The quiet in the ground eases, a little."
+      stock:
+        text: "Bought and fed, and nothing more"
+        sub: "a body, and a winter mouth"
+        result: >-
+          You look at her the way {{npc.ambrose}} does, as a body and a mouth and a sum of labor. It is easier that way, and cheaper. Something in the <span class="hl omen">ground marks it down</span>, and does not forget.

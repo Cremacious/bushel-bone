@@ -3,6 +3,9 @@ import { initialState } from "../src/core/state.js";
 import { reduce, pendingScript } from "../src/core/reducer.js";
 import { EVENTS } from "../src/core/events.js";
 import { el } from "../src/render/dom.js";
+import { L } from "../src/content/script.js";
+import { tok } from "../src/content/names.js";
+import { SCENES } from "../src/content/scenes.js";
 
 // A Year-1 Spring state parked on the planting phase, with events suppressed so nothing but
 // the scripted nudge can interrupt SOW.
@@ -98,5 +101,37 @@ describe("the town masks and gates the wagon", () => {
     const { townOffers } = await import("../src/core/selectors.js");
     const wagon = townOffers(initialState(1)).locations.find((l) => l.id === "wagon");
     expect(wagon.purpose).not.toMatch(/clone/i);
+  });
+});
+
+describe("the reveal and nudge carry authored prose and the moral framing", () => {
+  const inReveal = () => reduce({ ...initialState(1), screen: "town", townAt: "wagon" }, { type: "REVEAL_WAGON" });
+
+  it("both scenes resolve real prose with no token leak", () => {
+    for (const id of ["reuben_hands", "vane_reveal"]) {
+      const title = tok(L(id + ".title"));
+      const body = tok(L(id + ".body"));
+      expect(title.length).toBeGreaterThan(0);
+      expect(body.length).toBeGreaterThan(20);
+      expect(title + body).not.toMatch(/\{\{/); // names resolved
+      for (const cid of SCENES[id].choices) {
+        expect(tok(L(`${id}.${cid}.text`)).length).toBeGreaterThan(0);
+        expect(tok(L(`${id}.${cid}.result`)).length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("the fair framing raises regard and eases the hidden reckoning", () => {
+    const s0 = inReveal();
+    const s = reduce(s0, { type: "CHOOSE_SCENE", choiceId: "fair" });
+    expect(s.regard).toBe(s0.regard + 2);
+    expect(s.reckoning).toBe(Math.max(0, s0.reckoning - 1));
+  });
+
+  it("the stock framing costs regard and stirs the reckoning", () => {
+    const s0 = inReveal();
+    const s = reduce(s0, { type: "CHOOSE_SCENE", choiceId: "stock" });
+    expect(s.regard).toBe(s0.regard - 2);
+    expect(s.reckoning).toBe(s0.reckoning + 2);
   });
 });
