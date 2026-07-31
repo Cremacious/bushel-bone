@@ -14,11 +14,11 @@ describe("assignment", () => {
     const s = initialState(1);
     expect(reduce(s, { type: "SET_ROLE", handId: "ghost", role: "wood" })).toBe(s);
   });
-  it("SPEND_ACTION 'forage' spends a season action and adds food immediately", () => {
+  it("SPEND_ACTION 'forage' spends the day's action point and adds food immediately", () => {
     let s = { ...initialState(1), phase: "day" };
     const before = s.larder;
     s = reduce(s, { type: "SPEND_ACTION", kind: "forage" });
     expect(s.larder).toBe(before + BALANCE.forageFood);
-    expect(s.seasonActionsLeft).toBe(BALANCE.seasonActionsPerSeason - 1);
+    expect(s.actions).toBe(BALANCE.actionsPerDay - 1);
   });
 });

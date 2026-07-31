@@ -140,8 +140,8 @@ const SCREENS = {
     // Your season: the shared action pool, spent at a beat.
     const growing = s.fields.filter((f) => f.crop && !ripe(f));
     const worn = livingHands(s).find((h) => h.strain >= BALANCE.strain.wornAt);
-    const left = s.seasonActionsLeft;
-    stage.append(el("p", { class: "t-sub season-h", text: `Your own time this season: ${left} of ${BALANCE.seasonActionsPerSeason} left.` }));
+    const left = s.actions; // TASK 2: redesign this "your time" copy for the per-day action-point model
+    stage.append(el("p", { class: "t-sub season-h", text: `Your own time this season: ${left} of ${BALANCE.actionsCarryCap} left.` }));
     stage.append(el("p", { class: "t-sub season-hint", text: "Spend it foraging, on a hand, or riding to town. It refills next season." }));
     const seasonOpts = [
       { kind: "forage", label: "Forage" },
@@ -292,8 +292,8 @@ const SCREENS = {
     }
   },
   town: (stage, s, dispatch) => {
-    const canAct = s.phase === "day" && s.seasonActionsLeft > 0;
-    const why = s.phase !== "day" ? "Come back during the day." : s.seasonActionsLeft <= 0 ? "You are spent for the season." : null;
+    const canAct = s.phase === "day" && s.actions > 0; // TASK 2: redesign town copy for per-day action points
+    const why = s.phase !== "day" ? "Come back during the day." : s.actions <= 0 ? "You are spent for the day." : null;
     const spent = !canAct;
     // Leaving town is always free; it never carries a cost tag.
     const homeCard = () => choiceCard({ text: "Head back to the farm", sub: "on to the day's work" },
@@ -305,7 +305,7 @@ const SCREENS = {
       stage.append(
         el("div", { class: "eyebrow t-label", text: "Marrow's Cross" }),
         el("h2", { class: "t-title", text: "Where to?" }),
-        el("p", { class: "t-sub townhint", text: canAct ? `You have ${s.seasonActionsLeft} of the season to spend here.` : (why || "The town is quiet.") }),
+        el("p", { class: "t-sub townhint", text: canAct ? `You have ${s.actions} to spend here.` : (why || "The town is quiet.") }),
       );
       if (spent) stage.append(homeCard(), spentNote());
       stage.append(el("div", { class: "eyebrow t-label townsub", text: "Work going" }));

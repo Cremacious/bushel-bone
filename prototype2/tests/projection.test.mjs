@@ -44,7 +44,7 @@ describe("fieldProjection", () => {
     // read "ripens day 10", not "won't ripen".
     let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
     s = reduce(s, { type: "PLANT", fieldId: 0, crop: "potato" });
-    s = { ...s, phase: "day", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason };
+    s = { ...s, phase: "day", day: 1, actions: BALANCE.actionsPerDay };
     expect(s.phase).toBe("day");
     expect(fieldProjection(s, s.fields.find((f) => f.id === 0)).when).toBe("ripens day 10");
   });

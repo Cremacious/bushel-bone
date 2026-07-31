@@ -113,7 +113,7 @@ function sloppyAssign(s) {
 
 // --- day: the player's own season actions ----------------------------------------------------
 function optimalPersonal(s) {
-  if (s.seasonActionsLeft <= 0) return null;
+  if (s.actions <= 0) return null; // TASK 3: retune sim policies for the per-day action-point economy
   if (s.larder < mouths(s) * 20) return { type: "SPEND_ACTION", kind: "forage" };
   const worn = s.hands.find((h) => h.alive && h.strain >= BALANCE.strain.wornAt);
   if (worn) return { type: "SPEND_ACTION", kind: "care", target: worn.id };
@@ -122,8 +122,8 @@ function optimalPersonal(s) {
   return null;
 }
 function normalPersonal(s) {
-  if (s.seasonActionsLeft <= 0) return null;
-  if (s.larder < mouths(s) * 10 && s.seasonActionsLeft > 2) return { type: "SPEND_ACTION", kind: "forage" };
+  if (s.actions <= 0) return null; // TASK 3: retune sim policies for the per-day action-point economy
+  if (s.larder < mouths(s) * 10 && s.actions > 1) return { type: "SPEND_ACTION", kind: "forage" };
   return null;
 }
 const sloppyPersonal = () => null; // never forages, never takes odd jobs
@@ -173,7 +173,7 @@ function sloppyExpand(s) {
 // Placed LAST in the beat, so it only ever spends SURPLUS actions — never one that essential
 // farm work (forage/care/field-tending) wanted first. sloppy skips it (leaves coin on the table).
 function takeJob(s) {
-  if (s.seasonActionsLeft <= 0) return null;
+  if (s.actions <= 0) return null; // TASK 3: retune sim policies for the per-day action-point economy
   const job = townOffers(s).jobs.find((j) => !j.done);
   return job ? { type: "ACCEPT_JOB", id: job.id } : null;
 }

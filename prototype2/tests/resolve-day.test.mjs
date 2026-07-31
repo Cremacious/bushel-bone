@@ -7,7 +7,7 @@ import { BALANCE } from "../src/core/balance.js";
 // these tests can exercise a single day's mechanics in isolation.
 function inDay(seed = 1) {
   const s = reduce(initialState(seed), { type: "BEGIN_SEASON" });
-  return { ...s, phase: "day", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason };
+  return { ...s, phase: "day", day: 1, actions: BALANCE.actionsPerDay };
 }
 
 describe("resolve day", () => {
@@ -100,7 +100,7 @@ describe("resolve day", () => {
   });
   it("winter cold strains a hand when fuel runs short", () => {
     let s = initialState(1); s.seasonIndex = 3; // winter
-    s = { ...s, phase: "day", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason }; // day 1, bypassing BEGIN_SEASON's winter auto-run
+    s = { ...s, phase: "day", day: 1, actions: BALANCE.actionsPerDay }; // day 1, bypassing BEGIN_SEASON's winter auto-run
     s.fuel = 0;
     s = reduce(s, { type: "TURN_IN" });
     expect(s.hands[0].strain).toBeGreaterThan(0);
@@ -108,7 +108,7 @@ describe("resolve day", () => {
   });
   it("enough fuel avoids cold strain and drops by mouths × fuel/day", () => {
     let s = initialState(1); s.seasonIndex = 3; // winter
-    s = { ...s, phase: "day", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason }; // day 1, bypassing BEGIN_SEASON's winter auto-run
+    s = { ...s, phase: "day", day: 1, actions: BALANCE.actionsPerDay }; // day 1, bypassing BEGIN_SEASON's winter auto-run
     s.fuel = 100; // plenty for the day
     const before = s.fuel;
     s = reduce(s, { type: "TURN_IN" });

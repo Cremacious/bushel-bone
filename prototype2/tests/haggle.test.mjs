@@ -115,12 +115,12 @@ describe("ACCEPT_JOB opens a scene card (no instant coin)", () => {
   it("opens the job's scene, spends an action, marks it done, and pays no coin directly", () => {
     let s = inTownDay();
     const job = ODD_JOBS[0];
-    const coin0 = s.coin, acts0 = s.seasonActionsLeft;
+    const coin0 = s.coin, acts0 = s.actions;
     s = reduce(s, { type: "ACCEPT_JOB", id: job.id });
     expect(s.phase).toBe("scene");
     expect(s.scene).toEqual({ id: job.scene, result: null });
     expect(s.screen).toBe("home");
-    expect(s.seasonActionsLeft).toBe(acts0 - 1);
+    expect(s.actions).toBe(acts0 - 1);
     expect(s.jobsDoneThisSeason).toContain(job.id);
     expect(s.coin).toBe(coin0); // payoff comes from the scene's choices, not the accept
   });

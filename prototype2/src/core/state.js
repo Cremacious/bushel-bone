@@ -19,7 +19,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     year: 1,
     seasonIndex: 0,          // 0=spring..3=winter
     day: 1,                  // 1..DAYS_PER_SEASON
-    seasonActionsLeft: BALANCE.seasonActionsPerSeason, // your own actions this season (reset each season)
+    actions: BALANCE.actionsPerDay, // player action points; renew +1/day up to actionsCarryCap, see resolveDay
     theme: "night",
     weather: { key: "cold-rain", label: "Cold rain", grow: 0 },
     coin: 75, larder: 55, fuel: 0, seed: 8,

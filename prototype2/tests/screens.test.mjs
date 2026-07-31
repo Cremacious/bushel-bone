@@ -163,10 +163,10 @@ describe("the beat screen", () => {
   it("labels the season pool as your own time, with a refill hint (B1)", () => {
     let state = toBeat();
     if (state.phase !== "day") return;
-    state = { ...state, seasonActionsLeft: 5 };
+    state = { ...state, actions: 2 };
     const root = document.createElement("div");
     const stage = renderShell(root, state, () => {}); renderScreen(stage, state, () => {});
-    expect(root.textContent).toContain("Your own time this season: 5 of 5 left.");
+    expect(root.textContent).toContain("Your own time this season: 2 of 2 left.");
     expect(root.querySelector(".season-hint")).toBeTruthy();
     expect(root.textContent).toContain("It refills next season.");
   });
@@ -193,17 +193,17 @@ describe("the beat screen", () => {
     const root = document.createElement("div");
     function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
     rerender();
-    const before = state.seasonActionsLeft;
+    const before = state.actions;
     expect(before).toBeGreaterThan(0);
     const forage = [...root.querySelectorAll(".seasonbtn")].find((b) => b.textContent === "Forage");
     expect(forage).toBeTruthy();
     forage.click(); // first tap ARMS, no dispatch
-    expect(state.seasonActionsLeft).toBe(before);
+    expect(state.actions).toBe(before);
     expect(root.textContent).toContain("Spend an action to forage?");
     const yes = [...root.querySelectorAll(".seasonbtn")].find((b) => b.textContent === "Yes");
     expect(yes).toBeTruthy();
     yes.click(); // Yes spends the action
-    expect(state.seasonActionsLeft).toBe(before - 1);
+    expect(state.actions).toBe(before - 1);
   });
 
   it("Not yet restores the armed button without spending (B2)", () => {
@@ -212,7 +212,7 @@ describe("the beat screen", () => {
     const dispatch = (a) => { state = reduce(state, a); };
     const root = document.createElement("div");
     const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
-    const before = state.seasonActionsLeft;
+    const before = state.actions;
     const forage = [...root.querySelectorAll(".seasonbtn")].find((b) => b.textContent === "Forage");
     forage.click(); // arm
     const notYet = [...root.querySelectorAll(".seasonbtn")].find((b) => b.textContent === "Not yet");
@@ -220,7 +220,7 @@ describe("the beat screen", () => {
     notYet.click(); // restore
     expect(root.textContent).not.toContain("Spend an action to forage?");
     expect([...root.querySelectorAll(".seasonbtn")].some((b) => b.textContent === "Forage")).toBe(true);
-    expect(state.seasonActionsLeft).toBe(before); // never spent
+    expect(state.actions).toBe(before); // never spent
   });
 });
 
@@ -451,7 +451,7 @@ describe("town polish", () => {
   it("floats Head back to the farm to the top when actions are spent", () => {
     const root = document.createElement("div");
     let s = reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
-    s = { ...s, screen: "town", townAt: null, seasonActionsLeft: 0 };
+    s = { ...s, screen: "town", townAt: null, actions: 0 };
     renderShell(root, s, () => {}); renderScreen(root.querySelector("#stage"), s, () => {});
     const buttons = [...root.querySelectorAll("#stage button")];
     const homeIdx = buttons.findIndex((b) => /farm/i.test(b.textContent));

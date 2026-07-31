@@ -1,7 +1,8 @@
 // First-pass tuning, owned by the balance model (Q-003). One place for every number.
 // DAILY model (Phase A): a season is `daysPerSeason` days; growth, eating, cold, and
-// strain are all per-day. The player has `seasonActionsPerSeason` personal actions each
-// season (v0.4: the beat loop's shared pool, spent at a beat rather than every single day).
+// strain are all per-day. The player gets `actionsPerDay` personal action point each day;
+// unspent points carry over up to `actionsCarryCap` (a per-day renewing economy, not a
+// season pool).
 //
 // Curve validated by the sim (`sim/run.js`, three policies over the real reducer) after the
 // v0.4 Phase-2 tightening (seed a coin sink, scarce jobs, cut abundance, a Y1 note):
@@ -22,7 +23,8 @@
 // so faster recovery buys no free ground.
 export const BALANCE = {
   daysPerSeason: 10,          // a season is 10 days (updates the old 20; tunable in playtest)
-  seasonActionsPerSeason: 5,  // the proprietor's own actions per season (v0.4: replaces the per-day pool)
+  actionsPerDay: 1,           // the proprietor's own action points, renewed +1 each day (see resolveDay)
+  actionsCarryCap: 2,         // unspent action points carry over up to this cap
   foodPerMouthPerDay: 0.75,   // larder eaten per mouth per day (tuned via sim)
   fuelPerMouthPerDay: 1,      // fuel burned per mouth per day (fall/winter only)
   fuelPerChopDay: 4,          // fuel a hand lays in per day of chopping

@@ -47,7 +47,7 @@ describe("a full Year-1 daily playthrough", () => {
         });
         // The farmer forages with whatever of the season's own actions remain, keeping the
         // larder ahead of the eating.
-        if (s.seasonActionsLeft > 0) s = reduce(s, { type: "SPEND_ACTION", kind: "forage" });
+        if (s.actions > 0) s = reduce(s, { type: "SPEND_ACTION", kind: "forage" });
         s = reduce(s, { type: "CONTINUE" }); // advance past this beat, toward the next (or dusk)
         s = resolveScenes(s); // an event beat may have interrupted CONTINUE; play through it
       }

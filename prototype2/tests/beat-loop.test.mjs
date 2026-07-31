@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
+import { BALANCE } from "../src/core/balance.js";
 
 function sow(mutate) {
   let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
@@ -19,9 +20,9 @@ describe("the beat loop", () => {
     const s = reduce(sow(), { type: "CONTINUE" });
     expect(s.phase === "day" ? s.day > 1 : s.phase === "dusk").toBe(true);
   });
-  it("SOW resets the season action pool", () => {
+  it("SOW opens the day with a fresh action point", () => {
     const s = sow();
-    expect(s.seasonActionsLeft).toBe(5);
+    expect(s.actions).toBe(BALANCE.actionsPerDay);
   });
   it("CONTINUE advances past the current beat toward the next or dusk", () => {
     let s = sow();

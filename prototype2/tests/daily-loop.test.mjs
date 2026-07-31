@@ -10,7 +10,7 @@ import { BALANCE } from "../src/core/balance.js";
 function playing(mutate) {
   let s = reduce(initialState(1), { type: "BEGIN_SEASON" }); // planting
   s = reduce(s, { type: "PLANT", fieldId: 0, crop: "potato" });
-  s = { ...s, phase: "day", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason };
+  s = { ...s, phase: "day", day: 1, actions: BALANCE.actionsPerDay };
   return mutate ? mutate(s) : s;
 }
 
@@ -41,27 +41,26 @@ describe("interrupts()", () => {
 });
 
 describe("daily phase machine", () => {
-  it("SPEND_ACTION forage adds food and spends one of the season's actions", () => {
+  it("SPEND_ACTION forage adds food and spends the day's action point", () => {
     let s = playing();
     const before = s.larder;
     s = reduce(s, { type: "SPEND_ACTION", kind: "forage" });
     expect(s.larder).toBe(before + BALANCE.forageFood);
-    expect(s.seasonActionsLeft).toBe(BALANCE.seasonActionsPerSeason - 1);
+    expect(s.actions).toBe(BALANCE.actionsPerDay - 1);
   });
-  it("SPEND_ACTION is a no-op when no season actions remain", () => {
+  it("SPEND_ACTION is a no-op when no action points remain", () => {
     let s = playing();
-    s = { ...s, seasonActionsLeft: 0 };
+    s = { ...s, actions: 0 };
     const r = reduce(s, { type: "SPEND_ACTION", kind: "forage" });
     expect(r).toEqual(s);
   });
-  it("TURN_IN advances the day, resolves labor, and leaves the season action pool untouched", () => {
+  it("TURN_IN advances the day, resolves labor, and renews the day's action point", () => {
     let s = playing((s) => ({ ...s, hands: s.hands.map((h) => ({ ...h, role: "wood" })) }));
-    s = reduce(s, { type: "SPEND_ACTION", kind: "forage" });
-    const actionsAfterSpend = s.seasonActionsLeft;
+    s = reduce(s, { type: "SPEND_ACTION", kind: "forage" }); // spend the day's one point (1 -> 0)
     const fuelBefore = s.fuel;
     s = reduce(s, { type: "TURN_IN" });
     expect(s.day).toBe(2);
-    expect(s.seasonActionsLeft).toBe(actionsAfterSpend); // the season pool persists day to day, not refilled daily
+    expect(s.actions).toBe(Math.min(BALANCE.actionsCarryCap, 0 + BALANCE.actionsPerDay)); // the new day renews a point
     expect(s.fuel).toBe(fuelBefore + BALANCE.fuelPerChopDay); // Reuben chopped
   });
   it("CONTINUE fast-forwards calm days and stops on an interrupt", () => {

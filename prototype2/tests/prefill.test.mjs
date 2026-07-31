@@ -20,7 +20,7 @@ describe("standing roles persist", () => {
   it("a hand's role carries from one day to the next (no re-suggestion nag)", () => {
     let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
     s = reduce(s, { type: "PLANT", fieldId: 0, crop: "potato" });
-    s = { ...s, phase: "day", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason }; // day 1, bypassing SOW's auto-run
+    s = { ...s, phase: "day", day: 1, actions: BALANCE.actionsPerDay }; // day 1, bypassing SOW's auto-run
     s = reduce(s, { type: "SET_ROLE", handId: "reuben", role: "wood" });
     s = reduce(s, { type: "TURN_IN" }); // -> day 2, order carries forward
     expect(s.hands.find((h) => h.id === "reuben").role).toBe("wood");

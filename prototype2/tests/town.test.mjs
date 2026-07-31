@@ -58,17 +58,17 @@ describe("town actions", () => {
   it("ACCEPT_JOB opens the job's scene card, spends an action, marks it done, and pays no coin directly", () => {
     let s = inTown(42);
     const job = offers2(s).jobs[0];
-    const coin0 = s.coin, acts0 = s.seasonActionsLeft;
+    const coin0 = s.coin, acts0 = s.actions;
     s = reduce(s, { type: "ACCEPT_JOB", id: job.id });
     expect(s.phase).toBe("scene");
     expect(s.scene).toEqual({ id: job.scene, result: null });
     expect(s.screen).toBe("home");
     expect(s.coin).toBe(coin0); // payoff now comes from the scene's choices
-    expect(s.seasonActionsLeft).toBe(acts0 - 1);
+    expect(s.actions).toBe(acts0 - 1);
     expect(s.jobsDoneThisSeason).toContain(job.id);
   });
   it("ACCEPT_JOB is a no-op with no actions left or off the day phase", () => {
-    let s = inTown(42); s = { ...s, seasonActionsLeft: 0 };
+    let s = inTown(42); s = { ...s, actions: 0 };
     expect(reduce(s, { type: "ACCEPT_JOB", id: offers2(s).jobs[0].id })).toEqual(s);
     let b = reduce(initialState(1), { type: "BEGIN_SEASON" }); // planting phase
     expect(reduce(b, { type: "ACCEPT_JOB", id: "haul_mill" })).toEqual(b);
@@ -94,11 +94,11 @@ describe("town actions", () => {
   });
   it("VISIT spends an action and opens the location's talk scene", () => {
     let s = inTown(42);
-    const acts0 = s.seasonActionsLeft;
+    const acts0 = s.actions;
     s = reduce(s, { type: "VISIT", npc: "crake" });
     expect(s.phase).toBe("scene");
     expect(s.scene.id).toBe("crake_intro");
-    expect(s.seasonActionsLeft).toBe(acts0 - 1);
+    expect(s.actions).toBe(acts0 - 1);
   });
   it("closing a town scene returns to the Town screen, not the brief", () => {
     let s = inTown(42);
@@ -188,10 +188,10 @@ describe("odd-jobs are real tradeoff cards", () => {
 describe("walking the town", () => {
   it("WALK_TO sets the current place and costs no action", () => {
     let s = inTown(1);
-    const acts0 = s.seasonActionsLeft;
+    const acts0 = s.actions;
     s = reduce(s, { type: "WALK_TO", place: "saloon" });
     expect(s.townAt).toBe("saloon");
-    expect(s.seasonActionsLeft).toBe(acts0); // free
+    expect(s.actions).toBe(acts0); // free
     expect(s.screen).toBe("town");
   });
   it("WALK_TO null returns to the town overview", () => {
@@ -210,9 +210,9 @@ describe("walking the town", () => {
 describe("free-if-dry talks", () => {
   it("a fresh NPC's talk costs an action and grants standing", () => {
     let s = inTown(1);
-    const acts0 = s.seasonActionsLeft;
+    const acts0 = s.actions;
     s = reduce(s, { type: "VISIT", npc: "crake" });
-    expect(s.seasonActionsLeft).toBe(acts0 - 1);
+    expect(s.actions).toBe(acts0 - 1);
     expect((s.standing || {}).crake).toBeGreaterThan(0);
   });
   it("a dry talk (deck exhausted) costs no action and no standing", () => {
@@ -220,10 +220,10 @@ describe("free-if-dry talks", () => {
     // exhaust crake's real cards so nextTownScene falls to the filler
     const realIds = (TALKS.crake || []).map((d) => d.id);
     s = { ...s, talksSeen: realIds, standing: { crake: 999 } };
-    const acts0 = s.seasonActionsLeft, st0 = (s.standing || {}).crake;
+    const acts0 = s.actions, st0 = (s.standing || {}).crake;
     s = reduce(s, { type: "VISIT", npc: "crake" });
     expect(s.scene.id).toBe(SMALLTALK.crake); // the filler opened
-    expect(s.seasonActionsLeft).toBe(acts0);  // free
+    expect(s.actions).toBe(acts0);  // free
     expect((s.standing || {}).crake).toBe(st0); // no standing gained
   });
 });

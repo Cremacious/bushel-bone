@@ -16,10 +16,10 @@ describe("initial state", () => {
     expect(livingHands(s).map((h) => h.name)).toEqual(["Reuben"]);
     expect(s.lineageName).toBe("Mackall");
   });
-  it("starts the loop scaffolding: brief phase, full season actions, home tab", () => {
+  it("starts the loop scaffolding: brief phase, the day's action point, home tab", () => {
     const s = initialState(1);
     expect(s.phase).toBe("brief");
-    expect(s.seasonActionsLeft).toBe(BALANCE.seasonActionsPerSeason);
+    expect(s.actions).toBe(BALANCE.actionsPerDay);
     expect(s.screen).toBe("home");
   });
   it("hands start with a zero strain track and no fields are tended", () => {

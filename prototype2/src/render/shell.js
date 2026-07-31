@@ -117,7 +117,7 @@ function brassLedger(state) {
 // something). Answers "how many of the season's actions are left" without opening a screen.
 function actionCounter(state) {
   if (state.phase !== "day") return null;
-  const left = state.seasonActionsLeft, max = BALANCE.seasonActionsPerSeason;
+  const left = state.actions, max = BALANCE.actionsCarryCap; // TASK 2: redesign the counter for the per-day action-point model
   const pips = [];
   for (let i = 0; i < max; i++) pips.push(el("span", { class: "apip" + (i < left ? " on" : "") }));
   return el("div", { class: "actioncount" }, [

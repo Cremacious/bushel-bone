@@ -8,7 +8,7 @@ import { yearNeeds, suggestPlan } from "../src/core/selectors.js";
 // these tests can exercise a single day's mechanics in isolation.
 function inDay(seed = 1) {
   const s = reduce(initialState(seed), { type: "BEGIN_SEASON" });
-  return { ...s, phase: "day", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason };
+  return { ...s, phase: "day", day: 1, actions: BALANCE.actionsPerDay };
 }
 
 describe("forage", () => {

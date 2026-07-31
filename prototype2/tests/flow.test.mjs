@@ -24,10 +24,10 @@ describe("phase flow", () => {
 });
 
 describe("daily state shape", () => {
-  it("starts on day 1 with a full season action budget", () => {
+  it("starts on day 1 with the day's action point", () => {
     const s = initialState(1);
     expect(s.day).toBe(1);
-    expect(s.seasonActionsLeft).toBe(BALANCE.seasonActionsPerSeason);
+    expect(s.actions).toBe(BALANCE.actionsPerDay);
     expect(s.phase).toBe("brief");
     expect(DAYS_PER_SEASON).toBe(10);
   });

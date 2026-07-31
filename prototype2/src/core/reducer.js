@@ -48,7 +48,7 @@ export function reduce(state, action) {
       // CONTINUE ("Let the days run on") begins the run. A scripted nudge (Reuben on hands)
       // may lean in first, on the very first Sow of a run.
       return maybeScript({ ...withInitialRoles({ ...state, phase: "day", day: 1 }),
-        seasonActionsLeft: BALANCE.seasonActionsPerSeason });
+        actions: BALANCE.actionsPerDay });
     case "CONTINUE":
       return continueRun(state);
     case "SET_ROLE":
@@ -91,8 +91,8 @@ export function reduce(state, action) {
 // winter). Shared by BEGIN_SEASON and a scene closing with after: "BEGIN_SEASON".
 function beginSeason(s) {
   return season(s) === "winter"
-    ? { ...withInitialRoles({ ...s, phase: "day", day: 1 }), seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length, jobsDoneThisSeason: [] }
-    : { ...s, phase: "planting", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length, jobsDoneThisSeason: [] };
+    ? { ...withInitialRoles({ ...s, phase: "day", day: 1 }), actions: BALANCE.actionsPerDay, logSeasonStart: s.log.length, jobsDoneThisSeason: [] }
+    : { ...s, phase: "planting", day: 1, actions: BALANCE.actionsPerDay, logSeasonStart: s.log.length, jobsDoneThisSeason: [] };
 }
 
 // Roles persist across days (set once via SET_ROLE), so opening a season needs no per-day
@@ -102,9 +102,9 @@ function withInitialRoles(s) { return s; }
 // The proprietor spends one of the season's actions on their own labor at a beat. Applied at
 // once. A no-op with none left.
 function spendAction(s, { kind, target }) {
-  if (s.seasonActionsLeft <= 0) return s;
+  if (s.actions <= 0) return s;
   const St = BALANCE.strain;
-  let ns = { ...s, seasonActionsLeft: s.seasonActionsLeft - 1 };
+  let ns = { ...s, actions: s.actions - 1 };
   if (kind === "forage") ns.larder = s.larder + BALANCE.forageFood;
   else if (kind === "work" && target != null) ns.fields = s.fields.map((f) => (f.id === target && f.crop) ? { ...f, tended: true } : f);
   else if (kind === "care" && target != null) {
@@ -127,10 +127,10 @@ function spendAction(s, { kind, target }) {
 // job stays gone for the rest of the season, not just the day. A no-op off the day phase,
 // with no actions, or if already done this season.
 function acceptJob(s, id) {
-  if (s.phase !== "day" || s.seasonActionsLeft <= 0) return s;
+  if (s.phase !== "day" || s.actions <= 0) return s;
   const job = ODD_JOBS.find((j) => j.id === id);
   if (!job || (s.jobsDoneThisSeason || []).includes(id)) return s;
-  const base = { ...s, seasonActionsLeft: s.seasonActionsLeft - 1,
+  const base = { ...s, actions: s.actions - 1,
     jobsDoneThisSeason: [...(s.jobsDoneThisSeason || []), id] };
   // The payoff now comes from the job's scene card (its choices, authored in Task 2). Open it
   // instead of paying straight away. Until a job has a scene, fall back to the flat coin so the
@@ -149,10 +149,10 @@ function visit(s, npc) {
   const sceneId = nextTownScene(s, npc);
   if (!sceneId) return s;
   const dry = sceneId === (SMALLTALK[npc] || null);
-  if (!dry && s.seasonActionsLeft <= 0) return s; // real talks still need an action
+  if (!dry && s.actions <= 0) return s; // real talks still need an action
   const seen = s.talksSeen || [];
   return { ...s,
-    seasonActionsLeft: dry ? s.seasonActionsLeft : s.seasonActionsLeft - 1,
+    actions: dry ? s.actions : s.actions - 1,
     standing: dry ? s.standing : { ...(s.standing || {}), [npc]: ((s.standing || {})[npc] || 0) + BALANCE.standing.perTalk },
     talksSeen: seen.includes(sceneId) ? seen : [...seen, sceneId],
     phase: "scene", scene: { id: sceneId, result: null }, screen: "home" };
@@ -317,11 +317,14 @@ function resolveDay(s) {
   }
 
   // 6) Advance one day, or into Dusk after the last day. Standing orders persist (no
-  // re-suggestion here — the player's ASSIGN choices carry forward).
+  // re-suggestion here — the player's ASSIGN choices carry forward). The new day renews the
+  // proprietor's action points: +actionsPerDay, unspent carrying over up to actionsCarryCap.
   let day = s.day + 1, phase = s.phase;
+  let actions = s.actions;
   if (day > BALANCE.daysPerSeason) { day = BALANCE.daysPerSeason; phase = "dusk"; }
+  else actions = Math.min(BALANCE.actionsCarryCap, s.actions + BALANCE.actionsPerDay);
 
-  const next = { ...s, hands, fields, larder, fuel, coin, seed, day, phase,
+  const next = { ...s, hands, fields, larder, fuel, coin, seed, day, phase, actions,
     daylog,
     log: [...s.log, ...daylog] };
   return maybeEvent(next);
@@ -431,15 +434,18 @@ function clearField(s, id) {
   return { ...mapField(s, id, (x) => ({ ...x, cleared: true })), coin: s.coin - cost };
 }
 
-// Hire a clone hand from Vane's wagon for coin. A no-op if unaffordable. The new hand is a
-// fresh mouth (food + winter fuel scale with the crew already), so hiring raises running costs.
+// Hire a clone hand from Vane's wagon for coin. A hire is one town errand, so it costs one
+// action point (day phase only). A no-op off the day, with no action point, or if unaffordable.
+// The new hand is a fresh mouth (food + winter fuel scale with the crew already), so hiring
+// raises running costs.
 function hire(s) {
+  if (s.phase !== "day" || s.actions <= 0) return s;
   const cost = hireCost(s);
   if (s.coin < cost) return s;
   const used = new Set(s.hands.map((h) => h.name));
   const name = HAND_NAMES.find((n) => !used.has(n)) || `Hand ${s.hands.length + 1}`;
   const id = "hand" + s.hands.length;
-  return { ...s, coin: s.coin - cost, hands: [...s.hands, makeHand(id, name)] };
+  return { ...s, actions: s.actions - 1, coin: s.coin - cost, hands: [...s.hands, makeHand(id, name)] };
 }
 
 function plant(s, id, cropKey) {

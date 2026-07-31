@@ -8,7 +8,7 @@ import { conditionOf } from "../src/core/selectors.js";
 // day's recovery can be exercised in isolation. Mirrors resolve-day.test.mjs's inDay().
 function inDay(seed = 1) {
   const s = reduce(initialState(seed), { type: "BEGIN_SEASON" });
-  return { ...s, phase: "day", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason };
+  return { ...s, phase: "day", day: 1, actions: BALANCE.actionsPerDay };
 }
 
 describe("rest visibly steps a hand's condition (playtest: Rest looked like a no-op)", () => {
@@ -33,7 +33,7 @@ describe("rest visibly steps a hand's condition (playtest: Rest looked like a no
     // Winter, empty larder, no fuel: a fielding hand racks up hunger (5) + cold (5) with no
     // labor recovery, so a Steady hand crosses into Worn and the log says so.
     let s = initialState(1); s.seasonIndex = 3; // winter
-    s = { ...s, phase: "day", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason };
+    s = { ...s, phase: "day", day: 1, actions: BALANCE.actionsPerDay };
     s.larder = 0; s.fuel = 0;
     s.hands[0] = { ...s.hands[0], strain: 22, role: "field" }; // Steady, just under the 25 cut
     s = reduce(s, { type: "TURN_IN" });
