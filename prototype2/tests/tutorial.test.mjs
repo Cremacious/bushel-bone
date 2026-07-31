@@ -77,8 +77,11 @@ describe("Reuben's guided tips", () => {
     app.dispatch({ type: "DISMISS_TIP", id: "plant" });
     expect(app.getState().tipsSeen).toContain("plant");
     expect(app.getState().overlay).toBe(null);
-    // sowing into the day now surfaces the assign tip (a different mechanic)
+    // sowing opens the one-time Year-1 hands nudge (reuben_hands); closing it lands on the
+    // day, which surfaces the assign tip (a different mechanic)
     app.dispatch({ type: "SOW" });
+    expect(app.getState().scene).toMatchObject({ id: "reuben_hands" });
+    app.dispatch({ type: "CLOSE_SCENE" });
     expect(app.getState().overlay).toMatchObject({ tipId: "assign" });
   });
 

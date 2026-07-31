@@ -44,6 +44,8 @@ export function initialState(seed = 1, lineageName = "Crane") {
     tutorialsOn: false,        // Reuben's guided tips, opted into on New Game
     tipsSeen: [],              // ids of guided tips already shown (each fires once)
     eventsSeen: [],            // event ids already drawn this run (no repeats; see reducer.maybeEvent)
+    cloneRevealed: false,      // has the wagon's true nature (clone hands) been shown? gates hiring + masks the town
+    scriptSeen: [],            // ids of scripted (deterministic, non-random) nudges already fired (each fires once)
     ended: false,
   };
 }

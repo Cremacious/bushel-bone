@@ -93,6 +93,14 @@ export const SCENES = {
   job_mend_fence:  { kind: "haggle", returnTo: "town", choices: ["dicker", "fair"], fx: { fair: { coin: 7 }, dicker: {} }, haggle: { on: "dicker", odds: { win: 0.4, hold: 0.4, sour: 0.2 }, outcomes: { win: { coin: 11 }, hold: { coin: 7 }, sour: { coin: 4, regard: -2 } } } },
   job_dig_grave:   { returnTo: "town", choices: ["decent", "quick"], fx: { decent: { coin: 5, reckoning: -1 }, quick: { coin: 8, reckoning: 2 } } },
 
+  // The clone reveal (Phase 4E). vane_reveal is the scripted beat that pulls the canvas back
+  // on the wagon; closing it sets s.cloneRevealed (see reducer.closeScene), which unmasks the
+  // town's wagon line and opens hiring. reuben_hands is the one-time early nudge that fires on
+  // Sow, pointing the newcomer to town. Both carry placeholder mechanics only; the prose is
+  // authored in a later task.
+  vane_reveal:  { revealsClones: true, returnTo: "town", choices: ["go_on"], fx: {} },
+  reuben_hands: { returnTo: "run", choices: ["go_on"], fx: {} },
+
   // The event deck's mechanics (core/events.js holds the deck + gating). Each is a real
   // tradeoff: every choice costs something, even the "safe" one. Prose lands in a later task.
   ev_fox:         { event: true, returnTo: "run", choices: ["chase", "leave"], fx: { chase: { strainOne: 12 }, leave: { larder: -8 } } },

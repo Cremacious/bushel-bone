@@ -348,10 +348,15 @@ const SCREENS = {
         disabled: !canTalk,
         why,
       }, () => dispatch({ type: "VISIT", npc: l.npc }))] : []),
-      ...(l.npc === "ambrose" ? [choiceCard({
-        text: "Hire a hand", sub: "a clone from the wagon",
-        tag: `${hireCost(s)}m`, tagValence: "", disabled: !canHire(s), why: "not enough coin",
-      }, () => dispatch({ type: "HIRE" }))] : []),
+      ...(l.npc === "ambrose" ? (s.cloneRevealed === true
+        ? [choiceCard({
+            text: "Hire a hand", sub: "a clone from the wagon",
+            tag: `${hireCost(s)}m`, tagValence: "", disabled: !canHire(s), why: "not enough coin",
+          }, () => dispatch({ type: "HIRE" }))]
+        // Before the reveal, the town gives nothing away: just an unopened wagon to approach.
+        : [choiceCard({
+            text: "Approach the wagon", sub: "lanterns, and the canvas drawn close",
+          }, () => dispatch({ type: "REVEAL_WAGON" }))]) : []),
       ...(l.npc === "tolliver" ? [choiceCard({
         text: "Buy seed", sub: `${BALANCE.seedBundle} seed from the store`,
         tag: `${seedBundleCost()}m`, tagValence: "", disabled: !canBuySeed(s), why: "not enough coin",

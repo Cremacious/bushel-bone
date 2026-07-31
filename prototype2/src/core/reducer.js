@@ -45,9 +45,10 @@ export function reduce(state, action) {
       return mapField(state, action.fieldId, (f) => ({ ...f, crop: null, progress: 0 }));
     case "SOW":
       // Land the player on the guaranteed day-1 opening beat, not fast-forwarded. Their first
-      // CONTINUE ("Let the days run on") begins the run.
-      return { ...withInitialRoles({ ...state, phase: "day", day: 1 }),
-        seasonActionsLeft: BALANCE.seasonActionsPerSeason };
+      // CONTINUE ("Let the days run on") begins the run. A scripted nudge (Reuben on hands)
+      // may lean in first, on the very first Sow of a run.
+      return maybeScript({ ...withInitialRoles({ ...state, phase: "day", day: 1 }),
+        seasonActionsLeft: BALANCE.seasonActionsPerSeason });
     case "CONTINUE":
       return continueRun(state);
     case "SET_ROLE":
@@ -72,6 +73,11 @@ export function reduce(state, action) {
       return { ...state, screen: "home", townAt: null };
     case "CLEAR_FIELD":
       return clearField(state, action.fieldId);
+    case "REVEAL_WAGON":
+      // Pull the canvas back on Vane's wagon: open the scripted reveal. A no-op once the
+      // clones are already revealed. closeScene sets s.cloneRevealed when the scene closes.
+      if (state.cloneRevealed) return state;
+      return { ...state, phase: "scene", scene: { id: "vane_reveal", result: null }, screen: "home" };
     case "HIRE":
       return hire(state);
     case "BUY_SEED":
@@ -203,7 +209,9 @@ function chooseScene(s, choiceId) {
 
 function closeScene(s) {
   const sc = SCENES[s.scene && s.scene.id];
-  const base = { ...s, scene: null };
+  // A scene flagged revealsClones (the wagon reveal) sets the run-long flag as it closes: from
+  // here on the town's wagon line is unmasked and hiring is open.
+  const base = sc && sc.revealsClones ? { ...s, scene: null, cloneRevealed: true } : { ...s, scene: null };
   if (sc && sc.after === "BEGIN_SEASON") return beginSeason(base);
   if (sc && sc.returnTo === "run") return { ...base, phase: "day" }; // an event beat: resume the running day
   if (sc && sc.returnTo) return { ...base, screen: sc.returnTo, phase: "day" }; // back to town, mid-day
@@ -337,6 +345,27 @@ function maybeEvent(s) {
   return { ...s, rngState, eventsSeen: [...seen, pick.id],
     phase: "scene", scene: { id: pick.id, result: null } };
 }
+// A scripted (deterministic, non-random) nudge owed at this exact moment, or null. Unlike
+// maybeEvent this rolls no dice: Year-1 Spring points a newcomer to town about hands, once,
+// and only before the wagon has been revealed. Pure; reads flags defensively for old saves.
+export function pendingScript(state) {
+  if (state.year === 1 && state.seasonIndex === 0
+      && !(state.scriptSeen || []).includes("reuben_hands")
+      && state.cloneRevealed !== true) return "reuben_hands";
+  return null;
+}
+
+// If a scripted nudge is owed while on a playing day, open it as a scene AND mark it seen (so
+// it fires exactly once, even if the player abandons the scene). Otherwise pass the state
+// through untouched.
+function maybeScript(s) {
+  if (s.phase !== "day") return s;
+  const id = pendingScript(s);
+  if (!id) return s;
+  return { ...s, scriptSeen: [...(s.scriptSeen || []), id],
+    phase: "scene", scene: { id, result: null } };
+}
+
 function eventEligible(s, e) {
   const g = e.gate; if (!g) return true;
   if (g.season && !g.season.includes(season(s))) return false;
