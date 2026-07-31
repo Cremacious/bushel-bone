@@ -43,11 +43,11 @@ export const SCENES = {
   silas_deep: { returnTo: "town", choices: ["press", "respect"], fx: { press: { regard: -2 }, respect: { regard: 2 } } },
 
   // grange — the preacher. A question with one right answer, then a moral fork over a prayer.
-  grange_intro: { returnTo: "town", choices: ["duty", "trade", "shrug"], fx: { duty: { regard: 3 } } },
+  grange_intro: { kind: "question", returnTo: "town", choices: ["duty", "trade", "shrug"], fx: { duty: { regard: 3 } } },
   grange_deep:  { returnTo: "town", choices: ["pray", "decline"],        fx: { pray: { regard: 2 }, decline: { regard: -1 } } },
 
   // bell — the doctor. A question about keeping the crew well, then a payload of real intel.
-  bell_intro: { returnTo: "town", choices: ["rest", "drive", "dose"], fx: { rest: { regard: 2 } } },
+  bell_intro: { kind: "question", returnTo: "town", choices: ["rest", "drive", "dose"], fx: { rest: { regard: 2 } } },
   bell_deep:  { returnTo: "town", choices: ["go_on"], fx: { go_on: { regard: 2 } } },
 
   // coldwater — the law. Moral forks: the decent answer, or the cold one that stirs the ground.
@@ -62,7 +62,7 @@ export const SCENES = {
   // ─── New deck cards, one per NPC, unlocked by standing (see town.TALKS minStanding). Kinds
   // are mixed across the eight so the deepened decks vary: three questions, two morals, a
   // haggle, and two payloads.
-  meredith_whisper: { returnTo: "town", choices: ["truthful", "flatter", "dodge"], fx: { truthful: { regard: 2 } } }, // question
+  meredith_whisper: { kind: "question", returnTo: "town", choices: ["truthful", "flatter", "dodge"], fx: { truthful: { regard: 2 } } }, // question
   crake_ironwork:   { kind: "haggle", returnTo: "town", choices: ["dicker", "fair"],
     fx: { fair: { coin: 4 } },
     haggle: { on: "dicker", odds: { win: 0.4, hold: 0.4, sour: 0.2 },
@@ -70,9 +70,9 @@ export const SCENES = {
   tolliver_account: { returnTo: "town", choices: ["go_on"], fx: { go_on: { seed: 3 } } },          // payload
   silas_terms:      { returnTo: "town", choices: ["press", "accept"], fx: { press: { regard: -2 }, accept: { regard: 2 } } }, // moral
   grange_parish:    { returnTo: "town", choices: ["go_on"], fx: { go_on: { regard: 2 } } },        // payload
-  bell_notes:       { returnTo: "town", choices: ["cold", "hunger", "haunt"], fx: { cold: { regard: 2 } } }, // question
+  bell_notes:       { kind: "question", returnTo: "town", choices: ["cold", "hunger", "haunt"], fx: { cold: { regard: 2 } } }, // question
   coldwater_line:   { returnTo: "town", choices: ["decent", "hard"], fx: { decent: { regard: 2 }, hard: { reckoning: 1 } } }, // moral
-  nan_riddle:       { returnTo: "town", choices: ["giving", "taking", "waiting"], fx: { giving: { regard: 2 }, taking: { regard: -1 } } }, // question
+  nan_riddle:       { kind: "question", returnTo: "town", choices: ["giving", "taking", "waiting"], fx: { giving: { regard: 2 }, taking: { regard: -1 } } }, // question
 
   meredith_small:   { choices: ["go_on"], fx: {}, returnTo: "town" },
   crake_small:      { choices: ["go_on"], fx: {}, returnTo: "town" },

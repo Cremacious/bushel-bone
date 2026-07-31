@@ -7,7 +7,7 @@
 import { CROPS, ripe } from "../src/core/crops.js";
 import { BALANCE } from "../src/core/balance.js";
 import { livingHands, season } from "../src/core/state.js";
-import { mouths, burnsFuel, clearCost, hireCost, mortgageDue, canBuySeed } from "../src/core/selectors.js";
+import { mouths, burnsFuel, clearCost, hireCost, mortgageDue, canBuySeed, townOffers } from "../src/core/selectors.js";
 import { SCENES, openingSceneId } from "../src/content/scenes.js";
 
 // --- shared structural step: every phase that isn't a real player decision -----------------
@@ -19,7 +19,11 @@ function structural(s) {
   if (s.phase === "scene") {
     const sc = SCENES[s.scene && s.scene.id];
     if (s.scene && s.scene.result == null && sc && sc.choices && sc.choices.length) {
-      return { type: "CHOOSE_SCENE", choiceId: sc.choices[0] };
+      // Resolve any open scene (incl. a job card) sensibly: on a haggle take the SAFE option
+      // rather than gamble; otherwise the first choice, which for the job cards is the fuller,
+      // decent payoff. So an accepted job actually pays instead of stalling on choices[0].
+      const cid = sc.haggle ? (sc.choices.find((c) => c !== sc.haggle.on) || sc.choices[0]) : sc.choices[0];
+      return { type: "CHOOSE_SCENE", choiceId: cid };
     }
     return { type: "CLOSE_SCENE" };
   }
@@ -163,8 +167,19 @@ function sloppyExpand(s) {
   return null;
 }
 
-// --- day: assemble one action from roles → personal → expansion → advance the beat ----------
-function dayStep(s, { assign, personal, expand }) {
+// --- day: paid town work ---------------------------------------------------------------------
+// A careful player mops up any leftover season-action on paid town work: if an action remains
+// and an un-taken job is on offer, accept it (structural then resolves the job card sensibly).
+// Placed LAST in the beat, so it only ever spends SURPLUS actions — never one that essential
+// farm work (forage/care/field-tending) wanted first. sloppy skips it (leaves coin on the table).
+function takeJob(s) {
+  if (s.seasonActionsLeft <= 0) return null;
+  const job = townOffers(s).jobs.find((j) => !j.done);
+  return job ? { type: "ACCEPT_JOB", id: job.id } : null;
+}
+
+// --- day: assemble one action from roles → personal → expansion → paid work → advance --------
+function dayStep(s, { assign, personal, expand, jobs }) {
   const desired = assign(s);
   for (const h of livingHands(s)) {
     const want = desired[h.id];
@@ -176,6 +191,7 @@ function dayStep(s, { assign, personal, expand }) {
   if (p) return p;
   const e = expand(s);
   if (e) return e;
+  if (jobs) { const j = jobs(s); if (j) return j; }
   return { type: "CONTINUE" }; // roles and this beat's spending are set — advance to the next beat
 }
 
@@ -184,7 +200,7 @@ export function optimal(s) {
   const st = structural(s);
   if (st) return st;
   if (s.phase === "planting") return plantStep(s, optimalCrop);
-  if (s.phase === "day") return dayStep(s, { assign: optimalAssign, personal: optimalPersonal, expand: optimalExpand });
+  if (s.phase === "day") return dayStep(s, { assign: optimalAssign, personal: optimalPersonal, expand: optimalExpand, jobs: takeJob });
   return null;
 }
 
@@ -192,7 +208,7 @@ export function normal(s) {
   const st = structural(s);
   if (st) return st;
   if (s.phase === "planting") return plantStep(s, normalCrop);
-  if (s.phase === "day") return dayStep(s, { assign: normalAssign, personal: normalPersonal, expand: normalExpand });
+  if (s.phase === "day") return dayStep(s, { assign: normalAssign, personal: normalPersonal, expand: normalExpand, jobs: takeJob });
   return null;
 }
 

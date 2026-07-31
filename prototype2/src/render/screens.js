@@ -53,10 +53,15 @@ const SCREENS = {
     if (!s.scene.result) {
       // the beat: the speaker's lines, then the choices.
       stage.append(htmlProse(tok(L(id + ".body"))));
+      // A question scene is a prompt with a right answer: showing "+3 regard" on the correct
+      // choice would spoil it, so question scenes carry no fx tag. Every other kind (payload,
+      // moral, haggle, event) keeps its tag so the stake stays legible.
+      const isQuestion = sc.kind === "question";
       for (const cid of sc.choices) {
         const t = fxTag((sc.fx && sc.fx[cid]) || {});
         stage.append(choiceCard(
-          { text: tok(L(id + "." + cid + ".text")), sub: tok(L(id + "." + cid + ".sub")), tag: t.text, tagValence: t.valence },
+          { text: tok(L(id + "." + cid + ".text")), sub: tok(L(id + "." + cid + ".sub")),
+            tag: isQuestion ? null : t.text, tagValence: isQuestion ? "" : t.valence },
           () => dispatch({ type: "CHOOSE_SCENE", choiceId: cid }),
         ));
       }
