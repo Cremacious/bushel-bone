@@ -42,8 +42,9 @@ html, body { height: 100%; }
 .pip { width: 9px; height: 9px; border: 1px solid var(--rule); box-sizing: border-box; }
 .pip.on { background: var(--accent); border-color: var(--accent); }
 .mast-tools { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-.wx { display: flex; align-items: center; gap: 7px; color: var(--accent); }
-.wx .wx-label { color: var(--ink-soft); letter-spacing: .14em; }
+/* Scoped to the masthead so a bare `.wx` cannot leak into prose highlight spans (`hl wx`). */
+.masthead .wx { display: flex; align-items: center; gap: 7px; color: var(--accent); }
+.masthead .wx .wx-label { color: var(--ink-soft); letter-spacing: .14em; }
 .iconbtn { all: unset; cursor: pointer; display: grid; place-items: center; width: 34px; height: 34px;
   border: 1px solid var(--rule); color: var(--ink-soft); font-size: 1rem; }
 .iconbtn:hover, .iconbtn:focus-visible { color: var(--lamp); border-color: var(--lamp); outline: none; }
