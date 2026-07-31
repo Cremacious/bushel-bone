@@ -27,7 +27,7 @@ export function initialState(seed = 1, lineageName = "Crane") {
     upgrades: [],              // owned tool/building ids (later phases)
     regard: 20,
     reckoning: 0,            // hidden
-    fields: [0, 1, 2, 3].map((i) => ({ id: i, crop: null, progress: 0, fert: 3, taint: 0, tended: false, cleared: i === 0 })),
+    fields: [0, 1, 2, 3].map((i) => ({ id: i, crop: null, progress: 0, fert: 3, taint: 0, tended: false, care: 0, cleared: i === 0 })),
     hands: [makeHand("reuben", "Reuben")],
     foremanId: "reuben",
     log: [],

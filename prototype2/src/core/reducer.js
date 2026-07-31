@@ -1,5 +1,5 @@
 import { season, makeHand, HAND_NAMES, livingHands } from "./state.js";
-import { CROPS, ripe, dailyGrowth } from "./crops.js";
+import { CROPS, ripe, dailyGrowth, cropYield } from "./crops.js";
 import { BALANCE } from "./balance.js";
 import { burnsFuel, fieldLabel, interrupts, clearCost, nextTownScene, mortgageDue, hireCost, conditionOf } from "./selectors.js";
 import { SCENES } from "../content/scenes.js";
@@ -263,11 +263,12 @@ function resolveDay(s) {
   for (const fid of Object.keys(harvestCrews)) {
     const crew = harvestCrews[fid]; const f = byId(Number(fid)); if (!f || !ripe(f)) continue;
     const c = CROPS[f.crop];
-    let units = Math.round(c.yield * (f.fert / 3));
+    const tended = (f.care || 0) > 0;
+    let units = cropYield(f);
     const shorthanded = c.needsTwo && crew.length < 2; if (shorthanded) units = Math.floor(units / 2);
     if (c.food > 0) larder += units * c.food; else coin += units * c.sale;
-    daylog.push(`Brought in ${c.name.toLowerCase()} from ${fieldLabel(f).toLowerCase()}${shorthanded ? ", a single hand getting only half" : ""}.`);
-    f.crop = null; f.progress = 0; f.fert = Math.max(0, f.fert - 1);
+    daylog.push(`Brought in ${c.name.toLowerCase()} from ${fieldLabel(f).toLowerCase()}${shorthanded ? ", a single hand getting only half" : ""}${tended ? ", the richer for the tending" : ""}.`);
+    f.crop = null; f.progress = 0; f.care = 0; f.fert = Math.max(0, f.fert - 1);
     crew.forEach((id) => workedHarvest.add(id));
   }
   let gi = 0;
@@ -282,8 +283,16 @@ function resolveDay(s) {
     h.strain += worked ? St.hardLabor : (h.role === "rest" ? -St.restRecovery : 0);
   }
 
-  // 2) Crop growth (uses today's tended flags, set above and by SPEND_ACTION "work"), then reset tended.
-  for (const f of fields) { if (f.crop) f.progress += dailyGrowth(f, s.weather); f.tended = false; }
+  // 2) Crop growth (uses today's tended flags, set above and by SPEND_ACTION "work"), then reset
+  // tended. A tended day also BANKS care (capped): captures both the crew's Field tend and the
+  // player's "work" action, so tending raises the eventual harvest, not just the speed (#51).
+  for (const f of fields) {
+    if (f.crop) {
+      f.progress += dailyGrowth(f, s.weather);
+      if (f.tended) f.care = Math.min(BALANCE.careCap, (f.care || 0) + 1);
+    }
+    f.tended = false;
+  }
 
   // 3) Eating: the household eats; a shortfall strains everyone alike. The already-worn
   // are the ones who then cross the loss threshold first, per the clamp/loss step below.
@@ -455,7 +464,7 @@ function plant(s, id, cropKey) {
   const crop = CROPS[cropKey];
   if (!field || !field.cleared || field.crop || !crop) return s; // uncleared, taken, or unknown crop
   if (s.seed < crop.seed) return s;               // must have the seed; buy it at the store
-  return { ...mapField(s, id, (f) => ({ ...f, crop: cropKey, progress: 0, tended: false })), seed: s.seed - crop.seed };
+  return { ...mapField(s, id, (f) => ({ ...f, crop: cropKey, progress: 0, tended: false, care: 0 })), seed: s.seed - crop.seed };
 }
 
 // Buy a bundle of seed from Tolliver's store. Coin -> seed: the sink that makes coin matter

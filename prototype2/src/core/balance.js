@@ -31,6 +31,8 @@ export const BALANCE = {
   forageFood: 3,              // food a hand/you gather per day of foraging
   growthPerDay: 0.1,          // a 1-season crop ripens in ~10 days
   tendGrowthBonus: 0.1,       // extra progress when a crop was tended that day (doubles growthPerDay, so tending is always felt: Q-003)
+  careCap: 6,                 // most tended-days a field can bank toward its harvest
+  careYieldBonus: 0.06,       // each tended day banks 6% more harvest, up to +36% at the cap; makes field work a real choice, not just speed (#51)
   strain: {
     hardLabor: 4,             // per day of real work
     restRecovery: 14,         // per day of rest (tuned up from 8 so a rest stretch VISIBLY steps a hand's condition; sim-validated below)

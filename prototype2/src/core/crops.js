@@ -17,6 +17,16 @@ export const CROPS = {
   cotton: { name: "Cotton", tier: "cash", seed: 10, seasons: 2, yield: 6, food: 0, sale: 18, needsTwo: true },
 };
 
+// The projected harvest units for a planted field: base yield scaled by fertility and by how
+// many days it was tended (banked as field.care, capped in balance.js). The ONE formula the
+// reducer's harvest and every render sink share, so the projection never lies (#51). Returns
+// 0 for a fallow field. The needsTwo shorthanded halving is applied on top at harvest time.
+export function cropYield(field) {
+  const c = field && field.crop && CROPS[field.crop];
+  if (!c) return 0;
+  return Math.round(c.yield * (field.fert / 3) * (1 + (field.care || 0) * BALANCE.careYieldBonus));
+}
+
 export function ripe(field) {
   const c = field.crop && CROPS[field.crop];
   // Epsilon guards against float drift: dailyGrowth accumulates 0.1/day, so a

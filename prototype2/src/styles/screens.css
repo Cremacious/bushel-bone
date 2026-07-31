@@ -81,6 +81,7 @@ h2.t-title { margin: 0 0 14px; }
 .fc-proj { display: flex; justify-content: space-between; }
 .fc-proj .good { color: var(--good); }
 .fc-worked { color: var(--lamp); letter-spacing: .04em; }
+.fc-care { color: var(--good); letter-spacing: .04em; }
 .croppick { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
 @media (max-width: 700px) { .fieldgrid { grid-template-columns: 1fr; } }
 .weekboard { margin-bottom: 16px; }

@@ -1,5 +1,5 @@
 import { BALANCE } from "./balance.js";
-import { CROPS, ripe } from "./crops.js";
+import { CROPS, ripe, cropYield } from "./crops.js";
 import { livingHands, season, SEASONS, DAYS_PER_SEASON } from "./state.js";
 import { LOCATIONS, ODD_JOBS, TALKS, SMALLTALK } from "./town.js";
 
@@ -69,7 +69,7 @@ export function fieldProjection(state, field) {
   // not-yet-resolved day, so subtract one). ripenDay is that plus the days still needed.
   const base = state.phase === "day" ? state.day - 1 : 0;
   const ripenDay = base + daysToRipe;
-  const units = Math.round(c.yield * (field.fert / 3));
+  const units = cropYield(field); // the ONE shared formula: fertility × banked tending (#51)
   const y = c.food > 0 ? { amount: Math.round(units * c.food), kind: "food" }
                        : { amount: units * c.sale, kind: "coin" };
   let when;

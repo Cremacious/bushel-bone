@@ -1,6 +1,7 @@
 import { el } from "./dom.js";
 import { tok } from "../content/names.js";
 import { fieldLabel } from "../core/selectors.js";
+import { BALANCE } from "../core/balance.js";
 
 // A dual-label choice card: title line + optional mechanical tag (Courier, valence-colored)
 // + optional sub line; disabled shows the arithmetic instead of a hover. Matches Screen 04.
@@ -43,6 +44,12 @@ export function fieldCard(field, proj, extra) {
         el("span", { class: "fc-yield t-sub", text: `${proj.yield.amount} ${proj.yield.kind}` }),
       ]),
     );
+    // Banked tending raises the harvest (#51): show the days tended and the yield it buys, so
+    // a tended field visibly projects a bigger crop and field work reads as a real gain.
+    if ((field.care || 0) > 0) {
+      const pct = Math.round(field.care * BALANCE.careYieldBonus * 100);
+      body.append(el("div", { class: "fc-care t-label good", text: `tended ${field.care}✓ · +${pct}% yield` }));
+    }
     // Immediate feedback that this field got worked today (by you or a tending hand):
     // a visible mark, so "Work a field" is never a choice that seems to do nothing.
     if (field.tended) body.append(el("div", { class: "fc-worked t-label", text: "tended today ✓ · +growth" }));
