@@ -292,3 +292,7 @@ h2.t-title { margin: 0 0 14px; }
 .seasonbtn:hover:not(.disabled) { border-color: var(--lamp); }
 .seasonbtn.disabled { opacity: .45; cursor: default; }
 .season-h { margin: 12px 0 4px; }
+.season-hint { margin: 0 0 10px; opacity: .85; }
+.runhint { margin: 10px 0 6px; opacity: .85; }
+.seasonact-cell { display: inline-flex; gap: 6px; align-items: center; }
+.season-ask { align-self: center; }

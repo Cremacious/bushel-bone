@@ -1,4 +1,4 @@
-import { el } from "./dom.js";
+import { el, clear } from "./dom.js";
 import { seasonLabel, DAYS_PER_SEASON, livingHands } from "../core/state.js";
 import { L } from "../content/script.js";
 import { tok } from "../content/names.js";
@@ -127,21 +127,49 @@ const SCREENS = {
     const growing = s.fields.filter((f) => f.crop && !ripe(f));
     const worn = livingHands(s).find((h) => h.strain >= BALANCE.strain.wornAt);
     const left = s.seasonActionsLeft;
-    stage.append(el("p", { class: "t-sub season-h", text: `You have ${left} of the season to spend.` }));
+    stage.append(el("p", { class: "t-sub season-h", text: `Your own time this season: ${left} of ${BALANCE.seasonActionsPerSeason} left.` }));
+    stage.append(el("p", { class: "t-sub season-hint", text: "Spend it foraging, on a hand, or riding to town. It refills next season." }));
     const seasonOpts = [
       { kind: "forage", label: "Forage" },
       ...(growing.length ? [{ kind: "work", target: growing[0].id, label: "Work a field" }] : []),
       ...(worn ? [{ kind: "care", target: worn.id, label: `Sit with ${worn.name}` }] : []),
     ];
-    stage.append(el("div", { class: "seasonact" },
-      seasonOpts.map((o) => el("button", { class: "seasonbtn" + (left <= 0 ? " disabled" : ""),
-        ...(left <= 0 ? { disabled: true } : {}),
-        onClick: left > 0 ? () => dispatch({ type: "SPEND_ACTION", kind: o.kind, target: o.target }) : undefined,
-        text: o.label }))));
+    // Two-tap confirm: a spend button is a real, one-tap commitment, so a stray tap must not
+    // burn a season action. The first tap ARMS the option in place (no dispatch); a Yes then
+    // spends, a Not yet restores the button. This transient armed state lives purely in the
+    // render closure, since any real dispatch re-renders the whole beat screen. (The disabled
+    // pool-empty case never arms; the free Ride-to-town button below gets no confirm.)
+    const actRow = el("div", { class: "seasonact" });
+    for (const o of seasonOpts) {
+      const cell = el("span", { class: "seasonact-cell" });
+      const spend = () => dispatch({ type: "SPEND_ACTION", kind: o.kind, target: o.target });
+      const idle = () => {
+        clear(cell);
+        cell.append(el("button", { class: "seasonbtn" + (left <= 0 ? " disabled" : ""),
+          ...(left <= 0 ? { disabled: true } : {}),
+          onClick: left > 0 ? arm : undefined,
+          text: o.label }));
+      };
+      const arm = () => {
+        clear(cell);
+        cell.append(
+          el("span", { class: "season-ask t-sub", text: `Spend an action to ${o.label.toLowerCase()}?` }),
+          el("button", { class: "seasonbtn yes", onClick: spend, text: "Yes" }),
+          el("button", { class: "seasonbtn notyet", onClick: idle, text: "Not yet" }),
+        );
+      };
+      idle();
+      actRow.append(cell);
+    }
+    stage.append(actRow);
     stage.append(el("button", { class: "seasonbtn", text: "Ride to Marrow's Cross →",
       onClick: () => dispatch({ type: "SET_SCREEN", screen: "town" }) }));
 
-    // The way on.
+    // The way on. A timing hint sits above it (except on the last day): the crew's standing
+    // orders resolve as the days run on, so the player knows the Continue card is what enacts them.
+    if (s.day < DAYS_PER_SEASON) {
+      stage.append(el("p", { class: "t-sub runhint", text: "Your crew's orders take effect as the days run on." }));
+    }
     stage.append(s.day >= DAYS_PER_SEASON
       ? choiceCard({ text: "Bring the season to a close", sub: "the day-book, and what comes next", primary: true },
           () => dispatch({ type: "CONTINUE" }))

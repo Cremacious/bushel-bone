@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { livingHands } from "../src/core/state.js";
+import { livingHands, DAYS_PER_SEASON } from "../src/core/state.js";
 import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 import { renderShell } from "../src/render/shell.js";
@@ -151,13 +151,76 @@ describe("the beat screen", () => {
     const dispatch = (a) => { state = reduce(state, a); rerender(); };
     function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
     rerender();
-    expect(root.textContent).toMatch(/of the season to spend/);
+    expect(root.textContent).toMatch(/Your own time this season: \d+ of \d+ left\./);
     const cont = [...root.querySelectorAll(".choicecard")]
       .find((b) => /Let the days run on|Bring the season to a close/.test(b.textContent));
     expect(cont).toBeTruthy();
     const d0 = state.day;
     cont.click();
     expect(state.day > d0 || state.phase === "dusk").toBe(true);
+  });
+
+  it("labels the season pool as your own time, with a refill hint (B1)", () => {
+    let state = toBeat();
+    if (state.phase !== "day") return;
+    state = { ...state, seasonActionsLeft: 5 };
+    const root = document.createElement("div");
+    const stage = renderShell(root, state, () => {}); renderScreen(stage, state, () => {});
+    expect(root.textContent).toContain("Your own time this season: 5 of 5 left.");
+    expect(root.querySelector(".season-hint")).toBeTruthy();
+    expect(root.textContent).toContain("It refills next season.");
+  });
+
+  it("shows the beat-timing hint on a mid-season day, not on the last day (B3)", () => {
+    const base = toBeat();
+    if (base.phase !== "day") return;
+    const hint = "Your crew's orders take effect as the days run on.";
+    let root = document.createElement("div");
+    const mid = { ...base, day: 3 };
+    let stage = renderShell(root, mid, () => {}); renderScreen(stage, mid, () => {});
+    expect(root.textContent).toContain(hint);
+    expect(mid.day).toBeLessThan(DAYS_PER_SEASON);
+    root = document.createElement("div");
+    const last = { ...base, day: DAYS_PER_SEASON };
+    stage = renderShell(root, last, () => {}); renderScreen(stage, last, () => {});
+    expect(root.textContent).not.toContain(hint);
+  });
+
+  it("a season-action button arms on first tap and only spends on Yes (B2)", () => {
+    let state = toBeat();
+    if (state.phase !== "day") return;
+    const dispatch = (a) => { state = reduce(state, a); rerender(); };
+    const root = document.createElement("div");
+    function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
+    rerender();
+    const before = state.seasonActionsLeft;
+    expect(before).toBeGreaterThan(0);
+    const forage = [...root.querySelectorAll(".seasonbtn")].find((b) => b.textContent === "Forage");
+    expect(forage).toBeTruthy();
+    forage.click(); // first tap ARMS, no dispatch
+    expect(state.seasonActionsLeft).toBe(before);
+    expect(root.textContent).toContain("Spend an action to forage?");
+    const yes = [...root.querySelectorAll(".seasonbtn")].find((b) => b.textContent === "Yes");
+    expect(yes).toBeTruthy();
+    yes.click(); // Yes spends the action
+    expect(state.seasonActionsLeft).toBe(before - 1);
+  });
+
+  it("Not yet restores the armed button without spending (B2)", () => {
+    let state = toBeat();
+    if (state.phase !== "day") return;
+    const dispatch = (a) => { state = reduce(state, a); };
+    const root = document.createElement("div");
+    const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch);
+    const before = state.seasonActionsLeft;
+    const forage = [...root.querySelectorAll(".seasonbtn")].find((b) => b.textContent === "Forage");
+    forage.click(); // arm
+    const notYet = [...root.querySelectorAll(".seasonbtn")].find((b) => b.textContent === "Not yet");
+    expect(notYet).toBeTruthy();
+    notYet.click(); // restore
+    expect(root.textContent).not.toContain("Spend an action to forage?");
+    expect([...root.querySelectorAll(".seasonbtn")].some((b) => b.textContent === "Forage")).toBe(true);
+    expect(state.seasonActionsLeft).toBe(before); // never spent
   });
 });
 
