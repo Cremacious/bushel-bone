@@ -112,6 +112,13 @@ export const SCENES = {
   ev_gate_child:  { event: true, returnTo: "run", choices: ["take", "turn_away"], fx: { take: { larder: -6 }, turn_away: { reckoning: 3 } } },
   ev_blight:      { event: true, returnTo: "run", choices: ["treat", "lose"], fx: { treat: { coin: -10 }, lose: { larder: -10 } } },
   ev_omen_field:  { event: true, returnTo: "run", choices: ["heed", "shrug"], fx: { heed: { coin: -6 }, shrug: { reckoning: 4 } } },
+
+  // Second-wave deck cards (v0.4 content deepen). Same grammar: event: true, every choice a real
+  // cost. Two wildlife/weather field pressures, one light optional town errand, one closed omen.
+  ev_crows_seed:  { event: true, returnTo: "run", choices: ["scare", "let_be"], fx: { scare: { strainOne: 8 }, let_be: { seed: -4 } } },
+  ev_dry_spell:   { event: true, returnTo: "run", choices: ["haul_water", "wait"], fx: { haul_water: { strainAll: 6 }, wait: { larder: -6 } } },
+  ev_buyer_rumor: { event: true, returnTo: "run", choices: ["ride_in", "stay"], fx: { ride_in: { coin: 6, strainOne: 5 }, stay: {} } },
+  ev_still_well:  { event: true, returnTo: "run", choices: ["tend", "ignore"], fx: { tend: { coin: -4 }, ignore: { reckoning: 3 } } },
 };
 
 // The opening scene for a given state, if any. Year 1's Spring opens on Ridley's call.

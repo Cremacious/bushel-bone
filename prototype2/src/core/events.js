@@ -10,5 +10,9 @@ export const EVENTS = [
   { id: "ev_gate_child",  family: "personal" },
   { id: "ev_blight",      family: "pests", gate: { season: ["summer", "fall"] } },
   { id: "ev_omen_field",  family: "reckoning" },
+  { id: "ev_crows_seed",  family: "wildlife" },
+  { id: "ev_dry_spell",   family: "weather", gate: { season: ["summer"] } },
+  { id: "ev_buyer_rumor", family: "town" },
+  { id: "ev_still_well",  family: "reckoning" },
 ];
 export const EVENT_CHANCE = 0.28; // per-day probability a fresh, eligible event fires

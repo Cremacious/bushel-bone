@@ -993,6 +993,66 @@ scenes:
         sub: "leave the ground be"
         result: "You tell yourself it is the weather. The crows still will not light there, and the feeling does not pass."
 
+  ev_crows_seed:
+    eyebrow: "The sown ground"
+    title: "Crows on the seed"
+    body: >-
+      <div class="prose"><p>A black company of crows has come down on the fresh-sown ground, walking the rows and taking the seed before it can root. Set a hand to run them off and stand the watch, or let them have their fill and count the loss.</p></div>
+    choices:
+      scare:
+        text: "Run them off"
+        sub: "a hand wears a day at the watch"
+        result: "The hand walks the rows with a rattle and a shout till the crows give it up. The seed is saved. It is tiring work, and thankless."
+      let_be:
+        text: "Let them feed"
+        sub: "some of the seed lost to their beaks"
+        result: "You leave the birds to it. By dusk a measure of the seed is gone down their throats, and the rows will come up thin."
+
+  ev_dry_spell:
+    eyebrow: "The dry weeks"
+    title: "A dry spell"
+    body: >-
+      <div class="prose"><p>The <span class="hl wx">rain has not come in weeks</span> and the ground cracks pale between the rows. Set the whole crew to hauling water from the well to hold the crop, or trust the sky to break and spare them the labor. If it does not break, the field will suffer for it.</p></div>
+    choices:
+      haul_water:
+        text: "Haul water, all of you"
+        sub: "the crop held, but it wears the crew"
+        result: "The crew carries pail after pail from dawn to dark. The rows hold their green. It costs every back a day of ache."
+      wait:
+        text: "Wait on the sky"
+        sub: "a gamble on rain that may not come"
+        result: "You bank on the weather turning. It stays dry, and the field wilts. The larder comes up short at harvest for it."
+
+  ev_buyer_rumor:
+    eyebrow: "Word from town"
+    title: "A buyer, paying well"
+    body: >-
+      <div class="prose"><p>Word comes off the road that a <span class="hl mkt">buyer at {{place.town}} is paying well</span> for what a farm can spare, but only for a day or two. Send a hand in with a load to catch the price, or let it pass and keep them to the fields.</p></div>
+    choices:
+      ride_in:
+        text: "Send a hand in"
+        sub: "a little coin, and a day off the fields"
+        result: "The hand rides in, sells what could be spared, and comes back with the coin in a knotted rag. A long day on the road for it."
+      stay:
+        text: "Let it pass"
+        sub: "keep the crew to the work"
+        result: "You let the rumor go by. There is always a buyer, and always the fields wanting hands."
+
+  ev_still_well:
+    eyebrow: "The {{place.well}}"
+    title: "A sign at the well"
+    body: >-
+      <div class="prose"><p>The iron cap on the <span class="hl omen">{{place.well}}</span> at the property's edge is beaded with wet, though there has been no rain, and the crows have laid a ring of small stones on it that no crow should. The cap holds, as it has always held. Still, the yard is quieter near it than it was. You could set a small care there, or turn your back and say nothing of it.</p></div>
+    choices:
+      tend:
+        text: "Tend the sign"
+        sub: "a small offering, a quiet word"
+        result: "You clear the stones, set a little something by the cap, and speak low over it. Nothing changes that you can see. The quiet stays, but it sits easier."
+      ignore:
+        text: "Turn your back"
+        sub: "leave it to the iron"
+        result: "You leave the cap to itself and walk back to the house. The stones are gone by morning, and you do not ask where. Something under the iron seems to have marked that you passed it by."
+
   # Town odd-jobs (v0.4 phase 4D task 2): each a real tradeoff. Mechanics (choices + fx,
   # and the haggle roll) live in prototype2/src/content/scenes.js; these return to the
   # Town screen once closed. Two weigh coin against a hand's wear; two weigh a fuller fee

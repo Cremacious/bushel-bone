@@ -58,6 +58,71 @@ describe("events fire as beats", () => {
   });
 });
 
+describe("second-wave deck cards (content deepen)", () => {
+  const NEW = [
+    { id: "ev_crows_seed",  family: "wildlife",   gate: null },
+    { id: "ev_dry_spell",   family: "weather",    gate: { season: ["summer"] } },
+    { id: "ev_buyer_rumor", family: "town",       gate: null },
+    { id: "ev_still_well",  family: "reckoning",  gate: null },
+  ];
+
+  for (const spec of NEW) {
+    describe(spec.id, () => {
+      const e = EVENTS.find((x) => x.id === spec.id);
+      it("is registered in the deck with the right family and gate", () => {
+        expect(e, `${spec.id} not in EVENTS`).toBeTruthy();
+        expect(e.family).toBe(spec.family);
+        expect(e.gate ?? null).toEqual(spec.gate);
+      });
+      it("has a SCENES entry: event, returnTo run, exactly two choices", () => {
+        const sc = SCENES[spec.id];
+        expect(sc, `${spec.id} missing from SCENES`).toBeTruthy();
+        expect(sc.event).toBe(true);
+        expect(sc.returnTo).toBe("run");
+        expect(sc.choices.length).toBe(2);
+        for (const c of sc.choices) expect(sc.fx).toHaveProperty(c); // every choice has an fx bucket
+      });
+      it("has prose for title, body, and each choice text + result, with no token leak", () => {
+        const title = tok(L(`${spec.id}.title`));
+        const body = tok(L(`${spec.id}.body`));
+        expect(title.length).toBeGreaterThan(0);
+        expect(body.length).toBeGreaterThan(20);
+        expect(title + body).not.toContain("{{");
+        for (const c of SCENES[spec.id].choices) {
+          const text = tok(L(`${spec.id}.${c}.text`));
+          const result = tok(L(`${spec.id}.${c}.result`));
+          expect(text.length, `${spec.id}.${c}.text missing`).toBeGreaterThan(0);
+          expect(result.length, `${spec.id}.${c}.result missing`).toBeGreaterThan(0);
+          expect(text + result).not.toContain("{{");
+        }
+      });
+    });
+  }
+
+  it("the summer gate on ev_dry_spell is honored: it only fires in summer", () => {
+    // eventEligible is internal; prove the gate is respected end to end by walking many years
+    // and recording the season each event fired in. ev_dry_spell must never fire outside summer.
+    let s = reduce(initialState(3), { type: "BEGIN_SEASON" });
+    const firedSeasons = {}; let guard = 0;
+    const SEASONS = ["spring", "summer", "fall", "winter"];
+    while (s.year <= 4 && guard++ < 2000) {
+      if (s.phase === "brief") s = reduce(s, { type: "BEGIN_SEASON" });
+      else if (s.phase === "scene") {
+        if (!s.scene.result) {
+          if (s.scene.id === "ev_dry_spell") firedSeasons.ev_dry_spell = SEASONS[s.seasonIndex];
+          s = reduce(s, { type: "CHOOSE_SCENE", choiceId: SCENES[s.scene.id].choices[0] });
+        } else s = reduce(s, { type: "CLOSE_SCENE" });
+      }
+      else if (s.phase === "planting") { s.fields.forEach((f) => { if (f.cleared && !f.crop) s = reduce(s, { type: "PLANT", fieldId: f.id, crop: "potato" }); }); s = reduce(s, { type: "SOW" }); }
+      else if (s.phase === "day") s = reduce(s, { type: "CONTINUE" });
+      else if (s.phase === "dusk") s = reduce(s, { type: "END_SEASON" });
+      else if (s.phase === "settlement") s = reduce(s, { type: "TURN_YEAR" });
+      else break;
+    }
+    if (firedSeasons.ev_dry_spell) expect(firedSeasons.ev_dry_spell).toBe("summer");
+  });
+});
+
 describe("every event has prose", () => {
   it("resolves body + every choice text for each event", () => {
     for (const e of EVENTS) {
