@@ -14,8 +14,8 @@ export const LOCATIONS = [
   { id: "wagon",  npc: "ambrose",  loc: "wagon",  purpose: "a black wagon, newly come to the Cross" },
 ];
 
-// The odd-job deck: small paid errands. Each season a deterministic, scarce slice is on
-// offer (see selectors.townOffers). giver is an npc id (for flavor); coin is the pay; scene is
+// The odd-job deck: small paid errands. One job is on offer at a time and it rolls to the next
+// every jobRespawnDays days (see selectors.townOffers). giver is an npc id (for flavor); coin is the pay; scene is
 // the card that opens when the job is accepted (its choices carry the real payoff, authored in
 // Phase 4D Task 2). coin is retained as the flat fallback until each scene lands.
 export const ODD_JOBS = [
@@ -25,10 +25,6 @@ export const ODD_JOBS = [
   { id: "dig_grave",   giver: "grange",   coin: 5,  scene: "job_dig_grave",   line: "Dig and fill for the preacher, quiet work." },
   { id: "load_wagon",  giver: "crake",    coin: 9,  scene: "job_load_wagon",  line: "Load and strap the toolwright's wagon." },
 ];
-
-// How many jobs are on offer across a whole season (a scarce, rotating handful, not a
-// daily refill — see selectors.townOffers).
-export const JOBS_PER_SEASON = 2;
 
 // Each NPC's talk deck: ordered intro-first, each gated by a minStanding (0 = always). As
 // standing rises, deeper scenes unlock. Scene ids match content/script.yaml + scenes.js.

@@ -39,6 +39,7 @@ export const BALANCE = {
     coldPerDay: 5,            // per cold day with no fuel
     wornAt: 25, failingAt: 50, lostAt: 100,
   },
+  jobRespawnDays: 3,          // a fresh town job comes on offer every ~3 days (a rolling offer, not a season dump)
   seedPrice: 1,               // coin per seed unit at Tolliver (tuned via sim)
   seedBundle: 10,              // seed units per purchase
   clearCosts: [30, 70, 120], // coin to clear the 2nd/3rd/4th field (tuned via sim)

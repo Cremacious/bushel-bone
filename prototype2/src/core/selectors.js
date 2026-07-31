@@ -1,7 +1,7 @@
 import { BALANCE } from "./balance.js";
 import { CROPS, ripe } from "./crops.js";
 import { livingHands, season, SEASONS, DAYS_PER_SEASON } from "./state.js";
-import { LOCATIONS, ODD_JOBS, JOBS_PER_SEASON, TALKS, SMALLTALK } from "./town.js";
+import { LOCATIONS, ODD_JOBS, TALKS, SMALLTALK } from "./town.js";
 
 // The season's closing figures for the Dusk Report (Screen 06). Pure read.
 export function duskSummary(s) {
@@ -203,19 +203,18 @@ export function interrupts(state) {
   return reasons;
 }
 
-// The town as it stands this season: which odd-jobs are on offer (a scarce, deterministic
-// slice of the deck, stable for the whole season so it feels like a real, limited offer) and
-// their done state, plus the callable locations. Pure: same state in, same offers out (no
-// Math.random; the season+year+seed picks the slice, not the day, so it does not refill daily).
+// The town as it stands today: the single odd-job on offer right now, plus the callable
+// locations. A rolling offer, not a season dump: the season+year+seed picks a starting job, and
+// a day window (day 1..3 the first job, 4..6 the next, and so on, every jobRespawnDays days)
+// rolls forward through the deck, so town is worth returning to and you can never take them all.
+// Pure: same state in, same offer out (no Math.random; day + season + year + seed only).
 export function townOffers(state) {
   const done = state.jobsDoneThisSeason || [];
   const n = ODD_JOBS.length;
   const start = ((state.seasonIndex * 5 + state.year * 31 + (state.rngSeed % n)) % n + n) % n;
-  const jobs = [];
-  for (let i = 0; i < Math.min(JOBS_PER_SEASON, n); i++) {
-    const j = ODD_JOBS[(start + i) % n];
-    jobs.push({ ...j, done: done.includes(j.id) });
-  }
+  const w = Math.floor((state.day - 1) / BALANCE.jobRespawnDays);
+  const j = ODD_JOBS[(((start + w) % n) + n) % n];
+  const jobs = [{ ...j, done: done.includes(j.id) }];
   return { jobs, locations: LOCATIONS };
 }
 

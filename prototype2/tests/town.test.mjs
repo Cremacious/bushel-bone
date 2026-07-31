@@ -21,22 +21,34 @@ function inTown(seed = 1) {
   return s;
 }
 
-describe("townOffers()", () => {
-  it("offers JOBS_PER_SEASON jobs, deterministically for a given season+seed", () => {
+describe("townOffers() rolling offer", () => {
+  it("offers a single rolling job, deterministically for a given day+season+seed", () => {
     const s = inTown(42);
     const a = townOffers(s).jobs.map((j) => j.id);
     const b = townOffers(s).jobs.map((j) => j.id);
     expect(a).toEqual(b);            // pure
-    expect(a.length).toBe(2);
+    expect(a.length).toBe(1);
   });
-  it("stays the same offer across days within a season", () => {
-    let s = inTown(42);
-    const a = townOffers(s).jobs.map((j) => j.id);
-    s = reduce(s, { type: "TURN_IN" }); // resolve a day, still the same season
-    const b = townOffers(s).jobs.map((j) => j.id);
-    expect(b).toEqual(a);
+  it("rolls to a different job in a later day-window (day 1 vs day 5)", () => {
+    const s = inTown(42);
+    const early = townOffers({ ...s, day: 1 }).jobs[0].id;  // window 0
+    const later = townOffers({ ...s, day: 5 }).jobs[0].id;  // window 1
+    expect(later).not.toBe(early);
   });
-  it("marks a job done once it is in jobsDoneThisSeason", () => {
+  it("holds the same offer within a 3-day window", () => {
+    const s = inTown(42);
+    const d1 = townOffers({ ...s, day: 1 }).jobs[0].id;
+    const d2 = townOffers({ ...s, day: 2 }).jobs[0].id;
+    const d3 = townOffers({ ...s, day: 3 }).jobs[0].id;
+    expect([d2, d3]).toEqual([d1, d1]); // days 1..3 share one offer
+  });
+  it("shows at least three distinct jobs across a ten-day season", () => {
+    const s = inTown(42);
+    const seen = new Set();
+    for (let day = 1; day <= 10; day++) seen.add(townOffers({ ...s, day }).jobs[0].id);
+    expect(seen.size).toBeGreaterThanOrEqual(3);
+  });
+  it("marks the offered job done once it is in jobsDoneThisSeason", () => {
     let s = inTown(42);
     const first = townOffers(s).jobs[0].id;
     s = { ...s, jobsDoneThisSeason: [first] };

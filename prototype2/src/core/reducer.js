@@ -125,9 +125,9 @@ function spendAction(s, { kind, target }) {
 }
 
 // Take a paid odd-job: spend one of the season's actions, take the coin, mark it done so it
-// cannot be double-claimed. Jobs are season-scarce (see town.JOBS_PER_SEASON): once taken, a
-// job stays gone for the rest of the season, not just the day. A no-op off the day phase,
-// with no actions, or if already done this season.
+// cannot be double-claimed. The offer rolls to a fresh job every jobRespawnDays days (see
+// selectors.townOffers): once taken, a job stays done for the rest of the season, not just the
+// day. A no-op off the day phase, with no actions, or if already done this season.
 function acceptJob(s, id) {
   if (s.phase !== "day" || s.actions <= 0) return s;
   const job = ODD_JOBS.find((j) => j.id === id);
