@@ -144,37 +144,37 @@ describe("the beat screen", () => {
     expect(state.hands.find((h) => h.id === "reuben").role).toBe("wood");
   });
 
-  it("shows the season-action count and a Continue control that advances the run", () => {
+  it("shows the per-day action count and a 'Let the day pass' control that advances one day", () => {
     let state = toBeat();
     if (state.phase !== "day") return;
     const root = document.createElement("div");
     const dispatch = (a) => { state = reduce(state, a); rerender(); };
     function rerender() { const stage = renderShell(root, state, dispatch); renderScreen(stage, state, dispatch); }
     rerender();
-    expect(root.textContent).toMatch(/Your own time this season: \d+ of \d+ left\./);
+    expect(root.textContent).toMatch(/Your time today: \d+ of \d+/);
     const cont = [...root.querySelectorAll(".choicecard")]
-      .find((b) => /Let the days run on|Bring the season to a close/.test(b.textContent));
+      .find((b) => /Let the day pass|Bring the season to a close/.test(b.textContent));
     expect(cont).toBeTruthy();
     const d0 = state.day;
     cont.click();
-    expect(state.day > d0 || state.phase === "dusk").toBe(true);
+    expect(state.day === d0 + 1 || state.phase === "dusk").toBe(true); // exactly one day
   });
 
-  it("labels the season pool as your own time, with a refill hint (B1)", () => {
+  it("labels the point as your time today, with a per-day banking hint (B1)", () => {
     let state = toBeat();
     if (state.phase !== "day") return;
     state = { ...state, actions: 2 };
     const root = document.createElement("div");
     const stage = renderShell(root, state, () => {}); renderScreen(stage, state, () => {});
-    expect(root.textContent).toContain("Your own time this season: 2 of 2 left.");
+    expect(root.textContent).toContain("Your time today: 2 of 2");
     expect(root.querySelector(".season-hint")).toBeTruthy();
-    expect(root.textContent).toContain("It refills next season.");
+    expect(root.textContent).toContain("A point a day. Bank one for tomorrow.");
   });
 
   it("shows the beat-timing hint on a mid-season day, not on the last day (B3)", () => {
     const base = toBeat();
     if (base.phase !== "day") return;
-    const hint = "Your crew's orders take effect as the days run on.";
+    const hint = "Your crew's orders take effect as the day turns.";
     let root = document.createElement("div");
     const mid = { ...base, day: 3 };
     let stage = renderShell(root, mid, () => {}); renderScreen(stage, mid, () => {});
@@ -221,6 +221,59 @@ describe("the beat screen", () => {
     expect(root.textContent).not.toContain("Spend an action to forage?");
     expect([...root.querySelectorAll(".seasonbtn")].some((b) => b.textContent === "Forage")).toBe(true);
     expect(state.actions).toBe(before); // never spent
+  });
+
+  it("offers 'Let the quiet days pass' only when the point is spent and nothing presses", () => {
+    const base = toBeat();
+    if (base.phase !== "day") return;
+    const quietLabel = /Let the quiet days pass/;
+    // A point still in hand: no quiet-skip (there's a decision to make today).
+    let root = document.createElement("div");
+    const withPoint = { ...base, actions: 1 };
+    let stage = renderShell(root, withPoint, () => {}); renderScreen(stage, withPoint, () => {});
+    expect([...root.querySelectorAll(".choicecard")].some((b) => quietLabel.test(b.textContent))).toBe(false);
+    // Point spent and a calm day: the quiet-skip appears and dispatches SKIP_QUIET.
+    root = document.createElement("div");
+    let spent = { ...base, actions: 0 };
+    const dispatch = (a) => { spent = reduce(spent, a); };
+    stage = renderShell(root, spent, dispatch); renderScreen(stage, spent, dispatch);
+    const skip = [...root.querySelectorAll(".choicecard")].find((b) => quietLabel.test(b.textContent));
+    expect(skip).toBeTruthy();
+    skip.click();
+    expect(spent.skipped).toBeGreaterThan(0); // it fast-forwarded quiet days
+  });
+
+  it("hides 'Let the quiet days pass' when an interrupt presses even with the point spent", () => {
+    const base = toBeat();
+    if (base.phase !== "day") return;
+    // A ripe crop with no field hand is an interrupt: the quiet-skip must not be offered.
+    const pressed = { ...base, actions: 0,
+      fields: base.fields.map((f) => (f.id === 0 ? { ...f, crop: "potato", progress: 1 } : f)),
+      hands: base.hands.map((h) => ({ ...h, role: "rest" })) };
+    const root = document.createElement("div");
+    const stage = renderShell(root, pressed, () => {}); renderScreen(stage, pressed, () => {});
+    expect([...root.querySelectorAll(".choicecard")].some((b) => /Let the quiet days pass/.test(b.textContent))).toBe(false);
+  });
+
+  it("names how many days passed after a skip ('3 days pass.')", () => {
+    const base = toBeat();
+    if (base.phase !== "day") return;
+    const skipped = { ...base, day: 4, skipped: 3 };
+    const root = document.createElement("div");
+    const stage = renderShell(root, skipped, () => {}); renderScreen(stage, skipped, () => {});
+    expect(root.querySelector(".beat-skipped")).toBeTruthy();
+    expect(root.textContent).toContain("3 days pass.");
+  });
+
+  it("shows a disabled reason on the spend and town controls when the point is gone", () => {
+    const base = toBeat();
+    if (base.phase !== "day") return;
+    const spent = { ...base, actions: 0 };
+    const root = document.createElement("div");
+    const stage = renderShell(root, spent, () => {}); renderScreen(stage, spent, () => {});
+    expect(root.textContent).toContain("no time left today");
+    const ride = [...root.querySelectorAll(".seasonbtn")].find((b) => /Ride to|Marrow/i.test(b.textContent));
+    expect(ride.disabled).toBe(true);
   });
 });
 

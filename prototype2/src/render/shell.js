@@ -112,12 +112,13 @@ function brassLedger(state) {
   ]);
 }
 
-// The persistent season-actions counter: a plain "left / max" readout plus pips, visible in
-// the brass ledger only during the day phase (when spending an action actually means
-// something). Answers "how many of the season's actions are left" without opening a screen.
+// The persistent action-point counter: a plain "left / max" readout plus pips, visible in the
+// brass ledger only during the day phase (when spending a point actually means something). A
+// point renews each day (banked up to the carry cap); this answers "how many do I have today"
+// without opening a screen.
 function actionCounter(state) {
   if (state.phase !== "day") return null;
-  const left = state.actions, max = BALANCE.actionsCarryCap; // TASK 2: redesign the counter for the per-day action-point model
+  const left = state.actions, max = BALANCE.actionsCarryCap;
   const pips = [];
   for (let i = 0; i < max; i++) pips.push(el("span", { class: "apip" + (i < left ? " on" : "") }));
   return el("div", { class: "actioncount" }, [

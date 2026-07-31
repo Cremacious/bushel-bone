@@ -102,6 +102,12 @@ const SCREENS = {
       el("div", { class: "eyebrow t-label", text: `Day ${s.day} of ${DAYS_PER_SEASON}` }),
       el("h2", { class: "t-title beat-title", text: title }),
     );
+    // Arrived here by skipping ahead? Name how many quiet days passed (set by SKIP_QUIET; a
+    // plain one-day advance clears it to 0). Reads singular vs plural.
+    if (s.skipped > 0) {
+      stage.append(el("p", { class: "beat-skipped t-sub",
+        text: `${s.skipped} ${s.skipped === 1 ? "day passes" : "days pass"}.` }));
+    }
     for (const r of reasons.slice(1)) stage.append(el("p", { class: "beat-reason", text: r }));
 
     // Resource status, compact: a tinted strip of labeled cells. Larder + Fuel always; in the
@@ -137,12 +143,12 @@ const SCREENS = {
       ]));
     }
 
-    // Your season: the shared action pool, spent at a beat.
+    // Your day: the per-day action point, renewed each dawn (+1, banked up to the carry cap).
     const growing = s.fields.filter((f) => f.crop && !ripe(f));
     const worn = livingHands(s).find((h) => h.strain >= BALANCE.strain.wornAt);
-    const left = s.actions; // TASK 2: redesign this "your time" copy for the per-day action-point model
-    stage.append(el("p", { class: "t-sub season-h", text: `Your own time this season: ${left} of ${BALANCE.actionsCarryCap} left.` }));
-    stage.append(el("p", { class: "t-sub season-hint", text: "Spend it foraging, on a hand, or riding to town. It refills next season." }));
+    const left = s.actions;
+    stage.append(el("p", { class: "t-sub season-h", text: `Your time today: ${left} of ${BALANCE.actionsCarryCap}` }));
+    stage.append(el("p", { class: "t-sub season-hint", text: "A point a day. Bank one for tomorrow." }));
     const seasonOpts = [
       { kind: "forage", label: "Forage" },
       ...(growing.length ? [{ kind: "work", target: growing[0].id, label: "Work a field" }] : []),
@@ -163,6 +169,7 @@ const SCREENS = {
           ...(left <= 0 ? { disabled: true } : {}),
           onClick: left > 0 ? arm : undefined,
           text: o.label }));
+        if (left <= 0) cell.append(el("span", { class: "seasonact-why t-sub", text: "no time left today" }));
       };
       const arm = () => {
         clear(cell);
@@ -176,19 +183,34 @@ const SCREENS = {
       actRow.append(cell);
     }
     stage.append(actRow);
-    stage.append(el("button", { class: "seasonbtn", text: "Ride to Marrow's Cross →",
-      onClick: () => dispatch({ type: "SET_SCREEN", screen: "town" }) }));
+    // Riding to town is a day's errand, so it too is gated on having a point to spend.
+    const rideBlocked = left <= 0;
+    stage.append(el("button", { class: "seasonbtn" + (rideBlocked ? " disabled" : ""),
+      ...(rideBlocked ? { disabled: true } : {}),
+      onClick: rideBlocked ? undefined : () => dispatch({ type: "SET_SCREEN", screen: "town" }),
+      text: "Ride to Marrow's Cross →" }));
+    if (rideBlocked) stage.append(el("span", { class: "seasonact-why t-sub", text: "no time left today" }));
 
     // The way on. A timing hint sits above it (except on the last day): the crew's standing
-    // orders resolve as the days run on, so the player knows the Continue card is what enacts them.
+    // orders resolve as the day turns, so the player knows the advance card is what enacts them.
     if (s.day < DAYS_PER_SEASON) {
-      stage.append(el("p", { class: "t-sub runhint", text: "Your crew's orders take effect as the days run on." }));
+      stage.append(el("p", { class: "t-sub runhint", text: "Your crew's orders take effect as the day turns." }));
     }
-    stage.append(s.day >= DAYS_PER_SEASON
-      ? choiceCard({ text: "Bring the season to a close", sub: "the day-book, and what comes next", primary: true },
-          () => dispatch({ type: "CONTINUE" }))
-      : choiceCard({ text: "Let the days run on", sub: "until something wants you", primary: true },
-          () => dispatch({ type: "CONTINUE" })));
+    if (s.day >= DAYS_PER_SEASON) {
+      // Last day: the primary closes the season. resolveDay on the last day rolls into Dusk.
+      stage.append(choiceCard({ text: "Bring the season to a close", sub: "the day-book, and what comes next", primary: true },
+        () => dispatch({ type: "TURN_IN" })));
+    } else {
+      // A single day at a time (the retired auto-run is gone, #49).
+      stage.append(choiceCard({ text: "Let the day pass", sub: "the crew works, the day turns", primary: true },
+        () => dispatch({ type: "TURN_IN" })));
+      // The opt-in fast-forward, offered only when there's nothing to decide today (the point is
+      // spent) and nothing presses. SKIP_QUIET then runs day by day to the next thing that wants you.
+      if (left === 0 && reasons.length === 0) {
+        stage.append(choiceCard({ text: "Let the quiet days pass", sub: "skip ahead to the next thing that wants you" },
+          () => dispatch({ type: "SKIP_QUIET" })));
+      }
+    }
   },
   dusk: (stage, s, dispatch) => {
     const d = duskSummary(s);
@@ -292,7 +314,7 @@ const SCREENS = {
     }
   },
   town: (stage, s, dispatch) => {
-    const canAct = s.phase === "day" && s.actions > 0; // TASK 2: redesign town copy for per-day action points
+    const canAct = s.phase === "day" && s.actions > 0;
     const why = s.phase !== "day" ? "Come back during the day." : s.actions <= 0 ? "You are spent for the day." : null;
     const spent = !canAct;
     // Leaving town is always free; it never carries a cost tag.

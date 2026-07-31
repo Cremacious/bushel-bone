@@ -45,20 +45,22 @@ export function reduce(state, action) {
       return mapField(state, action.fieldId, (f) => ({ ...f, crop: null, progress: 0 }));
     case "SOW":
       // Land the player on the guaranteed day-1 opening beat, not fast-forwarded. Their first
-      // CONTINUE ("Let the days run on") begins the run. A scripted nudge (Reuben on hands)
-      // may lean in first, on the very first Sow of a run.
+      // "Let the day pass" (TURN_IN) begins the run, one day at a time. A scripted nudge
+      // (Reuben on hands) may lean in first, on the very first Sow of a run.
       return maybeScript({ ...withInitialRoles({ ...state, phase: "day", day: 1 }),
         actions: BALANCE.actionsPerDay });
-    case "CONTINUE":
-      return continueRun(state);
     case "SET_ROLE":
       return mapHand(state, action.handId, (h) => ({ ...h, role: action.role }));
     case "SPEND_ACTION":
       return spendAction(state, action);
+    // The day-screen's primary advance: exactly one day (resolveDay). The old CONTINUE
+    // auto-run-to-beat is retired (#49); CONTINUE is kept only as a one-day alias so any
+    // remaining caller (a sim policy, a test) advances a single day, never many silently.
     case "TURN_IN":
+    case "CONTINUE":
       return resolveDay(state);
-    case "RUN_DAYS":
-      return runDays(state);
+    case "SKIP_QUIET":
+      return skipQuiet(state);
     case "END_SEASON":
       return endSeason(state);
     case "TURN_YEAR":
@@ -213,7 +215,7 @@ function closeScene(s) {
   // here on the town's wagon line is unmasked and hiring is open.
   const base = sc && sc.revealsClones ? { ...s, scene: null, cloneRevealed: true } : { ...s, scene: null };
   if (sc && sc.after === "BEGIN_SEASON") return beginSeason(base);
-  if (sc && sc.returnTo === "run") return { ...base, phase: "day" }; // an event beat: resume the running day
+  if (sc && sc.returnTo === "run") return { ...base, phase: "day", skipped: 0 }; // an event beat: resume the running day (no stale "N days pass")
   if (sc && sc.returnTo) return { ...base, screen: sc.returnTo, phase: "day" }; // back to town, mid-day
   return { ...base, phase: "brief" };
 }
@@ -325,7 +327,7 @@ function resolveDay(s) {
   else actions = Math.min(BALANCE.actionsCarryCap, s.actions + BALANCE.actionsPerDay);
 
   const next = { ...s, hands, fields, larder, fuel, coin, seed, day, phase, actions,
-    daylog,
+    daylog, skipped: 0, // a single manual advance passes no "quiet days"; only SKIP_QUIET sets this
     log: [...s.log, ...daylog] };
   return maybeEvent(next);
 }
@@ -376,26 +378,26 @@ function eventEligible(s, e) {
   return true;
 }
 
-// "Let the days run": resolve day after day while nothing wants the player, stopping the
-// moment interrupts() reports a reason (or the season ends into Dusk). A hard cap guards
-// against a logic error looping forever.
-function runDays(s) {
-  let cur = s;
-  for (let guard = 0; guard < BALANCE.daysPerSeason + 1; guard++) {
-    if (cur.phase !== "day") break;               // reached dusk
-    if (interrupts(cur).length) break;             // something wants attention
-    cur = resolveDay(cur);
-  }
-  return cur;
-}
-
-// Resume the season after the player has dealt with a beat: advance at least one day past the
-// current stop, then run on to the next beat (or into dusk). The one-day step guarantees
-// progress even when the same interrupt (e.g. a ripe field the player chose to leave) persists.
-function continueRun(s) {
+// "Let the quiet days pass": the opt-in convenience that replaces the retired auto-run (#49).
+// Only meaningful once the player has spent today's point (actions === 0) and nothing presses
+// (interrupts empty) — the day-screen shows it under exactly those conditions. Advances day by
+// day while it stays genuinely quiet, stopping the moment an interrupt appears, an event fires
+// (resolveDay flips the phase off "day"), or the season closes. Counts the days passed into
+// `skipped`, so the beat it lands on can say "N days pass." A no-op if the player still has a
+// point to decide today or something already wants them. A hard cap guards against a logic error.
+function skipQuiet(s) {
   if (s.phase !== "day") return s;
-  const stepped = resolveDay(s);
-  return stepped.phase === "day" ? runDays(stepped) : stepped;
+  if (s.actions > 0) return s;            // a point is still yours to spend — nothing to skip
+  if (interrupts(s).length) return s;     // something already wants attention this day
+  let cur = s, n = 0;
+  for (let guard = 0; guard <= BALANCE.daysPerSeason; guard++) {
+    const next = resolveDay(cur);
+    n++;
+    cur = next;
+    if (next.phase !== "day") break;      // an event fired, or the season rolled into Dusk
+    if (interrupts(next).length) break;   // a beat wants the player — hand it back here
+  }
+  return { ...cur, skipped: n };
 }
 
 function endSeason(s) {

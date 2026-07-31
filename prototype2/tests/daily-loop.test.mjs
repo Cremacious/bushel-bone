@@ -63,15 +63,50 @@ describe("daily phase machine", () => {
     expect(s.actions).toBe(Math.min(BALANCE.actionsCarryCap, 0 + BALANCE.actionsPerDay)); // the new day renews a point
     expect(s.fuel).toBe(fuelBefore + BALANCE.fuelPerChopDay); // Reuben chopped
   });
-  it("CONTINUE fast-forwards calm days and stops on an interrupt", () => {
-    let s = playing(); // Reuben stays on "field", tending the potato
-    s = reduce(s, { type: "CONTINUE" });
-    expect(s.phase).toBe("day");
-    expect(s.day).toBeLessThanOrEqual(BALANCE.daysPerSeason);
-  });
   it("TURN_IN on the last day moves to dusk", () => {
     let s = playing((s) => ({ ...s, day: BALANCE.daysPerSeason }));
     s = reduce(s, { type: "TURN_IN" });
     expect(s.phase).toBe("dusk");
+  });
+});
+
+// The retired auto-run (#49) is replaced by SKIP_QUIET: an opt-in fast-forward, gated so it
+// only runs genuinely quiet days and never past a beat the player should see.
+describe("SKIP_QUIET (the opt-in fast-forward)", () => {
+  it("advances multiple days and records how many passed, from a quiet points-spent state", () => {
+    let s = playing((s) => ({ ...s, actions: 0 })); // point spent, Reuben tending the potato, nothing pressing
+    expect(interrupts(s)).toEqual([]);
+    s = reduce(s, { type: "SKIP_QUIET" });
+    expect(s.phase).toBe("day");
+    expect(s.day).toBeGreaterThan(1);                       // it passed several days
+    expect(s.day).toBeLessThanOrEqual(BALANCE.daysPerSeason);
+    expect(s.skipped).toBeGreaterThan(0);
+  });
+  it("stops at the last-day beat, not past it into dusk", () => {
+    let s = playing((s) => ({ ...s, actions: 0 }));
+    s = reduce(s, { type: "SKIP_QUIET" });
+    expect(s.phase).toBe("day");
+    expect(s.day).toBe(BALANCE.daysPerSeason); // handed back at the last-day beat
+  });
+  it("is a no-op while the player still has a point to spend", () => {
+    const s = playing((s) => ({ ...s, actions: 1 })); // a point remains — nothing to skip
+    const r = reduce(s, { type: "SKIP_QUIET" });
+    expect(r).toEqual(s);
+  });
+  it("does not skip when a ripe crop has no field hand to bring it in", () => {
+    const s = playing((s) => ({
+      ...s, actions: 0,
+      fields: s.fields.map((f) => (f.id === 0 ? { ...f, progress: 1 } : f)),
+      hands: s.hands.map((h) => ({ ...h, role: "rest" })), // no one set to the fields
+    }));
+    expect(interrupts(s).some((r) => /ripe/i.test(r))).toBe(true);
+    const r = reduce(s, { type: "SKIP_QUIET" });
+    expect(r).toEqual(s); // the interrupt holds it in place
+  });
+  it("does not skip when a hand has crossed Failing", () => {
+    const s = playing((s) => ({ ...s, actions: 0, hands: s.hands.map((h) => ({ ...h, strain: 60 })) }));
+    expect(interrupts(s).some((r) => /failing/i.test(r))).toBe(true);
+    const r = reduce(s, { type: "SKIP_QUIET" });
+    expect(r).toEqual(s);
   });
 });
