@@ -106,12 +106,20 @@ describe("planting grid", () => {
 });
 
 describe("the beat screen", () => {
-  // The auto-run of SOW stops at the first beat (usually the last day of the season, since
-  // an unplanted, single-field-hand start has nothing else to interrupt it). Guard each test
-  // in case a future balance change stops the run somewhere other than "day".
+  // SOW now lands the player on the guaranteed day-1 opening beat (phase "day", day 1), their
+  // first turn to set the crew before the days run on. Guard each test in case a future balance
+  // change stops the run somewhere other than "day".
   function toBeat() {
     return reduce(reduce(initialState(1), { type: "BEGIN_SEASON" }), { type: "SOW" });
   }
+
+  it("the day-1 opening beat titles itself 'A new season. Set your hands.'", () => {
+    const state = toBeat();
+    expect(state.day).toBe(1);
+    const root = document.createElement("div");
+    const stage = renderShell(root, state, () => {}); renderScreen(stage, state, () => {});
+    expect(root.querySelector(".beat-title").textContent).toBe("A new season. Set your hands.");
+  });
 
   it("shows a role toggle (four buttons) for every living hand", () => {
     const state = toBeat();

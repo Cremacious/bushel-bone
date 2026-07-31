@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { initialState, season } from "../src/core/state.js";
+import { initialState as noEventsState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 
 describe("reducer", () => {
@@ -10,12 +11,13 @@ describe("reducer", () => {
     expect(s.theme).toBe("night"); // input untouched
   });
   it("TURN_IN rolls days to dusk, then END_SEASON advances the season", () => {
-    let s = initialState(1);
+    // No-events state so this test exercises TURN_IN's own day-by-day mechanics without an
+    // event beat interrupting the run mid-count.
+    let s = noEventsState(1);
     s = reduce(s, { type: "BEGIN_SEASON" });
-    if (s.phase === "planting") s = reduce(s, { type: "SOW" });
-    s = { ...s, phase: "day", day: 1 }; // normalize past SOW's auto-run to the first beat, so
-    // this test can exercise TURN_IN's own day-by-day mechanics directly.
+    if (s.phase === "planting") s = reduce(s, { type: "SOW" }); // SOW now lands on the day-1 beat
     expect(s.phase).toBe("day");
+    expect(s.day).toBe(1);
     expect(season(s)).toBe("spring");
     for (let i = 0; i < 9; i++) s = reduce(s, { type: "TURN_IN" });
     expect(s.phase).toBe("day");
@@ -32,5 +34,28 @@ describe("reducer", () => {
     expect(season(s)).toBe("summer");
     expect(s.phase).toBe("brief");
     expect(s.day).toBe(1);
+  });
+
+  it("SOW lands the player on the day-1 opening beat, not a fast-forwarded day", () => {
+    let s = reduce(noEventsState(1), { type: "BEGIN_SEASON" });
+    s = reduce(s, { type: "SOW" });
+    expect(s.phase).toBe("day");
+    expect(s.day).toBe(1);
+  });
+
+  it("a winter BEGIN_SEASON also opens on the day-1 beat (no planting to auto-run past)", () => {
+    const w = { ...noEventsState(1), seasonIndex: 3 }; // winter
+    const s = reduce(w, { type: "BEGIN_SEASON" });
+    expect(season(s)).toBe("winter");
+    expect(s.phase).toBe("day");
+    expect(s.day).toBe(1);
+  });
+
+  it("CONTINUE from the day-1 beat begins the run, advancing the day", () => {
+    let s = reduce(noEventsState(1), { type: "BEGIN_SEASON" });
+    s = reduce(s, { type: "SOW" });
+    expect(s.day).toBe(1);
+    s = reduce(s, { type: "CONTINUE" });
+    expect(s.phase === "day" ? s.day > 1 : s.phase === "dusk").toBe(true);
   });
 });

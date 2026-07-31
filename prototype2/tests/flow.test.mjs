@@ -11,9 +11,13 @@ describe("phase flow", () => {
     const w = initialState(1); w.seasonIndex = 3; // winter
     expect(reduce(w, { type: "BEGIN_SEASON" }).phase).toBe("day");
   });
-  it("SOW runs to the first beat (the season's last day, since nothing is planted to interrupt sooner)", () => {
+  it("SOW lands on the day-1 opening beat; CONTINUE then runs the season to its last day", () => {
     let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
     s = reduce(s, { type: "SOW" });
+    expect(s.phase).toBe("day");
+    expect(s.day).toBe(1); // the guaranteed opening beat, not fast-forwarded
+    // Nothing is planted to interrupt, so the first CONTINUE carries straight to the last-day beat.
+    s = reduce(s, { type: "CONTINUE" });
     expect(s.phase).toBe("day");
     expect(s.day).toBe(DAYS_PER_SEASON);
   });

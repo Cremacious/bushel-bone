@@ -32,7 +32,7 @@ describe("a full Year-1 daily playthrough", () => {
       if (s.phase === "brief") { s = reduce(s, { type: "BEGIN_SEASON" }); s = resolveScenes(s); }
       if (s.phase === "planting") {
         s.fields.forEach((f) => { if (!f.crop) s = reduce(s, { type: "PLANT", fieldId: f.id, crop: "potato" }); });
-        s = reduce(s, { type: "SOW" }); // auto-runs to the first beat
+        s = reduce(s, { type: "SOW" }); // lands on the day-1 opening beat; the loop below runs it on
         s = resolveScenes(s);
       }
       let guard = 0;

@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
-import { interrupts } from "../src/core/selectors.js";
 
 function sow(mutate) {
   let s = reduce(initialState(1), { type: "BEGIN_SEASON" });
@@ -11,10 +10,14 @@ function sow(mutate) {
 }
 
 describe("the beat loop", () => {
-  it("SOW runs forward and stops at the first beat (past day 1) or the season's end", () => {
+  it("SOW lands on the guaranteed day-1 opening beat, not fast-forwarded", () => {
     const s = sow();
-    expect(s.phase === "day" ? interrupts(s).length > 0 : s.phase === "dusk").toBe(true);
-    expect(s.day).toBeGreaterThan(1);
+    expect(s.phase).toBe("day");
+    expect(s.day).toBe(1);
+  });
+  it("CONTINUE from the day-1 beat begins the run (advances the day or reaches dusk)", () => {
+    const s = reduce(sow(), { type: "CONTINUE" });
+    expect(s.phase === "day" ? s.day > 1 : s.phase === "dusk").toBe(true);
   });
   it("SOW resets the season action pool", () => {
     const s = sow();

@@ -44,8 +44,10 @@ export function reduce(state, action) {
     case "FALLOW":
       return mapField(state, action.fieldId, (f) => ({ ...f, crop: null, progress: 0 }));
     case "SOW":
-      return runDays({ ...withInitialRoles({ ...state, phase: "day", day: 1 }),
-        seasonActionsLeft: BALANCE.seasonActionsPerSeason });
+      // Land the player on the guaranteed day-1 opening beat, not fast-forwarded. Their first
+      // CONTINUE ("Let the days run on") begins the run.
+      return { ...withInitialRoles({ ...state, phase: "day", day: 1 }),
+        seasonActionsLeft: BALANCE.seasonActionsPerSeason };
     case "CONTINUE":
       return continueRun(state);
     case "SET_ROLE":
@@ -83,7 +85,7 @@ export function reduce(state, action) {
 // winter). Shared by BEGIN_SEASON and a scene closing with after: "BEGIN_SEASON".
 function beginSeason(s) {
   return season(s) === "winter"
-    ? runDays({ ...withInitialRoles({ ...s, phase: "day", day: 1 }), seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length, jobsDoneThisSeason: [] })
+    ? { ...withInitialRoles({ ...s, phase: "day", day: 1 }), seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length, jobsDoneThisSeason: [] }
     : { ...s, phase: "planting", day: 1, seasonActionsLeft: BALANCE.seasonActionsPerSeason, logSeasonStart: s.log.length, jobsDoneThisSeason: [] };
 }
 

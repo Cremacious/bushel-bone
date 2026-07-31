@@ -89,7 +89,10 @@ const SCREENS = {
   // one-line resource status, the crew's role toggles, your season actions, and the way on.
   day: (stage, s, dispatch) => {
     const reasons = interrupts(s);
-    const title = reasons.length ? reasons[0] : "A quiet stretch.";
+    // Day 1 with nothing pressing is the guaranteed opening beat: the player's first turn to set
+    // the crew and spend an action before the days run on. Interrupts still win when present.
+    const title = reasons.length ? reasons[0]
+      : (s.day === 1 ? "A new season. Set your hands." : "A quiet stretch.");
     stage.append(
       el("div", { class: "eyebrow t-label", text: `Day ${s.day} of ${DAYS_PER_SEASON}` }),
       el("h2", { class: "t-title beat-title", text: title }),
