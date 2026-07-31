@@ -47,6 +47,16 @@ export const SCENES = {
   coldwater_small:  { choices: ["go_on"], fx: {}, returnTo: "town" },
   nan_small:        { choices: ["go_on"], fx: {}, returnTo: "town" },
 
+  // The town odd-jobs (v0.4 phase 4D task 2): each is a real tradeoff card, not a flat coin
+  // grab. Accepted from the Town screen (ACCEPT_JOB) and returning to it (returnTo: "town").
+  // Two "payload" jobs weigh coin against a hand's Tiredness; two "moral" jobs weigh a fuller
+  // fee against decency or the reckoning; one is a haggle (a seeded win/hold/sour roll).
+  job_haul_mill:   { returnTo: "town", choices: ["all_day", "half_day"], fx: { all_day: { coin: 8, strainOne: 12 }, half_day: { coin: 4, strainOne: 5 } } },
+  job_load_wagon:  { returnTo: "town", choices: ["load_full", "load_light"], fx: { load_full: { coin: 9, strainOne: 12 }, load_light: { coin: 5, strainOne: 5 } } },
+  job_sit_patient: { returnTo: "town", choices: ["stay", "slip_off"], fx: { stay: { coin: 5, regard: 3 }, slip_off: { coin: 8, regard: -4 } } },
+  job_mend_fence:  { kind: "haggle", returnTo: "town", choices: ["dicker", "fair"], fx: { fair: { coin: 7 }, dicker: {} }, haggle: { on: "dicker", odds: { win: 0.4, hold: 0.4, sour: 0.2 }, outcomes: { win: { coin: 11 }, hold: { coin: 7 }, sour: { coin: 4, regard: -2 } } } },
+  job_dig_grave:   { returnTo: "town", choices: ["decent", "quick"], fx: { decent: { coin: 5, reckoning: -1 }, quick: { coin: 8, reckoning: 2 } } },
+
   // The event deck's mechanics (core/events.js holds the deck + gating). Each is a real
   // tradeoff: every choice costs something, even the "safe" one. Prose lands in a later task.
   ev_fox:         { event: true, returnTo: "run", choices: ["chase", "leave"], fx: { chase: { strainOne: 12 }, leave: { larder: -8 } } },

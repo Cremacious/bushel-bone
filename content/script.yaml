@@ -797,3 +797,90 @@ scenes:
         text: "It is nothing"
         sub: "leave the ground be"
         result: "You tell yourself it is the weather. The crows still will not light there, and the feeling does not pass."
+
+  # Town odd-jobs (v0.4 phase 4D task 2): each a real tradeoff. Mechanics (choices + fx,
+  # and the haggle roll) live in prototype2/src/content/scenes.js; these return to the
+  # Town screen once closed. Two weigh coin against a hand's wear; two weigh a fuller fee
+  # against decency or the reckoning; one is a haggle with win/hold/sour outcomes.
+
+  job_haul_mill:
+    eyebrow: "The saloon"
+    title: "Grain for the mill"
+    body: >-
+      <div class="prose"><p>{{npc.meredith}} leans across the bar. The miller wants sacks hauled from the wagons to the loft, and there is <span class="hl off">coin in it</span> for a strong back. Send a hand for the full day and take the whole fee, or work them a half and go easy. The full day pays double, but the stairs are steep and the sacks are heavy.</p></div>
+    choices:
+      all_day:
+        text: "The full day"
+        sub: "the whole fee, and it wears a hand hard"
+        result: "Your hand hauls from the noon bell to dark. The miller counts out the full sum, and your hand can barely lift the coin, let alone the last sack."
+      half_day:
+        text: "A half day"
+        sub: "half the fee, easy on the hand"
+        result: "Your hand works till mid-afternoon and calls it. Less coin in the pocket, but they walk home with something still in their legs."
+
+  job_load_wagon:
+    eyebrow: "The smithy"
+    title: "Loading the wagon"
+    body: >-
+      <div class="prose"><p>{{npc.crake}} needs his wagon loaded and strapped, ironwork and tools bound for the outlying farms. He nods at the pile with his one good arm. Load it full and heavy for the <span class="hl off">better fee</span>, or load it light and spare the hand who does the lifting.</p></div>
+    choices:
+      load_full:
+        text: "Load it full"
+        sub: "the better fee, and it wears a hand hard"
+        result: "Your hand stacks and lashes till the axles sit low. {{npc.crake}} grunts his approval and pays the full sum. The lifting took its toll."
+      load_light:
+        text: "Load it light"
+        sub: "less coin, easy on the hand"
+        result: "Your hand loads what is easy and leaves the rest. Less coin for it, but their back is whole at the end of the day."
+
+  job_sit_patient:
+    eyebrow: "The doctor's rooms"
+    title: "A night at the sickbed"
+    body: >-
+      <div class="prose"><p>{{npc.bell}} needs someone to sit the night with a patient down with fever, to fetch water and mark the breathing. It is his fee for the whole night. You could see it through till the doctor comes at dawn, and the town would note the kindness. Or you could take the fuller fee and slip off once the patient sleeps, and no one the wiser. No one but you.</p></div>
+    choices:
+      stay:
+        text: "See it through"
+        sub: "a fair fee, and the town notes it"
+        result: "You sit till the grey light and hand the patient back to {{npc.bell}} breathing easy. He says little, but word of it goes round the {{place.town}} by noon."
+      slip_off:
+        text: "Take the fuller fee and go"
+        sub: "more coin, and a cold thing done"
+        result: "You wait till the fever-sleep takes them and let yourself out. You keep the fuller fee. The patient held through the night alone, and you do not ask how close it came."
+
+  job_mend_fence:
+    eyebrow: "The rival's line"
+    title: "Mending the fence"
+    body: >-
+      <div class="prose"><p>{{npc.ostrander}} wants a broken stretch of his fence mended, and he names a price before you have set down your tools. It is a fair enough sum. But the man is close with his coin, and there may be more in his purse if you press him for it. Push for the better price, or take the sum he offered and be done.</p></div>
+    choices:
+      dicker:
+        text: "Push for more"
+        sub: "chance a better price, or sour him"
+        result: "You work the price with him."
+      fair:
+        text: "Take his offer"
+        sub: "the sum he named, no quarrel"
+        result: "You take the coin he offered and mend the line clean. He watches the work, finds no fault, and that is that."
+      win:
+        result: "{{npc.ostrander}} chews on it, then allows you have the right of it. He counts out the higher price and grumbles the whole time."
+      hold:
+        result: "{{npc.ostrander}} holds to his first figure and will not be moved. You take the sum he named at the start and leave it there."
+      sour:
+        result: "{{npc.ostrander}} takes it hard, calls you grasping, and cuts the fee for the trouble. You mend his fence for less than he offered, and he will remember the asking."
+
+  job_dig_grave:
+    eyebrow: "The churchyard"
+    title: "Grave work"
+    body: >-
+      <div class="prose"><p>{{npc.grange}} has a grave wants digging, quiet work at the edge of the churchyard. Do it slow and square and the <span class="hl omen">ground rests easier</span> for it, though the fee is small. Or dig it fast and careless and take the fuller pay, and trust that no one counts the corners. The land counts the corners.</p></div>
+    choices:
+      decent:
+        text: "Dig it right"
+        sub: "less coin, and the ground rests easier"
+        result: "You cut it square and deep and fill it clean. {{npc.grange}} pays what little he has, and the churchyard is quiet the way a churchyard should be."
+      quick:
+        text: "Dig it fast"
+        sub: "the fuller pay, done careless"
+        result: >-
+          You take the shortcuts and the fuller coin. The fill sits uneven and the corners are wrong, and something in the <span class="hl omen">ground takes note</span> of the haste.

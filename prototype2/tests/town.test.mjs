@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { lookupName, tok } from "../src/content/names.js";
 import { L } from "../src/content/script.js";
 import { LOCATIONS, ODD_JOBS, TALKS, SMALLTALK } from "../src/core/town.js";
+import { SCENES } from "../src/content/scenes.js";
 import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 import { townOffers } from "../src/core/selectors.js";
@@ -126,6 +127,54 @@ describe("town scenes resolve", () => {
     const crake = tok(L("crake_intro.body"));
     expect(crake).toContain("Hollis Crake");   // npc token resolved
     expect(crake).toContain("{{lineage}}");     // lineage resolves later, from save state
+  });
+});
+
+describe("odd-jobs are real tradeoff cards", () => {
+  it("every odd-job's scene exists in SCENES with choices, fx, and a town return", () => {
+    for (const j of ODD_JOBS) {
+      const sc = SCENES[j.scene];
+      expect(sc, `missing scene ${j.scene}`).toBeTruthy();
+      expect(sc.returnTo).toBe("town");
+      expect(sc.choices.length).toBeGreaterThanOrEqual(2);
+      // every choice moves at least one resource (no free "safe" option)
+      for (const c of sc.choices) {
+        const fx = (sc.fx && sc.fx[c]) || {};
+        const isHaggleRoll = sc.haggle && sc.haggle.on === c;
+        expect(isHaggleRoll || Object.keys(fx).length > 0, `choice ${j.scene}.${c} has no fx`).toBe(true);
+      }
+    }
+  });
+  it("every job scene has non-empty title and per-choice text prose, names resolving", () => {
+    for (const j of ODD_JOBS) {
+      const title = tok(L(j.scene + ".title"));
+      expect(title.length, `empty title for ${j.scene}`).toBeGreaterThan(0);
+      const body = tok(L(j.scene + ".body"));
+      expect(body).not.toContain("{{");
+      for (const c of SCENES[j.scene].choices) {
+        const text = tok(L(j.scene + "." + c + ".text"));
+        expect(text.length, `empty text for ${j.scene}.${c}`).toBeGreaterThan(0);
+      }
+    }
+  });
+  it("the haggle job (mend_fence) has result prose for every win/hold/sour outcome", () => {
+    const sc = SCENES.job_mend_fence;
+    expect(sc.kind).toBe("haggle");
+    for (const outcome of Object.keys(sc.haggle.outcomes)) {
+      const res = tok(L("job_mend_fence." + outcome + ".result"));
+      expect(res.length, `empty result for outcome ${outcome}`).toBeGreaterThan(0);
+      expect(res).not.toContain("{{");
+    }
+  });
+  it("dickering the fence resolves to one of its outcomes across seeds", () => {
+    const seen = new Set();
+    for (let rs = 1; rs <= 40; rs++) {
+      const s = { ...initialState(1), rngState: rs, phase: "scene", scene: { id: "job_mend_fence", result: null } };
+      const ns = reduce(s, { type: "CHOOSE_SCENE", choiceId: "dicker" });
+      expect(["win", "hold", "sour"]).toContain(ns.scene.result);
+      seen.add(ns.scene.result);
+    }
+    expect(seen.size).toBeGreaterThan(1); // the roll actually varies
   });
 });
 
