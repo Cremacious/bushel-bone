@@ -7,6 +7,13 @@ import { initialState } from "./helpers/no-events-state.mjs";
 import { reduce } from "../src/core/reducer.js";
 import { townOffers } from "../src/core/selectors.js";
 import { townOffers as offers2 } from "../src/core/selectors.js";
+import { nextTownScene, standingOf, talkIsDry } from "../src/core/selectors.js";
+
+// Every talk scene id an NPC's deck (or its filler) can surface.
+const ALL_TALK_IDS = [...new Set([...Object.values(TALKS).flat().map((d) => d.id), ...Object.values(SMALLTALK)])];
+// The eight new third-deck cards added to deepen the decks.
+const NEW_CARDS = ["meredith_whisper", "crake_ironwork", "tolliver_account", "silas_terms",
+  "grange_parish", "bell_notes", "coldwater_line", "nan_riddle"];
 
 function inTown(seed = 1) {
   let s = reduce(initialState(seed), { type: "BEGIN_SEASON" });
@@ -218,5 +225,105 @@ describe("free-if-dry talks", () => {
     expect(s.scene.id).toBe(SMALLTALK.crake); // the filler opened
     expect(s.seasonActionsLeft).toBe(acts0);  // free
     expect((s.standing || {}).crake).toBe(st0); // no standing gained
+  });
+});
+
+describe("every talk scene is authored", () => {
+  // {{lineage}} is resolved at render from the save's surname, not by tok(); allow it, catch the rest.
+  const resolved = (key) => tok(L(key)).replaceAll("{{lineage}}", "Crane");
+  it("each TALKS/SMALLTALK id exists in SCENES with title + body prose and no token leak", () => {
+    for (const id of ALL_TALK_IDS) {
+      expect(SCENES[id], `no SCENES entry for ${id}`).toBeTruthy();
+      const title = resolved(id + ".title");
+      const body = resolved(id + ".body");
+      expect(title.length, `empty title for ${id}`).toBeGreaterThan(0);
+      expect(body.length, `empty body for ${id}`).toBeGreaterThan(15);
+      expect(title, `token leak in ${id}.title`).not.toContain("{{");
+      expect(body, `token leak in ${id}.body`).not.toContain("{{");
+      // every listed choice has a result line, and every haggle outcome does too
+      const sc = SCENES[id];
+      for (const c of sc.choices) {
+        const res = resolved(id + "." + c + ".result");
+        expect(res.length, `empty result for ${id}.${c}`).toBeGreaterThan(0);
+        expect(res, `token leak in ${id}.${c}.result`).not.toContain("{{");
+      }
+      if (sc.haggle) for (const o of Object.keys(sc.haggle.outcomes)) {
+        const res = resolved(id + "." + o + ".result");
+        expect(res.length, `empty result for ${id}.${o}`).toBeGreaterThan(0);
+        expect(res, `token leak in ${id}.${o}.result`).not.toContain("{{");
+      }
+    }
+  });
+});
+
+describe("reworked talks carry a real payoff", () => {
+  it("choosing crake_intro's payload applies its regard reward", () => {
+    let s = inTown(1);
+    const regard0 = s.regard;
+    s = reduce(s, { type: "VISIT", npc: "crake" });     // opens crake_intro
+    expect(s.scene.id).toBe("crake_intro");
+    s = reduce(s, { type: "CHOOSE_SCENE", choiceId: "go_on" });
+    expect(s.regard).toBe(regard0 + 2);                  // the payload's {regard:+2}
+    expect(s.scene.result).toBe("go_on");
+  });
+  it("grange_intro's considered answer pays, a neutral one does not", () => {
+    let s = inTown(1);
+    const regard0 = s.regard;
+    s = reduce(s, { type: "VISIT", npc: "grange" });     // opens grange_intro
+    const right = reduce(s, { type: "CHOOSE_SCENE", choiceId: "duty" });
+    expect(right.regard).toBe(regard0 + 3);              // the right answer's {regard:+3}
+    const neutral = reduce(s, { type: "CHOOSE_SCENE", choiceId: "trade" });
+    expect(neutral.regard).toBe(regard0);                // a neutral answer moves nothing
+  });
+});
+
+describe("the deepened decks", () => {
+  it("every NPC deck grew to three cards, and each new card is an authored scene", () => {
+    for (const npc of Object.keys(TALKS)) expect(TALKS[npc].length).toBe(3);
+    for (const id of NEW_CARDS) {
+      expect(SCENES[id], `no SCENES entry for new card ${id}`).toBeTruthy();
+      expect(tok(L(id + ".title")).length, `empty title for ${id}`).toBeGreaterThan(0);
+      expect(tok(L(id + ".body")).length, `empty body for ${id}`).toBeGreaterThan(15);
+    }
+    // every new card is actually wired into a deck
+    const decked = new Set(Object.values(TALKS).flat().map((d) => d.id));
+    for (const id of NEW_CARDS) expect(decked.has(id), `${id} not in any deck`).toBe(true);
+  });
+});
+
+describe("nextTownScene rotation (replay variety)", () => {
+  // A state with crake's whole deck eligible (standing high, nothing seen yet).
+  const eligibleState = (seed) => ({ ...inTown(seed), rngSeed: seed, talksSeen: [], standing: { crake: 999 } });
+
+  it("is deterministic for a fixed rngSeed and returns an eligible, unseen id", () => {
+    const s = eligibleState(3);
+    const a = nextTownScene(s, "crake");
+    const b = nextTownScene(s, "crake");
+    expect(a).toBe(b); // pure, same seed => same pick
+    const deckIds = TALKS.crake.map((d) => d.id);
+    expect(deckIds).toContain(a);
+    expect(s.talksSeen).not.toContain(a);
+  });
+
+  it("varies which eligible card comes first across seeds (not always deck order)", () => {
+    const picks = new Set();
+    for (let seed = 0; seed < 12; seed++) picks.add(nextTownScene(eligibleState(seed), "crake"));
+    expect(picks.size).toBeGreaterThan(1); // the seed actually rotates the order
+  });
+
+  it("never returns a card already seen this run", () => {
+    let s = eligibleState(3);
+    const first = nextTownScene(s, "crake");
+    s = { ...s, talksSeen: [first] };
+    const second = nextTownScene(s, "crake");
+    expect(second).not.toBe(first);
+    expect(TALKS.crake.map((d) => d.id)).toContain(second);
+  });
+
+  it("falls to the small-talk filler once the eligible deck is exhausted, and talkIsDry agrees", () => {
+    const realIds = TALKS.crake.map((d) => d.id);
+    const s = { ...inTown(1), rngSeed: 1, talksSeen: realIds, standing: { crake: 999 } };
+    expect(nextTownScene(s, "crake")).toBe(SMALLTALK.crake);
+    expect(talkIsDry(s, "crake")).toBe(true);
   });
 });

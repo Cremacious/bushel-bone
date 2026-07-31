@@ -16,27 +16,63 @@ export const SCENES = {
     },
     after: "BEGIN_SEASON", // once closed, fall through into the season (planting)
   },
-  crake_intro:    { choices: ["go_on"], fx: {}, returnTo: "town" },
-  tolliver_intro: { choices: ["go_on"], fx: {}, returnTo: "town" },
-  meredith_rumor: { choices: ["go_on"], fx: {}, returnTo: "town" },
+  // ─── Town talks, reworked from dead "go on" beats into real payoffs and choices. Each is
+  // tagged with its KIND (documentation, not code): payload = a single accept that pays a
+  // useful line plus a small reward; question = one considered answer pays, the others go
+  // neutral or a touch sour; moral = both branches legitimate, one kinder and one colder;
+  // haggle = the risky option rolls a seeded win/hold/sour (see chooseScene). fx are kept
+  // modest on purpose — a talk warms a face, it is not a coin faucet. Prose in script.yaml.
 
-  // Talk-deck scenes for the remaining five townsfolk, plus every NPC's deeper
-  // scene and small-talk filler (town-exploration task 2). All single-beat
-  // "go_on" cards, same shape as the three intros above.
-  silas_town:      { choices: ["go_on"], fx: {}, returnTo: "town" },
-  grange_intro:    { choices: ["go_on"], fx: {}, returnTo: "town" },
-  bell_intro:      { choices: ["go_on"], fx: {}, returnTo: "town" },
-  coldwater_intro: { choices: ["go_on"], fx: {}, returnTo: "town" },
-  nan_intro:       { choices: ["go_on"], fx: {}, returnTo: "town" },
+  // meredith — the saloon, the town's ear. Payloads: the rumor is the goods, plus a little.
+  meredith_rumor: { returnTo: "town", choices: ["go_on"], fx: { go_on: { coin: 2 } } },
+  meredith_deep:  { returnTo: "town", choices: ["go_on"], fx: { go_on: { regard: 2 } } },
 
-  meredith_deep:   { choices: ["go_on"], fx: {}, returnTo: "town" },
-  crake_deep:      { choices: ["go_on"], fx: {}, returnTo: "town" },
-  tolliver_deep:   { choices: ["go_on"], fx: {}, returnTo: "town" },
-  silas_deep:      { choices: ["go_on"], fx: {}, returnTo: "town" },
-  grange_deep:     { choices: ["go_on"], fx: {}, returnTo: "town" },
-  bell_deep:       { choices: ["go_on"], fx: {}, returnTo: "town" },
-  coldwater_deep:  { choices: ["go_on"], fx: {}, returnTo: "town" },
-  nan_deep:        { choices: ["go_on"], fx: {}, returnTo: "town" },
+  // crake — the smith. Payloads: a practical word, and a little goodwill for taking it well.
+  crake_intro: { returnTo: "town", choices: ["go_on"], fx: { go_on: { regard: 2 } } },
+  crake_deep:  { returnTo: "town", choices: ["go_on"], fx: { go_on: { regard: 2 } } },
+
+  // tolliver — the store. A seed-goodwill payload, then a haggle over a sack of seed.
+  tolliver_intro: { returnTo: "town", choices: ["go_on"], fx: { go_on: { seed: 2 } } },
+  tolliver_deep:  { kind: "haggle", returnTo: "town", choices: ["dicker", "fair"],
+    fx: { fair: { seed: 2 } },
+    haggle: { on: "dicker", odds: { win: 0.4, hold: 0.4, sour: 0.2 },
+      outcomes: { win: { seed: 4 }, hold: { seed: 2 }, sour: { seed: 1, regard: -1 } } } },
+
+  // silas — the banker. Moral forks: press him and he cools, keep it civil and he warms. No coin.
+  silas_town: { returnTo: "town", choices: ["press", "civil"],   fx: { press: { regard: -2 }, civil: { regard: 2 } } },
+  silas_deep: { returnTo: "town", choices: ["press", "respect"], fx: { press: { regard: -2 }, respect: { regard: 2 } } },
+
+  // grange — the preacher. A question with one right answer, then a moral fork over a prayer.
+  grange_intro: { returnTo: "town", choices: ["duty", "trade", "shrug"], fx: { duty: { regard: 3 } } },
+  grange_deep:  { returnTo: "town", choices: ["pray", "decline"],        fx: { pray: { regard: 2 }, decline: { regard: -1 } } },
+
+  // bell — the doctor. A question about keeping the crew well, then a payload of real intel.
+  bell_intro: { returnTo: "town", choices: ["rest", "drive", "dose"], fx: { rest: { regard: 2 } } },
+  bell_deep:  { returnTo: "town", choices: ["go_on"], fx: { go_on: { regard: 2 } } },
+
+  // coldwater — the law. Moral forks: the decent answer, or the cold one that stirs the ground.
+  coldwater_intro: { returnTo: "town", choices: ["plain", "cold"], fx: { plain: { regard: 2 }, cold: { regard: -2 } } },
+  coldwater_deep:  { returnTo: "town", choices: ["heed", "defy"],  fx: { heed: { regard: 2 }, defy: { reckoning: 1 } } },
+
+  // nan — folk-magic, the reckoning's only reader. Riddles of the ground: the listened answer
+  // pays a hint and her regard; the boastful or scornful one sours her. She hints, never states.
+  nan_intro: { returnTo: "town", choices: ["listen", "boast", "scoff"],      fx: { listen: { regard: 2 }, scoff: { regard: -1 } } },
+  nan_deep:  { returnTo: "town", choices: ["patient", "greedy", "afraid"],   fx: { patient: { regard: 2 }, greedy: { regard: -1 } } },
+
+  // ─── New deck cards, one per NPC, unlocked by standing (see town.TALKS minStanding). Kinds
+  // are mixed across the eight so the deepened decks vary: three questions, two morals, a
+  // haggle, and two payloads.
+  meredith_whisper: { returnTo: "town", choices: ["truthful", "flatter", "dodge"], fx: { truthful: { regard: 2 } } }, // question
+  crake_ironwork:   { kind: "haggle", returnTo: "town", choices: ["dicker", "fair"],
+    fx: { fair: { coin: 4 } },
+    haggle: { on: "dicker", odds: { win: 0.4, hold: 0.4, sour: 0.2 },
+      outcomes: { win: { coin: 7 }, hold: { coin: 4 }, sour: { coin: 2, regard: -1 } } } },       // haggle
+  tolliver_account: { returnTo: "town", choices: ["go_on"], fx: { go_on: { seed: 3 } } },          // payload
+  silas_terms:      { returnTo: "town", choices: ["press", "accept"], fx: { press: { regard: -2 }, accept: { regard: 2 } } }, // moral
+  grange_parish:    { returnTo: "town", choices: ["go_on"], fx: { go_on: { regard: 2 } } },        // payload
+  bell_notes:       { returnTo: "town", choices: ["cold", "hunger", "haunt"], fx: { cold: { regard: 2 } } }, // question
+  coldwater_line:   { returnTo: "town", choices: ["decent", "hard"], fx: { decent: { regard: 2 }, hard: { reckoning: 1 } } }, // moral
+  nan_riddle:       { returnTo: "town", choices: ["giving", "taking", "waiting"], fx: { giving: { regard: 2 }, taking: { regard: -1 } } }, // question
 
   meredith_small:   { choices: ["go_on"], fx: {}, returnTo: "town" },
   crake_small:      { choices: ["go_on"], fx: {}, returnTo: "town" },

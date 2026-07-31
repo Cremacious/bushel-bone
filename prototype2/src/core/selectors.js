@@ -229,14 +229,19 @@ export function standingWord(v = 0) {
   return "Stranger";
 }
 
-// Which of an NPC's talks plays on the next visit: the first deck entry not yet seen whose
-// minStanding is met, else the NPC's small-talk filler (so a visit is never empty). Pure.
+// Which of an NPC's talks plays on the next visit: an eligible deck entry (standing met, not
+// yet seen this run), else the NPC's small-talk filler (so a visit is never empty). When more
+// than one is eligible, which comes next varies by run seed (deterministic, not deck order),
+// so two runs meet the same face in a different order. No-repeat within a run is preserved by
+// the talksSeen filter; the filler is the exhausted floor. Pure.
 export function nextTownScene(state, npc) {
   const deck = TALKS[npc] || [];
   const seen = state.talksSeen || [];
   const st = standingOf(state, npc);
-  const next = deck.find((d) => d.minStanding <= st && !seen.includes(d.id));
-  return next ? next.id : (SMALLTALK[npc] || null);
+  const eligible = deck.filter((d) => d.minStanding <= st && !seen.includes(d.id));
+  if (!eligible.length) return SMALLTALK[npc] || null;
+  const idx = (((state.rngSeed || 0) % eligible.length) + eligible.length) % eligible.length;
+  return eligible[idx].id;
 }
 
 // True when the NPC has no fresh content left (their next talk would be small-talk filler).

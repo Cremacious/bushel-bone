@@ -32,15 +32,18 @@ export const JOBS_PER_SEASON = 2;
 
 // Each NPC's talk deck: ordered intro-first, each gated by a minStanding (0 = always). As
 // standing rises, deeper scenes unlock. Scene ids match content/script.yaml + scenes.js.
+// Each deck now runs intro (0) → deep → a third card gated higher still, so a face keeps
+// offering something fresh as you befriend it. The third card sits above the deep card's gate
+// (24 where deep is 12; 45 where deep is 30) so it is the reward of a real friendship.
 export const TALKS = {
-  meredith:  [{ id: "meredith_rumor", minStanding: 0 }, { id: "meredith_deep", minStanding: 12 }],
-  crake:     [{ id: "crake_intro",    minStanding: 0 }, { id: "crake_deep",    minStanding: 12 }],
-  tolliver:  [{ id: "tolliver_intro", minStanding: 0 }, { id: "tolliver_deep", minStanding: 12 }],
-  silas:     [{ id: "silas_town",     minStanding: 0 }, { id: "silas_deep",    minStanding: 30 }],
-  grange:    [{ id: "grange_intro",   minStanding: 0 }, { id: "grange_deep",   minStanding: 12 }],
-  bell:      [{ id: "bell_intro",     minStanding: 0 }, { id: "bell_deep",      minStanding: 12 }],
-  coldwater: [{ id: "coldwater_intro",minStanding: 0 }, { id: "coldwater_deep",minStanding: 30 }],
-  nan:       [{ id: "nan_intro",      minStanding: 0 }, { id: "nan_deep",       minStanding: 12 }],
+  meredith:  [{ id: "meredith_rumor", minStanding: 0 }, { id: "meredith_deep", minStanding: 12 }, { id: "meredith_whisper", minStanding: 24 }],
+  crake:     [{ id: "crake_intro",    minStanding: 0 }, { id: "crake_deep",    minStanding: 12 }, { id: "crake_ironwork",   minStanding: 24 }],
+  tolliver:  [{ id: "tolliver_intro", minStanding: 0 }, { id: "tolliver_deep", minStanding: 12 }, { id: "tolliver_account", minStanding: 24 }],
+  silas:     [{ id: "silas_town",     minStanding: 0 }, { id: "silas_deep",    minStanding: 30 }, { id: "silas_terms",      minStanding: 45 }],
+  grange:    [{ id: "grange_intro",   minStanding: 0 }, { id: "grange_deep",   minStanding: 12 }, { id: "grange_parish",    minStanding: 24 }],
+  bell:      [{ id: "bell_intro",     minStanding: 0 }, { id: "bell_deep",      minStanding: 12 }, { id: "bell_notes",       minStanding: 24 }],
+  coldwater: [{ id: "coldwater_intro",minStanding: 0 }, { id: "coldwater_deep",minStanding: 30 }, { id: "coldwater_line",    minStanding: 45 }],
+  nan:       [{ id: "nan_intro",      minStanding: 0 }, { id: "nan_deep",       minStanding: 12 }, { id: "nan_riddle",       minStanding: 24 }],
 };
 
 // A short "nothing new today" filler per NPC, played when their deck is exhausted at the
