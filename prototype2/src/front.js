@@ -6,6 +6,10 @@ import { tok } from "./content/names.js";
 // When New Game finishes it calls onStart(lineageName) to boot the real game. The test
 // harness boots the game directly, skipping this, exactly as year1.html does.
 
+// Bump this as the prototype grows. Shown on the title menu so players know this is an
+// unfinished build, not the finished game.
+export const PROTO_VERSION = "v0.4";
+
 const MAX = 18;
 export function normLineage(name) {
   let s = (name == null ? "" : String(name)).replace(/\s+/g, " ").trim().slice(0, MAX);
@@ -36,6 +40,10 @@ const VIEWS = {
       el("div", { class: "fr-herotext" }, [
         wordmark(),
         el("div", { class: "fr-eyebrow t-label", text: "A Dark Homestead Survival Game" }),
+        el("div", { class: "fr-proto t-label" }, [
+          el("span", { class: "fr-proto-badge", text: `Prototype ${PROTO_VERSION}` }),
+          el("span", { class: "fr-proto-note t-sub", text: "an early build, not the finished game" }),
+        ]),
         el("div", { class: "fr-rule rule-double" }),
         el("div", { class: "fr-menu" }, [
           menuItem("New Game", "▶", { primary: true, onClick: () => set({ view: "name" }) }),

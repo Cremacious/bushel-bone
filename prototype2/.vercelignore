@@ -1,0 +1,8 @@
+# Dev-only — the deployed game is a static site that loads only index.html, src/, and assets/.
+node_modules
+tests
+tests_tmp
+tools
+sim
+vitest.config.mjs
+package-lock.json

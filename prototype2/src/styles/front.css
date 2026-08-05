@@ -15,6 +15,10 @@
 .fr-wordmark { font-size: clamp(52px, 8vw, 92px); line-height: 1; color: var(--ink-hi); }
 .fr-wordmark .amp { color: var(--lamp); margin: 0 .04em; }
 .fr-eyebrow { letter-spacing: .34em; margin-top: 12px; }              /* subtitle, now BELOW the title */
+.fr-proto { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+.fr-proto-badge { display: inline-block; padding: 4px 12px; border: 1px solid var(--lamp);
+  color: var(--lamp); letter-spacing: .22em; font-size: .78rem; border-radius: 2px; }
+.fr-proto-note { color: var(--ink-faint); font-style: italic; }
 .fr-rule { margin: 22px 0; }
 .fr-menu { display: flex; flex-direction: column; gap: 14px; margin-top: 32px; }
 .fr-menu-row { display: flex; gap: 14px; }
